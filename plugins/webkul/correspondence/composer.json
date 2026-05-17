@@ -1,0 +1,30 @@
+{
+    "name": "webkul/correspondence",
+    "description": "Correspondence management for outgoing and incoming official letters",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Correspondence\\CorrespondenceServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Correspondence\\": "src/",
+            "Webkul\\Correspondence\\Database\\Factories\\": "database/factories/",
+            "Webkul\\Correspondence\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\Correspondence\\Tests\\": "tests/"
+        }
+    }
+}

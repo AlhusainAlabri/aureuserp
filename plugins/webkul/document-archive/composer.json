@@ -1,0 +1,30 @@
+{
+    "name": "webkul/document-archive",
+    "description": "Document Archive and File Management",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\DocumentArchive\\DocumentArchiveServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\DocumentArchive\\": "src/",
+            "Webkul\\DocumentArchive\\Database\\Factories\\": "database/factories/",
+            "Webkul\\DocumentArchive\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\DocumentArchive\\Tests\\": "tests/"
+        }
+    }
+}

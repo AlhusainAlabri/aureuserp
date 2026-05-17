@@ -14,7 +14,9 @@ use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Webkul\Chatter\Traits\HasChatter;
 use Webkul\Chatter\Traits\HasLogActivity;
+use Webkul\Correspondence\Models\Correspondence;
 use Webkul\Field\Traits\HasCustomFields;
+use Webkul\Meetings\Models\Meeting;
 use Webkul\Partner\Models\Partner;
 use Webkul\Project\Database\Factories\ProjectFactory;
 use Webkul\Security\Models\Scopes\UserPermissionScope;
@@ -158,6 +160,16 @@ class Project extends Model implements Sortable
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function meetings(): HasMany
+    {
+        return $this->hasMany(Meeting::class);
+    }
+
+    public function correspondences(): HasMany
+    {
+        return $this->hasMany(Correspondence::class);
     }
 
     public function company(): BelongsTo

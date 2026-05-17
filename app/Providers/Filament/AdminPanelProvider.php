@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -25,26 +26,26 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Webkul\Manufacturing\ManufacturingPlugin;
 use Webkul\Support\Filament\Pages\Profile;
 use Webkul\Support\GlobalSearchProvider;
+use Wezlo\FilamentApproval\FilamentApprovalPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        set_time_limit(300);
-
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
             ->favicon(asset('images/favicon.ico'))
-            ->brandLogo(asset('images/logo.svg'))
+            ->brandLogo(asset('images/logo.png'))
+            ->darkModeBrandLogo(asset('images/logo.png'))
             ->brandLogoHeight('2rem')
             ->passwordReset()
             ->emailVerification()
             ->profile()
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::Orange,
             ])
             ->unsavedChangesAlerts()
             ->topNavigation()
@@ -84,6 +85,15 @@ class AdminPanelProvider extends PanelProvider
                     ->label(__('admin.navigation.project'))
                     ->icon('icon-projects'),
                 NavigationGroup::make()
+                    ->label(__('admin.navigation.meetings'))
+                    ->icon('heroicon-o-clipboard-document-list'),
+                NavigationGroup::make()
+                    ->label(__('admin.navigation.correspondence'))
+                    ->icon('heroicon-o-envelope'),
+                NavigationGroup::make()
+                    ->label(__('admin.navigation.document-archive'))
+                    ->icon('heroicon-o-archive-box'),
+                NavigationGroup::make()
                     ->label(__('admin.navigation.employee'))
                     ->icon('icon-employees'),
                 NavigationGroup::make()
@@ -96,6 +106,9 @@ class AdminPanelProvider extends PanelProvider
                     ->label(__('admin.navigation.website'))
                     ->icon('icon-website'),
                 NavigationGroup::make()
+                    ->label('Approvals')
+                    ->icon('heroicon-o-check-badge'),
+                NavigationGroup::make()
                     ->label(__('admin.navigation.plugin'))
                     ->icon('icon-plugin'),
                 NavigationGroup::make()
@@ -103,6 +116,8 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('icon-settings'),
             ])
             ->plugins([
+                FilamentApprovalPlugin::make()
+                    ->navigationGroup('Approvals'),
                 ManufacturingPlugin::make(),
                 FilamentShieldPlugin::make()
                     ->gridColumns([
@@ -122,6 +137,8 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'sm'      => 2,
                     ]),
+                EasyFooterPlugin::make()
+                    ->withSentence('Developed by NODHUM TECHNOLOGY · v'.config('app.version')),
             ])
             ->globalSearch(provider: GlobalSearchProvider::class)
             ->middleware([

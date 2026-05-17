@@ -9,12 +9,15 @@ use Webkul\Analytic\AnalyticServiceProvider;
 use Webkul\Blog\BlogServiceProvider;
 use Webkul\Chatter\ChatterServiceProvider;
 use Webkul\Contact\ContactServiceProvider;
+use Webkul\Correspondence\CorrespondenceServiceProvider;
+use Webkul\DocumentArchive\DocumentArchiveServiceProvider;
 use Webkul\Employee\EmployeeServiceProvider;
 use Webkul\Field\FieldServiceProvider;
 use Webkul\FullCalendar\FullCalendarServiceProvider;
 use Webkul\Inventory\InventoryServiceProvider;
 use Webkul\Invoice\InvoiceServiceProvider;
 use Webkul\Manufacturing\ManufacturingServiceProvider;
+use Webkul\Meetings\MeetingsServiceProvider;
 use Webkul\Partner\PartnerServiceProvider;
 use Webkul\Payment\PaymentServiceProvider;
 use Webkul\PluginManager\PluginManagerServiceProvider;
@@ -40,11 +43,14 @@ return [
     BlogServiceProvider::class,
     ChatterServiceProvider::class,
     ContactServiceProvider::class,
+    CorrespondenceServiceProvider::class,
+    DocumentArchiveServiceProvider::class,
     EmployeeServiceProvider::class,
     FieldServiceProvider::class,
     InventoryServiceProvider::class,
     InvoiceServiceProvider::class,
     ManufacturingServiceProvider::class,
+    MeetingsServiceProvider::class,
     PartnerServiceProvider::class,
     PaymentServiceProvider::class,
     ProductServiceProvider::class,

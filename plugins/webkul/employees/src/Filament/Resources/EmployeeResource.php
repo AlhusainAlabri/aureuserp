@@ -75,6 +75,7 @@ use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\ResumeR
 use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\SkillsRelationManager;
 use Webkul\Employee\Models\Employee;
 use Webkul\Field\Filament\Traits\HasCustomFields;
+use Webkul\Meetings\Filament\Resources\EmployeeMeetingsRelationManager;
 use Webkul\Security\Filament\Resources\CompanyResource;
 use Webkul\Security\Filament\Resources\UserResource;
 use Webkul\Security\Models\User;
@@ -1795,6 +1796,10 @@ class EmployeeResource extends Resource
                 ->icon('heroicon-o-bolt'),
             RelationGroup::make('Manage Resumes', [
                 ResumeRelationManager::class,
+            ])
+                ->icon('heroicon-o-clipboard-document-list'),
+            RelationGroup::make(__('meetings::meetings.relations.employee_meetings'), [
+                EmployeeMeetingsRelationManager::class,
             ])
                 ->icon('heroicon-o-clipboard-document-list'),
         ];

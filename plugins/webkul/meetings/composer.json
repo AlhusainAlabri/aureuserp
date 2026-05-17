@@ -1,0 +1,30 @@
+{
+    "name": "webkul/meetings",
+    "description": "Meeting minutes and action item management",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Meetings\\MeetingsServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Meetings\\": "src/",
+            "Webkul\\Meetings\\Database\\Factories\\": "database/factories/",
+            "Webkul\\Meetings\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\Meetings\\Tests\\": "tests/"
+        }
+    }
+}

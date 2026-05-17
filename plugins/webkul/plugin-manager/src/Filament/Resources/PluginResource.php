@@ -149,8 +149,6 @@ class PluginResource extends Resource
 
                                 $commandName = escapeshellarg("{$record->name}:install");
 
-                                $cmd = "timeout 300 $php $artisan $commandName 2>&1";
-
                                 $cmd = self::buildTimeoutCommand(300, "$php $artisan $commandName 2>&1");
 
                                 $output = [];
@@ -453,7 +451,7 @@ class PluginResource extends Resource
 
     protected static function buildTimeoutCommand(int $seconds, string $command): string
     {
-        if (PHP_OS_FAMILY === 'Windows') {
+        if (PHP_OS_FAMILY === 'Windows' || PHP_OS_FAMILY === 'Darwin') {
             return $command;
         }
 

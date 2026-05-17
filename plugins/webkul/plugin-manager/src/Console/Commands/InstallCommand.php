@@ -507,7 +507,7 @@ class InstallCommand extends Command
 
     protected function buildTimeoutCommand(int $seconds, string $command): string
     {
-        if (PHP_OS_FAMILY === 'Windows') {
+        if (PHP_OS_FAMILY === 'Windows' || PHP_OS_FAMILY === 'Darwin') {
             return $command;
         }
 

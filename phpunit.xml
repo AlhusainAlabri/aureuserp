@@ -26,6 +26,15 @@
         <testsuite name="SupportFeature">
             <directory>plugins/webkul/support/tests/Feature</directory>
         </testsuite>
+        <testsuite name="MeetingsFeature">
+            <directory>tests/Feature/Meetings</directory>
+        </testsuite>
+        <testsuite name="CorrespondenceFeature">
+            <directory>tests/Feature/Correspondence</directory>
+        </testsuite>
+        <testsuite name="DocumentArchiveFeature">
+            <directory>tests/Feature/Documents</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

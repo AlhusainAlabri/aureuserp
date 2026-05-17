@@ -35,6 +35,13 @@ abstract class PackageServiceProvider extends BasePackageServiceProvider
 
         $this->mergeShieldConfig();
 
+        if ($this->package->hasTranslations) {
+            $this->loadTranslationsFrom(
+                $this->package->basePath('/../resources/lang/'),
+                $this->package->shortName()
+            );
+        }
+
         $this->packageRegistered();
 
         return $this;
