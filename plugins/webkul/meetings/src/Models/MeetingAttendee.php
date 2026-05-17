@@ -38,6 +38,11 @@ class MeetingAttendee extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function hasSigned(): bool
+    {
+        return $this->signed_at !== null;
+    }
+
     protected static function newFactory(): MeetingAttendeeFactory
     {
         return MeetingAttendeeFactory::new();

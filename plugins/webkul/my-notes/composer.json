@@ -1,0 +1,30 @@
+{
+    "name": "webkul/my-notes",
+    "description": "Personal productivity notes module",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\MyNotes\\MyNotesServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\MyNotes\\": "src/",
+            "Webkul\\MyNotes\\Database\\Factories\\": "database/factories/",
+            "Webkul\\MyNotes\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\MyNotes\\Tests\\": "tests/"
+        }
+    }
+}

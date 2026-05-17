@@ -46,6 +46,11 @@ class ViewMeeting extends ViewRecord
                     }
                 }),
             ExportMeetingPdfAction::make(),
+            Action::make('print')
+                ->label(__('meetings::meetings.actions.print'))
+                ->icon('heroicon-o-printer')
+                ->color('gray')
+                ->url(fn (): string => 'javascript:window.print()'),
             Action::make('archive')
                 ->label(__('meetings::meetings.actions.archive'))
                 ->icon('heroicon-o-archive-box')

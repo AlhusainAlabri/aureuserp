@@ -12,6 +12,7 @@ return [
         'manufacturing'    => 'التصنيع',
         'project'          => 'المشاريع',
         'meetings'         => 'إدارة المحاضر',
+        'my-notes'         => 'مذكرتي',
         'correspondence'   => 'المراسلات',
         'document-archive' => 'أرشيف المستندات',
         'employee'         => 'الموظفين',

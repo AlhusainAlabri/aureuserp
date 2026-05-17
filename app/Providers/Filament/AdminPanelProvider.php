@@ -88,6 +88,9 @@ class AdminPanelProvider extends PanelProvider
                     ->label(__('admin.navigation.meetings'))
                     ->icon('heroicon-o-clipboard-document-list'),
                 NavigationGroup::make()
+                    ->label(__('admin.navigation.my-notes'))
+                    ->icon('heroicon-o-document-text'),
+                NavigationGroup::make()
                     ->label(__('admin.navigation.correspondence'))
                     ->icon('heroicon-o-envelope'),
                 NavigationGroup::make()

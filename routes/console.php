@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 Schedule::command('approval:process-sla')->hourly();
 Schedule::command('meetings:notify-overdue-tasks')->dailyAt('08:00');
 Schedule::command('correspondence:notify-overdue')->dailyAt('09:00');
+Schedule::command('hr:notify-expiring-documents')->dailyAt('08:00');
+Schedule::command('purchases:remind-receipts')->dailyAt('09:00');
+Schedule::command('submissions:remind-unresolved')->weeklyOn(1, '09:00');
+Schedule::command('notes:send-reminders')->everyFiveMinutes();

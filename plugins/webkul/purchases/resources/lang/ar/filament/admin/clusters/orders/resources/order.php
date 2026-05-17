@@ -9,6 +9,17 @@ return [
 
     'form' => [
         'sections' => [
+            'additional-details' => [
+                'title' => 'تفاصيل إضافية',
+
+                'fields' => [
+                    'requesting-department'  => 'الدائرة مقدمة الطلب',
+                    'beneficiary-department' => 'الدائرة المستفيدة',
+                    'linked-project'         => 'مشروع مرتبط',
+                    'linked-meeting'         => 'محضر مرتبط',
+                ],
+            ],
+
             'general' => [
                 'title' => 'عام',
 
@@ -122,20 +133,22 @@ return [
 
     'table' => [
         'columns' => [
-            'favorite'         => 'المفضلة',
-            'priority'         => 'الأولوية',
-            'vendor-reference' => 'مرجع المورد',
-            'reference'        => 'المرجع',
-            'vendor'           => 'المورد',
-            'buyer'            => 'المشتري',
-            'company'          => 'الشركة',
-            'order-deadline'   => 'الموعد النهائي للطلب',
-            'source-document'  => 'المستند المصدر',
-            'untaxed-amount'   => 'المبلغ بدون ضريبة',
-            'total-amount'     => 'المبلغ الإجمالي',
-            'status'           => 'الحالة',
-            'billing-status'   => 'حالة الفوترة',
-            'currency'         => 'العملة',
+            'favorite'              => 'المفضلة',
+            'priority'              => 'الأولوية',
+            'vendor-reference'      => 'مرجع المورد',
+            'reference'             => 'المرجع',
+            'vendor'                => 'المورد',
+            'buyer'                 => 'المشتري',
+            'company'               => 'الشركة',
+            'requesting-department' => 'الدائرة',
+            'receipt'               => 'الفاتورة',
+            'order-deadline'        => 'الموعد النهائي للطلب',
+            'source-document'       => 'المستند المصدر',
+            'untaxed-amount'        => 'المبلغ بدون ضريبة',
+            'total-amount'          => 'المبلغ الإجمالي',
+            'status'                => 'الحالة',
+            'billing-status'        => 'حالة الفوترة',
+            'currency'              => 'العملة',
         ],
 
         'groups' => [
@@ -147,20 +160,20 @@ return [
         ],
 
         'filters' => [
-            'status'           => 'الحالة',
-            'vendor-reference' => 'مرجع المورد',
-            'reference'        => 'المرجع',
-            'untaxed-amount'   => 'المبلغ بدون ضريبة',
-            'total-amount'     => 'المبلغ الإجمالي',
-            'order-deadline'   => 'الموعد النهائي للطلب',
-            'vendor'           => 'المورد',
-            'buyer'            => 'المشتري',
-            'company'          => 'الشركة',
-            'payment-term'     => 'شروط الدفع',
-            'incoterm'         => 'شروط التجارة الدولية',
-            'status'           => 'الحالة',
-            'created-at'       => 'تاريخ الإنشاء',
-            'updated-at'       => 'تاريخ التحديث',
+            'status'                => 'الحالة',
+            'vendor-reference'      => 'مرجع المورد',
+            'reference'             => 'المرجع',
+            'untaxed-amount'        => 'المبلغ بدون ضريبة',
+            'total-amount'          => 'المبلغ الإجمالي',
+            'order-deadline'        => 'الموعد النهائي للطلب',
+            'vendor'                => 'المورد',
+            'buyer'                 => 'المشتري',
+            'company'               => 'الشركة',
+            'requesting-department' => 'الدائرة',
+            'payment-term'          => 'شروط الدفع',
+            'incoterm'              => 'شروط التجارة الدولية',
+            'created-at'            => 'تاريخ الإنشاء',
+            'updated-at'            => 'تاريخ التحديث',
         ],
 
         'actions' => [
@@ -193,6 +206,13 @@ return [
                     ],
                 ],
             ],
+        ],
+    ],
+
+    'notifications' => [
+        'receipt-required' => [
+            'title' => 'الفاتورة مطلوبة لأمر الشراء',
+            'body'  => 'أمر شراء #{reference} — يرجى رفع الفاتورة',
         ],
     ],
 
@@ -255,14 +275,22 @@ return [
                 'title' => 'معلومات إضافية',
 
                 'entries' => [
-                    'buyer'             => 'المشتري',
-                    'company'           => 'الشركة',
-                    'source-document'   => 'المستند المصدر',
-                    'incoterm'          => 'شروط التجارة الدولية',
-                    'incoterm-tooltip'  => 'شروط التجارة الدولية (Incoterms) هي مجموعة من الشروط التجارية الموحدة المستخدمة في المعاملات العالمية لتحديد المسؤوليات بين المشترين والبائعين.',
-                    'incoterm-location' => 'موقع شرط التجارة',
-                    'payment-term'      => 'شروط الدفع',
-                    'fiscal-position'   => 'المركز المالي',
+                    'buyer'                  => 'المشتري',
+                    'company'                => 'الشركة',
+                    'requesting-department'  => 'الدائرة مقدمة الطلب',
+                    'beneficiary-department' => 'الدائرة المستفيدة',
+                    'linked-project'         => 'مشروع مرتبط',
+                    'linked-meeting'         => 'محضر مرتبط',
+                    'source-document'        => 'المستند المصدر',
+                    'incoterm'               => 'شروط التجارة الدولية',
+                    'incoterm-tooltip'       => 'شروط التجارة الدولية (Incoterms) هي مجموعة من الشروط التجارية الموحدة المستخدمة في المعاملات العالمية لتحديد المسؤوليات بين المشترين والبائعين.',
+                    'incoterm-location'      => 'موقع شرط التجارة',
+                    'payment-term'           => 'شروط الدفع',
+                    'fiscal-position'        => 'المركز المالي',
+                    'receipt'                => 'الفاتورة',
+                    'receipt-uploaded'       => 'تم رفع الفاتورة ✓',
+                    'receipt-missing'        => 'الفاتورة مطلوبة',
+                    'receipt-uploaded-at'    => 'تاريخ الرفع',
                 ],
             ],
 

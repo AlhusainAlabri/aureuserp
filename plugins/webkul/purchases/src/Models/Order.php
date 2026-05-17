@@ -15,10 +15,13 @@ use Webkul\Account\Models\PaymentTerm;
 use Webkul\Chatter\Models\Message;
 use Webkul\Chatter\Traits\HasChatter;
 use Webkul\Chatter\Traits\HasLogActivity;
+use Webkul\Employee\Models\Department;
 use Webkul\Field\Traits\HasCustomFields;
 use Webkul\Inventory\Models\OperationType;
 use Webkul\Inventory\Models\ProcurementGroup;
 use Webkul\Inventory\Models\Receipt;
+use Webkul\Meetings\Models\Meeting;
+use Webkul\Projects\Models\Project;
 use Webkul\Purchase\Database\Factories\OrderFactory;
 use Webkul\Purchase\Enums\OrderInvoiceStatus;
 use Webkul\Purchase\Enums\OrderReceiptStatus;
@@ -74,6 +77,14 @@ class Order extends Model
         'operation_type_id',
         'destination_address_id',
         'procurement_group_id',
+        'requesting_department_id',
+        'beneficiary_department_id',
+        'project_id',
+        'meeting_id',
+        'receipt_uploaded',
+        'receipt_path',
+        'receipt_uploaded_at',
+        'receipt_reminder_sent_at',
     ];
 
     protected $casts = [
@@ -90,6 +101,9 @@ class Order extends Model
         'calendar_start_at'        => 'datetime',
         'effective_date'           => 'datetime',
         'untaxed_amount'           => 'decimal:4',
+        'receipt_uploaded'         => 'boolean',
+        'receipt_uploaded_at'      => 'datetime',
+        'receipt_reminder_sent_at' => 'datetime',
     ];
 
     public function getModelTitle(): string
@@ -194,6 +208,53 @@ class Order extends Model
     public function procurementGroup(): BelongsTo
     {
         return $this->belongsTo(ProcurementGroup::class, 'procurement_group_id');
+    }
+
+    public function requestingDepartment(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'requesting_department_id');
+    }
+
+    public function beneficiaryDepartment(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'beneficiary_department_id');
+    }
+
+    public function meeting(): BelongsTo
+    {
+        if (class_exists(Meeting::class)) {
+            return $this->belongsTo(Meeting::class);
+        }
+
+        return $this->belongsTo(self::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        if (class_exists(Project::class)) {
+            return $this->belongsTo(Project::class);
+        }
+
+        return $this->belongsTo(self::class);
+    }
+
+    public function isReceiptRequired(): bool
+    {
+        return in_array($this->state, [OrderState::PURCHASE, OrderState::DONE]);
+    }
+
+    public function isReceiptMissing(): bool
+    {
+        return $this->isReceiptRequired() && ! $this->receipt_uploaded;
+    }
+
+    public function receiptDaysOverdue(): int
+    {
+        if (! $this->isReceiptMissing() || ! $this->approved_at) {
+            return 0;
+        }
+
+        return max(0, (int) $this->approved_at->diffInDays(now()));
     }
 
     public function addMessage(array $data): Message

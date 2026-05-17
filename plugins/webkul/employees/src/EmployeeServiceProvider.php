@@ -16,6 +16,7 @@ class EmployeeServiceProvider extends PackageServiceProvider
     {
         $package->name(static::$name)
             ->hasTranslations()
+            ->hasViews()
             ->hasMigrations([
                 '2024_12_11_045350_create_employees_work_locations_table',
                 '2024_12_11_051916_create_employees_departments_table',
@@ -35,6 +36,13 @@ class EmployeeServiceProvider extends PackageServiceProvider
                 '2025_01_15_045708_create_job_position_skills_table',
                 '2025_01_24_052852_add_department_id_to_activity_plans_table',
                 '2025_08_20_082638_add_unique_user_id_to_employees_employees_table',
+                '2026_05_17_120000_add_custom_fields_to_employees_table',
+                '2026_05_17_120001_create_employee_documents_table',
+                '2026_05_17_120002_add_notified_at_to_employee_documents_table',
+                '2026_05_17_125130_create_employees_warning_types_table',
+                '2026_05_17_125131_create_employees_employee_warnings_table',
+                '2026_05_17_132428_create_employee_submissions_table',
+                '2026_05_17_132429_create_employee_submission_replies_table',
             ])
             ->runsMigrations()
             ->hasSeeder('Webkul\\Employee\\Database\Seeders\\DatabaseSeeder')

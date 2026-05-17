@@ -12,6 +12,7 @@ return [
         'manufacturing'    => 'Manufacturing',
         'project'          => 'Project',
         'meetings'         => 'Meeting Minutes',
+        'my-notes'         => 'My Notes',
         'correspondence'   => 'Correspondence',
         'document-archive' => 'Document Archive',
         'employee'         => 'Employees',

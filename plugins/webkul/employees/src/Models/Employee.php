@@ -95,6 +95,9 @@ class Employee extends Model
         'departure_description',
         'additional_note',
         'notes',
+        'membership_type',
+        'civil_id',
+        'civil_id_expiry',
         'is_active',
         'is_flexible',
         'is_fully_flexible',
@@ -106,6 +109,8 @@ class Employee extends Model
         'is_flexible'                    => 'boolean',
         'is_fully_flexible'              => 'boolean',
         'work_permit_scheduled_activity' => 'boolean',
+        'civil_id_expiry'                => 'date',
+        'membership_type'                => 'string',
     ];
 
     public function getModelTitle(): string
@@ -216,6 +221,16 @@ class Employee extends Model
     public function skills(): HasMany
     {
         return $this->hasMany(EmployeeSkill::class, 'employee_id');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(EmployeeDocument::class, 'employee_id');
+    }
+
+    public function warnings(): HasMany
+    {
+        return $this->hasMany(EmployeeWarning::class, 'employee_id');
     }
 
     public function resumes()

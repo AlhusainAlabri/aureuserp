@@ -182,7 +182,7 @@ class MeetingCalendarWidget extends FullCalendarWidget
 
     protected function timeOffEvents(array $fetchInfo): array
     {
-        if (! class_exists(Leave::class)) {
+        if (! class_exists(Leave::class) || ! \Schema::hasTable('time_off_leaves')) {
             return [];
         }
 

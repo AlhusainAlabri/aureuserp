@@ -9,6 +9,17 @@ return [
 
     'form' => [
         'sections' => [
+            'additional-details' => [
+                'title' => 'Additional Details',
+
+                'fields' => [
+                    'requesting-department'  => 'Requesting Department / الدائرة مقدمة الطلب',
+                    'beneficiary-department' => 'Beneficiary Department / الدائرة المستفيدة',
+                    'linked-project'         => 'Linked Project / مشروع مرتبط',
+                    'linked-meeting'         => 'Linked Meeting / محضر مرتبط',
+                ],
+            ],
+
             'general' => [
                 'title' => 'General',
 
@@ -122,20 +133,22 @@ return [
 
     'table' => [
         'columns' => [
-            'favorite'         => 'Favorite',
-            'priority'         => 'Priority',
-            'vendor-reference' => 'Vendor Reference',
-            'reference'        => 'Reference',
-            'vendor'           => 'Vendor',
-            'buyer'            => 'Buyer',
-            'company'          => 'Company',
-            'order-deadline'   => 'Order Deadline',
-            'source-document'  => 'Source Document',
-            'untaxed-amount'   => 'Untaxed Amount',
-            'total-amount'     => 'Total Amount',
-            'status'           => 'Status',
-            'billing-status'   => 'Billing Status',
-            'currency'         => 'Currency',
+            'favorite'              => 'Favorite',
+            'priority'              => 'Priority',
+            'vendor-reference'      => 'Vendor Reference',
+            'reference'             => 'Reference',
+            'vendor'                => 'Vendor',
+            'buyer'                 => 'Buyer',
+            'company'               => 'Company',
+            'requesting-department' => 'Department',
+            'receipt'               => 'Receipt',
+            'order-deadline'        => 'Order Deadline',
+            'source-document'       => 'Source Document',
+            'untaxed-amount'        => 'Untaxed Amount',
+            'total-amount'          => 'Total Amount',
+            'status'                => 'Status',
+            'billing-status'        => 'Billing Status',
+            'currency'              => 'Currency',
         ],
 
         'groups' => [
@@ -147,20 +160,20 @@ return [
         ],
 
         'filters' => [
-            'status'           => 'Status',
-            'vendor-reference' => 'Vendor Reference',
-            'reference'        => 'Reference',
-            'untaxed-amount'   => 'Untaxed Amount',
-            'total-amount'     => 'Total Amount',
-            'order-deadline'   => 'Order Deadline',
-            'vendor'           => 'Vendor',
-            'buyer'            => 'Buyer',
-            'company'          => 'Company',
-            'payment-term'     => 'Payment Term',
-            'incoterm'         => 'Incoterm',
-            'status'           => 'Status',
-            'created-at'       => 'Created At',
-            'updated-at'       => 'Updated At',
+            'status'                => 'Status',
+            'vendor-reference'      => 'Vendor Reference',
+            'reference'             => 'Reference',
+            'untaxed-amount'        => 'Untaxed Amount',
+            'total-amount'          => 'Total Amount',
+            'order-deadline'        => 'Order Deadline',
+            'vendor'                => 'Vendor',
+            'buyer'                 => 'Buyer',
+            'company'               => 'Company',
+            'requesting-department' => 'Department',
+            'payment-term'          => 'Payment Term',
+            'incoterm'              => 'Incoterm',
+            'created-at'            => 'Created At',
+            'updated-at'            => 'Updated At',
         ],
 
         'actions' => [
@@ -193,6 +206,13 @@ return [
                     ],
                 ],
             ],
+        ],
+    ],
+
+    'notifications' => [
+        'receipt-required' => [
+            'title' => 'Receipt required for purchase order',
+            'body'  => 'PO #{reference} — please upload the receipt',
         ],
     ],
 
@@ -255,14 +275,22 @@ return [
                 'title' => 'Additional Information',
 
                 'entries' => [
-                    'buyer'             => 'Buyer',
-                    'company'           => 'Company',
-                    'source-document'   => 'Source Document',
-                    'incoterm'          => 'Incoterm',
-                    'incoterm-tooltip'  => 'International Commercial Terms (Incoterms) are a set of standardized trade terms used in global transactions to define responsibilities between buyers and sellers.',
-                    'incoterm-location' => 'Incoterm Location',
-                    'payment-term'      => 'Payment Term',
-                    'fiscal-position'   => 'Fiscal Position',
+                    'buyer'                  => 'Buyer',
+                    'company'                => 'Company',
+                    'requesting-department'  => 'Requesting Department',
+                    'beneficiary-department' => 'Beneficiary Department',
+                    'linked-project'         => 'Linked Project',
+                    'linked-meeting'         => 'Linked Meeting',
+                    'source-document'        => 'Source Document',
+                    'incoterm'               => 'Incoterm',
+                    'incoterm-tooltip'       => 'International Commercial Terms (Incoterms) are a set of standardized trade terms used in global transactions to define responsibilities between buyers and sellers.',
+                    'incoterm-location'      => 'Incoterm Location',
+                    'payment-term'           => 'Payment Term',
+                    'fiscal-position'        => 'Fiscal Position',
+                    'receipt'                => 'Receipt',
+                    'receipt-uploaded'       => 'Receipt uploaded ✓',
+                    'receipt-missing'        => 'Receipt required',
+                    'receipt-uploaded-at'    => 'Uploaded At',
                 ],
             ],
 

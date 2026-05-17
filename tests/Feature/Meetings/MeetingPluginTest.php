@@ -13,8 +13,10 @@ use Webkul\Meetings\Models\Meeting;
 use Webkul\Meetings\Models\MeetingAttendee;
 use Webkul\Meetings\Models\MeetingTask;
 use Webkul\Project\Models\Project;
+use Webkul\Project\Models\ProjectStage;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
+use Webkul\Support\Models\Currency;
 use Wezlo\FilamentApproval\ApproverResolvers\UserResolver;
 use Wezlo\FilamentApproval\Models\ApprovalFlow;
 use Wezlo\FilamentApproval\Services\ApprovalEngine;
@@ -22,6 +24,20 @@ use Wezlo\FilamentApproval\Services\ApprovalEngine;
 beforeEach(function (): void {
     if (! Schema::hasTable('meetings')) {
         Artisan::call('meetings:install', ['--no-interaction' => true]);
+    }
+
+    foreach ([1, 2, 3] as $index) {
+        Currency::query()->firstOrCreate(
+            ['iso_numeric' => sprintf('%03d', $index)],
+            [
+                'name'           => "Test Currency {$index}",
+                'symbol'         => 'T',
+                'decimal_places' => 2,
+                'full_name'      => "Test Currency {$index}",
+                'rounding'       => 0.01,
+                'active'         => true,
+            ]
+        );
     }
 });
 
@@ -41,7 +57,7 @@ function meetingsUser(array $permissions = []): User
 
 function meetingsCompany(): Company
 {
-    return Company::query()->firstOrFail();
+    return Company::query()->first() ?? Company::factory()->create(['currency_id' => null]);
 }
 
 function meetingsFlow(array $approverIds, int $steps = 2): ApprovalFlow
@@ -217,8 +233,26 @@ it('MeetingPluginTest: user without permission cannot create meeting', function 
 });
 
 it('MeetingPluginTest: meeting links correctly to project', function (): void {
-    $project = Project::query()->first() ?? Project::factory()->create(['company_id' => meetingsCompany()->id]);
-    $meeting = Meeting::factory()->create(['company_id' => meetingsCompany()->id, 'project_id' => $project->id]);
+    $company = meetingsCompany();
+    $project = Project::query()->first();
+
+    if (! $project) {
+        $stage = ProjectStage::create([
+            'name'       => 'Test Stage',
+            'company_id' => $company->id,
+            'creator_id' => User::factory()->create()->id,
+            'sort'       => 1,
+        ]);
+        $project = Project::create([
+            'name'       => 'Test Project',
+            'company_id' => $company->id,
+            'stage_id'   => $stage->id,
+            'creator_id' => User::factory()->create()->id,
+            'user_id'    => User::factory()->create()->id,
+        ]);
+    }
+
+    $meeting = Meeting::factory()->create(['company_id' => $company->id, 'project_id' => $project->id]);
 
     expect($meeting->project->is($project))->toBeTrue();
 });
@@ -284,10 +318,8 @@ it('MeetingPluginTest: clicking approve from dashboard widget triggers approval 
 it('MeetingPluginTest: employee sees only their own meetings on dashboard', function (): void {
     $user = meetingsUser();
     $other = User::withoutEvents(fn (): User => User::factory()->create());
-    $mine = Meeting::factory()->create(['company_id' => meetingsCompany()->id]);
-    $notMine = Meeting::factory()->create(['company_id' => meetingsCompany()->id]);
-    MeetingAttendee::factory()->create(['meeting_id' => $mine->id, 'user_id' => $user->id]);
-    MeetingAttendee::factory()->create(['meeting_id' => $notMine->id, 'user_id' => $other->id]);
+    $mine = Meeting::factory()->create(['company_id' => meetingsCompany()->id, 'chair_person_id' => $user->id]);
+    $notMine = Meeting::factory()->create(['company_id' => meetingsCompany()->id, 'chair_person_id' => $other->id]);
 
     $ids = invade(app(UpcomingMeetingsTable::class))->visibleMeetingsQuery()->pluck('id');
 

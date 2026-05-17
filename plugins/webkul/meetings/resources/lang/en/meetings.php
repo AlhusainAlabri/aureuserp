@@ -108,6 +108,7 @@ return [
         'mark_complete'     => 'Mark complete',
         'sign'              => 'Register signature',
         'mark_all_attended' => 'Mark all attended',
+        'print'             => 'Print',
         'approve'           => 'Approve',
         'reject'            => 'Reject',
     ],

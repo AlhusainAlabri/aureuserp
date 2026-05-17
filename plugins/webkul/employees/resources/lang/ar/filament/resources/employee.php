@@ -17,16 +17,22 @@ return [
     'form' => [
         'sections' => [
             'fields' => [
-                'name'          => 'الاسم',
-                'job-title'     => 'المسمى الوظيفي',
-                'work-email'    => 'البريد الإلكتروني للعمل',
-                'work-phone'    => 'هاتف العمل',
-                'department'    => 'القسم',
-                'work-mobile'   => 'جوال العمل',
-                'job-position'  => 'المنصب الوظيفي',
-                'manager'       => 'المدير',
-                'coach'         => 'المدرب',
-                'employee-tags' => 'وسوم الموظف',
+                'name'            => 'الاسم',
+                'job-title'       => 'المسمى الوظيفي',
+                'work-email'      => 'البريد الإلكتروني للعمل',
+                'work-phone'      => 'هاتف العمل',
+                'department'      => 'القسم',
+                'work-mobile'     => 'جوال العمل',
+                'job-position'    => 'المنصب الوظيفي',
+                'manager'         => 'المدير',
+                'coach'           => 'المدرب',
+                'employee-tags'   => 'وسوم الموظف',
+                'membership-type' => 'نوع العضوية',
+                'employee'        => 'موظف',
+                'collaborator'    => 'متعاون',
+                'volunteer'       => 'متطوع',
+                'civil-id'        => 'الرقم المدني',
+                'civil-id-expiry' => 'انتهاء الرقم المدني',
             ],
         ],
 
@@ -396,6 +402,107 @@ return [
                     'badge-id'                       => 'رقم البطاقة',
                     'pin'                            => 'رمز PIN',
                 ],
+            ],
+        ],
+    ],
+
+    'relation-manager/warnings' => [
+        'title' => 'الإنذارات',
+
+        'form' => [
+            'fields' => [
+                'warning-type'             => 'نوع الإنذار',
+                'warning-type-placeholder' => 'اختر نوع الإنذار',
+                'subject'                  => 'الموضوع',
+                'description'              => 'الوصف',
+                'issued-at'                => 'تاريخ الإصدار',
+                'effective-date'           => 'تاريخ السريان',
+                'expiry-date'              => 'تاريخ الانتهاء',
+                'is-acknowledged'          => 'تم الاعتراف',
+                'employee'                 => 'الموظف',
+            ],
+        ],
+
+        'table' => [
+            'columns' => [
+                'warning-type'     => 'نوع الإنذار',
+                'subject'          => 'الموضوع',
+                'issued-at'        => 'تاريخ الإصدار',
+                'effective-date'   => 'تاريخ السريان',
+                'expiry-date'      => 'تاريخ الانتهاء',
+                'is-acknowledged'  => 'تم الاعتراف',
+                'acknowledged-by'  => 'معترف من قبل',
+            ],
+            'header-actions' => [
+                'add-warning' => 'إضافة إنذار',
+            ],
+            'actions' => [
+                'send'              => 'إرسال بريد',
+                'send-notification' => [
+                    'title' => 'تم إرسال البريد',
+                    'body'  => 'تم إرسال الإنذار إلى الموظف.',
+                ],
+                'create-notification' => [
+                    'title' => 'تم إنشاء الإنذار',
+                    'body'  => 'تم إنشاء الإنذار بنجاح.',
+                ],
+                'edit-notification' => [
+                    'title' => 'تم تحديث الإنذار',
+                    'body'  => 'تم تحديث الإنذار بنجاح.',
+                ],
+                'delete-notification' => [
+                    'title' => 'تم حذف الإنذار',
+                    'body'  => 'تم حذف الإنذار بنجاح.',
+                ],
+            ],
+            'bulk-actions' => [
+                'delete-notification' => [
+                    'title' => 'تم حذف الإنذارات',
+                    'body'  => 'تم حذف الإنذارات بنجاح.',
+                ],
+            ],
+        ],
+
+        'mail' => [
+            'subject' => 'إنذار موظف: :subject',
+        ],
+    ],
+
+    'relation-manager/documents' => [
+        'title' => 'المستندات',
+
+        'form' => [
+            'fields' => [
+                'document-type'    => 'نوع المستند',
+                'document-name'    => 'اسم المستند',
+                'file'             => 'الملف',
+                'expiry-date'      => 'تاريخ الانتهاء',
+                'notes'            => 'ملاحظات',
+                'id-card'          => 'بطاقة الهوية',
+                'passport'         => 'جواز السفر',
+                'residence-permit' => 'تصريح الإقامة',
+                'contract'         => 'عقد',
+                'certificate'      => 'شهادة',
+                'other'            => 'أخرى',
+            ],
+        ],
+
+        'table' => [
+            'columns' => [
+                'document-type' => 'نوع المستند',
+                'document-name' => 'اسم المستند',
+                'expiry-date'   => 'تاريخ الانتهاء',
+                'notes'         => 'ملاحظات',
+            ],
+            'actions' => [
+                'download' => 'تحميل',
+            ],
+        ],
+
+        'notifications' => [
+            'expiring-soon' => [
+                'title' => 'مستند على وشك الانتهاء',
+                'body'  => ':document_name الخاص بـ :employee_name ينتهي بتاريخ :expiry_date',
             ],
         ],
     ],

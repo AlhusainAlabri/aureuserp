@@ -89,7 +89,7 @@ class EmployeeFactory extends Factory
             'work_permit_expiration_date'    => fake()->date(),
             'departure_date'                 => fake()->optional()->date(),
             'departure_description'          => fake()->optional()->text,
-            'employee_properties'            => fake()->optional()->json,
+            'employee_properties'            => fake()->optional() ? ['notes' => fake()->text(100)] : null,
             'additional_note'                => fake()->optional()->text,
             'notes'                          => fake()->optional()->text,
             'is_active'                      => fake()->boolean(),

@@ -37,6 +37,7 @@ use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint;
 use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint\Operators\IsRelatedToOperator;
 use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
 use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,12 +50,15 @@ use Webkul\Account\Facades\Tax as TaxFacade;
 use Webkul\Account\Filament\Resources\IncotermResource;
 use Webkul\Account\Models\Partner;
 use Webkul\Chatter\Filament\Actions\ActivityTableAction;
+use Webkul\Employee\Models\Department;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
 use Webkul\Field\Filament\Infolists\Components\ProgressStepper as InfolistProgressStepper;
 use Webkul\Field\Filament\Traits\HasCustomFields;
+use Webkul\Meetings\Models\Meeting;
 use Webkul\PluginManager\Package;
 use Webkul\Product\Enums\ProductType;
 use Webkul\Product\Models\Packaging;
+use Webkul\Projects\Models\Project;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Enums\QtyReceivedMethod;
 use Webkul\Purchase\Enums\RequisitionState;
@@ -126,6 +130,57 @@ class OrderResource extends Resource
                     })
                     ->default(OrderState::DRAFT)
                     ->disabled(),
+                Section::make(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.title'))
+                    ->schema([
+                        Group::make()
+                            ->schema([
+                                Select::make('requesting_department_id')
+                                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.fields.requesting-department'))
+                                    ->options(Department::pluck('name', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable(),
+                                Select::make('beneficiary_department_id')
+                                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.fields.beneficiary-department'))
+                                    ->options(Department::pluck('name', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable(),
+                            ])
+                            ->columns(2),
+                        Group::make()
+                            ->schema([
+                                Select::make('project_id')
+                                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.fields.linked-project'))
+                                    ->options(function () {
+                                        if (class_exists(Project::class)) {
+                                            return Project::pluck('name', 'id');
+                                        }
+
+                                        return [];
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable()
+                                    ->visible(class_exists(Project::class)),
+                                Select::make('meeting_id')
+                                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.fields.linked-meeting'))
+                                    ->options(function () {
+                                        if (class_exists(Meeting::class)) {
+                                            return Meeting::pluck('title', 'id');
+                                        }
+
+                                        return [];
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable()
+                                    ->visible(class_exists(Meeting::class)),
+                            ])
+                            ->columns(2),
+                    ])
+                    ->columns(2),
+
                 Section::make(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.general.title'))
                     ->schema([
                         Group::make()
@@ -356,6 +411,19 @@ class OrderResource extends Resource
                     ->sortable()
                     ->placeholder('—')
                     ->toggleable(),
+                TextColumn::make('requestingDepartment.name')
+                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.table.columns.requesting-department'))
+                    ->searchable()
+                    ->placeholder('—')
+                    ->toggleable(),
+                IconColumn::make('receipt_uploaded')
+                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.table.columns.receipt'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->toggleable(),
                 TextColumn::make('ordered_at')
                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.table.columns.order-deadline'))
                     ->sortable()
@@ -404,6 +472,11 @@ class OrderResource extends Resource
                     ->collapsible(),
             ])
             ->filters([
+                SelectFilter::make('requesting_department_id')
+                    ->label(__('purchases::filament/admin/clusters/orders/resources/order.table.filters.requesting-department'))
+                    ->options(Department::pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
                 QueryBuilder::make()
                     ->constraints(collect(static::mergeCustomTableQueryBuilderConstraints([
                         SelectConstraint::make('state')
@@ -764,6 +837,12 @@ class OrderResource extends Resource
                                             TextEntry::make('company.name')
                                                 ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.company'))
                                                 ->placeholder('—'),
+                                            TextEntry::make('requestingDepartment.name')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.requesting-department'))
+                                                ->placeholder('—'),
+                                            TextEntry::make('beneficiaryDepartment.name')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.beneficiary-department'))
+                                                ->placeholder('—'),
                                             TextEntry::make('reference')
                                                 ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.source-document'))
                                                 ->placeholder('—'),
@@ -772,12 +851,31 @@ class OrderResource extends Resource
                                                 ->icon('heroicon-o-question-mark-circle')
                                                 ->placeholder('—')
                                                 ->tooltip(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.incoterm-tooltip')),
+                                            TextEntry::make('meeting.title')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.linked-meeting'))
+                                                ->placeholder('—')
+                                                ->visible(class_exists(Meeting::class)),
+                                            TextEntry::make('project.name')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.linked-project'))
+                                                ->placeholder('—')
+                                                ->visible(class_exists(Project::class)),
                                         ]),
 
                                         Group::make([
                                             TextEntry::make('paymentTerm.name')
                                                 ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.payment-term'))
                                                 ->placeholder('—'),
+                                            TextEntry::make('receipt_uploaded')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.receipt'))
+                                                ->placeholder('—')
+                                                ->badge()
+                                                ->formatStateUsing(fn (bool $state): string => $state ? __('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.receipt-uploaded') : __('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.receipt-missing'))
+                                                ->color(fn (bool $state): string => $state ? 'success' : 'danger'),
+                                            TextEntry::make('receipt_uploaded_at')
+                                                ->label(__('purchases::filament/admin/clusters/orders/resources/order.infolist.tabs.additional.entries.receipt-uploaded-at'))
+                                                ->dateTime()
+                                                ->placeholder('—')
+                                                ->visible(fn ($record): bool => $record->receipt_uploaded),
                                         ]),
                                     ]),
                             ]),

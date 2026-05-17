@@ -71,8 +71,10 @@ use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ListEmployees;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageResume;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageSkill;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ViewEmployee;
+use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\DocumentsRelationManager;
 use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\ResumeRelationManager;
 use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\SkillsRelationManager;
+use Webkul\Employee\Filament\Resources\EmployeeResource\RelationManagers\WarningsRelationManager;
 use Webkul\Employee\Models\Employee;
 use Webkul\Field\Filament\Traits\HasCustomFields;
 use Webkul\Meetings\Filament\Resources\EmployeeMeetingsRelationManager;
@@ -241,6 +243,23 @@ class EmployeeResource extends Resource
                                     ->preload()
                                     ->relationship('coach', 'name')
                                     ->label(__('employees::filament/resources/employee.form.sections.fields.coach')),
+                                Select::make('membership_type')
+                                    ->label(__('employees::filament/resources/employee.form.sections.fields.membership-type'))
+                                    ->options([
+                                        'employee'      => __('employees::filament/resources/employee.form.sections.fields.employee'),
+                                        'collaborator'  => __('employees::filament/resources/employee.form.sections.fields.collaborator'),
+                                        'volunteer'     => __('employees::filament/resources/employee.form.sections.fields.volunteer'),
+                                    ])
+                                    ->default('employee')
+                                    ->required(),
+                                TextInput::make('civil_id')
+                                    ->label(__('employees::filament/resources/employee.form.sections.fields.civil-id'))
+                                    ->nullable(),
+                                DatePicker::make('civil_id_expiry')
+                                    ->label(__('employees::filament/resources/employee.form.sections.fields.civil-id-expiry'))
+                                    ->native(false)
+                                    ->suffixIcon('heroicon-o-calendar')
+                                    ->nullable(),
                             ])
                             ->columns(2),
 
@@ -1802,6 +1821,14 @@ class EmployeeResource extends Resource
                 EmployeeMeetingsRelationManager::class,
             ])
                 ->icon('heroicon-o-clipboard-document-list'),
+            RelationGroup::make(__('employees::filament/resources/employee.relation-manager/documents.title'), [
+                DocumentsRelationManager::class,
+            ])
+                ->icon('heroicon-o-document-text'),
+            RelationGroup::make(__('employees::filament/resources/employee.relation-manager/warnings.title'), [
+                WarningsRelationManager::class,
+            ])
+                ->icon('heroicon-o-exclamation-triangle'),
         ];
 
         return $relations;

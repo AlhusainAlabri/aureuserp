@@ -18,6 +18,7 @@ use Webkul\Inventory\InventoryServiceProvider;
 use Webkul\Invoice\InvoiceServiceProvider;
 use Webkul\Manufacturing\ManufacturingServiceProvider;
 use Webkul\Meetings\MeetingsServiceProvider;
+use Webkul\MyNotes\MyNotesServiceProvider;
 use Webkul\Partner\PartnerServiceProvider;
 use Webkul\Payment\PaymentServiceProvider;
 use Webkul\PluginManager\PluginManagerServiceProvider;
@@ -51,6 +52,7 @@ return [
     InvoiceServiceProvider::class,
     ManufacturingServiceProvider::class,
     MeetingsServiceProvider::class,
+    MyNotesServiceProvider::class,
     PartnerServiceProvider::class,
     PaymentServiceProvider::class,
     ProductServiceProvider::class,

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Webkul\Meetings\Database\Factories\MeetingTaskFactory;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 
 class MeetingTask extends Model
@@ -43,9 +44,14 @@ class MeetingTask extends Model
         return $this->belongsTo(Meeting::class);
     }
 
-    public function assignee(): BelongsTo
+    public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->assignedTo();
     }
 
     public function creator(): BelongsTo
@@ -53,11 +59,28 @@ class MeetingTask extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    public function purchaseRequest(): BelongsTo
+    {
+        return $this->belongsTo(PurchaseOrder::class, 'purchase_request_id');
+    }
+
+    public function scopePending(Builder $query): Builder
+    {
+        return $query->where('status', 'pending');
+    }
+
     public function scopeOverdue(Builder $query): Builder
     {
         return $query
             ->whereNotIn('status', ['completed', 'cancelled'])
             ->whereDate('due_date', '<', now()->toDateString());
+    }
+
+    public function isOverdue(): bool
+    {
+        return $this->due_date !== null
+            && $this->due_date->isPast()
+            && $this->status !== 'completed';
     }
 
     public function notifyAssignedUser(): void

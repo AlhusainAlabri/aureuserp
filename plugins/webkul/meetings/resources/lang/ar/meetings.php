@@ -108,6 +108,7 @@ return [
         'mark_complete'     => 'تحديد كمكتملة',
         'sign'              => 'تسجيل التوقيع',
         'mark_all_attended' => 'تحديد الكل كحاضر',
+        'print'             => 'طباعة',
         'approve'           => 'موافقة',
         'reject'            => 'رفض',
     ],

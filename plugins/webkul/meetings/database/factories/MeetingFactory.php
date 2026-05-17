@@ -24,7 +24,7 @@ class MeetingFactory extends Factory
             'location'         => fake()->city(),
             'meeting_date'     => now()->addDays(fake()->numberBetween(1, 20)),
             'duration_minutes' => fake()->randomElement([30, 45, 60, 90]),
-            'project_id'       => Project::query()->value('id') ?? Project::factory(),
+            'project_id'       => Project::query()->value('id') ?? null,
             'company_id'       => Company::query()->value('id') ?? Company::factory(),
             'chair_person_id'  => User::query()->value('id') ?? User::factory(),
             'secretary_id'     => null,

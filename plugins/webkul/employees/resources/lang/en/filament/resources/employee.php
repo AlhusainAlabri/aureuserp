@@ -17,16 +17,22 @@ return [
     'form' => [
         'sections' => [
             'fields' => [
-                'name'          => 'Name',
-                'job-title'     => 'Job Title',
-                'work-email'    => 'Work Email',
-                'work-phone'    => 'Work Phone',
-                'department'    => 'Department',
-                'work-mobile'   => 'Work Mobile',
-                'job-position'  => 'Job Position',
-                'manager'       => 'Manager',
-                'coach'         => 'Coach',
-                'employee-tags' => 'Employee Tags',
+                'name'            => 'Name',
+                'job-title'       => 'Job Title',
+                'work-email'      => 'Work Email',
+                'work-phone'      => 'Work Phone',
+                'department'      => 'Department',
+                'work-mobile'     => 'Work Mobile',
+                'job-position'    => 'Job Position',
+                'manager'         => 'Manager',
+                'coach'           => 'Coach',
+                'employee-tags'   => 'Employee Tags',
+                'membership-type' => 'Membership Type',
+                'employee'        => 'Employee',
+                'collaborator'    => 'Collaborator',
+                'volunteer'       => 'Volunteer',
+                'civil-id'        => 'Civil ID',
+                'civil-id-expiry' => 'Civil ID Expiry',
             ],
         ],
 
@@ -396,6 +402,107 @@ return [
                     'badge-id'                       => 'Badge ID',
                     'pin'                            => 'PIN',
                 ],
+            ],
+        ],
+    ],
+
+    'relation-manager/warnings' => [
+        'title' => 'Warnings',
+
+        'form' => [
+            'fields' => [
+                'warning-type'             => 'Warning Type',
+                'warning-type-placeholder' => 'Select a warning type',
+                'subject'                  => 'Subject',
+                'description'              => 'Description',
+                'issued-at'                => 'Issued At',
+                'effective-date'           => 'Effective Date',
+                'expiry-date'              => 'Expiry Date',
+                'is-acknowledged'          => 'Acknowledged',
+                'employee'                 => 'Employee',
+            ],
+        ],
+
+        'table' => [
+            'columns' => [
+                'warning-type'     => 'Warning Type',
+                'subject'          => 'Subject',
+                'issued-at'        => 'Issued At',
+                'effective-date'   => 'Effective Date',
+                'expiry-date'      => 'Expiry Date',
+                'is-acknowledged'  => 'Acknowledged',
+                'acknowledged-by'  => 'Acknowledged By',
+            ],
+            'header-actions' => [
+                'add-warning' => 'Add Warning',
+            ],
+            'actions' => [
+                'send'              => 'Send Email',
+                'send-notification' => [
+                    'title' => 'Email sent',
+                    'body'  => 'The warning has been emailed to the employee.',
+                ],
+                'create-notification' => [
+                    'title' => 'Warning created',
+                    'body'  => 'The warning has been created successfully.',
+                ],
+                'edit-notification' => [
+                    'title' => 'Warning updated',
+                    'body'  => 'The warning has been updated successfully.',
+                ],
+                'delete-notification' => [
+                    'title' => 'Warning deleted',
+                    'body'  => 'The warning has been deleted successfully.',
+                ],
+            ],
+            'bulk-actions' => [
+                'delete-notification' => [
+                    'title' => 'Warnings deleted',
+                    'body'  => 'The warnings have been deleted successfully.',
+                ],
+            ],
+        ],
+
+        'mail' => [
+            'subject' => 'Employee Warning: :subject',
+        ],
+    ],
+
+    'relation-manager/documents' => [
+        'title' => 'Documents',
+
+        'form' => [
+            'fields' => [
+                'document-type'    => 'Document Type',
+                'document-name'    => 'Document Name',
+                'file'             => 'File',
+                'expiry-date'      => 'Expiry Date',
+                'notes'            => 'Notes',
+                'id-card'          => 'ID Card',
+                'passport'         => 'Passport',
+                'residence-permit' => 'Residence Permit',
+                'contract'         => 'Contract',
+                'certificate'      => 'Certificate',
+                'other'            => 'Other',
+            ],
+        ],
+
+        'table' => [
+            'columns' => [
+                'document-type' => 'Document Type',
+                'document-name' => 'Document Name',
+                'expiry-date'   => 'Expiry Date',
+                'notes'         => 'Notes',
+            ],
+            'actions' => [
+                'download' => 'Download',
+            ],
+        ],
+
+        'notifications' => [
+            'expiring-soon' => [
+                'title' => 'Document expiring soon',
+                'body'  => ':document_name for :employee_name expires on :expiry_date',
             ],
         ],
     ],

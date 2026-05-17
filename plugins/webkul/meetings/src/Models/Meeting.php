@@ -102,6 +102,21 @@ class Meeting extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->whereIn('status', ['draft', 'pending_approval', 'approved', 'confirmed']);
+    }
+
+    public function scopeArchived(Builder $query): Builder
+    {
+        return $query->where('status', 'archived');
+    }
+
+    public function scopeByType(Builder $query, string $type): Builder
+    {
+        return $query->where('type', $type);
+    }
+
     public function scopeDraft(Builder $query): Builder
     {
         return $query->where('status', 'draft');
@@ -120,11 +135,6 @@ class Meeting extends Model
     public function scopeConfirmed(Builder $query): Builder
     {
         return $query->where('status', 'confirmed');
-    }
-
-    public function scopeArchived(Builder $query): Builder
-    {
-        return $query->where('status', 'archived');
     }
 
     public function canBeConfirmed(): bool
