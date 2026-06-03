@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Extensions\AccountResourceExtensions;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -177,6 +178,7 @@ class BillResource extends Resource
                                         TextInput::make('reference')
                                             ->label(__('accounts::filament/resources/bill.form.section.general.fields.bill-reference'))
                                             ->disabled(fn ($record) => in_array($record?->state, [MoveState::POSTED, MoveState::CANCEL])),
+                                        ...AccountResourceExtensions::projectSelectField(),
                                     ]),
 
                                 Group::make()

@@ -76,6 +76,16 @@ class WarehouseResource extends Resource
         return __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

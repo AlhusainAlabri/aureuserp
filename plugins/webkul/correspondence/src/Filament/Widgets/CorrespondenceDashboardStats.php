@@ -10,7 +10,7 @@ class CorrespondenceDashboardStats extends BaseWidget
 {
     use HasCorrespondenceVisibility;
 
-    protected ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = null;
 
     protected function getColumns(): int
     {

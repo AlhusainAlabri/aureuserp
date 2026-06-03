@@ -7,11 +7,19 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
+use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
 use Webkul\Support\Models\ActivityPlan;
 
 class ViewEmployee extends ViewRecord
 {
+    use HasEmployeeRecordNavigationTabs;
+
     protected static string $resource = EmployeeResource::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return __('employees::filament/resources/employee/pages/view-employee.navigation.title');
+    }
 
     protected function getHeaderActions(): array
     {

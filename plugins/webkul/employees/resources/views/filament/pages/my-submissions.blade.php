@@ -79,7 +79,7 @@
                                         <x-heroicon-o-chat-bubble-left-right class="w-4 h-4" />
                                         <span>{{ $submission->replies_count }}</span>
                                     @endif
-                                    <x-heroicon-o-chevron-right class="w-4 h-4 ml-2" />
+                                    <x-heroicon-o-chevron-right class="w-4 h-4 ms-2 rtl:rotate-180" />
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach ($submission->attachments as $attachment)
                                 <a
-                                    href="{{ Storage::disk('private')->url($attachment) }}"
+                                    href="{{ Storage::disk('local')->url($attachment) }}"
                                     target="_blank"
                                     class="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200"
                                 >

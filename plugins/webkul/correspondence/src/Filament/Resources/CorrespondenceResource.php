@@ -3,6 +3,7 @@
 namespace Webkul\Correspondence\Filament\Resources;
 
 use App\Filament\Actions\ExportCorrespondencePdfAction;
+use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -36,15 +37,18 @@ use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\ListCo
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\ViewCorrespondence;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\RelationManagers\CorrespondenceAttachmentRelationManager;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\RelationManagers\CorrespondenceFollowerRelationManager;
+use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\RelationManagers\CorrespondenceTasksRelationManager;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\RelationManagers\CorrespondenceThreadRelationManager;
 use Webkul\Correspondence\Models\Correspondence;
 use Webkul\Correspondence\Models\Department;
+use Webkul\Correspondence\Services\CorrespondenceAttachmentService;
+use Webkul\Correspondence\Services\CorrespondenceTaskService;
+use Webkul\Correspondence\Services\CorrespondenceVisibilityService;
 use Webkul\Meetings\Models\Meeting;
 use Webkul\Project\Models\Project;
 use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class CorrespondenceResource extends Resource
@@ -74,6 +78,11 @@ class CorrespondenceResource extends Resource
     public static function getModelLabel(): string
     {
         return __('correspondence::correspondence.correspondence');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('correspondence::correspondence.correspondences');
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -187,7 +196,9 @@ class CorrespondenceResource extends Resource
                             ->label(__('correspondence::correspondence.attachments'))
                             ->multiple()
                             ->disk('private')
-                            ->directory(fn () => 'correspondence/'.now()->year)
+                            ->directory(fn (): string => 'correspondence/'.now()->year)
+                            ->visibility('private')
+                            ->acceptedFileTypes(CorrespondenceAttachmentService::acceptedMimeTypes())
                             ->dehydrated(false),
                     ]),
             ]);
@@ -235,6 +246,11 @@ class CorrespondenceResource extends Resource
                     ->label(__('correspondence::correspondence.date'))
                     ->date()
                     ->sortable(),
+                TextColumn::make('received_at')
+                    ->label(__('correspondence::correspondence.received_at'))
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('due_date')
                     ->label(__('correspondence::correspondence.due_date'))
                     ->date()
@@ -260,6 +276,24 @@ class CorrespondenceResource extends Resource
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when($data['from'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '>=', $date))
                         ->when($data['until'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('created_at', '<=', $date))),
+                Filter::make('received_date_range')
+                    ->label(__('correspondence::correspondence.received_at'))
+                    ->schema([
+                        DatePicker::make('received_from')->label(__('correspondence::correspondence.filters.received_from')),
+                        DatePicker::make('received_until')->label(__('correspondence::correspondence.filters.received_until')),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when($data['received_from'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('received_at', '>=', $date))
+                        ->when($data['received_until'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('received_at', '<=', $date))),
+                Filter::make('due_date_range')
+                    ->label(__('correspondence::correspondence.due_date'))
+                    ->schema([
+                        DatePicker::make('due_from')->label(__('correspondence::correspondence.filters.due_from')),
+                        DatePicker::make('due_until')->label(__('correspondence::correspondence.filters.due_until')),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when($data['due_from'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('due_date', '>=', $date))
+                        ->when($data['due_until'] ?? null, fn (Builder $query, string $date): Builder => $query->whereDate('due_date', '<=', $date))),
                 Filter::make('overdue')->label(__('correspondence::correspondence.overdue'))->query(fn (Builder $query): Builder => $query->overdue()),
                 Filter::make('has_replies')->label(__('correspondence::correspondence.thread'))->query(fn (Builder $query): Builder => $query->has('replies')),
             ])
@@ -275,6 +309,12 @@ class CorrespondenceResource extends Resource
                     ->icon('heroicon-o-archive-box')
                     ->visible(fn (Correspondence $record): bool => auth()->user()?->can('archive', $record) ?? false)
                     ->action(fn (Correspondence $record): bool => $record->update(['status' => 'archived'])),
+                Action::make('unarchive')
+                    ->label(__('correspondence::correspondence.actions.unarchive'))
+                    ->icon('heroicon-o-archive-box-arrow-down')
+                    ->visible(fn (Correspondence $record): bool => $record->status === 'archived'
+                        && (auth()->user()?->can('archive', $record) ?? false))
+                    ->action(fn (Correspondence $record): bool => $record->unarchive()),
                 ExportCorrespondencePdfAction::make(),
                 DeleteAction::make(),
             ])
@@ -307,7 +347,7 @@ class CorrespondenceResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
+        $relations = [
             RelationGroup::make(__('correspondence::correspondence.relations.approvals'), [
                 ApprovalsRelationManager::class,
             ]),
@@ -317,10 +357,19 @@ class CorrespondenceResource extends Resource
             RelationGroup::make(__('correspondence::correspondence.attachments'), [
                 CorrespondenceAttachmentRelationManager::class,
             ]),
-            RelationGroup::make(__('correspondence::correspondence.followers'), [
-                CorrespondenceFollowerRelationManager::class,
-            ]),
         ];
+
+        if (CorrespondenceTaskService::isAvailable()) {
+            $relations[] = RelationGroup::make(__('correspondence::correspondence.tasks.navigation'), [
+                CorrespondenceTasksRelationManager::class,
+            ]);
+        }
+
+        $relations[] = RelationGroup::make(__('correspondence::correspondence.followers'), [
+            CorrespondenceFollowerRelationManager::class,
+        ]);
+
+        return $relations;
     }
 
     public static function getPages(): array
@@ -380,14 +429,6 @@ class CorrespondenceResource extends Resource
             return $query;
         }
 
-        $departmentId = $user->employee?->department_id;
-
-        return $query->where(function (Builder $query) use ($user, $departmentId): void {
-            $query->where('creator_id', $user->id)
-                ->orWhere('to_user_id', $user->id)
-                ->when($departmentId, fn (Builder $query): Builder => $query
-                    ->orWhere('from_department_id', $departmentId)
-                    ->orWhere('to_department_id', $departmentId));
-        });
+        return CorrespondenceVisibilityService::applyDepartmentScope($query, $user);
     }
 }

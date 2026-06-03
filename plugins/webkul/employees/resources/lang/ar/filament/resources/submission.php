@@ -2,8 +2,14 @@
 
 return [
     'navigation' => [
-        'title' => 'المراسلات',
-        'group' => 'الموارد البشرية',
+        'title'      => 'الطلبات الداخلية',
+        'group'      => 'الموارد البشرية',
+        'breadcrumb' => 'القائمة',
+    ],
+
+    'empty' => [
+        'heading'     => 'لا توجد طلبات',
+        'description' => 'لم يتم استلام أي طلبات من الموظفين بعد.',
     ],
 
     'global-search' => [
@@ -62,19 +68,19 @@ return [
         'actions' => [
             'delete' => [
                 'notification' => [
-                    'title' => 'تم حذف المراسلة',
-                    'body'  => 'تم حذف المراسلة بنجاح.',
+                    'title' => 'تم حذف الطلب',
+                    'body'  => 'تم حذف الطلب بنجاح.',
                 ],
             ],
         ],
         'bulk-actions' => [
             'mark-under-review' => 'وضع قيد المراجعة',
-            'mark-resolved'     => 'وضع محلول',
+            'mark-resolved'     => 'تحديد كمحلول',
             'mark-closed'       => 'إغلاق',
             'delete'            => [
                 'notification' => [
-                    'title' => 'تم حذف المراسلات',
-                    'body'  => 'تم حذف المراسلات بنجاح.',
+                    'title' => 'تم حذف الطلبات',
+                    'body'  => 'تم حذف الطلبات بنجاح.',
                 ],
             ],
         ],
@@ -90,7 +96,7 @@ return [
     'infolist' => [
         'sections' => [
             'details' => [
-                'title'   => 'تفاصيل المراسلة',
+                'title'   => 'تفاصيل الطلب',
                 'entries' => [
                     'ticket-number' => 'رقم الطلب',
                     'type'          => 'النوع',
@@ -113,17 +119,17 @@ return [
                 'set-priority'     => 'تعيين الأولوية',
                 'delete'           => 'حذف',
                 'mark-under-review'=> 'وضع قيد المراجعة',
-                'mark-resolved'    => 'وضع محلول',
+                'mark-resolved'    => 'تحديد كمحلول',
                 'close-ticket'     => 'إغلاق الطلب',
             ],
             'notifications' => [
                 'status-updated' => [
                     'title' => 'تم تحديث الحالة',
-                    'body'  => 'تم تحديث حالة المراسلة.',
+                    'body'  => 'تم تحديث حالة الطلب.',
                 ],
                 'priority-updated' => [
                     'title' => 'تم تحديث الأولوية',
-                    'body'  => 'تم تحديث أولوية المراسلة.',
+                    'body'  => 'تم تحديث أولوية الطلب.',
                 ],
                 'reply-sent' => [
                     'title' => 'تم إرسال الرد',
@@ -131,7 +137,7 @@ return [
                 ],
             ],
             'sections' => [
-                'details'       => 'تفاصيل المراسلة',
+                'details'       => 'تفاصيل الطلب',
                 'replies'       => 'سجل الردود',
                 'info'          => 'المعلومات',
                 'timeline'      => 'الجدول الزمني',

@@ -49,16 +49,31 @@ class MeetingPolicy
 
     public function exportPdf(User $user, Meeting $meeting): bool
     {
-        return $user->can('export_pdf_meetings_meeting');
+        return in_array($meeting->status, ['approved', 'confirmed'], true)
+            && $user->can('export_pdf_meetings_meeting');
     }
 
     public function manageTasks(User $user, Meeting $meeting): bool
     {
-        return $user->can('manage_tasks_meetings_meeting');
+        return $meeting->status !== 'archived'
+            && $user->can('manage_tasks_meetings_meeting');
     }
 
     public function manageAttendees(User $user, Meeting $meeting): bool
     {
-        return $user->can('manage_attendees_meetings_meeting');
+        return $meeting->status !== 'archived'
+            && $user->can('manage_attendees_meetings_meeting');
+    }
+
+    public function manageAttachments(User $user, Meeting $meeting): bool
+    {
+        return $meeting->status !== 'archived'
+            && $user->can('manage_attachments_meetings_meeting');
+    }
+
+    public function updateStatus(User $user, Meeting $meeting): bool
+    {
+        return $meeting->status !== 'archived'
+            && $user->can('update_meetings_meeting');
     }
 }

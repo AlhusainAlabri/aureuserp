@@ -2,13 +2,14 @@
 
 namespace Webkul\Purchase\Filament\Admin\Pages;
 
+use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -69,10 +70,7 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
                 ->schema([
                     Select::make('month')
                         ->label(__('purchases::filament/admin/pages/department-expense-report.form.fields.month'))
-                        ->options(array_combine(range(1, 12), [
-                            'January', 'February', 'March', 'April', 'May', 'June',
-                            'July', 'August', 'September', 'October', 'November', 'December',
-                        ]))
+                        ->options(PurchaseOrderResourceExtensions::departmentReportMonthOptions())
                         ->default(now()->month)
                         ->live(),
                     Select::make('year')
@@ -145,7 +143,7 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
                     ->numeric(),
                 TextColumn::make('total_amount')
                     ->label(__('purchases::filament/admin/pages/department-expense-report.table.columns.total-amount'))
-                    ->money('USD')
+                    ->formatStateUsing(fn ($state): string => 'ر.ع. '.number_format((float) $state, 3))
                     ->numeric(),
                 TextColumn::make('receipts_uploaded')
                     ->label(__('purchases::filament/admin/pages/department-expense-report.table.columns.receipts-uploaded'))

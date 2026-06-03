@@ -28,7 +28,7 @@ class ViewSubmission extends ViewRecord
                 ->label(__('employees::filament/resources/submission.pages.view-submission.actions.change-status'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('gray')
-                ->form([
+                ->schema([
                     Select::make('status')
                         ->label(__('employees::filament/resources/submission.form.fields.status'))
                         ->options([
@@ -60,7 +60,7 @@ class ViewSubmission extends ViewRecord
                 ->label(__('employees::filament/resources/submission.pages.view-submission.actions.set-priority'))
                 ->icon('heroicon-o-flag')
                 ->color('gray')
-                ->form([
+                ->schema([
                     Select::make('priority')
                         ->label(__('employees::filament/resources/submission.form.fields.priority'))
                         ->options([

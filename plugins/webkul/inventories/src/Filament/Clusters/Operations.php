@@ -19,4 +19,9 @@ class Operations extends Cluster
     {
         return __('inventories::filament/clusters/operations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return __('inventories::filament/clusters/operations.navigation.title');
+    }
 }

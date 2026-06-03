@@ -19,6 +19,10 @@ pest()
     ->use(DatabaseTransactions::class)
     ->in('Feature', '../plugins/*/*/tests/Feature');
 
+pest()
+    ->extend(TestCase::class)
+    ->in('Unit');
+
 /*
 |--------------------------------------------------------------------------
 | Database Transactions

@@ -6,8 +6,12 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
+use Throwable;
+use Webkul\MyNotes\Filament\Pages\MyNotesPage;
 use Webkul\MyNotes\Mail\NoteReminderMail;
 use Webkul\MyNotes\Models\Note;
+use Webkul\PluginManager\Package;
 
 class SendNoteReminders extends Command
 {
@@ -17,6 +21,12 @@ class SendNoteReminders extends Command
 
     public function handle(): int
     {
+        if (! Package::isPluginInstalled('my-notes') || ! Schema::hasTable('notes')) {
+            $this->components->info('My Notes is not installed. Reminder dispatch skipped.');
+
+            return self::SUCCESS;
+        }
+
         $notes = Note::withoutGlobalScopes()
             ->where('type', 'reminder')
             ->where('reminder_at', '<=', now())
@@ -31,11 +41,11 @@ class SendNoteReminders extends Command
             }
 
             $this->sendDatabaseNotification($note);
-            $this->sendEmail($note);
+            $emailQueued = $this->sendEmail($note);
 
             $note->update([
                 'reminder_sent'       => true,
-                'reminder_email_sent' => true,
+                'reminder_email_sent' => $emailQueued,
             ]);
         }
 
@@ -54,18 +64,26 @@ class SendNoteReminders extends Command
             ]))
             ->actions([
                 Action::make('view')
-                    ->label(__('my-notes::notes.view_all_notes'))
-                    ->url('/admin/my-notes'),
+                    ->label(__('my-notes::notes.actions.view'))
+                    ->url(MyNotesPage::reminderUrl()),
             ])
             ->sendToDatabase($note->user);
     }
 
-    protected function sendEmail(Note $note): void
+    protected function sendEmail(Note $note): bool
     {
         if (empty($note->user?->email)) {
-            return;
+            return false;
         }
 
-        Mail::to($note->user->email)->queue(new NoteReminderMail($note));
+        try {
+            Mail::to($note->user->email)->queue(new NoteReminderMail($note));
+
+            return true;
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return false;
+        }
     }
 }

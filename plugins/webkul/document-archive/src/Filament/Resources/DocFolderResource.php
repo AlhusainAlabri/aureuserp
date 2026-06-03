@@ -24,6 +24,7 @@ use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\CreateDocF
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\EditDocFolder;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\ListDocFolders;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\ViewDocFolder;
+use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\RelationManagers\FolderPermissionsRelationManager;
 use Webkul\DocumentArchive\Models\DocFolder;
 
 class DocFolderResource extends Resource
@@ -93,7 +94,17 @@ class DocFolderResource extends Resource
                     ->schema([
                         Toggle::make('is_private')
                             ->label(__('document-archive::document-archive.fields.is_private')),
-                    ]),
+                        TextInput::make('password')
+                            ->label(__('document-archive::document-archive.fields.password'))
+                            ->password()
+                            ->revealable()
+                            ->dehydrated(false),
+                        Toggle::make('remove_password')
+                            ->label(__('document-archive::document-archive.fields.remove_password'))
+                            ->dehydrated(false)
+                            ->visible(fn (string $operation): bool => $operation === 'edit'),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -153,6 +164,13 @@ class DocFolderResource extends Resource
                     ])
                     ->columns(2),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            FolderPermissionsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -15,7 +15,9 @@ class EditMeeting extends EditRecord
     {
         return [
             ChatterAction::make()
-                ->setResource(static::$resource),
+                ->setResource(static::$resource)
+                ->label(__('chatter::filament/resources/actions/chatter-action.title'))
+                ->hiddenLabel(false),
             ViewAction::make(),
         ];
     }

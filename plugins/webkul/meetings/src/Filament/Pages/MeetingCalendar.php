@@ -32,6 +32,16 @@ class MeetingCalendar extends BaseDashboard
         return __('admin.navigation.meetings');
     }
 
+    public function getTitle(): string
+    {
+        return __('meetings::meetings.navigation.calendar');
+    }
+
+    public function getSubheading(): ?string
+    {
+        return __('meetings::meetings.calendar.subheading');
+    }
+
     public function getWidgets(): array
     {
         return [

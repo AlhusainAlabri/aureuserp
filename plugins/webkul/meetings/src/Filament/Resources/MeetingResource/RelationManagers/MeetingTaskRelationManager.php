@@ -10,6 +10,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
@@ -19,12 +20,15 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\Meetings\Filament\Resources\MeetingResource\RelationManagers\Concerns\HasMeetingRelationCountBadge;
 use Webkul\Meetings\Models\MeetingTask;
 use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 
 class MeetingTaskRelationManager extends RelationManager
 {
+    use HasMeetingRelationCountBadge;
+
     protected static string $relationship = 'tasks';
 
     public static function getTitle($ownerRecord = null, ?string $pageClass = null): string
@@ -46,7 +50,9 @@ class MeetingTaskRelationManager extends RelationManager
                 Select::make('assigned_to')
                     ->label(__('meetings::meetings.fields.assigned_to'))
                     ->options(fn (): array => $this->assigneeOptions())
+                    ->helperText(__('meetings::meetings.form.assignee_hint'))
                     ->searchable()
+                    ->preload()
                     ->required(),
                 DatePicker::make('due_date')
                     ->label(__('meetings::meetings.fields.due_date'))
@@ -76,10 +82,8 @@ class MeetingTaskRelationManager extends RelationManager
             ->columns([
                 IconColumn::make('overdue')
                     ->label('')
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->color('danger')
-                    ->state(fn (MeetingTask $record): bool => $record->due_date && $record->due_date->isPast() && $record->status !== 'completed')
-                    ->visible(fn (MeetingTask $record): bool => $record->due_date && $record->due_date->isPast() && $record->status !== 'completed'),
+                    ->icon(fn (MeetingTask $record): ?string => $record->isOverdue() ? 'heroicon-o-exclamation-triangle' : null)
+                    ->color('danger'),
                 TextColumn::make('title')
                     ->label(__('meetings::meetings.fields.task_title'))
                     ->searchable()
@@ -124,23 +128,37 @@ class MeetingTaskRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
+                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false)
+                    ->authorize(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
             ])
             ->recordActions([
                 EditAction::make()
-                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
+                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false)
+                    ->authorize(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
                 Action::make('complete')
                     ->label(__('meetings::meetings.actions.mark_complete'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(fn (MeetingTask $record): bool => $record->status !== 'completed')
-                    ->action(fn (MeetingTask $record): bool => $record->update([
-                        'status'       => 'completed',
-                        'completed_at' => now(),
-                    ])),
+                    ->visible(fn (MeetingTask $record): bool => $record->status !== 'completed'
+                        && (auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false))
+                    ->authorize(fn (MeetingTask $record): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false)
+                    ->action(function (MeetingTask $record): void {
+                        $record->update([
+                            'status'       => 'completed',
+                            'completed_at' => now(),
+                        ]);
+
+                        Notification::make()
+                            ->success()
+                            ->title(__('meetings::meetings.notifications.task_completed.title'))
+                            ->send();
+                    }),
                 DeleteAction::make()
-                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
-            ]);
+                    ->visible(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false)
+                    ->authorize(fn (): bool => auth()->user()?->can('manageTasks', $this->getOwnerRecord()) ?? false),
+            ])
+            ->emptyStateHeading(__('meetings::meetings.empty.no_meeting_tasks'))
+            ->emptyStateDescription(__('meetings::meetings.empty.no_meeting_tasks_description'));
     }
 
     protected function assigneeOptions(): array

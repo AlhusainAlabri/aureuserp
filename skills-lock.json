@@ -18,6 +18,12 @@
       "sourceType": "github",
       "skillPath": "skills/aureuserp-test-case-builder/SKILL.md",
       "computedHash": "dc0746ea18f04f2cff2ee8091d9f090b22c376d8684a7af013a7ddebb8e089ec"
+    },
+    "olakunlevpn-filament-skills": {
+      "source": "olakunlevpn/olakunlevpn-filament-skills",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "3379bcbb3c487fa94c00045c5df80f34354dffe6715022024fc3c921071cab54"
     }
   }
 }

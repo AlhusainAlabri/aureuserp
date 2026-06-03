@@ -3,15 +3,21 @@
 return [
     'navigation' => [
         'title' => 'التجديد',
-        'group' => 'المشتريات',
+        'group' => 'التعديلات',
     ],
 
     'form' => [
         'fields' => [
+            'name'      => 'الاسم',
+            'warehouse' => 'المستودع',
         ],
     ],
 
     'table' => [
+        'empty-state' => [
+            'heading'     => 'لا توجد قواعد تجديد',
+            'description' => 'أضف قاعدة تجديد لضبط الحد الأدنى للمخزون وتلقي التنبيهات.',
+        ],
         'columns' => [
             'product'           => 'المنتج',
             'location'          => 'الموقع',

@@ -1,13 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
+use Webkul\DocumentArchive\Mail\DocumentShareMail;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Models\DocFileActivity;
 use Webkul\DocumentArchive\Models\DocFileVersion;
 use Webkul\DocumentArchive\Models\DocFolder;
 use Webkul\DocumentArchive\Models\DocFolderPermission;
 use Webkul\DocumentArchive\Models\DocShareLink;
+use Webkul\DocumentArchive\Services\DocumentAccessService;
+use Webkul\DocumentArchive\Services\DocumentShareService;
+use Webkul\DocumentArchive\Services\DocumentStorageService;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
@@ -79,7 +86,7 @@ it('soft deletes a doc file', function (): void {
 it('formats file size for humans', function (): void {
     $file = DocFile::factory()->make(['file_size' => 1024 * 1024]);
 
-    expect($file->getFileSizeForHumans())->toBe('1 MB');
+    expect($file->getFileSizeForHumans())->toBe(Number::fileSize(1024 * 1024));
 });
 
 it('detects pdf and image files', function (): void {
@@ -259,4 +266,94 @@ it('stores folder permissions for users and roles', function (): void {
     ]);
 
     expect($folder->permissions()->count())->toBe(2);
+});
+
+it('stores uploaded files on the private disk via the storage service', function (): void {
+    Storage::fake('private');
+
+    $folder = DocFolder::factory()->create([
+        'company_id' => archiveCompany()->id,
+        'creator_id' => archiveUser()->id,
+    ]);
+
+    $file = DocFile::factory()->create([
+        'folder_id'  => $folder->id,
+        'company_id' => $folder->company_id,
+        'creator_id' => $folder->creator_id,
+        'file_path'  => null,
+    ]);
+
+    $tempPath = 'documents/temp/sample.pdf';
+    Storage::disk('private')->put($tempPath, '%PDF-1.4 test content');
+
+    app(DocumentStorageService::class)->attachToFile($file, $tempPath);
+
+    $file->refresh();
+
+    expect($file->file_path)->toContain('documents/')
+        ->and($file->extension)->toBe('pdf')
+        ->and(Storage::disk('private')->exists($file->file_path))->toBeTrue()
+        ->and($file->versions()->count())->toBe(1);
+});
+
+it('normalizes legacy and structured document tags', function (): void {
+    $normalized = app(DocumentAccessService::class)->normalizeTags([
+        'draft',
+        ['name' => 'final', 'color' => '#ff0000'],
+    ]);
+
+    expect($normalized)->toHaveCount(2)
+        ->and($normalized[0]['name'])->toBe('draft')
+        ->and($normalized[1]['color'])->toBe('#ff0000');
+});
+
+it('returns tags with colors from structured tag data', function (): void {
+    $file = DocFile::factory()->make([
+        'tags' => [
+            ['name' => 'HR', 'color' => '#abc'],
+        ],
+    ]);
+
+    expect($file->getTagsWithColors()[0]['name'])->toBe('HR')
+        ->and($file->getTagsWithColors()[0]['color'])->toBe('#abc');
+});
+
+it('creates a share link and queues notification mail', function (): void {
+    Mail::fake();
+
+    $user = archiveUser();
+    test()->actingAs($user);
+
+    $file = DocFile::factory()->create([
+        'folder_id'  => DocFolder::factory()->create()->id,
+        'creator_id' => $user->id,
+    ]);
+
+    $link = app(DocumentShareService::class)->createLink($file, [
+        'shared_with_email' => 'recipient@example.com',
+        'view_once'         => true,
+    ]);
+
+    expect($link->view_once)->toBeTrue()
+        ->and($link->shared_with_email)->toBe('recipient@example.com');
+
+    Mail::assertQueued(DocumentShareMail::class);
+});
+
+it('blocks preview until the document password is unlocked', function (): void {
+    Storage::fake('private');
+
+    $file = DocFile::factory()->withPassword('secret')->create([
+        'file_path' => 'documents/test/doc.pdf',
+    ]);
+
+    Storage::disk('private')->put($file->file_path, 'content');
+
+    $this->get(route('document-archive.preview', ['file' => $file->id]))
+        ->assertOk()
+        ->assertSee(__('document-archive::document-archive.password.title'));
+
+    $this->post(route('document-archive.preview', ['file' => $file->id]), [
+        'password' => 'secret',
+    ])->assertRedirect(route('document-archive.preview', ['file' => $file->id]));
 });

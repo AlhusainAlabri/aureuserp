@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
+use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -130,6 +131,7 @@ class OrderResource extends Resource
                     })
                     ->default(OrderState::DRAFT)
                     ->disabled(),
+                ...PurchaseOrderResourceExtensions::requestDetailsFormSection(),
                 Section::make(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.title'))
                     ->schema([
                         Group::make()
@@ -139,6 +141,7 @@ class OrderResource extends Resource
                                     ->options(Department::pluck('name', 'id'))
                                     ->searchable()
                                     ->preload()
+                                    ->default(fn (): ?int => PurchaseOrderResourceExtensions::defaultRequestingDepartmentId())
                                     ->nullable(),
                                 Select::make('beneficiary_department_id')
                                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.additional-details.fields.beneficiary-department'))
@@ -199,7 +202,10 @@ class OrderResource extends Resource
                                         return str_contains($label, ' (Deleted)');
                                     })
                                     ->searchable()
-                                    ->required()
+                                    ->required(fn (Get $get): bool => PurchaseOrderResourceExtensions::requiresVendor($get('request_type')))
+                                    ->hint(fn (Get $get): ?string => PurchaseOrderResourceExtensions::isInternalRequest($get('request_type'))
+                                        ? __('purchases-extensions::request.fields.vendor_hint')
+                                        : null)
                                     ->preload()
                                     ->createOptionForm(fn (Schema $schema) => VendorResource::form($schema))
                                     ->afterStateUpdated(fn ($state, Set $set, Get $get) => static::handleVendorChange($state, $set, $get))
@@ -209,6 +215,8 @@ class OrderResource extends Resource
                                 TextInput::make('partner_reference')
                                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.general.fields.vendor-reference'))
                                     ->maxLength(255)
+                                    ->visible(fn (Get $get): bool => PurchaseOrderResourceExtensions::requiresVendor($get('request_type'))
+                                        || PurchaseOrderResourceExtensions::isInternalRequest($get('request_type')))
                                     ->hintIcon('heroicon-o-question-mark-circle', tooltip: __('purchases::filament/admin/clusters/orders/resources/order.form.sections.general.fields.vendor-reference-tooltip')),
                                 Select::make('requisition_id')
                                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.sections.general.fields.agreement'))
@@ -239,7 +247,8 @@ class OrderResource extends Resource
                                     ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
                                     ->searchable()
                                     ->preload()
-                                    ->visible(static::getOrderSettings()->enable_purchase_agreements)
+                                    ->visible(fn (Get $get): bool => static::getOrderSettings()->enable_purchase_agreements
+                                        && PurchaseOrderResourceExtensions::requiresVendor($get('request_type')))
                                     ->afterStateUpdated(fn ($state, Set $set, Get $get) => static::handleRequisitionChange($state, $set, $get))
                                     ->live(),
                                 Select::make('currency_id')
@@ -252,7 +261,9 @@ class OrderResource extends Resource
                                     ->required()
                                     ->searchable()
                                     ->preload()
-                                    ->default(Auth::user()->defaultCompany?->currency_id)
+                                    ->default(fn (Get $get): ?int => PurchaseOrderResourceExtensions::isInternalRequest($get('request_type'))
+                                        ? PurchaseOrderResourceExtensions::defaultOmrCurrencyId()
+                                        : Auth::user()->defaultCompany?->currency_id)
                                     ->disabled(fn ($record): bool => $record && ! in_array($record?->state, [OrderState::DRAFT, OrderState::SENT])),
                             ]),
 
@@ -287,7 +298,7 @@ class OrderResource extends Resource
                     ->schema([
                         Tab::make(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.products.title'))
                             ->schema([
-                                static::getProductRepeater(),
+                                ...PurchaseOrderResourceExtensions::productRepeaterFields(static::getProductRepeater()),
                                 Livewire::make(OrderSummary::class, function (Get $get, $livewire) {
                                     $totals = self::calculateOrderTotals($get, $livewire);
 
@@ -362,7 +373,8 @@ class OrderResource extends Resource
                         Tab::make(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.terms.title'))
                             ->schema([
                                 RichEditor::make('description')
-                                    ->hiddenLabel(),
+                                    ->hiddenLabel()
+                                    ->visible(fn (Get $get): bool => PurchaseOrderResourceExtensions::requiresVendor($get('request_type'))),
                             ]),
                     ]),
             ])
@@ -375,6 +387,7 @@ class OrderResource extends Resource
             ->reorderableColumns()
             ->columnManagerColumns(2)
             ->columns(static::mergeCustomTableColumns([
+                ...PurchaseOrderResourceExtensions::extraTableColumns(),
                 IconColumn::make('priority')
                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.table.columns.favorite'))
                     ->icon(fn (Order $record): string => $record->priority ? 'heroicon-s-star' : 'heroicon-o-star')

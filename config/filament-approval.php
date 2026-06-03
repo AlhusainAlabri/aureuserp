@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use Webkul\Security\Models\User;
 use Wezlo\FilamentApproval\ApproverResolvers\CallbackResolver;
 use Wezlo\FilamentApproval\ApproverResolvers\RoleResolver;
 use Wezlo\FilamentApproval\ApproverResolvers\UserResolver;

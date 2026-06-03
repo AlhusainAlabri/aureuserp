@@ -13,10 +13,10 @@ return [
                 'title' => 'Additional Details',
 
                 'fields' => [
-                    'requesting-department'  => 'Requesting Department / الدائرة مقدمة الطلب',
-                    'beneficiary-department' => 'Beneficiary Department / الدائرة المستفيدة',
-                    'linked-project'         => 'Linked Project / مشروع مرتبط',
-                    'linked-meeting'         => 'Linked Meeting / محضر مرتبط',
+                    'requesting-department'  => 'Requesting Department',
+                    'beneficiary-department' => 'Beneficiary Department',
+                    'linked-project'         => 'Linked Project',
+                    'linked-meeting'         => 'Linked Meeting',
                 ],
             ],
 

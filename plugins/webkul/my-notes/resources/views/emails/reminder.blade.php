@@ -5,7 +5,7 @@
 
 **{{ __('my-notes::notes.reminder_at') }}:** {{ $note->reminder_at?->format('d M Y h:i A') }}
 
-@component('mail::button', ['url' => url('/admin/my-notes')])
+@component('mail::button', ['url' => \Webkul\MyNotes\Filament\Pages\MyNotesPage::reminderUrl()])
 {{ __('my-notes::notes.view_all_notes') }}
 @endcomponent
 

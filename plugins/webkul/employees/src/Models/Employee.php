@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Webkul\Chatter\Traits\HasChatter;
 use Webkul\Chatter\Traits\HasLogActivity;
 use Webkul\Employee\Database\Factories\EmployeeFactory;
+use Webkul\Employee\Enums\DistanceUnit;
 use Webkul\Field\Traits\HasCustomFields;
 use Webkul\Meetings\Models\MeetingAttendee;
 use Webkul\Partner\Models\BankAccount;
@@ -35,6 +37,7 @@ class Employee extends Model
         'calendar_id',
         'department_id',
         'job_id',
+        'employment_type_id',
         'attendance_manager_id',
         'partner_id',
         'work_location_id',
@@ -210,7 +213,7 @@ class Employee extends Model
 
     public function employmentType(): BelongsTo
     {
-        return $this->belongsTo(EmploymentType::class, 'employee_type');
+        return $this->belongsTo(EmploymentType::class, 'employment_type_id');
     }
 
     public function categories()
@@ -258,9 +261,167 @@ class Employee extends Model
         return $this->belongsTo(Partner::class, 'address_id');
     }
 
+    /**
+     * @param  array<int, string>  $attributes
+     */
+    public function hasAnyFilledAttributes(array $attributes): bool
+    {
+        foreach ($attributes as $attribute) {
+            if (filled($this->getAttribute($attribute))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasFormattedHomeDistance(): bool
+    {
+        return filled($this->distance_home_work) && (float) $this->distance_home_work > 0;
+    }
+
+    public function getFormattedHomeDistanceAttribute(): ?string
+    {
+        if (! $this->hasFormattedHomeDistance()) {
+            return null;
+        }
+
+        $suffix = $this->distance_home_work_unit === DistanceUnit::METER->value ? 'm' : 'km';
+
+        return trim(number_format((float) $this->distance_home_work, 0).' '.$suffix);
+    }
+
+    public function getCivilIdExpiryColor(): ?string
+    {
+        if (! $this->civil_id_expiry) {
+            return null;
+        }
+
+        $days = (int) now()->diffInDays($this->civil_id_expiry, false);
+
+        if ($days < 0) {
+            return 'danger';
+        }
+
+        if ($days <= 30) {
+            return 'warning';
+        }
+
+        return 'success';
+    }
+
+    /**
+     * @return array<int, array{label: string, color: string}>
+     */
+    public function getListComplianceBadges(): array
+    {
+        $badges = [];
+
+        if (! $this->is_active) {
+            $badges[] = [
+                'label' => __('employees::filament/resources/employee.table.compliance-badges.inactive'),
+                'color' => 'gray',
+            ];
+        }
+
+        $expiredDocumentsCount = (int) ($this->expired_documents_count ?? 0);
+
+        if ($expiredDocumentsCount > 0) {
+            $badges[] = [
+                'label' => __('employees::filament/resources/employee.table.compliance-badges.expired-docs', [
+                    'count' => $expiredDocumentsCount,
+                ]),
+                'color' => 'danger',
+            ];
+        }
+
+        $expiringDocumentsCount = (int) ($this->expiring_documents_count ?? 0);
+
+        if ($expiringDocumentsCount > 0) {
+            $badges[] = [
+                'label' => __('employees::filament/resources/employee.table.compliance-badges.expiring-docs', [
+                    'count' => $expiringDocumentsCount,
+                ]),
+                'color' => 'warning',
+            ];
+        }
+
+        $activeWarningsCount = (int) ($this->active_warnings_count ?? 0);
+
+        if ($activeWarningsCount > 0) {
+            $badges[] = [
+                'label' => __('employees::filament/resources/employee.table.compliance-badges.active-warnings', [
+                    'count' => $activeWarningsCount,
+                ]),
+                'color' => 'danger',
+            ];
+        }
+
+        if ($this->civil_id_expiry && in_array($this->getCivilIdExpiryColor(), ['danger', 'warning'], true)) {
+            $badges[] = [
+                'label' => __('employees::filament/resources/employee.table.compliance-badges.civil-id'),
+                'color' => $this->getCivilIdExpiryColor(),
+            ];
+        }
+
+        return $badges;
+    }
+
+    public function scopeWithComplianceIssues(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query->where('is_active', false)
+                ->orWhere(function (Builder $query): void {
+                    $query->whereNotNull('civil_id_expiry')
+                        ->whereDate('civil_id_expiry', '<=', now()->addDays(30)->endOfDay());
+                })
+                ->orWhere(function (Builder $query): void {
+                    $query->whereNotNull('visa_expire')
+                        ->whereDate('visa_expire', '<=', now()->addDays(30)->endOfDay());
+                })
+                ->orWhere(function (Builder $query): void {
+                    $query->whereNotNull('work_permit_expiration_date')
+                        ->whereDate('work_permit_expiration_date', '<=', now()->addDays(30)->endOfDay());
+                })
+                ->orWhereHas('documents', fn (Builder $query): Builder => $query->expiringWithin())
+                ->orWhereHas('warnings', fn (Builder $query): Builder => $query->where('is_acknowledged', false));
+        });
+    }
+
+    public function scopeIncompleteProfile(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query): void {
+            $query->whereNull('department_id')
+                ->orWhereNull('parent_id')
+                ->orWhereNull('work_email')
+                ->orWhereNull('employment_type_id')
+                ->orWhereNull('job_title');
+        });
+    }
+
+    public function syncLegacyDistanceFields(): void
+    {
+        if (! filled($this->distance_home_work)) {
+            $this->km_home_work = 0;
+
+            return;
+        }
+
+        $this->km_home_work = match ($this->distance_home_work_unit) {
+            DistanceUnit::METER->value => (int) round(((float) $this->distance_home_work) / 1000),
+            default                    => (int) round((float) $this->distance_home_work),
+        };
+    }
+
     protected static function boot()
     {
         parent::boot();
+
+        static::saving(function (self $employee): void {
+            if ($employee->isDirty(['distance_home_work', 'distance_home_work_unit'])) {
+                $employee->syncLegacyDistanceFields();
+            }
+        });
 
         static::saved(function (self $employee) {
             $employee->creator_id ??= Auth::id();

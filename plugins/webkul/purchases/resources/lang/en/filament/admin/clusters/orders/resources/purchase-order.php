@@ -14,7 +14,7 @@ return [
     'infolist' => [
         'sections' => [
             'receipt' => [
-                'title' => 'Receipt / الفاتورة',
+                'title' => 'Receipt',
 
                 'entries' => [
                     'uploaded'    => 'Receipt uploaded ✓',

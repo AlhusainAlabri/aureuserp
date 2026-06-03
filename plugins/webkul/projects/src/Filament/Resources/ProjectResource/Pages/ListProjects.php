@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\ProjectResource\Pages;
 
+use App\Filament\Extensions\ProjectResourceExtensions;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +20,7 @@ class ListProjects extends ListRecords
     public function getPresetTableViews(): array
     {
         return [
+            ...ProjectResourceExtensions::presetTableViews(),
             'my_projects' => PresetView::make(__('projects::filament/resources/project/pages/list-projects.tabs.my-projects'))
                 ->icon('heroicon-s-user')
                 ->favorite()

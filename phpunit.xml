@@ -35,6 +35,27 @@
         <testsuite name="DocumentArchiveFeature">
             <directory>tests/Feature/Documents</directory>
         </testsuite>
+        <testsuite name="MyNotesFeature">
+            <directory>tests/Feature/MyNotes</directory>
+        </testsuite>
+        <testsuite name="EmployeesFeature">
+            <directory>tests/Feature/Employees</directory>
+        </testsuite>
+        <testsuite name="DashboardFeature">
+            <directory>tests/Feature/Dashboard</directory>
+        </testsuite>
+        <testsuite name="PayrollFeature">
+            <directory>tests/Feature/Payroll</directory>
+        </testsuite>
+        <testsuite name="HrExtensionsFeature">
+            <directory>tests/Feature/Hr</directory>
+        </testsuite>
+        <testsuite name="ProjectExtensionsFeature">
+            <directory>tests/Feature/Projects</directory>
+        </testsuite>
+        <testsuite name="ProjectExtensionsUnit">
+            <directory>tests/Unit/Projects</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
@@ -42,7 +63,9 @@
         </include>
     </source>
     <php>
+        <ini name="memory_limit" value="1024M"/>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_LOCALE" value="en"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>

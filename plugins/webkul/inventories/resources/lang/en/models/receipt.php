@@ -2,4 +2,5 @@
 
 return [
     'title'          => 'Receipt',
+    'plural'         => 'Receipts',
 ];

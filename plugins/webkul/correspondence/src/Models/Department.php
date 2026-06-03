@@ -19,7 +19,28 @@ class Department extends Model
         'code',
         'manager_id',
         'company_id',
+        'employees_department_id',
     ];
+
+    public function employeesDepartment(): BelongsTo
+    {
+        return $this->belongsTo(\Webkul\Employee\Models\Department::class, 'employees_department_id');
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public static function idsForEmployeeDepartment(?int $employeesDepartmentId): array
+    {
+        if (! $employeesDepartmentId) {
+            return [];
+        }
+
+        return static::query()
+            ->where('employees_department_id', $employeesDepartmentId)
+            ->pluck('id')
+            ->all();
+    }
 
     public function manager(): BelongsTo
     {

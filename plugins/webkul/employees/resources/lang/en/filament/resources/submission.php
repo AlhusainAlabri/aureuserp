@@ -2,8 +2,14 @@
 
 return [
     'navigation' => [
-        'title' => 'Submissions',
-        'group' => 'Human Resources',
+        'title'      => 'Submissions',
+        'group'      => 'Human Resources',
+        'breadcrumb' => 'List',
+    ],
+
+    'empty' => [
+        'heading'     => 'No submissions yet',
+        'description' => 'No employee submissions have been received yet.',
     ],
 
     'global-search' => [

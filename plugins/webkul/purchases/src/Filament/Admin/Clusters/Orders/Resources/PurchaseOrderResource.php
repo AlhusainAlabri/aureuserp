@@ -2,36 +2,35 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
+use App\Filament\Clusters\PurchaseOrdersCluster;
+use App\Filament\Infolists\ApprovalStatusSection;
+use App\Filament\Purchases\Pages\CreatePurchaseOrder;
+use App\Filament\Purchases\Pages\EditPurchaseOrder;
+use App\Filament\Purchases\Pages\ViewPurchaseOrder;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Purchase\Enums\OrderState;
-use Webkul\Purchase\Filament\Admin\Clusters\Orders;
-use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\CreatePurchaseOrder;
-use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\EditPurchaseOrder;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\ListPurchaseOrders;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\ManageBills;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\ManageReceipts;
-use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\ViewPurchaseOrder;
 use Webkul\Purchase\Models\PurchaseOrder;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class PurchaseOrderResource extends OrderResource
 {
     protected static ?string $model = PurchaseOrder::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentCheck;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-check';
 
     protected static bool $shouldRegisterNavigation = true;
 
@@ -41,9 +40,14 @@ class PurchaseOrderResource extends OrderResource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $cluster = Orders::class;
+    protected static ?string $cluster = PurchaseOrdersCluster::class;
 
     public static function getNavigationLabel(): string
+    {
+        return __('purchases::filament/admin/clusters/orders/resources/purchase-order.navigation.title');
+    }
+
+    public static function getPluralModelLabel(): string
     {
         return __('purchases::filament/admin/clusters/orders/resources/purchase-order.navigation.title');
     }
@@ -79,6 +83,23 @@ class PurchaseOrderResource extends OrderResource
         return $schema
             ->components([
                 ApprovalStatusSection::make(),
+                Section::make(__('purchases-extensions::request.payment.section_title'))
+                    ->icon('heroicon-o-banknotes')
+                    ->schema([
+                        TextEntry::make('amount_paid')
+                            ->label(__('purchases-extensions::request.payment.amount_paid'))
+                            ->formatStateUsing(fn (?string $state): string => 'ر.ع. '.number_format((float) ($state ?? 0), 3)),
+                        TextEntry::make('amount_remaining')
+                            ->label(__('purchases-extensions::request.payment.amount_remaining'))
+                            ->formatStateUsing(fn (?string $state): string => 'ر.ع. '.number_format((float) ($state ?? 0), 3))
+                            ->color(fn (?string $state): string => (float) ($state ?? 0) > 0 ? 'warning' : 'success'),
+                        TextEntry::make('payment_voucher_path')
+                            ->label(__('purchases-extensions::request.fields.payment_voucher'))
+                            ->placeholder('—')
+                            ->visible(fn ($record): bool => filled($record->payment_voucher_path)),
+                    ])
+                    ->columns(3)
+                    ->visible(fn ($record): bool => \Illuminate\Support\Facades\Schema::hasColumn('purchases_orders', 'amount_paid')),
                 Section::make(__('purchases::filament/admin/clusters/orders/resources/purchase-order.infolist.sections.receipt.title'))
                     ->icon('heroicon-o-document-text')
                     ->visible(fn ($record): bool => $record->isReceiptRequired())
@@ -115,7 +136,7 @@ class PurchaseOrderResource extends OrderResource
                                     ->icon('heroicon-o-arrow-up-tray')
                                     ->color('warning')
                                     ->visible(fn ($record): bool => ! $record->receipt_uploaded)
-                                    ->form([
+                                    ->schema([
                                         FileUpload::make('receipt_file')
                                             ->label(__('purchases::filament/admin/clusters/orders/resources/purchase-order.infolist.sections.receipt.form.fields.receipt-file'))
                                             ->disk('private')

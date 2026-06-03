@@ -5,10 +5,18 @@ namespace Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages;
 use Filament\Resources\Pages\CreateRecord;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Correspondence\Models\Correspondence;
+use Webkul\Correspondence\Services\CorrespondenceAttachmentService;
 
 class CreateCorrespondence extends CreateRecord
 {
     protected static string $resource = CorrespondenceResource::class;
+
+    protected function afterCreate(): void
+    {
+        $uploads = $this->form->getRawState()['uploads'] ?? [];
+
+        CorrespondenceAttachmentService::storeFromPaths($this->record, $uploads);
+    }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {

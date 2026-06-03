@@ -82,6 +82,16 @@ class DepartmentResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getModelLabel(): string
+    {
+        return __('employees::filament/resources/department.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('employees::filament/resources/department.title');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

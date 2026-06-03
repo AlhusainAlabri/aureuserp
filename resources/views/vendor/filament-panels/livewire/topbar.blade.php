@@ -1,5 +1,8 @@
 <div class="fi-topbar-ctn">
     @php
+        use App\Support\AdminNavigationMenu;
+        use App\Support\DashboardNavigationOrder;
+
         $navigation = filament()->getNavigation();
         $isRtl = __('filament-panels::layout.direction') === 'rtl';
         $isSidebarCollapsibleOnDesktop = filament()->isSidebarCollapsibleOnDesktop();
@@ -8,6 +11,12 @@
         $hasNavigation = filament()->hasNavigation();
         $hasTenancy = filament()->hasTenancy();
         $isAdminPanel = filament()->getCurrentPanel()->getId() === 'admin';
+        $primaryMenuItems = $isAdminPanel
+            ? AdminNavigationMenu::primaryMenuItems(
+                $navigation,
+                filament()->getCurrentPanel()->getNavigationGroups(),
+            )
+            : collect();
     @endphp
 
     <nav class="fi-topbar">
@@ -50,33 +59,23 @@
                         class="grid grid-cols-2 gap-2 overflow-y-auto p-4 md:grid-cols-3"
                         style="max-height: 80vh; grid-template-columns: repeat(3, minmax(0, 1fr));"
                     >
-                        @foreach ($navigation as $group)
-                            @php
-                                $groupLabel = $group->getLabel();
-                                $groupIcon = $group->getIcon();
-                                $itemUrl = $group->getItems()->first()?->getUrl();
-                            @endphp
-
-                            @if (! $groupLabel || ! $itemUrl || ! $groupIcon)
-                                @continue
-                            @endif
-
+                        @foreach ($primaryMenuItems as $menuItem)
                             <div
                                 @class([
                                     'fi-topbar-item',
-                                    'fi-active' => $group->isActive(),
+                                    'fi-active' => $menuItem['isActive'],
                                 ])
                             >
                                 <a
-                                    href="{{ $itemUrl }}"
+                                    href="{{ $menuItem['url'] }}"
                                     class="fi-topbar-item-btn flex flex-col items-center justify-center gap-2 whitespace-nowrap rounded-lg p-4 text-center text-sm font-medium"
                                 >
                                     <x-filament::icon
-                                        :icon="$groupIcon"
+                                        :icon="$menuItem['icon']"
                                         style="height: 64px; width: 64px"
                                     />
 
-                                    {{ $groupLabel }}
+                                    {{ $menuItem['label'] }}
                                 </a>
                             </div>
                         @endforeach
@@ -132,14 +131,6 @@
 
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_LOGO_BEFORE) }}
 
-            @if ($homeUrl = filament()->getHomeUrl())
-                <a {{ \Filament\Support\generate_href_html($homeUrl) }}>
-                    <x-filament-panels::logo />
-                </a>
-            @else
-                <x-filament-panels::logo />
-            @endif
-
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_LOGO_AFTER) }}
         </div>
 
@@ -171,7 +162,13 @@
                                     </span>
                                 </li>
 
-                                @foreach ($group->getItems() as $item)
+                                @php
+                                    $topbarGroupItems = $group->getIcon() === 'icon-dashboard'
+                                        ? DashboardNavigationOrder::sort($group->getItems())
+                                        : collect($group->getItems());
+                                @endphp
+
+                                @foreach ($topbarGroupItems as $item)
                                     @php
                                         $isItemActive = $item->isActive();
                                         $itemActiveIcon = $item->getActiveIcon();

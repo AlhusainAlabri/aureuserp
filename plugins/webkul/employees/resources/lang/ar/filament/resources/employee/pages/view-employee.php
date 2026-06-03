@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'navigation' => [
+        'title' => 'التفاصيل',
+    ],
+
     'header-actions' => [
         'delete' => [
             'notification' => [

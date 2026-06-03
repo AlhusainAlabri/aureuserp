@@ -24,6 +24,7 @@ class EmployeeSubmission extends Model
         'body',
         'employee_id',
         'submitter_name',
+        'is_anonymous',
         'department_id',
         'status',
         'priority',
@@ -34,10 +35,20 @@ class EmployeeSubmission extends Model
     ];
 
     protected $casts = [
-        'resolved_at' => 'datetime',
-        'closed_at'   => 'datetime',
-        'attachments' => 'array',
+        'is_anonymous' => 'boolean',
+        'resolved_at'  => 'datetime',
+        'closed_at'    => 'datetime',
+        'attachments'  => 'array',
     ];
+
+    public function getDisplaySubmitterNameAttribute(): string
+    {
+        if ($this->is_anonymous || strtolower((string) $this->submitter_name) === 'anonymous') {
+            return __('hr-extensions::submissions.anonymous_label');
+        }
+
+        return $this->submitter_name ?: '—';
+    }
 
     public function employee(): BelongsTo
     {
@@ -130,9 +141,12 @@ class EmployeeSubmission extends Model
 
             $employee = Employee::find($submission->employee_id);
             if ($employee) {
-                $submission->submitter_name = $employee->name;
-                $submission->department_id = $employee->department_id;
-                $submission->company_id = $employee->company_id;
+                if (! $submission->is_anonymous) {
+                    $submission->submitter_name ??= $employee->name;
+                }
+
+                $submission->department_id ??= $employee->department_id;
+                $submission->company_id ??= $employee->company_id;
             }
         });
 

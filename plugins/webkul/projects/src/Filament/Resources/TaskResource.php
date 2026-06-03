@@ -2,6 +2,8 @@
 
 namespace Webkul\Project\Filament\Resources;
 
+use App\Filament\Extensions\TaskResourceExtensions;
+use App\Filament\Projects\Resources\TaskResource\Pages\ListTasks;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -61,7 +63,6 @@ use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ManageTasks;
 use Webkul\Project\Filament\Resources\TaskResource\Pages\CreateTask;
 use Webkul\Project\Filament\Resources\TaskResource\Pages\EditTask;
-use Webkul\Project\Filament\Resources\TaskResource\Pages\ListTasks;
 use Webkul\Project\Filament\Resources\TaskResource\Pages\ManageSubTasks;
 use Webkul\Project\Filament\Resources\TaskResource\Pages\ManageTimesheets;
 use Webkul\Project\Filament\Resources\TaskResource\Pages\ViewTask;
@@ -91,6 +92,16 @@ class TaskResource extends Resource
     public static function getNavigationLabel(): string
     {
         return __('projects::filament/resources/task.navigation.title');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return TaskResourceExtensions::getModelLabel();
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return TaskResourceExtensions::getPluralModelLabel();
     }
 
     public static function getNavigationGroup(): string
@@ -134,8 +145,9 @@ class TaskResource extends Resource
                                     ->placeholder(__('projects::filament/resources/task.form.sections.general.fields.title-placeholder'))
                                     ->extraInputAttributes(['style' => 'font-size: 1.5rem;height: 3rem;']),
                                 ToggleButtons::make('state')
+                                    ->label(__('projects::filament/resources/task.table.columns.state'))
                                     ->required()
-                                    ->default(TaskState::IN_PROGRESS)
+                                    ->default(TaskResourceExtensions::defaultState())
                                     ->inline()
                                     ->options(TaskState::options())
                                     ->colors(TaskState::colors())
@@ -277,7 +289,7 @@ class TaskResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('priority')
-                    ->label(__('projects::filament/resources/task.table.columns.priority'))
+                    ->label(TaskResourceExtensions::featuredPriorityColumnLabel())
                     ->icon(fn (Task $record): string => $record->priority ? 'heroicon-s-star' : 'heroicon-o-star')
                     ->color(fn (Task $record): string => $record->priority ? 'warning' : 'gray')
                     ->action(function (Task $record): void {
@@ -294,7 +306,7 @@ class TaskResource extends Resource
                     ->tooltip(fn (TaskState $state): string => $state->getLabel())
                     ->action(
                         Action::make('updateState')
-                            ->modalHeading('Update Task State')
+                            ->modalHeading(__('projects::filament/resources/task.table.columns.update-state-heading'))
                             ->schema(fn (Task $record): array => [
                                 ToggleButtons::make('state')
                                     ->label(__('projects::filament/resources/task.table.columns.new-state'))
@@ -338,6 +350,7 @@ class TaskResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+                ...TaskResourceExtensions::extraTableColumns(),
                 TextColumn::make('allocated_hours')
                     ->label(__('projects::filament/resources/task.table.columns.allocated-time'))
                     ->sortable()

@@ -19,6 +19,11 @@ return [
     ],
 
     'table' => [
+        'empty-state' => [
+            'heading'     => 'لا توجد تعديلات كمية',
+            'description' => 'أضف تعديل كمية لبدء جرد المخزون.',
+        ],
+
         'columns' => [
             'location'           => 'الموقع',
             'product'            => 'المنتج',
@@ -30,7 +35,7 @@ return [
             'package'            => 'الطرد',
             'last-counted-at'    => 'آخر جرد في',
             'on-hand'            => 'الكمية المتاحة',
-            'uom'                => 'UOM',
+            'uom'                => 'وحدة القياس',
             'counted'            => 'الكمية المحسوبة',
             'difference'         => 'الفرق',
             'scheduled-at'       => 'موعد الجدولة',
@@ -71,7 +76,6 @@ return [
             'user'                => 'المستخدم',
             'created-at'          => 'تاريخ الإنشاء',
             'updated-at'          => 'تاريخ التحديث',
-            'company'             => 'الشركة',
             'creator'             => 'المُنشئ',
         ],
 

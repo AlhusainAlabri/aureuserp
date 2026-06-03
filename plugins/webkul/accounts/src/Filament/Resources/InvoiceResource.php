@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Extensions\AccountResourceExtensions;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -179,6 +180,7 @@ class InvoiceResource extends Resource
                                                 $set('invoice_payment_term_id', $partner?->property_payment_term_id);
                                             })
                                             ->disabled(fn ($record) => in_array($record?->state, [MoveState::POSTED, MoveState::CANCEL])),
+                                        ...AccountResourceExtensions::projectSelectField(),
                                     ]),
 
                                 Group::make()

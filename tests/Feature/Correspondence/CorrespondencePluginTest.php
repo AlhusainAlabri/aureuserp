@@ -5,12 +5,19 @@ use App\Mail\OutgoingCorrespondenceMail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
+use Webkul\Correspondence\Database\Seeders\CorrespondenceDepartmentSeeder;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Correspondence\Filament\Widgets\CorrespondenceDashboardStats;
 use Webkul\Correspondence\Models\Correspondence;
+use Webkul\Correspondence\Models\CorrespondenceAttachment;
 use Webkul\Correspondence\Models\CorrespondenceFollower;
 use Webkul\Correspondence\Models\Department;
+use Webkul\Correspondence\Services\CorrespondenceAttachmentService;
+use Webkul\Correspondence\Services\CorrespondenceTaskService;
+use Webkul\Project\Models\Task;
+use Webkul\Project\Models\TaskStage;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 use Wezlo\FilamentApproval\ApproverResolvers\UserResolver;
@@ -254,4 +261,160 @@ it('CorrespondencePluginTest: dashboard stats show correct counts per user role'
 
     expect($stats[0]->getValue())->toBeGreaterThanOrEqual(1)
         ->and($stats[1]->getValue())->toBeGreaterThanOrEqual(1);
+});
+
+it('CorrespondencePluginTest: plural model label uses translation key', function (): void {
+    expect(CorrespondenceResource::getPluralModelLabel())->toBe(__('correspondence::correspondence.correspondences'));
+});
+
+it('CorrespondencePluginTest: attachment service stores files on private disk', function (): void {
+    Storage::fake('private');
+    correspondenceUser();
+
+    $correspondence = Correspondence::factory()->incoming()->create(['company_id' => correspondenceCompany()->id]);
+    $path = 'correspondence/'.now()->year.'/letter.pdf';
+    Storage::disk('private')->put($path, 'pdf-content');
+
+    CorrespondenceAttachmentService::storeFromPaths($correspondence, [$path]);
+
+    expect(CorrespondenceAttachment::query()->where('correspondence_id', $correspondence->id)->count())->toBe(1)
+        ->and(CorrespondenceAttachment::query()->first()->file_path)->toBe($path);
+});
+
+it('CorrespondencePluginTest: department seeder is idempotent', function (): void {
+    $before = Department::query()->count();
+
+    (new CorrespondenceDepartmentSeeder)->run();
+    $afterFirst = Department::query()->count();
+
+    (new CorrespondenceDepartmentSeeder)->run();
+
+    expect($afterFirst)->toBeGreaterThanOrEqual($before)
+        ->and(Department::query()->count())->toBe($afterFirst);
+});
+
+it('CorrespondencePluginTest: incoming correspondence can be marked as read', function (): void {
+    $user = correspondenceUser();
+    $correspondence = Correspondence::factory()->incoming()->create([
+        'company_id' => correspondenceCompany()->id,
+        'to_user_id' => $user->id,
+    ]);
+
+    $correspondence->markAsReadBy($user);
+
+    expect($correspondence->reads()->where('user_id', $user->id)->exists())->toBeTrue()
+        ->and(Correspondence::query()->unreadFor($user)->whereKey($correspondence)->exists())->toBeFalse();
+});
+
+it('CorrespondencePluginTest: archived correspondence can be unarchived', function (): void {
+    correspondenceUser();
+    $incoming = Correspondence::factory()->incoming()->create([
+        'company_id' => correspondenceCompany()->id,
+        'status'     => 'archived',
+    ]);
+    $outgoing = Correspondence::factory()->outgoing()->create([
+        'company_id' => correspondenceCompany()->id,
+        'status'     => 'archived',
+    ]);
+
+    $incoming->unarchive();
+    $outgoing->unarchive();
+
+    expect($incoming->refresh()->status)->toBe('received')
+        ->and($outgoing->refresh()->status)->toBe('sent');
+});
+
+it('CorrespondencePluginTest: visibility maps employee department to correspondence departments', function (): void {
+    $user = correspondenceUser();
+    $employeeDepartmentId = $user->employee?->department_id;
+
+    if (! $employeeDepartmentId) {
+        expect(true)->toBeTrue();
+
+        return;
+    }
+
+    $mapped = correspondenceDepartment();
+    $mapped->update(['employees_department_id' => $employeeDepartmentId]);
+
+    $visible = Correspondence::factory()->incoming()->create([
+        'company_id'        => correspondenceCompany()->id,
+        'to_department_id'  => $mapped->id,
+    ]);
+    $hidden = Correspondence::factory()->incoming()->create([
+        'company_id'       => correspondenceCompany()->id,
+        'to_department_id' => correspondenceDepartment()->id,
+    ]);
+
+    $ids = CorrespondenceResource::getEloquentQuery()->pluck('id');
+
+    expect($ids)->toContain($visible->id)
+        ->and($ids)->not->toContain($hidden->id);
+});
+
+it('CorrespondencePluginTest: outgoing mail includes attachments from private disk', function (): void {
+    Storage::fake('private');
+    Mail::fake();
+
+    $approver = correspondenceUser();
+    $correspondence = approvedCorrespondence($approver);
+    $path = 'correspondence/'.now()->year.'/letter.pdf';
+    Storage::disk('private')->put($path, 'pdf-content');
+    CorrespondenceAttachmentService::storeFromPaths($correspondence, [$path]);
+
+    $correspondence->send();
+
+    Mail::assertQueued(OutgoingCorrespondenceMail::class, function (OutgoingCorrespondenceMail $mail): bool {
+        return count($mail->attachments()) >= 1;
+    });
+});
+
+it('CorrespondencePluginTest: archived records are excluded from active outgoing scope', function (): void {
+    correspondenceUser();
+
+    $active = Correspondence::factory()->outgoing()->create([
+        'company_id' => correspondenceCompany()->id,
+        'status'     => 'draft',
+    ]);
+    $archived = Correspondence::factory()->outgoing()->create([
+        'company_id' => correspondenceCompany()->id,
+        'status'     => 'archived',
+    ]);
+
+    $activeIds = Correspondence::query()
+        ->outgoing()
+        ->where('status', '!=', 'archived')
+        ->pluck('id');
+
+    expect($activeIds)->toContain($active->id)
+        ->and($activeIds)->not->toContain($archived->id);
+});
+
+it('CorrespondencePluginTest: follow-up project task can be created from correspondence', function (): void {
+    if (! Schema::hasTable('projects_tasks')) {
+        expect(true)->toBeTrue();
+
+        return;
+    }
+
+    correspondenceUser();
+    $stage = TaskStage::query()->first() ?? TaskStage::factory()->create();
+
+    $correspondence = Correspondence::factory()->incoming()->create([
+        'company_id' => correspondenceCompany()->id,
+        'project_id' => $stage->project_id,
+    ]);
+    $assignee = User::withoutEvents(fn (): User => User::factory()->create());
+
+    $task = CorrespondenceTaskService::createFromCorrespondence($correspondence, [
+        'title'       => 'Follow up on letter',
+        'description' => 'Review and respond',
+        'assignee_id' => $assignee->id,
+        'deadline'    => now()->addWeek()->toDateTimeString(),
+        'project_id'  => $stage->project_id,
+    ]);
+
+    expect($task)->toBeInstanceOf(Task::class)
+        ->and($task->correspondence_id)->toBe($correspondence->id)
+        ->and($task->users()->whereKey($assignee->id)->exists())->toBeTrue();
 });

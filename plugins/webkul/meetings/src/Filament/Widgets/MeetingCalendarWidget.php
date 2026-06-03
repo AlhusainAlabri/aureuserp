@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,9 +32,11 @@ class MeetingCalendarWidget extends FullCalendarWidget
 
     public bool $showTimeOff = true;
 
+    public bool $showUnconfirmedMeetings = false;
+
     public string $typeFilter = 'all';
 
-    protected ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = null;
 
     public function getHeading(): string
     {
@@ -44,8 +47,8 @@ class MeetingCalendarWidget extends FullCalendarWidget
     {
         return [
             'initialView'      => 'timeGridWeek',
-            'locale'           => 'ar',
-            'direction'        => 'rtl',
+            'locale'           => app()->getLocale(),
+            'direction'        => app()->getLocale() === 'ar' ? 'rtl' : 'ltr',
             'firstDay'         => 0,
             'headerToolbar'    => [
                 'left'   => 'prev,next today',
@@ -69,14 +72,33 @@ class MeetingCalendarWidget extends FullCalendarWidget
     protected function headerActions(): array
     {
         return [
+            Action::make('createMeeting')
+                ->label(__('meetings::meetings.actions.create'))
+                ->icon('heroicon-o-plus-circle')
+                ->color('primary')
+                ->visible(fn (): bool => auth()->user()?->can('create_meetings_meeting') ?? false)
+                ->schema([
+                    TextInput::make('title')->label(__('meetings::meetings.fields.title'))->required(),
+                    Select::make('type')->label(__('meetings::meetings.fields.type'))->options(MeetingResource::typeOptions())->required(),
+                    DateTimePicker::make('meeting_date')->label(__('meetings::meetings.fields.meeting_date'))->required(),
+                    Select::make('chair_person_id')->label(__('meetings::meetings.fields.chair_person'))->options(fn () => User::query()->pluck('name', 'id'))->searchable()->required(),
+                ])
+                ->action(fn (array $data): Meeting => Meeting::query()->create($data + [
+                    'company_id' => auth()->user()?->default_company_id,
+                ])),
             Action::make('filters')
                 ->label(__('meetings::meetings.calendar.filters'))
                 ->icon('heroicon-o-funnel')
+                ->color('gray')
                 ->schema([
                     Select::make('showMeetings')
                         ->label(__('meetings::meetings.calendar.show_meetings'))
                         ->options([1 => __('meetings::meetings.yes'), 0 => __('meetings::meetings.no')])
                         ->default($this->showMeetings ? 1 : 0),
+                    Toggle::make('showUnconfirmedMeetings')
+                        ->label(__('meetings::meetings.calendar.show_unconfirmed'))
+                        ->helperText(__('meetings::meetings.calendar.show_unconfirmed_hint'))
+                        ->default($this->showUnconfirmedMeetings),
                     Select::make('showTasks')
                         ->label(__('meetings::meetings.calendar.show_tasks'))
                         ->options([1 => __('meetings::meetings.yes'), 0 => __('meetings::meetings.no')])
@@ -92,24 +114,12 @@ class MeetingCalendarWidget extends FullCalendarWidget
                 ])
                 ->action(function (array $data): void {
                     $this->showMeetings = (bool) $data['showMeetings'];
+                    $this->showUnconfirmedMeetings = (bool) ($data['showUnconfirmedMeetings'] ?? false);
                     $this->showTasks = (bool) $data['showTasks'];
                     $this->showTimeOff = (bool) $data['showTimeOff'];
                     $this->typeFilter = $data['typeFilter'] ?? 'all';
                     $this->refreshRecords();
                 }),
-            Action::make('createMeeting')
-                ->label(__('meetings::meetings.actions.create'))
-                ->icon('heroicon-o-plus-circle')
-                ->visible(fn (): bool => auth()->user()?->can('create_meetings_meeting') ?? false)
-                ->schema([
-                    TextInput::make('title')->label(__('meetings::meetings.fields.title'))->required(),
-                    Select::make('type')->label(__('meetings::meetings.fields.type'))->options(MeetingResource::typeOptions())->required(),
-                    DateTimePicker::make('meeting_date')->label(__('meetings::meetings.fields.meeting_date'))->required(),
-                    Select::make('chair_person_id')->label(__('meetings::meetings.fields.chair_person'))->options(fn () => User::query()->pluck('name', 'id'))->searchable()->required(),
-                ])
-                ->action(fn (array $data): Meeting => Meeting::query()->create($data + [
-                    'company_id' => auth()->user()?->default_company_id,
-                ])),
         ];
     }
 
@@ -138,25 +148,84 @@ class MeetingCalendarWidget extends FullCalendarWidget
     protected function meetingEvents(array $fetchInfo): array
     {
         return $this->visibleMeetingsQuery()
-            ->confirmed()
+            ->when(
+                $this->showUnconfirmedMeetings,
+                fn (Builder $query): Builder => $query->active(),
+                fn (Builder $query): Builder => $query->confirmed(),
+            )
             ->when($this->typeFilter !== 'all', fn (Builder $query): Builder => $query->where('type', $this->typeFilter))
             ->whereBetween('meeting_date', [$fetchInfo['start'], $fetchInfo['end']])
             ->get()
-            ->map(fn (Meeting $meeting): array => [
-                'id'              => 'meeting-'.$meeting->id,
-                'title'           => "{$meeting->meeting_number} — {$meeting->title}",
-                'start'           => $meeting->meeting_date?->toIso8601String(),
-                'end'             => $meeting->meeting_date?->copy()->addMinutes($meeting->duration_minutes ?? 60)->toIso8601String(),
-                'backgroundColor' => $this->eventColor($meeting->type),
-                'borderColor'     => $this->eventColor($meeting->type),
-                'textColor'       => '#ffffff',
-                'extendedProps'   => [
-                    'eventType' => 'meeting',
-                    'isPast'    => $meeting->meeting_date?->isPast(),
-                    'url'       => MeetingResource::getUrl('view', ['record' => $meeting]),
-                ],
-            ])
+            ->map(function (Meeting $meeting): array {
+                $colors = $this->meetingEventColors($meeting);
+
+                return [
+                    'id'              => 'meeting-'.$meeting->id,
+                    'title'           => $this->meetingEventTitle($meeting),
+                    'start'           => $meeting->meeting_date?->toIso8601String(),
+                    'end'             => $meeting->meeting_date?->copy()->addMinutes($meeting->duration_minutes ?? 60)->toIso8601String(),
+                    'backgroundColor' => $colors['backgroundColor'],
+                    'borderColor'     => $colors['borderColor'],
+                    'textColor'       => $colors['textColor'],
+                    'classNames'      => $colors['classNames'],
+                    'extendedProps'   => [
+                        'eventType' => 'meeting',
+                        'status'    => $meeting->status,
+                        'isPast'    => $meeting->meeting_date?->isPast(),
+                        'url'       => MeetingResource::getUrl('view', ['record' => $meeting]),
+                    ],
+                ];
+            })
             ->all();
+    }
+
+    protected function meetingEventTitle(Meeting $meeting): string
+    {
+        if (! $this->showUnconfirmedMeetings || $meeting->isConfirmed()) {
+            return "{$meeting->meeting_number} — {$meeting->title}";
+        }
+
+        $statusLabel = MeetingResource::statusOptions()[$meeting->status] ?? $meeting->status;
+
+        return "[{$statusLabel}] {$meeting->meeting_number} — {$meeting->title}";
+    }
+
+    /**
+     * @return array{backgroundColor: string, borderColor: string, textColor: string, classNames: array<int, string>}
+     */
+    protected function meetingEventColors(Meeting $meeting): array
+    {
+        if ($meeting->isConfirmed()) {
+            $color = $this->eventColor($meeting->type);
+
+            return [
+                'backgroundColor' => $color,
+                'borderColor'     => $color,
+                'textColor'       => '#ffffff',
+                'classNames'      => [],
+            ];
+        }
+
+        return match ($meeting->status) {
+            'approved' => [
+                'backgroundColor' => '#BFDBFE',
+                'borderColor'     => '#3B82F6',
+                'textColor'       => '#1E3A8A',
+                'classNames'      => ['border-dashed'],
+            ],
+            'pending_approval' => [
+                'backgroundColor' => '#FDE68A',
+                'borderColor'     => '#F59E0B',
+                'textColor'       => '#78350F',
+                'classNames'      => ['border-dashed'],
+            ],
+            default => [
+                'backgroundColor' => '#E5E7EB',
+                'borderColor'     => '#9CA3AF',
+                'textColor'       => '#374151',
+                'classNames'      => ['border-dashed', 'opacity-80'],
+            ],
+        };
     }
 
     protected function taskEvents(array $fetchInfo): array
@@ -215,5 +284,38 @@ class MeetingCalendarWidget extends FullCalendarWidget
             'board'     => '#10B981',
             default     => '#6B7280',
         };
+    }
+
+    /**
+     * @return array<int, array{label: string, background: string, border: string, dashed: bool}>
+     */
+    public function getStatusLegendItems(): array
+    {
+        return [
+            [
+                'label'      => __('meetings::meetings.calendar.status_legend.confirmed'),
+                'background' => '#3B82F6',
+                'border'     => '#3B82F6',
+                'dashed'     => false,
+            ],
+            [
+                'label'      => __('meetings::meetings.calendar.status_legend.approved'),
+                'background' => '#BFDBFE',
+                'border'     => '#3B82F6',
+                'dashed'     => true,
+            ],
+            [
+                'label'      => __('meetings::meetings.calendar.status_legend.pending_approval'),
+                'background' => '#FDE68A',
+                'border'     => '#F59E0B',
+                'dashed'     => true,
+            ],
+            [
+                'label'      => __('meetings::meetings.calendar.status_legend.draft'),
+                'background' => '#E5E7EB',
+                'border'     => '#9CA3AF',
+                'dashed'     => true,
+            ],
+        ];
     }
 }

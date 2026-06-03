@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Pages;
 
+use App\Filament\Widgets\Projects\ProjectAverageCompletionWidget;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\DatePicker;
@@ -101,6 +102,16 @@ class Dashboard extends BaseDashboard
                             ->maxDate(now())
                             ->default(now())
                             ->native(false),
+                        Select::make('projectStatus')
+                            ->label(__('projects-extensions::filters.project_status'))
+                            ->options([
+                                ''          => __('projects-extensions::filters.all'),
+                                'active'    => __('projects-extensions::filters.active'),
+                                'completed' => __('projects-extensions::filters.completed'),
+                                'cancelled' => __('projects-extensions::filters.cancelled'),
+                            ])
+                            ->native(false)
+                            ->live(),
                     ])->columnSpanFull(),
 
             ]);
@@ -109,6 +120,7 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            ProjectAverageCompletionWidget::class,
             StatsOverviewWidget::class,
             TaskByStageChart::class,
             TaskByStateChart::class,

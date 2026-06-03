@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,6 +53,39 @@ class EmployeeDocument extends Model
         }
 
         return $this->expiry_date->isFuture() && $this->expiry_date->diffInDays(now()) <= $days;
+    }
+
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('expiry_date')
+            ->whereDate('expiry_date', '<', now()->startOfDay());
+    }
+
+    public function scopeExpiringSoon(Builder $query, int $days = 30): Builder
+    {
+        return $query
+            ->whereNotNull('expiry_date')
+            ->whereDate('expiry_date', '>=', now()->startOfDay())
+            ->whereDate('expiry_date', '<=', now()->addDays($days)->endOfDay());
+    }
+
+    public function scopeExpiringWithin(Builder $query, int $days = 30): Builder
+    {
+        return $query
+            ->whereNotNull('expiry_date')
+            ->whereDate('expiry_date', '<=', now()->addDays($days)->endOfDay());
+    }
+
+    protected static function booted(): void
+    {
+        parent::booted();
+
+        static::saving(function (self $document): void {
+            if (empty($document->document_name) && ! empty($document->file_path)) {
+                $document->document_name = basename($document->file_path);
+            }
+        });
     }
 
     protected static function newFactory(): EmployeeDocumentFactory

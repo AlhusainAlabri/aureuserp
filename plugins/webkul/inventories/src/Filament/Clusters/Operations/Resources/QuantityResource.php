@@ -52,6 +52,16 @@ class QuantityResource extends Resource
         return __('inventories::filament/clusters/operations/resources/quantity.navigation.title');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inventories::models/product-quantity.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inventories::models/product-quantity.plural');
+    }
+
     public static function getNavigationGroup(): string
     {
         return __('inventories::filament/clusters/operations/resources/quantity.navigation.group');
@@ -402,6 +412,8 @@ class QuantityResource extends Resource
                     ->slideOver(),
             )
             ->filtersFormColumns(2)
+            ->emptyStateHeading(__('inventories::filament/clusters/operations/resources/quantity.table.empty-state.heading'))
+            ->emptyStateDescription(__('inventories::filament/clusters/operations/resources/quantity.table.empty-state.description'))
             ->headerActions([
                 CreateAction::make()
                     ->label(__('inventories::filament/clusters/operations/resources/quantity.table.header-actions.create.label'))

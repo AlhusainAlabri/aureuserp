@@ -15,17 +15,19 @@ class NoteFactory extends Factory
     public function definition(): array
     {
         return [
-            'ulid'        => (string) Str::ulid(),
-            'type'        => fake()->randomElement(['text', 'checklist', 'reminder', 'voice']),
-            'title'       => fake()->optional(0.7)->sentence(3),
-            'body'        => fake()->optional(0.8)->paragraph(),
-            'color'       => fake()->randomElement(['default', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'gray']),
-            'tags'        => fake()->optional(0.5)->randomElements(['work', 'personal', 'urgent', 'idea', 'meeting'], fake()->numberBetween(1, 3)),
-            'is_pinned'   => fake()->boolean(10),
-            'is_archived' => fake()->boolean(5),
-            'sort_order'  => fake()->numberBetween(0, 100),
-            'user_id'     => User::factory(),
-            'company_id'  => Company::factory(),
+            'ulid'          => (string) Str::ulid(),
+            'type'          => fake()->randomElement(['text', 'checklist', 'reminder', 'voice']),
+            'title'         => fake()->optional(0.7)->sentence(3),
+            'body'          => fake()->optional(0.8)->paragraph(),
+            'color'         => fake()->randomElement(['default', 'red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink', 'gray']),
+            'tags'          => fake()->optional(0.5)->randomElements(['work', 'personal', 'urgent', 'idea', 'meeting'], fake()->numberBetween(1, 3)),
+            'is_pinned'     => fake()->boolean(10),
+            'is_archived'   => fake()->boolean(5),
+            'board_status'  => fake()->randomElement(['inbox', 'in_progress', 'waiting', 'done']),
+            'board_sort'    => fake()->numberBetween(0, 100),
+            'sort_order'    => fake()->numberBetween(0, 100),
+            'user_id'       => User::factory(),
+            'company_id'    => Company::factory(),
         ];
     }
 
@@ -44,6 +46,34 @@ class NoteFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'type'        => 'reminder',
             'reminder_at' => now()->addDay(),
+        ]);
+    }
+
+    public function overdueReminder(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type'          => 'reminder',
+            'reminder_at'   => now()->subHour(),
+            'reminder_sent' => false,
+        ]);
+    }
+
+    public function sentReminder(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type'                => 'reminder',
+            'reminder_at'         => now()->subHour(),
+            'reminder_sent'       => true,
+            'reminder_email_sent' => true,
+        ]);
+    }
+
+    public function voice(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type'                   => 'voice',
+            'audio_path'             => 'notes/voice/test.webm',
+            'audio_duration_seconds' => 120,
         ]);
     }
 

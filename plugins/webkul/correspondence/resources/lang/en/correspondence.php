@@ -108,14 +108,47 @@ return [
     ],
 
     'filters' => [
-        'from'  => 'From',
-        'until' => 'Until',
+        'from'           => 'From',
+        'until'          => 'Until',
+        'received_from'  => 'Received From',
+        'received_until' => 'Received Until',
+        'due_from'       => 'Due From',
+        'due_until'      => 'Due Until',
     ],
 
     'actions' => [
         'view'       => 'View',
         'archive'    => 'Archive',
+        'unarchive'  => 'Unarchive',
+        'download'   => 'Download',
         'export_pdf' => 'Export PDF',
+        'create_task'=> 'Create Follow-up Task',
+    ],
+
+    'departments' => [
+        'navigation'            => 'Departments',
+        'model'                 => 'Department',
+        'plural'                => 'Departments',
+        'section'               => 'Department Details',
+        'name'                  => 'Name',
+        'code'                  => 'Code',
+        'manager'               => 'Manager',
+        'company'               => 'Company',
+        'employees_department'  => 'Linked HR Department',
+    ],
+
+    'tasks' => [
+        'navigation'  => 'Follow-up Tasks',
+        'create'      => 'Create Task',
+        'title'       => 'Task Title',
+        'deadline'    => 'Deadline',
+        'assignee'    => 'Assignee',
+        'created'     => 'Follow-up task created',
+        'empty'       => 'No follow-up tasks linked to correspondence yet.',
+    ],
+
+    'tabs' => [
+        'archived' => 'Archived',
     ],
 
     'relations' => [
@@ -164,6 +197,11 @@ return [
         ],
     ],
 
+    'empty' => [
+        'no_records'             => 'No correspondence',
+        'no_records_description' => 'Correspondence will appear here when available.',
+    ],
+
     'dashboard' => [
         'stats' => [
             'outgoing_month'   => 'Outgoing This Month',
@@ -189,6 +227,7 @@ return [
 
     'exceptions' => [
         'send_before_approval' => 'Correspondence cannot be sent before approvals are complete.',
+        'task_create_failed'   => 'Unable to create the follow-up task. Check that a task stage exists.',
     ],
 
     'commands' => [

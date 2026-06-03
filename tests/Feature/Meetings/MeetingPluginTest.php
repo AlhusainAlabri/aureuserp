@@ -4,12 +4,21 @@ use App\Filament\Actions\ExportMeetingPdfAction;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
+use Webkul\Meetings\Filament\Pages\MeetingCalendar;
+use Webkul\Meetings\Filament\Pages\MeetingDashboard;
+use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\Meetings\Filament\Widgets\MeetingApprovalsTable;
 use Webkul\Meetings\Filament\Widgets\MeetingCalendarWidget;
 use Webkul\Meetings\Filament\Widgets\MeetingDashboardStats;
+use Webkul\Meetings\Filament\Widgets\MeetingsStatusChartWidget;
+use Webkul\Meetings\Filament\Widgets\MeetingsTrendChartWidget;
 use Webkul\Meetings\Filament\Widgets\MeetingTasksTable;
+use Webkul\Meetings\Filament\Widgets\RecentConfirmedMeetingsTable;
 use Webkul\Meetings\Filament\Widgets\UpcomingMeetingsTable;
 use Webkul\Meetings\Models\Meeting;
+use Webkul\Meetings\Models\MeetingAttachment;
 use Webkul\Meetings\Models\MeetingAttendee;
 use Webkul\Meetings\Models\MeetingTask;
 use Webkul\Project\Models\Project;
@@ -267,6 +276,83 @@ it('MeetingPluginTest: dashboard stats show correct pending approval count', fun
     expect($stats[1]->getValue())->toBeGreaterThanOrEqual(1);
 });
 
+it('MeetingPluginTest: dashboard registers chart widgets and responsive columns', function (): void {
+    $dashboard = app(MeetingDashboard::class);
+
+    expect(invade($dashboard)->getWidgets())
+        ->toContain(MeetingsTrendChartWidget::class)
+        ->toContain(MeetingsStatusChartWidget::class)
+        ->and(invade($dashboard)->getColumns())
+        ->toBe(['default' => 1, 'md' => 2, 'lg' => 12]);
+});
+
+it('MeetingPluginTest: dashboard stats include urls for filtered list navigation', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+
+    $stats = invade(app(MeetingDashboardStats::class))->getStats();
+
+    expect($stats)->not->toBeEmpty();
+
+    foreach ($stats as $stat) {
+        expect($stat->getUrl())->not->toBeNull();
+    }
+});
+
+it('MeetingPluginTest: chart widgets return datasets with seeded meetings', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+    Meeting::factory()->count(3)->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now(),
+    ]);
+
+    $trendData = invade(app(MeetingsTrendChartWidget::class))->getData();
+    $statusData = invade(app(MeetingsStatusChartWidget::class))->getData();
+
+    expect($trendData['labels'])->not->toBeEmpty()
+        ->and($trendData['datasets'][0]['data'])->not->toBeEmpty()
+        ->and($statusData['labels'])->not->toBeEmpty()
+        ->and($statusData['datasets'][0]['data'])->not->toBeEmpty();
+});
+
+it('MeetingPluginTest: dashboard filters narrow visible meetings count', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+
+    $startDate = now()->startOfMonth()->toDateString();
+    $endDate = now()->endOfMonth()->toDateString();
+
+    Meeting::factory()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now()->subMonths(2),
+    ]);
+    Meeting::factory()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now(),
+    ]);
+
+    $widget = app(MeetingDashboardStats::class);
+    invade($widget)->pageFilters = [
+        'startDate' => $startDate,
+        'endDate'   => $endDate,
+        'status'    => 'all',
+    ];
+
+    $expected = Meeting::query()
+        ->whereDate('meeting_date', '>=', $startDate)
+        ->whereDate('meeting_date', '<=', $endDate)
+        ->count();
+
+    expect(invade($widget)->filteredMeetingsQuery()->count())->toBe($expected);
+});
+
+it('MeetingPluginTest: dashboard chart headings resolve in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(app(MeetingsTrendChartWidget::class)->getHeading())
+        ->toBe(__('meetings::meetings.dashboard.charts.meetings_trend'))
+        ->and(app(MeetingsStatusChartWidget::class)->getHeading())
+        ->toBe(__('meetings::meetings.dashboard.charts.meetings_status'));
+});
+
 it('MeetingPluginTest: dashboard tasks section only shows tasks assigned to current user', function (): void {
     $user = meetingsUser();
     $other = User::withoutEvents(fn (): User => User::factory()->create());
@@ -274,9 +360,107 @@ it('MeetingPluginTest: dashboard tasks section only shows tasks assigned to curr
     MeetingTask::factory()->create(['meeting_id' => $meeting->id, 'assigned_to' => $user->id]);
     MeetingTask::factory()->create(['meeting_id' => $meeting->id, 'assigned_to' => $other->id]);
 
-    $query = invade(app(MeetingTasksTable::class))->getTableQuery();
+    $query = invade(app(MeetingTasksTable::class))->visibleTasksQuery();
 
     expect($query->pluck('assigned_to')->unique()->all())->toBe([$user->id]);
+});
+
+it('MeetingPluginTest: uses correct Arabic plural model label', function (): void {
+    app()->setLocale('ar');
+
+    expect(MeetingResource::getPluralModelLabel())
+        ->toBe(__('meetings::meetings.navigation.meetings'))
+        ->and(MeetingResource::getPluralModelLabel())->toBe('المحاضر');
+});
+
+it('MeetingPluginTest: table widgets use translated headings in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(app(UpcomingMeetingsTable::class)->getTableHeading())
+        ->toBe(__('meetings::meetings.dashboard.sections.upcoming'))
+        ->and(app(MeetingTasksTable::class)->getTableHeading())
+        ->toBe(__('meetings::meetings.dashboard.sections.my_tasks'))
+        ->and(app(MeetingApprovalsTable::class)->getTableHeading())
+        ->toBe(__('meetings::meetings.dashboard.sections.my_approvals'))
+        ->and(app(RecentConfirmedMeetingsTable::class)->getTableHeading())
+        ->toBe(__('meetings::meetings.dashboard.sections.recent_confirmed'));
+});
+
+it('MeetingPluginTest: calendar page uses translated title', function (): void {
+    app()->setLocale('ar');
+
+    expect(app(MeetingCalendar::class)->getTitle())
+        ->toBe(__('meetings::meetings.navigation.calendar'))
+        ->and(app(MeetingCalendar::class)->getTitle())->toBe('التقويم');
+});
+
+it('MeetingPluginTest: empty state strings do not contain English model names in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('meetings::meetings.empty.no_meetings'))
+        ->not->toContain('meetings')
+        ->and(__('meetings::meetings.empty.no_tasks'))
+        ->not->toContain('meeting tasks')
+        ->and(__('meetings::meetings.empty.no_approvals'))
+        ->not->toContain('approvals')
+        ->and(__('meetings::meetings.empty.no_attachments'))
+        ->not->toContain('meeting attachments')
+        ->and(__('meetings::meetings.empty.no_approval_log'))
+        ->not->toContain('approvals');
+});
+
+it('MeetingPluginTest: meetings dashboard title is distinct from main dashboard in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('meetings::meetings.navigation.dashboard'))
+        ->toBe('لوحة المحاضر')
+        ->not->toBe('لوحة التحكم');
+});
+
+it('MeetingPluginTest: view and create page titles use minutes terminology in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('meetings::meetings.pages.create_title'))
+        ->toBe('إضافة محضر جديد')
+        ->and(__('meetings::meetings.pages.view_title', ['title' => 'اختبار']))
+        ->toBe('عرض المحضر: اختبار');
+});
+
+it('MeetingPluginTest: calendar widget config follows app locale', function (): void {
+    app()->setLocale('en');
+
+    $englishConfig = app(MeetingCalendarWidget::class)->config();
+
+    expect($englishConfig['locale'])->toBe('en')
+        ->and($englishConfig['direction'])->toBe('ltr');
+
+    app()->setLocale('ar');
+
+    $arabicConfig = app(MeetingCalendarWidget::class)->config();
+
+    expect($arabicConfig['locale'])->toBe('ar')
+        ->and($arabicConfig['direction'])->toBe('rtl');
+});
+
+it('MeetingPluginTest: stores attachment with resolved metadata', function (): void {
+    Storage::fake('private');
+    meetingsUser();
+
+    $path = 'meetings/2026/upload.pdf';
+    Storage::disk('private')->put($path, 'attachment body');
+
+    $meeting = Meeting::factory()->create(['company_id' => meetingsCompany()->id]);
+    $attachment = $meeting->attachments()->create([
+        'file_path'  => $path,
+        'file_name'  => 'upload.pdf',
+        'file_size'  => Storage::disk('private')->size($path),
+        'mime_type'  => Storage::disk('private')->mimeType($path),
+        'creator_id' => auth()->id(),
+    ]);
+
+    expect($attachment)->toBeInstanceOf(MeetingAttachment::class)
+        ->and($attachment->file_size)->toBeGreaterThan(0)
+        ->and($attachment->mime_type)->not->toBe('application/octet-stream');
 });
 
 it('MeetingPluginTest: calendar fetch events returns meetings within date range', function (): void {
@@ -325,4 +509,67 @@ it('MeetingPluginTest: employee sees only their own meetings on dashboard', func
 
     expect($ids)->toContain($mine->id)
         ->and($ids)->not->toContain($notMine->id);
+});
+
+it('MeetingPluginTest: calendar excludes draft meetings by default', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+    Meeting::factory()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now()->addDay(),
+        'status'       => 'draft',
+    ]);
+
+    $events = collect(app(MeetingCalendarWidget::class)->fetchEvents([
+        'start' => now()->toIso8601String(),
+        'end'   => now()->addDays(3)->toIso8601String(),
+    ]));
+
+    expect($events->where('extendedProps.eventType', 'meeting'))->toBeEmpty();
+});
+
+it('MeetingPluginTest: calendar shows draft meetings when unconfirmed toggle is enabled', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+    Meeting::factory()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now()->addDay(),
+        'status'       => 'draft',
+    ]);
+
+    $widget = app(MeetingCalendarWidget::class);
+    invade($widget)->showUnconfirmedMeetings = true;
+
+    $events = collect($widget->fetchEvents([
+        'start' => now()->toIso8601String(),
+        'end'   => now()->addDays(3)->toIso8601String(),
+    ]));
+
+    $meetingEvent = $events->first(fn (array $event): bool => ($event['extendedProps']['eventType'] ?? null) === 'meeting');
+
+    expect($meetingEvent)->not->toBeNull()
+        ->and($meetingEvent['extendedProps']['status'])->toBe('draft');
+});
+
+it('MeetingPluginTest: export pdf is restricted until approved or confirmed', function (): void {
+    $user = meetingsUser(['export_pdf_meetings_meeting']);
+    $draft = Meeting::factory()->create(['company_id' => meetingsCompany()->id]);
+    $approved = Meeting::factory()->approved()->create(['company_id' => meetingsCompany()->id]);
+
+    expect(Gate::forUser($user)->allows('exportPdf', $draft))->toBeFalse()
+        ->and(Gate::forUser($user)->allows('exportPdf', $approved))->toBeTrue();
+});
+
+it('MeetingPluginTest: recent confirmed widget uses dedicated empty state copy in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('meetings::meetings.empty.no_confirmed_meetings'))
+        ->toBe('لا توجد محاضر مؤكدة')
+        ->and(__('meetings::meetings.form.rich_editor_attachments_hint'))
+        ->toContain('تبويب المرفقات');
+});
+
+it('MeetingPluginTest: calendar page includes helper subheading in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(app(MeetingCalendar::class)->getSubheading())
+        ->toContain('إضافة محضر');
 });

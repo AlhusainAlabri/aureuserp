@@ -15,9 +15,9 @@ class IncomingCorrespondencesTable extends TableWidget
 
     protected int|string|array $columnSpan = 7;
 
-    protected ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = null;
 
-    public function getHeading(): string
+    public function getTableHeading(): ?string
     {
         return __('correspondence::correspondence.dashboard.sections.incoming');
     }

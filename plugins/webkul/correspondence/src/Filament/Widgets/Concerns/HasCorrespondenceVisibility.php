@@ -4,10 +4,21 @@ namespace Webkul\Correspondence\Filament\Widgets\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Webkul\Correspondence\Models\Correspondence;
+use Webkul\Correspondence\Services\CorrespondenceVisibilityService;
 use Webkul\Security\Models\User;
 
 trait HasCorrespondenceVisibility
 {
+    protected function getTableEmptyStateHeading(): ?string
+    {
+        return __('correspondence::correspondence.empty.no_records');
+    }
+
+    protected function getTableEmptyStateDescription(): ?string
+    {
+        return __('correspondence::correspondence.empty.no_records_description');
+    }
+
     protected function canSeeAllCorrespondence(?User $user): bool
     {
         return (bool) ($user?->can('view_all_departments_correspondence_correspondence') || $user?->hasAnyRole(['Admin', 'admin', 'manager', 'admin_manager']));
@@ -21,16 +32,7 @@ trait HasCorrespondenceVisibility
             return Correspondence::query();
         }
 
-        $departmentId = $user?->employee?->department_id;
-
-        return Correspondence::query()
-            ->where(function (Builder $query) use ($user, $departmentId): void {
-                $query->where('creator_id', $user?->id)
-                    ->orWhere('to_user_id', $user?->id)
-                    ->when($departmentId, fn (Builder $query): Builder => $query
-                        ->orWhere('from_department_id', $departmentId)
-                        ->orWhere('to_department_id', $departmentId));
-            });
+        return CorrespondenceVisibilityService::applyDepartmentScope(Correspondence::query(), $user);
     }
 
     protected function pendingApprovalsQuery(): Builder

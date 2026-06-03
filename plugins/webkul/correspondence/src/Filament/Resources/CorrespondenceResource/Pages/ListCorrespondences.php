@@ -26,9 +26,16 @@ class ListCorrespondences extends ListRecords
     {
         return [
             'outgoing' => Tab::make(__('correspondence::correspondence.outgoing'))
-                ->modifyQueryUsing(fn (Builder $query): Builder => $query->outgoing()),
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query
+                    ->outgoing()
+                    ->where('status', '!=', 'archived')),
             'incoming' => Tab::make(__('correspondence::correspondence.incoming'))
-                ->modifyQueryUsing(fn (Builder $query): Builder => $query->incoming()),
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query
+                    ->incoming()
+                    ->where('status', '!=', 'archived')
+                    ->orderByDesc('received_at')),
+            'archived' => Tab::make(__('correspondence::correspondence.tabs.archived'))
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('status', 'archived')),
         ];
     }
 }

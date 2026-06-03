@@ -4,11 +4,13 @@ namespace Webkul\Employee\Filament\Resources\EmployeeResource\Pages;
 
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
+use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
 use Webkul\Employee\Traits\Resources\Employee\EmployeeResumeRelation;
 
 class ManageResume extends ManageRelatedRecords
 {
     use EmployeeResumeRelation;
+    use HasEmployeeRecordNavigationTabs;
 
     protected static string $resource = EmployeeResource::class;
 

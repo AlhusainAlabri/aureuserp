@@ -44,7 +44,12 @@ class ReceiptResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/operations/resources/receipt.navigation.title');
+        return __('inventories::models/receipt.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inventories::models/receipt.plural');
     }
 
     public static function getNavigationLabel(): string

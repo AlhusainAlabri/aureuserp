@@ -27,6 +27,7 @@
         "maatwebsite/excel": "^3.1",
         "malzariey/filament-daterangepicker-filter": "^5.0",
         "milon/barcode": "^13.0",
+        "saade/filament-autograph": "^4.1",
         "spatie/eloquent-sortable": "^5.0",
         "spatie/laravel-query-builder": "^7.0",
         "wezlo/filament-approval": "^1.0",
@@ -35,7 +36,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "filament/upgrade": "^5.0",
-        "laravel/boost": "^2.1",
+        "laravel/boost": "^2.4",
         "laravel/pail": "^1.2.5",
         "laravel/pint": "^1.27",
         "laravel/sail": "^1.26",
@@ -48,7 +49,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

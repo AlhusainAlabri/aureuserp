@@ -19,4 +19,9 @@ class Configurations extends Cluster
     {
         return __('inventories::filament/clusters/configurations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return __('inventories::filament/clusters/configurations.navigation.title');
+    }
 }

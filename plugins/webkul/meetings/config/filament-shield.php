@@ -6,6 +6,8 @@ use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\MeetingApprovalsTable;
 use Webkul\Meetings\Filament\Widgets\MeetingCalendarWidget;
 use Webkul\Meetings\Filament\Widgets\MeetingDashboardStats;
+use Webkul\Meetings\Filament\Widgets\MeetingsStatusChartWidget;
+use Webkul\Meetings\Filament\Widgets\MeetingsTrendChartWidget;
 use Webkul\Meetings\Filament\Widgets\MeetingTasksTable;
 use Webkul\Meetings\Filament\Widgets\RecentConfirmedMeetingsTable;
 use Webkul\Meetings\Filament\Widgets\UpcomingMeetingsTable;
@@ -24,6 +26,7 @@ return [
                 'export_pdf',
                 'manage_tasks',
                 'manage_attendees',
+                'manage_attachments',
             ],
         ],
         'exclude' => [],
@@ -41,6 +44,8 @@ return [
             MeetingApprovalsTable::class,
             MeetingCalendarWidget::class,
             MeetingDashboardStats::class,
+            MeetingsTrendChartWidget::class,
+            MeetingsStatusChartWidget::class,
             MeetingTasksTable::class,
             RecentConfirmedMeetingsTable::class,
             UpcomingMeetingsTable::class,

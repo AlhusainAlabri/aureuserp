@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'title' => 'Employees',
+    'title'    => 'Employees',
+    'singular' => 'Employee',
 
     'navigation' => [
         'title' => 'Employees',
@@ -17,22 +18,25 @@ return [
     'form' => [
         'sections' => [
             'fields' => [
-                'name'            => 'Name',
-                'job-title'       => 'Job Title',
-                'work-email'      => 'Work Email',
-                'work-phone'      => 'Work Phone',
-                'department'      => 'Department',
-                'work-mobile'     => 'Work Mobile',
-                'job-position'    => 'Job Position',
-                'manager'         => 'Manager',
-                'coach'           => 'Coach',
-                'employee-tags'   => 'Employee Tags',
-                'membership-type' => 'Membership Type',
-                'employee'        => 'Employee',
-                'collaborator'    => 'Collaborator',
-                'volunteer'       => 'Volunteer',
-                'civil-id'        => 'Civil ID',
-                'civil-id-expiry' => 'Civil ID Expiry',
+                'name'                   => 'Name',
+                'job-title'              => 'Job Title',
+                'work-email'             => 'Work Email',
+                'work-phone'             => 'Work Phone',
+                'department'             => 'Department',
+                'work-mobile'            => 'Work Mobile',
+                'job-position'           => 'Job Position',
+                'manager'                => 'Manager',
+                'coach'                  => 'Coach',
+                'employee-tags'          => 'Employee Tags',
+                'membership-type'        => 'Membership Type',
+                'employee'               => 'Employee',
+                'collaborator'           => 'Collaborator',
+                'volunteer'              => 'Volunteer',
+                'civil-id'               => 'Civil ID',
+                'civil-id-expiry'        => 'Civil ID Expiry',
+                'oman-phone-hint'        => 'Include country code, e.g. +968 for Oman.',
+                'civil-id-helper'        => 'National civil identification number used for compliance tracking.',
+                'civil-id-expiry-helper' => 'Expiry date is used for compliance alerts on the overview and employee list.',
             ],
         ],
 
@@ -52,6 +56,7 @@ return [
                     'time-zone'            => 'Time Zone',
                     'time-zone-tooltip'    => 'Specify the time zone for this work schedule',
                     'organization-details' => 'Organization Details',
+                    'employment-type'      => 'Employment Type',
                     'company'              => 'Company',
                     'color'                => 'Color',
                 ],
@@ -61,6 +66,12 @@ return [
                 'title' => 'Private Information',
 
                 'fields' => [
+                    'private-address-country'     => 'Private Address Country',
+                    'private-address-state'       => 'Private Address State',
+                    'citizenship-country'         => 'Citizenship Country',
+                    'citizenship-state'           => 'Citizenship State',
+                    'distance-helper'             => 'Distance from home to work. The legacy km field is synced automatically on save.',
+                    'bank-account-requires-user'  => 'Link a user account to this employee before adding a bank account.',
                     'country'                     => 'Country',
                     'country-name'                => 'Country Name',
                     'country-code'                => 'Country Code',
@@ -177,12 +188,31 @@ return [
 
     'table' => [
         'columns' => [
-            'name'         => 'Name',
-            'manager-name' => 'Manager',
-            'company-name' => 'Company',
-            'job-title'    => 'Job Title',
-            'work-email'   => 'Work Email',
-            'work-phone'   => 'Work Phone',
+            'avatar'           => 'Avatar',
+            'name'             => 'Name',
+            'manager-name'     => 'Manager',
+            'company-name'     => 'Company',
+            'department'       => 'Department',
+            'employment-type'  => 'Employment Type',
+            'civil-id-expiry'  => 'Civil ID Expiry',
+            'compliance'       => 'Compliance',
+            'status'           => 'Status',
+            'job-title'        => 'Job Title',
+            'work-email'       => 'Work Email',
+            'work-phone'       => 'Work Phone',
+        ],
+
+        'status' => [
+            'active'   => 'Active',
+            'inactive' => 'Inactive',
+        ],
+
+        'compliance-badges' => [
+            'inactive'         => 'Inactive',
+            'expired-docs'     => ':count expired doc|:count expired docs',
+            'expiring-docs'    => ':count expiring doc|:count expiring docs',
+            'active-warnings'  => ':count warning|:count warnings',
+            'civil-id'         => 'Civil ID expiring',
         ],
 
         'filters' => [
@@ -219,6 +249,7 @@ return [
             'gender'                          => 'Gender',
             'children'                        => 'Children',
             'visa-no'                         => 'Visa No',
+            'civil-id-expiry'                 => 'Civil ID Expiry',
             'permit-no'                       => 'Permit No',
             'language'                        => 'Language',
             'additional-note'                 => 'Additional Note',
@@ -312,16 +343,20 @@ return [
     'infolist' => [
         'sections' => [
             'entries' => [
-                'name'          => 'Name',
-                'job-title'     => 'Job Title',
-                'work-email'    => 'Work Email',
-                'work-mobile'   => 'Work Mobile',
-                'work-phone'    => 'Work Phone',
-                'manager'       => 'Manager',
-                'department'    => 'Department',
-                'job-position'  => 'Job Position',
-                'employee-tags' => 'Employee Tags',
-                'coach'         => 'Coach',
+                'name'            => 'Name',
+                'job-title'       => 'Job Title',
+                'work-email'      => 'Work Email',
+                'work-mobile'     => 'Work Mobile',
+                'work-phone'      => 'Work Phone',
+                'manager'         => 'Manager',
+                'department'      => 'Department',
+                'job-position'    => 'Job Position',
+                'employee-tags'   => 'Employee Tags',
+                'coach'           => 'Coach',
+                'civil-id'        => 'Civil ID',
+                'civil-id-expiry' => 'Civil ID Expiry',
+                'employment-type' => 'Employment Type',
+                'membership-type' => 'Membership Type',
             ],
         ],
 
@@ -331,6 +366,7 @@ return [
 
                 'entries' => [
                     'location'             => 'Location',
+                    'approvers'            => 'Approvers',
                     'work-address'         => 'Work Address',
                     'work-location'        => 'Work Location',
                     'time-off'             => 'Time Off',
@@ -338,6 +374,7 @@ return [
                     'working-hours'        => 'Working Hours',
                     'timezone'             => 'Timezone',
                     'organization-details' => 'Organization Details',
+                    'employment-type'      => 'Employment Type',
                     'company'              => 'Company',
                     'color'                => 'Color',
                     'schedule'             => 'Schedule',
@@ -348,6 +385,10 @@ return [
                 'title' => 'Private Information',
 
                 'entries' => [
+                    'private-address-country'     => 'Private Address Country',
+                    'private-address-state'       => 'Private Address State',
+                    'citizenship-country'         => 'Citizenship Country',
+                    'citizenship-state'           => 'Citizenship State',
                     'country'                     => 'Country',
                     'state'                       => 'State',
                     'street-address'              => 'Street Address',
@@ -413,6 +454,7 @@ return [
             'fields' => [
                 'warning-type'             => 'Warning Type',
                 'warning-type-placeholder' => 'Select a warning type',
+                'create-warning-type'      => 'Create Warning Type',
                 'subject'                  => 'Subject',
                 'description'              => 'Description',
                 'issued-at'                => 'Issued At',
@@ -495,8 +537,15 @@ return [
                 'notes'         => 'Notes',
             ],
             'actions' => [
+                'view'     => 'View',
                 'download' => 'Download',
             ],
+        ],
+
+        'preview' => [
+            'close'          => 'Close',
+            'no-preview'     => 'Preview is not available for this file type.',
+            'file-not-found' => 'The file could not be found.',
         ],
 
         'notifications' => [

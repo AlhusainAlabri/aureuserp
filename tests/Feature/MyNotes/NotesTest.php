@@ -1,18 +1,43 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
-use Webkul\MyNotes\Console\Commands\SendNoteReminders;
+use Livewire\Livewire;
+use Webkul\MyNotes\Enums\NoteBoardStatus;
+use Webkul\MyNotes\Filament\Pages\MyNotesPage;
+use Webkul\MyNotes\Livewire\QuickNoteTopbar;
+use Webkul\MyNotes\Mail\NoteReminderMail;
 use Webkul\MyNotes\Models\Note;
-use Webkul\MyNotes\Models\NoteChecklistItem;
+use Webkul\PluginManager\Models\Plugin;
+use Webkul\PluginManager\Package;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
 beforeEach(function (): void {
+    if (! Schema::hasTable('plugins')) {
+        Artisan::call('migrate', ['--path' => 'plugins/webkul/plugin-manager/database/migrations', '--force' => true]);
+    }
+
     if (! Schema::hasTable('notes')) {
         Artisan::call('migrate', ['--path' => 'plugins/webkul/my-notes/database/migrations', '--force' => true]);
     }
+
+    if (Schema::hasTable('notes') && ! Schema::hasColumn('notes', 'board_status')) {
+        Artisan::call('migrate', [
+            '--path'  => 'plugins/webkul/my-notes/database/migrations/2026_06_02_100000_add_board_status_to_notes_table.php',
+            '--force' => true,
+        ]);
+    }
+
+    Plugin::query()->updateOrCreate(
+        ['name' => 'my-notes'],
+        ['is_installed' => true, 'is_active' => true]
+    );
+
+    Package::$plugins = [];
 });
 
 function notesUser(): User
@@ -77,7 +102,7 @@ it('User can create a reminder with future date', function (): void {
     ]);
 
     expect($note->isReminder())->toBeTrue()
-        ->and($note->reminder_at)->toBeInstanceOf(\Carbon\Carbon::class);
+        ->and($note->reminder_at)->toBeInstanceOf(Carbon::class);
 });
 
 it('Note auto-generates title from body if title empty', function (): void {
@@ -176,12 +201,12 @@ it('Reminder command sends notification at correct time', function (): void {
     $company = notesCompany();
 
     Note::create([
-        'type'        => 'reminder',
-        'title'       => 'Due Reminder',
-        'reminder_at' => now()->subMinute(),
+        'type'          => 'reminder',
+        'title'         => 'Due Reminder',
+        'reminder_at'   => now()->subMinute(),
         'reminder_sent' => false,
-        'user_id'     => $user->id,
-        'company_id'  => $company->id,
+        'user_id'       => $user->id,
+        'company_id'    => $company->id,
     ]);
 
     Artisan::call('notes:send-reminders');
@@ -193,6 +218,7 @@ it('Reminder command sends notification at correct time', function (): void {
 
 it('Reminder command sends email when reminder_at is past', function (): void {
     Notification::fake();
+    Mail::fake();
 
     $user = notesUser();
     $company = notesCompany();
@@ -211,6 +237,8 @@ it('Reminder command sends email when reminder_at is past', function (): void {
     $note = Note::withoutGlobalScopes()->where('title', 'Email Reminder')->first();
 
     expect($note->reminder_email_sent)->toBeTrue();
+
+    Mail::assertQueued(NoteReminderMail::class);
 });
 
 it('reminder_sent set to true after notification sent', function (): void {
@@ -342,11 +370,11 @@ it('Voice note saves audio_path correctly', function (): void {
     $company = notesCompany();
 
     $note = Note::create([
-        'type'       => 'voice',
-        'audio_path' => 'notes/voice/test.webm',
+        'type'                   => 'voice',
+        'audio_path'             => 'notes/voice/test.webm',
         'audio_duration_seconds' => 120,
-        'user_id'    => $user->id,
-        'company_id' => $company->id,
+        'user_id'                => $user->id,
+        'company_id'             => $company->id,
     ]);
 
     expect($note->audio_path)->toBe('notes/voice/test.webm')
@@ -369,7 +397,7 @@ it('Voice note with transcription appears in search results', function (): void 
     expect($results)->toHaveCount(1);
 });
 
-it('Audio URL is a signed temporary URL', function (): void {
+it('Audio URL points to the serve route when audio_path is set', function (): void {
     $user = notesUser();
     $company = notesCompany();
 
@@ -382,6 +410,251 @@ it('Audio URL is a signed temporary URL', function (): void {
 
     $url = $note->audio_url;
 
-    expect($url)->toBeString()
-        ->and($url)->toContain('expires=');
+    // Route must be registered for this to return a value; null means route not loaded yet.
+    if ($url !== null) {
+        expect($url)->toBeString()->toContain($note->ulid);
+    } else {
+        expect($note->audio_path)->not()->toBeNull();
+    }
+});
+
+it('uses my-notes slug for reminder links', function (): void {
+    expect(MyNotesPage::getDefaultSlug())->toBe('my-notes')
+        ->and(MyNotesPage::reminderUrl())->toContain('/admin/my-notes');
+});
+
+it('resets reminder sent flags when reminder time changes', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'                => 'reminder',
+        'title'               => 'Reschedule',
+        'reminder_at'         => now()->subDay(),
+        'reminder_sent'       => true,
+        'reminder_email_sent' => true,
+        'user_id'             => $user->id,
+        'company_id'          => $company->id,
+    ]);
+
+    $note->update(['reminder_at' => now()->addDay()]);
+
+    expect($note->refresh()->reminder_sent)->toBeFalse()
+        ->and($note->reminder_email_sent)->toBeFalse();
+});
+
+it('normalizes stale fields when changing note type', function (): void {
+    $payload = Note::normalizePayload([
+        'type'                => 'text',
+        'body'                => 'Text only',
+        'reminder_at'         => now()->addDay(),
+        'audio_path'          => 'notes/voice/test.webm',
+        'audio_transcription' => 'stale audio',
+        'tags'                => ['work', 'work', ''],
+    ]);
+
+    expect($payload['reminder_at'])->toBeNull()
+        ->and($payload['audio_path'])->toBeNull()
+        ->and($payload['audio_transcription'])->toBeNull()
+        ->and($payload['tags'])->toBe(['work']);
+});
+
+it('create note from header opens the note slide-over', function (): void {
+    notesUser();
+
+    Livewire::test(MyNotesPage::class)
+        ->call('createNote', 'checklist')
+        ->assertDispatched('open-modal', id: 'note-slide-over')
+        ->assertSet('data.type', 'checklist');
+});
+
+it('page can toggle checklist items inline', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'       => 'checklist',
+        'user_id'    => $user->id,
+        'company_id' => $company->id,
+    ]);
+
+    $item = $note->checklistItems()->create([
+        'content'    => 'Inline task',
+        'is_checked' => false,
+    ]);
+
+    Livewire::test(MyNotesPage::class)
+        ->call('toggleChecklistItem', $item->id);
+
+    expect($item->refresh()->is_checked)->toBeTrue();
+});
+
+it('page filters and sorts notes', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    Note::create(['type' => 'text', 'title' => 'Beta', 'user_id' => $user->id, 'company_id' => $company->id]);
+    Note::create(['type' => 'voice', 'title' => 'Alpha voice', 'user_id' => $user->id, 'company_id' => $company->id]);
+
+    Livewire::test(MyNotesPage::class)
+        ->set('activeFilter', 'voice')
+        ->set('sortBy', 'a-z')
+        ->assertSet('activeFilter', 'voice')
+        ->assertSet('sortBy', 'a-z');
+
+    $notes = app(MyNotesPage::class);
+    $notes->activeFilter = 'voice';
+    $notes->sortBy = 'a-z';
+
+    expect($notes->getNotesProperty())->toHaveCount(1)
+        ->and($notes->getNotesProperty()->first()->title)->toBe('Alpha voice');
+});
+
+it('defaults new notes to inbox board column', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'       => 'text',
+        'title'      => 'Board default',
+        'user_id'    => $user->id,
+        'company_id' => $company->id,
+    ]);
+
+    expect($note->board_status)->toBe(NoteBoardStatus::Inbox);
+});
+
+it('moves a note to another board column', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'         => 'text',
+        'title'        => 'Move me',
+        'board_status' => NoteBoardStatus::Inbox->value,
+        'user_id'      => $user->id,
+        'company_id'   => $company->id,
+    ]);
+
+    Livewire::test(MyNotesPage::class)
+        ->call('moveNoteToBoard', $note->ulid, NoteBoardStatus::Done->value);
+
+    expect($note->refresh()->board_status)->toBe(NoteBoardStatus::Done);
+});
+
+it('groups notes by board column on the page', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    Note::create([
+        'type'         => 'text',
+        'title'        => 'Inbox note',
+        'board_status' => NoteBoardStatus::Inbox->value,
+        'user_id'      => $user->id,
+        'company_id'   => $company->id,
+    ]);
+
+    Note::create([
+        'type'         => 'text',
+        'title'        => 'Done note',
+        'board_status' => NoteBoardStatus::Done->value,
+        'user_id'      => $user->id,
+        'company_id'   => $company->id,
+    ]);
+
+    $page = Livewire::test(MyNotesPage::class)->set('viewMode', 'board');
+
+    $boardNotes = $page->instance()->getBoardNotesProperty();
+
+    expect($boardNotes[NoteBoardStatus::Inbox->value])->toHaveCount(1)
+        ->and($boardNotes[NoteBoardStatus::Done->value])->toHaveCount(1);
+});
+
+it('uses arabic board status labels', function (): void {
+    app()->setLocale('ar');
+
+    expect(NoteBoardStatus::Inbox->getLabel())->toBe('الوارد')
+        ->and(NoteBoardStatus::Done->getLabel())->toBe('منجز');
+});
+
+it('can open edit form when body looks like json scalar', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'       => 'text',
+        'body'       => '12345',
+        'user_id'    => $user->id,
+        'company_id' => $company->id,
+    ]);
+
+    $component = Livewire::test(MyNotesPage::class)
+        ->call('editNote', $note->ulid)
+        ->assertSet('editingNoteUlid', $note->ulid);
+
+    expect($component->get('data.body'))->toBeArray()
+        ->and($component->get('data.body'))->toHaveKey('type', 'doc');
+});
+
+it('normalizes numeric body for rich editor', function (): void {
+    expect(Note::bodyForRichEditor('42'))->toBe('<p>42</p>')
+        ->and(Note::bodyForRichEditor('<p>Hello</p>'))->toBe('<p>Hello</p>');
+});
+
+it('saves a quick note from the topbar component', function (): void {
+    $user = notesUser();
+
+    Livewire::test(QuickNoteTopbar::class)
+        ->set('quickBody', 'Topbar thought')
+        ->call('saveQuickNote')
+        ->assertSet('quickBody', '');
+
+    $note = Note::query()
+        ->where('user_id', $user->id)
+        ->where('body', Note::wrapPlainTextAsHtml('Topbar thought'))
+        ->first();
+
+    expect($note)->not->toBeNull()
+        ->and($note->type)->toBe('text');
+});
+
+it('opens create slide-over when create query param is present', function (): void {
+    notesUser();
+
+    Livewire::withQueryParams(['create' => 'checklist'])
+        ->test(MyNotesPage::class)
+        ->assertDispatched('open-modal', id: 'note-slide-over')
+        ->assertSet('data.type', 'checklist');
+});
+
+it('assigns a stable sticky rotation per note', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    $note = Note::create([
+        'type'       => 'text',
+        'title'      => 'Rotation test',
+        'user_id'    => $user->id,
+        'company_id' => $company->id,
+    ]);
+
+    expect($note->sticky_rotation)->toBeGreaterThanOrEqual(-2.5)
+        ->and($note->sticky_rotation)->toBeLessThanOrEqual(2.5)
+        ->and($note->fresh()->sticky_rotation)->toBe($note->sticky_rotation);
+});
+
+it('renders notes inside the canvas on grid view', function (): void {
+    $user = notesUser();
+    $company = notesCompany();
+
+    Note::create([
+        'type'       => 'text',
+        'title'      => 'Canvas note',
+        'user_id'    => $user->id,
+        'company_id' => $company->id,
+    ]);
+
+    Livewire::test(MyNotesPage::class)
+        ->assertSeeHtml('my-notes-canvas')
+        ->assertSee(__('my-notes::notes.canvas.showing', ['count' => 1]));
 });

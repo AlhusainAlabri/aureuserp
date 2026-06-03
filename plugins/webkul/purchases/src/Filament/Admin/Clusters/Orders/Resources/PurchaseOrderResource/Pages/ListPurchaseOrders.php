@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages;
 
+use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Webkul\Purchase\Enums\OrderState;
@@ -16,6 +17,7 @@ class ListPurchaseOrders extends ListOrders
     public function getPresetTableViews(): array
     {
         return [
+            ...PurchaseOrderResourceExtensions::presetTableViews(),
             'my_orders' => PresetView::make(__('purchases::filament/admin/clusters/orders/resources/purchase-order/pages/list-purchase-orders.tabs.my-orders'))
                 ->icon('heroicon-o-shopping-cart')
                 ->favorite()

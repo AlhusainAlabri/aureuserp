@@ -9,19 +9,20 @@ trait HasRecordNavigationTabs
 {
     protected function convertNavigationItemsToArray($navigationItems): array
     {
-        return collect($navigationItems)->map(function ($item) {
-
-            return [
-                'label'       => $item->getLabel(),
-                'url'         => $item->getUrl(),
-                'isActive'    => $item->isActive(),
-                'isHidden'    => $item->isHidden(),
-                'icon'        => $item->getIcon(),
-                'activeIcon'  => $item->getactiveIcon(),
-                'badge'       => $item->getBadge(),
-                'badgeColor'  => $item->getBadgeColor(),
-            ];
-        })->toArray();
+        return collect($navigationItems)
+            ->reject(fn ($item): bool => $item->isHidden())
+            ->map(fn ($item): array => [
+                'label'      => $item->getLabel(),
+                'url'        => $item->getUrl(),
+                'isActive'   => $item->isActive(),
+                'isHidden'   => $item->isHidden(),
+                'icon'       => $item->getIcon(),
+                'activeIcon' => $item->getactiveIcon(),
+                'badge'      => $item->getBadge(),
+                'badgeColor' => $item->getBadgeColor(),
+            ])
+            ->values()
+            ->all();
     }
 
     protected function getRecordNavigationTabsWidget(): array

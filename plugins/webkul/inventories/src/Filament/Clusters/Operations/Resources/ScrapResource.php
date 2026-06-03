@@ -77,6 +77,16 @@ class ScrapResource extends Resource
         return __('inventories::filament/clusters/operations/resources/scrap.navigation.title');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inventories::models/scrap.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inventories::models/scrap.plural');
+    }
+
     public static function getNavigationGroup(): string
     {
         return __('inventories::filament/clusters/operations/resources/scrap.navigation.group');

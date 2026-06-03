@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Number;
 use Webkul\DocumentArchive\Database\Factories\DocFileFactory;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -98,18 +99,93 @@ class DocFile extends Model
             ->whereBetween('expiry_date', [now()->toDateString(), now()->addDays($days)->toDateString()]);
     }
 
-    public function getFileSizeForHumans(): string
+    /**
+     * @param  array<int, string>  $tagNames
+     */
+    public function scopeWithAnyTag(Builder $query, array $tagNames): Builder
     {
-        $bytes = (int) $this->file_size;
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $i = 0;
+        $tagNames = collect($tagNames)
+            ->filter(fn (mixed $name): bool => filled($name))
+            ->map(fn (mixed $name): string => (string) $name)
+            ->values()
+            ->all();
 
-        while ($bytes >= 1024 && $i < count($units) - 1) {
-            $bytes /= 1024;
-            $i++;
+        if ($tagNames === []) {
+            return $query;
         }
 
-        return round($bytes, 2).' '.$units[$i];
+        return $query->where(function (Builder $builder) use ($tagNames): void {
+            foreach ($tagNames as $tagName) {
+                $builder->orWhere(function (Builder $tagQuery) use ($tagName): void {
+                    $tagQuery->whereJsonContains('tags', $tagName)
+                        ->orWhere('tags', 'like', '%"name":"'.addcslashes($tagName, '%_\\').'"%')
+                        ->orWhere('tags', 'like', '%"name": "'.addcslashes($tagName, '%_\\').'"%');
+                });
+            }
+        });
+    }
+
+    public function isExpired(): bool
+    {
+        if (! $this->expiry_date) {
+            return false;
+        }
+
+        return $this->expiry_date->lte(now()->startOfDay());
+    }
+
+    public function isExpiringSoon(?int $days = null): bool
+    {
+        if (! $this->expiry_date || $this->isExpired()) {
+            return false;
+        }
+
+        $days ??= (int) config('document-archive.expiring_soon_days', 7);
+
+        return $this->expiry_date->lte(now()->addDays($days)->startOfDay());
+    }
+
+    /**
+     * @return 'expired'|'expiring_soon'|null
+     */
+    public function getExpiryStatus(): ?string
+    {
+        if (! $this->expiry_date) {
+            return null;
+        }
+
+        if ($this->isExpired()) {
+            return 'expired';
+        }
+
+        if ($this->isExpiringSoon()) {
+            return 'expiring_soon';
+        }
+
+        return null;
+    }
+
+    public function getDaysUntilExpiry(): ?int
+    {
+        if (! $this->expiry_date) {
+            return null;
+        }
+
+        return (int) now()->startOfDay()->diffInDays($this->expiry_date->startOfDay(), false);
+    }
+
+    public function isPasswordProtected(): bool
+    {
+        if ($this->hasPassword()) {
+            return true;
+        }
+
+        return $this->folder?->hasPassword() ?? false;
+    }
+
+    public function getFileSizeForHumans(): string
+    {
+        return Number::fileSize((int) $this->file_size);
     }
 
     public function isImage(): bool
@@ -155,7 +231,7 @@ class DocFile extends Model
             return false;
         }
 
-        if ($user->can('view_any_document_archive_doc_file')) {
+        if ($user->can('view_any_document_archive_doc::file')) {
             return true;
         }
 
@@ -183,6 +259,40 @@ class DocFile extends Model
     public function incrementDownloadCount(): void
     {
         $this->increment('download_count');
+    }
+
+    /**
+     * @return array<int, array{name: string, color: string|null}>
+     */
+    public function getTagsWithColors(): array
+    {
+        return collect($this->tags ?? [])
+            ->map(function (array|string $tag): ?array {
+                if (is_string($tag)) {
+                    return ['name' => $tag, 'color' => $this->tag_color];
+                }
+
+                $name = trim((string) ($tag['name'] ?? ''));
+
+                if ($name === '') {
+                    return null;
+                }
+
+                return [
+                    'name'  => $name,
+                    'color' => $tag['color'] ?? $this->tag_color,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    public function getFormattedTags(): string
+    {
+        return collect($this->getTagsWithColors())
+            ->pluck('name')
+            ->implode(', ');
     }
 
     protected static function newFactory(): DocFileFactory

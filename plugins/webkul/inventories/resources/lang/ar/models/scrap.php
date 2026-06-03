@@ -2,6 +2,7 @@
 
 return [
     'title'          => 'الخردة',
+    'plural'         => 'سجلات الخردة',
 
     'log-attributes' => [
         'name'                          => 'الاسم',

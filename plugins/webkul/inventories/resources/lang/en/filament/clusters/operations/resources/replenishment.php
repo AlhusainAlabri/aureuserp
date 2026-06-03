@@ -3,15 +3,21 @@
 return [
     'navigation' => [
         'title' => 'Replenishment',
-        'group' => 'Procurement',
+        'group' => 'Adjustments',
     ],
 
     'form' => [
         'fields' => [
+            'name'      => 'Name',
+            'warehouse' => 'Warehouse',
         ],
     ],
 
     'table' => [
+        'empty-state' => [
+            'heading'     => 'No replenishment rules',
+            'description' => 'Add a replenishment rule to set minimum stock levels and receive alerts.',
+        ],
         'columns' => [
             'product'           => 'Product',
             'location'          => 'Location',

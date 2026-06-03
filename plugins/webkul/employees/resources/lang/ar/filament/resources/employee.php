@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'title' => 'الموظفون',
+    'title'    => 'الموظفون',
+    'singular' => 'موظف',
 
     'navigation' => [
         'title' => 'الموظفون',
@@ -17,22 +18,25 @@ return [
     'form' => [
         'sections' => [
             'fields' => [
-                'name'            => 'الاسم',
-                'job-title'       => 'المسمى الوظيفي',
-                'work-email'      => 'البريد الإلكتروني للعمل',
-                'work-phone'      => 'هاتف العمل',
-                'department'      => 'القسم',
-                'work-mobile'     => 'جوال العمل',
-                'job-position'    => 'المنصب الوظيفي',
-                'manager'         => 'المدير',
-                'coach'           => 'المدرب',
-                'employee-tags'   => 'وسوم الموظف',
-                'membership-type' => 'نوع العضوية',
-                'employee'        => 'موظف',
-                'collaborator'    => 'متعاون',
-                'volunteer'       => 'متطوع',
-                'civil-id'        => 'الرقم المدني',
-                'civil-id-expiry' => 'انتهاء الرقم المدني',
+                'name'                   => 'الاسم',
+                'job-title'              => 'المسمى الوظيفي',
+                'work-email'             => 'البريد الإلكتروني للعمل',
+                'work-phone'             => 'هاتف العمل',
+                'department'             => 'القسم',
+                'work-mobile'            => 'جوال العمل',
+                'job-position'           => 'المنصب الوظيفي',
+                'manager'                => 'المدير',
+                'coach'                  => 'المدرب',
+                'employee-tags'          => 'وسوم الموظف',
+                'membership-type'        => 'نوع العضوية',
+                'employee'               => 'موظف',
+                'collaborator'           => 'متعاون',
+                'volunteer'              => 'متطوع',
+                'civil-id'               => 'الرقم المدني',
+                'civil-id-expiry'        => 'انتهاء الرقم المدني',
+                'oman-phone-hint'        => 'أدخل رمز الدولة، مثل +968 لعُمان.',
+                'civil-id-helper'        => 'رقم الهوية المدنية الوطني المستخدم لمتابعة الامتثال.',
+                'civil-id-expiry-helper' => 'يُستخدم تاريخ الانتهاء لتنبيهات الامتثال في النظرة العامة وقائمة الموظفين.',
             ],
         ],
 
@@ -52,6 +56,7 @@ return [
                     'time-zone'            => 'المنطقة الزمنية',
                     'time-zone-tooltip'    => 'حدد المنطقة الزمنية لجدول العمل هذا',
                     'organization-details' => 'تفاصيل المؤسسة',
+                    'employment-type'      => 'نوع التوظيف',
                     'company'              => 'الشركة',
                     'color'                => 'اللون',
                 ],
@@ -61,6 +66,12 @@ return [
                 'title' => 'المعلومات الخاصة',
 
                 'fields' => [
+                    'private-address-country'     => 'دولة العنوان الخاص',
+                    'private-address-state'       => 'منطقة العنوان الخاص',
+                    'citizenship-country'         => 'دولة الجنسية',
+                    'citizenship-state'           => 'منطقة الجنسية',
+                    'distance-helper'             => 'المسافة من المنزل إلى العمل. يتم مزامنة حقل الكيلومترات تلقائياً عند الحفظ.',
+                    'bank-account-requires-user'  => 'اربط حساب مستخدم بهذا الموظف قبل إضافة حساب بنكي.',
                     'country'                     => 'الدولة',
                     'country-name'                => 'اسم الدولة',
                     'country-code'                => 'رمز الدولة',
@@ -177,12 +188,31 @@ return [
 
     'table' => [
         'columns' => [
-            'name'         => 'الاسم',
-            'manager-name' => 'المدير',
-            'company-name' => 'الشركة',
-            'job-title'    => 'المسمى الوظيفي',
-            'work-email'   => 'البريد الإلكتروني للعمل',
-            'work-phone'   => 'هاتف العمل',
+            'avatar'           => 'الصورة',
+            'name'             => 'الاسم',
+            'manager-name'     => 'المدير',
+            'company-name'     => 'الشركة',
+            'department'       => 'القسم',
+            'employment-type'  => 'نوع التوظيف',
+            'civil-id-expiry'  => 'انتهاء الرقم المدني',
+            'compliance'       => 'الامتثال',
+            'status'           => 'الحالة',
+            'job-title'        => 'المسمى الوظيفي',
+            'work-email'       => 'البريد الإلكتروني للعمل',
+            'work-phone'       => 'هاتف العمل',
+        ],
+
+        'status' => [
+            'active'   => 'نشط',
+            'inactive' => 'غير نشط',
+        ],
+
+        'compliance-badges' => [
+            'inactive'         => 'غير نشط',
+            'expired-docs'     => ':count مستند منتهٍ|:count مستندات منتهية',
+            'expiring-docs'    => ':count مستند ينتهي قريباً|:count مستندات تنتهي قريباً',
+            'active-warnings'  => ':count إنذار|:count إنذارات',
+            'civil-id'         => 'الرقم المدني ينتهي قريباً',
         ],
 
         'filters' => [
@@ -219,6 +249,7 @@ return [
             'gender'                          => 'الجنس',
             'children'                        => 'الأطفال',
             'visa-no'                         => 'رقم التأشيرة',
+            'civil-id-expiry'                 => 'انتهاء الرقم المدني',
             'permit-no'                       => 'رقم التصريح',
             'language'                        => 'اللغة',
             'additional-note'                 => 'ملاحظة إضافية',
@@ -312,16 +343,20 @@ return [
     'infolist' => [
         'sections' => [
             'entries' => [
-                'name'          => 'الاسم',
-                'job-title'     => 'المسمى الوظيفي',
-                'work-email'    => 'البريد الإلكتروني للعمل',
-                'work-mobile'   => 'جوال العمل',
-                'work-phone'    => 'هاتف العمل',
-                'manager'       => 'المدير',
-                'department'    => 'القسم',
-                'job-position'  => 'المنصب الوظيفي',
-                'employee-tags' => 'وسوم الموظف',
-                'coach'         => 'المدرب',
+                'name'            => 'الاسم',
+                'job-title'       => 'المسمى الوظيفي',
+                'work-email'      => 'البريد الإلكتروني للعمل',
+                'work-mobile'     => 'جوال العمل',
+                'work-phone'      => 'هاتف العمل',
+                'manager'         => 'المدير',
+                'department'      => 'القسم',
+                'job-position'    => 'المنصب الوظيفي',
+                'employee-tags'   => 'وسوم الموظف',
+                'coach'           => 'المدرب',
+                'civil-id'        => 'الرقم المدني',
+                'civil-id-expiry' => 'انتهاء الرقم المدني',
+                'employment-type' => 'نوع التوظيف',
+                'membership-type' => 'نوع العضوية',
             ],
         ],
 
@@ -331,6 +366,7 @@ return [
 
                 'entries' => [
                     'location'             => 'الموقع',
+                    'approvers'            => 'المُعتمِدون',
                     'work-address'         => 'عنوان العمل',
                     'work-location'        => 'موقع العمل',
                     'time-off'             => 'الإجازات',
@@ -338,6 +374,7 @@ return [
                     'working-hours'        => 'ساعات العمل',
                     'timezone'             => 'المنطقة الزمنية',
                     'organization-details' => 'تفاصيل المؤسسة',
+                    'employment-type'      => 'نوع التوظيف',
                     'company'              => 'الشركة',
                     'color'                => 'اللون',
                     'schedule'             => 'الجدول',
@@ -348,6 +385,10 @@ return [
                 'title' => 'المعلومات الخاصة',
 
                 'entries' => [
+                    'private-address-country'     => 'دولة العنوان الخاص',
+                    'private-address-state'       => 'منطقة العنوان الخاص',
+                    'citizenship-country'         => 'دولة الجنسية',
+                    'citizenship-state'           => 'منطقة الجنسية',
                     'country'                     => 'الدولة',
                     'state'                       => 'المنطقة',
                     'street-address'              => 'عنوان الشارع',
@@ -413,6 +454,7 @@ return [
             'fields' => [
                 'warning-type'             => 'نوع الإنذار',
                 'warning-type-placeholder' => 'اختر نوع الإنذار',
+                'create-warning-type'      => 'إنشاء نوع إنذار',
                 'subject'                  => 'الموضوع',
                 'description'              => 'الوصف',
                 'issued-at'                => 'تاريخ الإصدار',
@@ -495,8 +537,15 @@ return [
                 'notes'         => 'ملاحظات',
             ],
             'actions' => [
+                'view'     => 'عرض',
                 'download' => 'تحميل',
             ],
+        ],
+
+        'preview' => [
+            'close'          => 'إغلاق',
+            'no-preview'     => 'المعاينة غير متاحة لهذا النوع من الملفات.',
+            'file-not-found' => 'تعذر العثور على الملف.',
         ],
 
         'notifications' => [

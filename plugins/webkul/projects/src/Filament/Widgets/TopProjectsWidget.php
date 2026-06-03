@@ -18,7 +18,7 @@ class TopProjectsWidget extends BaseWidget
 
     protected static bool $isLazy = false;
 
-    protected static ?string $pollingInterval = '15s';
+    protected static ?string $pollingInterval = null;
 
     protected static function getPagePermission(): ?string
     {

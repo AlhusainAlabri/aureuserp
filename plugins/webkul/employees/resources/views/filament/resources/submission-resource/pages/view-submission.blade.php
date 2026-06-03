@@ -24,7 +24,7 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($this->getRecord()->attachments as $attachment)
                                     <a
-                                        href="{{ \Illuminate\Support\Facades\Storage::disk('private')->url($attachment) }}"
+                                        href="{{ \Illuminate\Support\Facades\Storage::disk('local')->url($attachment) }}"
                                         target="_blank"
                                         class="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200"
                                     >
@@ -110,7 +110,7 @@
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between">
                         <span class="text-gray-500">{{ __('employees::filament/resources/submission.infolist.sections.details.entries.submitter') }}</span>
-                        <span class="font-medium">{{ $this->getRecord()->submitter_name ?? '—' }}</span>
+                        <span class="font-medium">{{ $this->getRecord()->display_submitter_name }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">{{ __('employees::filament/resources/submission.infolist.sections.details.entries.department') }}</span>

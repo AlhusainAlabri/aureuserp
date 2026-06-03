@@ -24,6 +24,7 @@ use Webkul\Correspondence\Database\Factories\CorrespondenceFactory;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Meetings\Models\Meeting;
 use Webkul\Project\Models\Project;
+use Webkul\Project\Models\Task;
 use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -132,6 +133,16 @@ class Correspondence extends Model
         return $this->hasMany(CorrespondenceFollower::class);
     }
 
+    public function reads(): HasMany
+    {
+        return $this->hasMany(CorrespondenceRead::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'correspondence_id');
+    }
+
     public function scopeOutgoing(Builder $query): Builder
     {
         return $query->where('direction', 'outgoing');
@@ -177,6 +188,48 @@ class Correspondence extends Model
         return $query
             ->whereDate('due_date', '<', now()->toDateString())
             ->whereNotIn('status', ['sent', 'archived']);
+    }
+
+    public function scopeUnreadFor(Builder $query, User $user): Builder
+    {
+        return $query
+            ->incoming()
+            ->where('status', 'received')
+            ->where(function (Builder $query) use ($user): void {
+                $query->where('to_user_id', $user->id);
+
+                $departmentIds = Department::idsForEmployeeDepartment($user->employee?->department_id);
+
+                if ($departmentIds !== []) {
+                    $query->orWhereIn('to_department_id', $departmentIds);
+                }
+            })
+            ->whereDoesntHave('reads', fn (Builder $query): Builder => $query->where('user_id', $user->id));
+    }
+
+    public function markAsReadBy(?User $user = null): void
+    {
+        $user ??= Auth::user();
+
+        if (! $user) {
+            return;
+        }
+
+        $this->reads()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['read_at' => now()],
+        );
+    }
+
+    public function unarchive(): bool
+    {
+        if ($this->status !== 'archived') {
+            return false;
+        }
+
+        return $this->update([
+            'status' => $this->isOutgoing() ? 'sent' : 'received',
+        ]);
     }
 
     public function isOutgoing(): bool

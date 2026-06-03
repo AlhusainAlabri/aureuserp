@@ -1,0 +1,8 @@
+> vite build
+
+vite v5.4.19 building for production...
+✓ 54 modules transformed.
+public/build/manifest.json                0.44 kB │ gzip:  0.18 kB
+public/build/assets/app-DaRLT5U-.css     63.39 kB │ gzip: 10.85 kB
+public/build/assets/theme-Edru8yZg.css  660.37 kB │ gzip: 69.27 kB
+public/build/assets/app-C0G0cght.js      35.48 kB │ gzip: 14.19 kB

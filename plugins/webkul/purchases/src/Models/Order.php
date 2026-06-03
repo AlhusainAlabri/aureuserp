@@ -2,6 +2,9 @@
 
 namespace Webkul\Purchase\Models;
 
+use App\Enums\Purchases\RequestType;
+use App\Enums\Purchases\Urgency;
+use App\Models\Purchases\OrderPayment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -79,31 +82,43 @@ class Order extends Model
         'procurement_group_id',
         'requesting_department_id',
         'beneficiary_department_id',
+        'request_type',
+        'urgency',
         'project_id',
         'meeting_id',
         'receipt_uploaded',
         'receipt_path',
         'receipt_uploaded_at',
         'receipt_reminder_sent_at',
+        'quotation_path',
+        'payment_voucher_path',
+        'payment_voucher_uploaded_at',
+        'amount_paid',
+        'amount_remaining',
     ];
 
     protected $casts = [
-        'state'                    => OrderState::class,
-        'invoice_status'           => OrderInvoiceStatus::class,
-        'receipt_status'           => OrderReceiptStatus::class,
-        'mail_reminder_confirmed'  => 'boolean',
-        'mail_reception_confirmed' => 'boolean',
-        'mail_reception_declined'  => 'boolean',
-        'report_grids'             => 'boolean',
-        'ordered_at'               => 'datetime',
-        'approved_at'              => 'datetime',
-        'planned_at'               => 'datetime',
-        'calendar_start_at'        => 'datetime',
-        'effective_date'           => 'datetime',
-        'untaxed_amount'           => 'decimal:4',
-        'receipt_uploaded'         => 'boolean',
-        'receipt_uploaded_at'      => 'datetime',
-        'receipt_reminder_sent_at' => 'datetime',
+        'state'                       => OrderState::class,
+        'invoice_status'              => OrderInvoiceStatus::class,
+        'receipt_status'              => OrderReceiptStatus::class,
+        'mail_reminder_confirmed'     => 'boolean',
+        'mail_reception_confirmed'    => 'boolean',
+        'mail_reception_declined'     => 'boolean',
+        'report_grids'                => 'boolean',
+        'ordered_at'                  => 'datetime',
+        'approved_at'                 => 'datetime',
+        'planned_at'                  => 'datetime',
+        'calendar_start_at'           => 'datetime',
+        'effective_date'              => 'datetime',
+        'untaxed_amount'              => 'decimal:4',
+        'receipt_uploaded'            => 'boolean',
+        'receipt_uploaded_at'         => 'datetime',
+        'receipt_reminder_sent_at'    => 'datetime',
+        'payment_voucher_uploaded_at' => 'datetime',
+        'amount_paid'                 => 'decimal:4',
+        'amount_remaining'            => 'decimal:4',
+        'request_type'                => RequestType::class,
+        'urgency'                     => Urgency::class,
     ];
 
     public function getModelTitle(): string
@@ -236,6 +251,11 @@ class Order extends Model
         }
 
         return $this->belongsTo(self::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(OrderPayment::class, 'order_id');
     }
 
     public function isReceiptRequired(): bool

@@ -1,0 +1,41 @@
+<?php
+
+namespace Webkul\Contact\Filament\Clusters\Configurations\Resources;
+
+use App\Filament\Contacts\Concerns\ProvidesContactConfigurationResourceLabels;
+use Webkul\Contact\Filament\Clusters\Configurations;
+use Webkul\Contact\Filament\Clusters\Configurations\Resources\TitleResource\Pages\ManageTitles;
+use Webkul\Contact\Models\Title;
+use Webkul\Partner\Filament\Resources\TitleResource as BaseTitleResource;
+
+class TitleResource extends BaseTitleResource
+{
+    use ProvidesContactConfigurationResourceLabels;
+
+    protected static ?string $model = Title::class;
+
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
+
+    protected static bool $shouldRegisterNavigation = true;
+
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $cluster = Configurations::class;
+
+    protected static function contactConfigurationTranslationKey(): string
+    {
+        return 'contacts::filament/clusters/configurations/resources/title';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('contacts::filament/clusters/configurations/resources/title.navigation.title');
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ManageTitles::route('/'),
+        ];
+    }
+}

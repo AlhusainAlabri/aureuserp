@@ -1,0 +1,29 @@
+{
+    "name": "webkul/assets",
+    "description": "Physical asset management and employee borrowing",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Assets\\AssetsServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Assets\\": "src/",
+            "Webkul\\Assets\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\Assets\\Tests\\": "tests/"
+        }
+    }
+}

@@ -2,6 +2,7 @@
 
 return [
     'title'          => 'Scrap',
+    'plural'         => 'Scraps',
 
     'log-attributes' => [
         'name'                          => 'Name',

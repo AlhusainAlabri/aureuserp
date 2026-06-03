@@ -10,14 +10,15 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -32,11 +33,13 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 use Webkul\Correspondence\Filament\Resources\MeetingCorrespondencesRelationManager;
 use Webkul\Meetings\Filament\Resources\MeetingResource\Pages\CreateMeeting;
 use Webkul\Meetings\Filament\Resources\MeetingResource\Pages\EditMeeting;
 use Webkul\Meetings\Filament\Resources\MeetingResource\Pages\ListMeetings;
 use Webkul\Meetings\Filament\Resources\MeetingResource\Pages\ViewMeeting;
+use Webkul\Meetings\Filament\Resources\MeetingResource\RelationManagers\MeetingApprovalsRelationManager;
 use Webkul\Meetings\Filament\Resources\MeetingResource\RelationManagers\MeetingAttachmentRelationManager;
 use Webkul\Meetings\Filament\Resources\MeetingResource\RelationManagers\MeetingAttendeeRelationManager;
 use Webkul\Meetings\Filament\Resources\MeetingResource\RelationManagers\MeetingTaskRelationManager;
@@ -46,7 +49,6 @@ use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
 use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
-use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class MeetingResource extends Resource
 {
@@ -77,6 +79,93 @@ class MeetingResource extends Resource
         return __('meetings::meetings.models.meeting');
     }
 
+    public static function getPluralModelLabel(): string
+    {
+        return __('meetings::meetings.navigation.meetings');
+    }
+
+    public static function textDirection(): string
+    {
+        return app()->getLocale() === 'ar' ? 'rtl' : 'ltr';
+    }
+
+    public static function minutesRichEditor(string $name, ?int $minHeightRem = null): RichEditor
+    {
+        $editor = RichEditor::make($name)
+            ->label(__('meetings::meetings.fields.'.$name))
+            ->extraAttributes(['dir' => static::textDirection()])
+            ->fileAttachments(false)
+            ->helperText(__('meetings::meetings.form.rich_editor_attachments_hint'))
+            ->columnSpanFull();
+
+        if ($minHeightRem !== null) {
+            $editor->extraAttributes([
+                'style' => "min-height: {$minHeightRem}rem",
+                'class' => 'fi-minutes-editor-expanded',
+            ], merge: true);
+        }
+
+        return $editor;
+    }
+
+    public static function userSelect(string $name, ?string $label = null, bool $required = true): Select
+    {
+        $select = Select::make($name)
+            ->label($label ?? __('meetings::meetings.fields.user'))
+            ->options(fn (): array => static::userOptionsWithAvatars())
+            ->allowHtml()
+            ->searchable()
+            ->preload();
+
+        if ($required) {
+            $select->required();
+        }
+
+        return $select;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function userOptionsWithAvatars(): array
+    {
+        return User::query()
+            ->with('partner')
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn (User $user): array => [
+                $user->id => static::userOptionHtml($user),
+            ])
+            ->all();
+    }
+
+    public static function userOptionHtml(User $user): string
+    {
+        $avatarUrl = e($user->avatar_url ?: static::defaultUserAvatarUrl($user->name));
+        $name = e($user->name);
+
+        return <<<HTML
+            <div class="flex items-center gap-2">
+                <img src="{$avatarUrl}" alt="" class="h-7 w-7 shrink-0 rounded-full object-cover ring-1 ring-gray-200 dark:ring-gray-700" loading="lazy" />
+                <span class="truncate">{$name}</span>
+            </div>
+        HTML;
+    }
+
+    public static function defaultUserAvatarUrl(?string $name): string
+    {
+        return 'https://ui-avatars.com/api/?name='.urlencode($name ?: 'U').'&color=1E3A8A&background=DBEAFE';
+    }
+
+    public static function applyStatusChange(Meeting $meeting, string $status): void
+    {
+        if ($status === 'confirmed' && $meeting->status !== 'confirmed' && ! $meeting->canBeConfirmed()) {
+            throw new RuntimeException(__('meetings::meetings.exceptions.confirm_before_approval'));
+        }
+
+        $meeting->update(['status' => $status]);
+    }
+
     public static function getGloballySearchableAttributes(): array
     {
         return ['title', 'meeting_number', 'notes'];
@@ -99,6 +188,13 @@ class MeetingResource extends Resource
                             ->label(__('meetings::meetings.fields.type'))
                             ->options(static::typeOptions())
                             ->required(),
+                        Select::make('status')
+                            ->label(__('meetings::meetings.fields.status'))
+                            ->options(static::statusOptions())
+                            ->default('draft')
+                            ->required()
+                            ->visible(fn (?Meeting $record): bool => auth()->user()?->can('updateStatus', $record ?? new Meeting) ?? false)
+                            ->disabled(fn (?Meeting $record): bool => $record?->status === 'archived'),
                         DateTimePicker::make('meeting_date')
                             ->label(__('meetings::meetings.fields.meeting_date'))
                             ->native(false)
@@ -118,7 +214,8 @@ class MeetingResource extends Resource
                             ->preload(),
                         Select::make('chair_person_id')
                             ->label(__('meetings::meetings.fields.chair_person'))
-                            ->options(fn () => User::query()->pluck('name', 'id'))
+                            ->options(fn (): array => static::userOptionsWithAvatars())
+                            ->allowHtml()
                             ->searchable()
                             ->preload()
                             ->live()
@@ -146,7 +243,8 @@ class MeetingResource extends Resource
                             }),
                         Select::make('secretary_id')
                             ->label(__('meetings::meetings.fields.secretary'))
-                            ->options(fn () => User::query()->pluck('name', 'id'))
+                            ->options(fn (): array => static::userOptionsWithAvatars())
+                            ->allowHtml()
                             ->searchable()
                             ->preload(),
                     ])
@@ -154,33 +252,35 @@ class MeetingResource extends Resource
 
                 Section::make(__('meetings::meetings.form.sections.agenda'))
                     ->schema([
-                        RichEditor::make('agenda')
-                            ->label(__('meetings::meetings.fields.agenda'))
-                            ->extraAttributes(['dir' => 'rtl'])
-                            ->columnSpanFull(),
+                        static::minutesRichEditor('agenda', 22),
                     ]),
 
                 Section::make(__('meetings::meetings.form.sections.attendees'))
+                    ->description(__('meetings::meetings.form.attendees_hint'))
                     ->schema([
                         Repeater::make('attendees')
                             ->relationship()
                             ->label(__('meetings::meetings.form.sections.attendees'))
+                            ->table([
+                                TableColumn::make(__('meetings::meetings.fields.user'))->markAsRequired(),
+                                TableColumn::make(__('meetings::meetings.fields.role'))->markAsRequired(),
+                                TableColumn::make(__('meetings::meetings.fields.attended')),
+                            ])
+                            ->compact()
                             ->schema([
-                                Select::make('user_id')
-                                    ->label(__('meetings::meetings.fields.user'))
-                                    ->options(fn () => User::query()->pluck('name', 'id'))
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
+                                static::userSelect('user_id')->hiddenLabel(),
                                 Select::make('role')
                                     ->label(__('meetings::meetings.fields.role'))
                                     ->options(static::roleOptions())
-                                    ->required(),
+                                    ->required()
+                                    ->hiddenLabel(),
                                 Toggle::make('attended')
-                                    ->label(__('meetings::meetings.fields.attended')),
+                                    ->label(__('meetings::meetings.fields.attended'))
+                                    ->hiddenLabel(),
                             ])
-                            ->columns(3)
-                            ->defaultItems(0),
+                            ->addActionLabel(__('meetings::meetings.actions.add_attendee'))
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make(__('meetings::meetings.form.sections.purchase_requests'))
@@ -209,22 +309,9 @@ class MeetingResource extends Resource
                     ])
                     ->visible(fn (): bool => class_exists(PurchaseOrder::class)),
 
-                Section::make(__('meetings::meetings.form.sections.attachments'))
-                    ->schema([
-                        FileUpload::make('uploads')
-                            ->label(__('meetings::meetings.fields.attachments'))
-                            ->multiple()
-                            ->disk('private')
-                            ->directory(fn () => 'meetings/'.now()->year)
-                            ->dehydrated(false),
-                    ]),
-
                 Section::make(__('meetings::meetings.form.sections.notes'))
                     ->schema([
-                        RichEditor::make('notes')
-                            ->label(__('meetings::meetings.fields.notes'))
-                            ->extraAttributes(['dir' => 'rtl'])
-                            ->columnSpanFull(),
+                        static::minutesRichEditor('notes'),
                     ]),
             ]);
     }
@@ -302,7 +389,9 @@ class MeetingResource extends Resource
                 ExportMeetingPdfAction::make(),
                 DeleteAction::make(),
             ])
-            ->defaultSort('meeting_date', 'desc');
+            ->defaultSort('meeting_date', 'desc')
+            ->emptyStateHeading(__('meetings::meetings.empty.no_meetings'))
+            ->emptyStateDescription(__('meetings::meetings.empty.no_meetings_description'));
     }
 
     public static function infolist(Schema $schema): Schema
@@ -314,7 +403,8 @@ class MeetingResource extends Resource
                         TextEntry::make('meeting_number')->label(__('meetings::meetings.fields.meeting_number')),
                         TextEntry::make('title')->label(__('meetings::meetings.fields.title')),
                         TextEntry::make('type')->label(__('meetings::meetings.fields.type'))->formatStateUsing(fn (?string $state): string => static::typeOptions()[$state] ?? (string) $state)->badge(),
-                        TextEntry::make('status')->label(__('meetings::meetings.fields.status'))->formatStateUsing(fn (?string $state): string => static::statusOptions()[$state] ?? (string) $state)->badge(),
+                        ViewEntry::make('status')
+                            ->view('meetings::filament.infolists.meeting-status-badge'),
                         TextEntry::make('meeting_date')->label(__('meetings::meetings.fields.meeting_date'))->dateTime(),
                         TextEntry::make('location')->label(__('meetings::meetings.fields.location'))->placeholder('-'),
                         TextEntry::make('duration_minutes')->label(__('meetings::meetings.fields.duration_minutes'))->suffix(' '.__('meetings::meetings.units.minutes'))->placeholder('-'),
@@ -332,17 +422,17 @@ class MeetingResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make(__('meetings::meetings.relations.approvals'), [
-                ApprovalsRelationManager::class,
+            RelationGroup::make(__('meetings::meetings.relations.attendees'), [
+                MeetingAttendeeRelationManager::class,
             ]),
             RelationGroup::make(__('meetings::meetings.relations.tasks'), [
                 MeetingTaskRelationManager::class,
             ]),
-            RelationGroup::make(__('meetings::meetings.relations.attendees'), [
-                MeetingAttendeeRelationManager::class,
-            ]),
-            RelationGroup::make(__('meetings::meetings.relations.attachments'), [
+            RelationGroup::make(__('meetings::meetings.relations.documents'), [
                 MeetingAttachmentRelationManager::class,
+            ]),
+            RelationGroup::make(__('meetings::meetings.relations.approvals'), [
+                MeetingApprovalsRelationManager::class,
             ]),
             RelationGroup::make(__('correspondence::correspondence.relations.meeting_correspondences'), [
                 MeetingCorrespondencesRelationManager::class,

@@ -28,6 +28,9 @@ class CorrespondenceServiceProvider extends PackageServiceProvider
                 '2026_05_17_090001_create_correspondences_table',
                 '2026_05_17_090002_create_correspondence_attachments_table',
                 '2026_05_17_090003_create_correspondence_followers_table',
+                '2026_05_28_100000_add_employees_department_id_to_departments_table',
+                '2026_05_28_100001_add_correspondence_id_to_projects_tasks_table',
+                '2026_05_28_100002_create_correspondence_reads_table',
             ])
             ->hasDependencies([
                 'projects',
@@ -35,6 +38,7 @@ class CorrespondenceServiceProvider extends PackageServiceProvider
             ])
             ->runsMigrations()
             ->hasSeeder('Webkul\\Correspondence\\Database\\Seeders\\CorrespondenceApprovalFlowSeeder')
+            ->hasSeeder('Webkul\\Correspondence\\Database\\Seeders\\CorrespondenceDepartmentSeeder')
             ->hasInstallCommand(function (InstallCommand $command): void {
                 $command
                     ->installDependencies()
@@ -42,7 +46,7 @@ class CorrespondenceServiceProvider extends PackageServiceProvider
                     ->runsSeeders()
                     ->endWith(function (InstallCommand $command): void {
                         $command->call('shield:generate', [
-                            '--resource' => 'CorrespondenceResource',
+                            '--resource' => 'CorrespondenceResource,DepartmentResource',
                             '--panel'    => 'admin',
                         ]);
 

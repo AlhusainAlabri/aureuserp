@@ -54,6 +54,11 @@ class OrderPoint extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
+    }
+
     public function route(): BelongsTo
     {
         return $this->belongsTo(Route::class);

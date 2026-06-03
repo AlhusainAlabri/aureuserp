@@ -108,14 +108,47 @@ return [
     ],
 
     'filters' => [
-        'from'  => 'من',
-        'until' => 'إلى',
+        'from'           => 'من',
+        'until'          => 'إلى',
+        'received_from'  => 'تاريخ الاستلام من',
+        'received_until' => 'تاريخ الاستلام إلى',
+        'due_from'       => 'الموعد النهائي من',
+        'due_until'      => 'الموعد النهائي إلى',
     ],
 
     'actions' => [
-        'view'       => 'عرض',
-        'archive'    => 'أرشفة',
-        'export_pdf' => 'تصدير PDF',
+        'view'        => 'عرض',
+        'archive'     => 'أرشفة',
+        'unarchive'   => 'إلغاء الأرشفة',
+        'download'    => 'تنزيل',
+        'export_pdf'  => 'تصدير PDF',
+        'create_task' => 'إنشاء مهمة متابعة',
+    ],
+
+    'departments' => [
+        'navigation'           => 'الدوائر',
+        'model'                => 'دائرة',
+        'plural'               => 'الدوائر',
+        'section'              => 'بيانات الدائرة',
+        'name'                 => 'الاسم',
+        'code'                 => 'الرمز',
+        'manager'              => 'المدير',
+        'company'              => 'الشركة',
+        'employees_department' => 'دائرة الموارد البشرية المرتبطة',
+    ],
+
+    'tasks' => [
+        'navigation' => 'مهام المتابعة',
+        'create'     => 'إنشاء مهمة',
+        'title'      => 'عنوان المهمة',
+        'deadline'   => 'الموعد النهائي',
+        'assignee'   => 'المكلف',
+        'created'    => 'تم إنشاء مهمة المتابعة',
+        'empty'      => 'لا توجد مهام متابعة مرتبطة بالمراسلات بعد.',
+    ],
+
+    'tabs' => [
+        'archived' => 'الأرشيف',
     ],
 
     'relations' => [
@@ -164,6 +197,11 @@ return [
         ],
     ],
 
+    'empty' => [
+        'no_records'             => 'لا توجد مراسلات',
+        'no_records_description' => 'ستظهر المراسلات هنا عند توفرها.',
+    ],
+
     'dashboard' => [
         'stats' => [
             'outgoing_month'   => 'إجمالي الصادر هذا الشهر',
@@ -189,6 +227,7 @@ return [
 
     'exceptions' => [
         'send_before_approval' => 'لا يمكن إرسال المراسلة قبل اكتمال الموافقات',
+        'task_create_failed'   => 'تعذر إنشاء مهمة المتابعة. تحقق من وجود مرحلة مهام.',
     ],
 
     'commands' => [

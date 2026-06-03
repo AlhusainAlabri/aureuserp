@@ -9,13 +9,13 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -42,9 +42,14 @@ class SubmissionResource extends Resource
         return __('employees::filament/resources/submission.navigation.title');
     }
 
+    public static function getPluralModelLabel(): string
+    {
+        return __('employees::filament/resources/submission.navigation.title');
+    }
+
     public static function getNavigationGroup(): string
     {
-        return __('employees::filament/resources/submission.navigation.group');
+        return __('employees::filament/resources/employee.navigation.group');
     }
 
     public static function getNavigationBadge(): ?string
@@ -67,7 +72,7 @@ class SubmissionResource extends Resource
         return [
             __('employees::filament/resources/submission.global-search.type')     => __('employees::filament/resources/submission.types.'.$record->type),
             __('employees::filament/resources/submission.global-search.status')   => __('employees::filament/resources/submission.statuses.'.$record->status),
-            __('employees::filament/resources/submission.global-search.employee') => $record->submitter_name ?? '—',
+            __('employees::filament/resources/submission.global-search.employee') => $record->display_submitter_name,
         ];
     }
 
@@ -99,8 +104,8 @@ class SubmissionResource extends Resource
                     ->weight('bold'),
                 TextColumn::make('submitter_name')
                     ->label(__('employees::filament/resources/submission.table.columns.submitter'))
-                    ->searchable()
-                    ->placeholder('—'),
+                    ->formatStateUsing(fn (EmployeeSubmission $record): string => $record->display_submitter_name)
+                    ->searchable(),
                 TextColumn::make('department.name')
                     ->label(__('employees::filament/resources/submission.table.columns.department'))
                     ->placeholder('—')
@@ -174,7 +179,7 @@ class SubmissionResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()
-                    ->form(fn (Form $form) => $form->schema([
+                    ->schema([
                         Select::make('status')
                             ->label(__('employees::filament/resources/submission.form.fields.status'))
                             ->options([
@@ -192,7 +197,7 @@ class SubmissionResource extends Resource
                                 'high'   => __('employees::filament/resources/submission.priorities.high'),
                             ])
                             ->required(),
-                    ])),
+                    ]),
                 DeleteAction::make()
                     ->successNotification(
                         Notification::make()
@@ -275,9 +280,9 @@ class SubmissionResource extends Resource
                                         ->columnSpanFull(),
                                 ]),
                                 Group::make([
-                                    TextEntry::make('submitter_name')
+                                    TextEntry::make('display_submitter_name')
                                         ->label(__('employees::filament/resources/submission.infolist.sections.details.entries.submitter'))
-                                        ->placeholder('—'),
+                                        ->state(fn (EmployeeSubmission $record): string => $record->display_submitter_name),
                                     TextEntry::make('department.name')
                                         ->label(__('employees::filament/resources/submission.infolist.sections.details.entries.department'))
                                         ->placeholder('—'),

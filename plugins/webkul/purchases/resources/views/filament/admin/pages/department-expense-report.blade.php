@@ -17,7 +17,7 @@
                     {{ __('purchases::filament/admin/pages/department-expense-report.cards.total-amount') }}
                 </div>
                 <div class="text-2xl font-bold">
-                    {{ number_format($this->summaryData['total_amount'], 2) }}
+                    {{ \App\Filament\Extensions\PurchaseOrderResourceExtensions::formatOmrAmount($this->summaryData['total_amount']) }}
                 </div>
             </x-filament::section>
 

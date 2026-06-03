@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Traits;
 
+use App\Filament\Extensions\TimeOffResourceExtensions;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -177,6 +178,7 @@ trait TimeOffHelper
                         ->rows(3)
                         ->columnSpanFull()
                         ->helperText(__('time-off::filament/widgets/calendar-widget.form.fields.description-helper')),
+                    ...TimeOffResourceExtensions::substituteFormSection(),
                 ])->columnSpanFull(),
         ];
     }

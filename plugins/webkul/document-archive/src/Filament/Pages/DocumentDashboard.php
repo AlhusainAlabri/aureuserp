@@ -6,7 +6,10 @@ use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget;
+use Webkul\DocumentArchive\Filament\Widgets\ExpiringSoonFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\RecentFilesWidget;
+use Webkul\DocumentArchive\Filament\Widgets\StorageByFolderChartWidget;
+use Webkul\DocumentArchive\Filament\Widgets\TopTagsChartWidget;
 
 class DocumentDashboard extends BaseDashboard
 {
@@ -28,6 +31,11 @@ class DocumentDashboard extends BaseDashboard
         return __('document-archive::document-archive.navigation.dashboard.label');
     }
 
+    public function getTitle(): string
+    {
+        return __('document-archive::document-archive.dashboard.page_title');
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('admin.navigation.document-archive');
@@ -42,8 +50,25 @@ class DocumentDashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
+        $widgets = [
+            TopTagsChartWidget::class,
+            StorageByFolderChartWidget::class,
+        ];
+
+        if (request('filter') === 'expiring') {
+            $widgets[] = ExpiringSoonFilesWidget::class;
+        }
+
+        $widgets[] = RecentFilesWidget::class;
+
+        return $widgets;
+    }
+
+    public function getColumns(): int|array
+    {
         return [
-            RecentFilesWidget::class,
+            'default' => 1,
+            'lg'      => 2,
         ];
     }
 }

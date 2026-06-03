@@ -2,6 +2,8 @@
 
 namespace Webkul\Project\Filament\Resources;
 
+use App\Filament\Extensions\ProjectResourceExtensions;
+use App\Filament\Resources\ProjectResource\Pages\ManageTasks;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -47,11 +49,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Webkul\Chatter\Filament\Actions\ActivityTableAction;
-use Webkul\Correspondence\Filament\Resources\ProjectCorrespondencesRelationManager;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
 use Webkul\Field\Filament\Infolists\Components\ProgressStepper as InfolistProgressStepper;
 use Webkul\Field\Filament\Traits\HasCustomFields;
-use Webkul\Meetings\Filament\Resources\ProjectMeetingsRelationManager;
 use Webkul\Partner\Filament\Resources\PartnerResource;
 use Webkul\Project\Enums\ProjectVisibility;
 use Webkul\Project\Filament\Clusters\Configurations\Resources\TagResource;
@@ -59,7 +59,6 @@ use Webkul\Project\Filament\Resources\ProjectResource\Pages\CreateProject;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\EditProject;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ListProjects;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ManageMilestones;
-use Webkul\Project\Filament\Resources\ProjectResource\Pages\ManageTasks;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ViewProject;
 use Webkul\Project\Filament\Resources\ProjectResource\RelationManagers\MilestonesRelationManager;
 use Webkul\Project\Filament\Resources\ProjectResource\RelationManagers\TaskStagesRelationManager;
@@ -297,6 +296,7 @@ class ProjectResource extends Resource
                             ->weight(FontWeight::Bold),
                     ])
                         ->visible(fn (Project $record): bool => (bool) $record->tags?->count()),
+                    ...ProjectResourceExtensions::extraTableStacks(),
                 ])
                     ->space(3),
             ]))
@@ -527,6 +527,8 @@ class ProjectResource extends Resource
                                     ->markdown(),
                             ]),
 
+                        ...ProjectResourceExtensions::kpiInfolistSection(),
+
                         Section::make(__('projects::filament/resources/project.infolist.sections.additional.title'))
                             ->schema(static::mergeCustomInfolistEntries([
                                 Grid::make(2)
@@ -687,7 +689,7 @@ class ProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Task Stages', [
+            RelationGroup::make(__('projects-extensions::relations.task_stages'), [
                 TaskStagesRelationManager::class,
             ])
                 ->icon('heroicon-o-squares-2x2'),
@@ -697,15 +699,7 @@ class ProjectResource extends Resource
             ])
                 ->icon('heroicon-o-flag'),
 
-            RelationGroup::make(__('meetings::meetings.relations.project_meetings'), [
-                ProjectMeetingsRelationManager::class,
-            ])
-                ->icon('heroicon-o-clipboard-document-list'),
-
-            RelationGroup::make(__('correspondence::correspondence.relations.project_correspondences'), [
-                ProjectCorrespondencesRelationManager::class,
-            ])
-                ->icon('heroicon-o-envelope'),
+            ...ProjectResourceExtensions::extraRelationGroups(),
         ];
     }
 

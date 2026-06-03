@@ -16,7 +16,7 @@ class TopAssigneesWidget extends BaseWidget
 {
     use HasWidgetShield, InteractsWithPageFilters;
 
-    protected static ?string $pollingInterval = '15s';
+    protected static ?string $pollingInterval = null;
 
     protected static bool $isLazy = false;
 

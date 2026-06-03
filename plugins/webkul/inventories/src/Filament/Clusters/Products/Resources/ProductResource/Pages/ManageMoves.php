@@ -7,6 +7,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Webkul\Inventory\Enums\LocationType;
 use Webkul\Inventory\Enums\MoveState;
@@ -35,6 +36,16 @@ class ManageMoves extends ManageRelatedRecords
     public static function getNavigationLabel(): string
     {
         return __('inventories::filament/clusters/products/resources/product/pages/manage-moves.title');
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('inventories::filament/clusters/products/resources/product/pages/manage-moves.title');
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return __('inventories::filament/clusters/products/resources/product/pages/manage-moves.breadcrumb');
     }
 
     public function getPresetTableViews(): array
@@ -127,6 +138,8 @@ class ManageMoves extends ManageRelatedRecords
                     ->label(__('inventories::filament/clusters/products/resources/product/pages/manage-moves.table.columns.done-by'))
                     ->sortable(),
             ])
+            ->emptyStateHeading(__('inventories::filament/clusters/products/resources/product/pages/manage-moves.empty-state.heading'))
+            ->emptyStateDescription(__('inventories::filament/clusters/products/resources/product/pages/manage-moves.empty-state.description'))
             ->recordActions([
                 DeleteAction::make()
                     ->successNotification(

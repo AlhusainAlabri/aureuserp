@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Webkul\Correspondence\Models\Correspondence;
 use Webkul\Meetings\Models\Meeting;
 use Webkul\MyNotes\Database\Factories\NoteFactory;
+use Webkul\MyNotes\Enums\NoteBoardStatus;
+use Webkul\MyNotes\Support\NoteDateFormatter;
 use Webkul\Project\Models\Project;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -30,6 +33,8 @@ class Note extends Model
         'tags',
         'is_pinned',
         'is_archived',
+        'board_status',
+        'board_sort',
         'reminder_at',
         'reminder_sent',
         'reminder_email_sent',
@@ -48,10 +53,32 @@ class Note extends Model
         'tags'                  => 'array',
         'is_pinned'             => 'boolean',
         'is_archived'           => 'boolean',
+        'board_status'          => NoteBoardStatus::class,
+        'board_sort'            => 'integer',
         'reminder_sent'         => 'boolean',
         'reminder_email_sent'   => 'boolean',
         'reminder_at'           => 'datetime',
         'audio_duration_seconds'=> 'integer',
+    ];
+
+    public const TYPES = [
+        'text',
+        'checklist',
+        'reminder',
+        'voice',
+    ];
+
+    public const COLORS = [
+        'default',
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'teal',
+        'blue',
+        'purple',
+        'pink',
+        'gray',
     ];
 
     protected static function booted(): void
@@ -74,31 +101,28 @@ class Note extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function meeting(): ?BelongsTo
+    public function meeting(): BelongsTo
     {
-        if (! class_exists(Meeting::class)) {
-            return null;
-        }
-
-        return $this->belongsTo(Meeting::class);
+        return $this->belongsTo(
+            class_exists(Meeting::class) ? Meeting::class : self::class,
+            'meeting_id'
+        );
     }
 
-    public function project(): ?BelongsTo
+    public function project(): BelongsTo
     {
-        if (! class_exists(Project::class)) {
-            return null;
-        }
-
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            class_exists(Project::class) ? Project::class : self::class,
+            'project_id'
+        );
     }
 
-    public function correspondence(): ?BelongsTo
+    public function correspondence(): BelongsTo
     {
-        if (! class_exists(Correspondence::class)) {
-            return null;
-        }
-
-        return $this->belongsTo(Correspondence::class);
+        return $this->belongsTo(
+            class_exists(Correspondence::class) ? Correspondence::class : self::class,
+            'correspondence_id'
+        );
     }
 
     public function isText(): bool
@@ -131,8 +155,12 @@ class Note extends Model
 
     public function getChecklistProgress(): array
     {
-        $total = $this->checklistItems()->count();
-        $done = $this->checklistItems()->where('is_checked', true)->count();
+        $items = $this->relationLoaded('checklistItems')
+            ? $this->checklistItems
+            : $this->checklistItems()->get();
+
+        $total = $items->count();
+        $done = $items->where('is_checked', true)->count();
         $percent = $total > 0 ? round(($done / $total) * 100) : 0;
 
         return ['done' => $done, 'total' => $total, 'percent' => $percent];
@@ -146,8 +174,12 @@ class Note extends Model
 
         return match ($this->type) {
             'checklist' => $this->getAutoChecklistTitle(),
-            'reminder'  => __('my-notes::notes.reminder_title_auto', ['date' => $this->reminder_at?->format('d M Y h:i A') ?? '-']),
-            'voice'     => __('my-notes::notes.voice_memo'),
+            'reminder'  => __('my-notes::notes.auto_title.reminder', [
+                'date' => $this->reminder_at !== null
+                    ? NoteDateFormatter::formatDateTime($this->reminder_at)
+                    : '-',
+            ]),
+            'voice'     => __('my-notes::notes.types.voice'),
             default     => $this->getAutoTextTitle(),
         };
     }
@@ -155,7 +187,7 @@ class Note extends Model
     protected function getAutoTextTitle(): string
     {
         if (empty($this->body)) {
-            return __('my-notes::notes.untitled_note');
+            return __('my-notes::notes.auto_title.untitled');
         }
 
         $text = strip_tags($this->body);
@@ -167,7 +199,7 @@ class Note extends Model
     {
         $progress = $this->getChecklistProgress();
 
-        return __('my-notes::notes.checklist_title_auto', $progress);
+        return __('my-notes::notes.auto_title.checklist', $progress);
     }
 
     public function getColorHexAttribute(): string
@@ -186,6 +218,56 @@ class Note extends Model
         };
     }
 
+    public function getStickyBackgroundAttribute(): string
+    {
+        return match ($this->color) {
+            'red'     => '#FEE2E2',
+            'orange'  => '#FFEDD5',
+            'yellow'  => '#FEF9C3',
+            'green'   => '#DCFCE7',
+            'teal'    => '#CCFBF1',
+            'blue'    => '#DBEAFE',
+            'purple'  => '#F3E8FF',
+            'pink'    => '#FCE7F3',
+            'gray'    => '#F3F4F6',
+            default   => '#FFFBEB',
+        };
+    }
+
+    public function getStickyRotationAttribute(): float
+    {
+        $hash = crc32($this->ulid ?? (string) $this->id);
+
+        return match ($hash % 5) {
+            0       => -2.5,
+            1       => -1.0,
+            2       => 0.0,
+            3       => 1.0,
+            default => 2.5,
+        };
+    }
+
+    public function getStickyBackgroundDarkAttribute(): string
+    {
+        return match ($this->color) {
+            'red'     => '#450A0A',
+            'orange'  => '#431407',
+            'yellow'  => '#422006',
+            'green'   => '#052E16',
+            'teal'    => '#042F2E',
+            'blue'    => '#172554',
+            'purple'  => '#3B0764',
+            'pink'    => '#500724',
+            'gray'    => '#1F2937',
+            default   => '#292524',
+        };
+    }
+
+    public function getBoardStatusLabelAttribute(): string
+    {
+        return NoteBoardStatus::tryFromValue($this->board_status?->value ?? (string) $this->board_status)->getLabel();
+    }
+
     public function hasLinkedModule(): bool
     {
         return $this->meeting_id !== null
@@ -199,7 +281,119 @@ class Note extends Model
             return null;
         }
 
-        return Storage::disk('local')->temporaryUrl($this->audio_path, now()->addMinutes(60));
+        if (! Route::has('my-notes.audio.serve')) {
+            return null;
+        }
+
+        return route('my-notes.audio.serve', ['ulid' => $this->ulid]);
+    }
+
+    public function getReminderStatusAttribute(): ?string
+    {
+        if (! $this->isReminder() || $this->reminder_at === null) {
+            return null;
+        }
+
+        if ($this->reminder_sent) {
+            return 'sent';
+        }
+
+        if ($this->isOverdue()) {
+            return 'overdue';
+        }
+
+        return 'upcoming';
+    }
+
+    /**
+     * Prepare stored body for Filament RichEditor (TipTap).
+     *
+     * TipTap treats JSON-parseable strings (e.g. "123") as JSON scalars, which crashes the editor.
+     */
+    public static function bodyForRichEditor(mixed $body): ?string
+    {
+        if ($body === null || $body === '') {
+            return null;
+        }
+
+        if (! is_string($body)) {
+            return null;
+        }
+
+        try {
+            $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+
+            if (is_array($decoded) && ($decoded['type'] ?? null) === 'doc') {
+                return $body;
+            }
+
+            if (! is_array($decoded)) {
+                return self::wrapPlainTextAsHtml($body);
+            }
+        } catch (\JsonException) {
+            // Plain HTML or text — continue below.
+        }
+
+        if (! str_contains($body, '<')) {
+            return self::wrapPlainTextAsHtml($body);
+        }
+
+        return $body;
+    }
+
+    public static function wrapPlainTextAsHtml(string $text): string
+    {
+        return '<p>'.e($text).'</p>';
+    }
+
+    public static function normalizePayload(array $data): array
+    {
+        $type = in_array($data['type'] ?? 'text', self::TYPES, true) ? $data['type'] : 'text';
+
+        $payload = [
+            'type'                => $type,
+            'title'               => filled($data['title'] ?? null) ? $data['title'] : null,
+            'body'                => in_array($type, ['text', 'reminder'], true) ? ($data['body'] ?? null) : null,
+            'color'               => in_array($data['color'] ?? 'default', self::COLORS, true) ? ($data['color'] ?? 'default') : 'default',
+            'tags'                => self::normalizeTags($data['tags'] ?? []),
+            'is_pinned'           => (bool) ($data['is_pinned'] ?? false),
+            'board_status'        => NoteBoardStatus::tryFromValue($data['board_status'] ?? null)->value,
+            'board_sort'          => (int) ($data['board_sort'] ?? 0),
+            'reminder_at'         => $type === 'reminder' ? ($data['reminder_at'] ?? null) : null,
+            'correspondence_id'   => $data['correspondence_id'] ?? null,
+            'meeting_id'          => $data['meeting_id'] ?? null,
+            'project_id'          => $data['project_id'] ?? null,
+            'audio_path'          => $type === 'voice' ? ($data['audio_path'] ?? null) : null,
+            'audio_transcription' => $type === 'voice' ? ($data['audio_transcription'] ?? null) : null,
+        ];
+
+        if ($type !== 'reminder') {
+            $payload['reminder_sent'] = false;
+            $payload['reminder_email_sent'] = false;
+        }
+
+        if ($type !== 'voice') {
+            $payload['audio_duration_seconds'] = null;
+        }
+
+        return $payload;
+    }
+
+    protected static function normalizeTags(mixed $tags): ?array
+    {
+        if (! is_array($tags)) {
+            return null;
+        }
+
+        $normalized = Collection::make($tags)
+            ->filter(fn (mixed $tag): bool => is_string($tag) && filled($tag))
+            ->map(fn (string $tag): string => Str::limit(trim($tag), 40, ''))
+            ->unique()
+            ->take(10)
+            ->values()
+            ->all();
+
+        return $normalized === [] ? null : $normalized;
     }
 
     public function scopePinned(Builder $query): Builder
@@ -256,7 +450,15 @@ class Note extends Model
         static::creating(function (Note $note): void {
             $note->ulid ??= (string) Str::ulid();
             $note->user_id ??= auth()->id();
-            $note->company_id ??= auth()->user()?->default_company_id;
+            $note->company_id ??= auth()->user()?->default_company_id ?? Company::query()->value('id');
+            $note->board_status ??= NoteBoardStatus::Inbox;
+        });
+
+        static::updating(function (Note $note): void {
+            if ($note->isDirty('reminder_at')) {
+                $note->reminder_sent = false;
+                $note->reminder_email_sent = false;
+            }
         });
     }
 

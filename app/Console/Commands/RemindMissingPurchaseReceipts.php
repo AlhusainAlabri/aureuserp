@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\PurchaseReceiptReminderMail;
 use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Models\PurchaseOrder;
 
@@ -34,6 +36,12 @@ class RemindMissingPurchaseReceipts extends Command
                     ]))
                     ->warning()
                     ->sendToDatabase($order->creator);
+
+                if ($order->creator->email) {
+                    Mail::to($order->creator->email)->queue(
+                        new PurchaseReceiptReminderMail($order, $order->creator)
+                    );
+                }
             }
 
             $order->update(['receipt_reminder_sent_at' => now()]);

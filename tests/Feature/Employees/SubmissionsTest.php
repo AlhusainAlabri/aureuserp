@@ -321,3 +321,8 @@ it('prevents regular employees from accessing submission resource', function () 
     expect(MySubmissions::canAccess())->toBeTrue();
     expect(SubmissionResource::getModel())->toBe(EmployeeSubmission::class);
 });
+
+it('registers submissions under the employees navigation group', function (): void {
+    expect(SubmissionResource::getNavigationGroup())
+        ->toBe(__('employees::filament/resources/employee.navigation.group'));
+});

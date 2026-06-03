@@ -2,8 +2,10 @@
 
 use Webkul\Correspondence\Filament\Pages\CorrespondenceDashboard;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
+use Webkul\Correspondence\Filament\Resources\DepartmentResource;
 use Webkul\Correspondence\Filament\Widgets\CorrespondenceApprovalsTable;
 use Webkul\Correspondence\Filament\Widgets\CorrespondenceDashboardStats;
+use Webkul\Correspondence\Filament\Widgets\CorrespondenceTasksTable;
 use Webkul\Correspondence\Filament\Widgets\IncomingCorrespondencesTable;
 use Webkul\Correspondence\Filament\Widgets\PendingOutgoingCorrespondencesTable;
 use Webkul\Correspondence\Filament\Widgets\UrgentCorrespondencesTable;
@@ -23,6 +25,10 @@ return [
                 'manage_followers',
                 'view_all_departments',
             ],
+            DepartmentResource::class => [
+                ...$basic,
+                ...$delete,
+            ],
         ],
         'exclude' => [],
     ],
@@ -40,6 +46,7 @@ return [
             IncomingCorrespondencesTable::class,
             PendingOutgoingCorrespondencesTable::class,
             UrgentCorrespondencesTable::class,
+            CorrespondenceTasksTable::class,
         ],
     ],
 ];

@@ -7,15 +7,20 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
+use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
 use Webkul\Support\Models\ActivityPlan;
 
 class EditEmployee extends EditRecord
 {
+    use HasEmployeeRecordNavigationTabs;
+
     protected static string $resource = EmployeeResource::class;
+
+    public static bool $formActionsAreSticky = true;
 
     protected function getRedirectUrl(): string
     {
-        return $this->getResource()::getUrl('view', ['record' => $this->getRecord()]);
+        return $this->getResource()::getUrl('overview', ['record' => $this->getRecord()]);
     }
 
     protected function getSavedNotification(): Notification

@@ -9,7 +9,7 @@ return [
         'mp4', 'zip', 'txt', 'csv',
     ],
 
-    'storage_disk' => 'local',
+    'storage_disk' => 'private',
 
     'share_link_base_url' => env('APP_URL', 'http://localhost').'/share/',
 
@@ -18,4 +18,6 @@ return [
     'password_max_attempts' => 5,
 
     'session_unlock_minutes' => 30,
+
+    'expiring_soon_days' => 7,
 ];

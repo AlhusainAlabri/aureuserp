@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             PluginSeeder::class,
             InvoiceApprovalFlowSeeder::class,
             PurchaseOrderApprovalFlowSeeder::class,
+            PurchaseExtensionSeeder::class,
+            InventoryExtensionSeeder::class,
+            InventoryDemoSeeder::class,
         ]);
     }
 }

@@ -152,7 +152,7 @@ class DocFolder extends Model
             return false;
         }
 
-        if ($user->can('view_any_document_archive_doc_folder')) {
+        if ($user->can('view_any_document_archive_doc::folder')) {
             return true;
         }
 
@@ -182,7 +182,7 @@ class DocFolder extends Model
             return false;
         }
 
-        if ($user->can('create_document_archive_doc_file')) {
+        if ($user->can('create_document_archive_doc::file')) {
             return true;
         }
 
@@ -204,7 +204,7 @@ class DocFolder extends Model
             return false;
         }
 
-        if ($user->can('update_document_archive_doc_folder')) {
+        if ($user->can('update_document_archive_doc::folder')) {
             return true;
         }
 

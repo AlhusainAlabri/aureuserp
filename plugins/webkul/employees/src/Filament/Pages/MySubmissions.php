@@ -12,6 +12,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Webkul\Employee\Models\Employee;
@@ -24,6 +25,8 @@ class MySubmissions extends Page implements HasForms
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
     protected static ?int $navigationSort = 10;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     protected string $view = 'employees::filament.pages.my-submissions';
 
@@ -40,6 +43,48 @@ class MySubmissions extends Page implements HasForms
         ]);
     }
 
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make(__('employees::filament/pages/my-submissions.form.section.title'))
+                    ->description(__('employees::filament/pages/my-submissions.form.section.description'))
+                    ->schema([
+                        Hidden::make('employee_id')
+                            ->default(fn (): ?int => $this->getAuthEmployee()?->id),
+                        Select::make('type')
+                            ->label(__('employees::filament/pages/my-submissions.form.fields.type'))
+                            ->options([
+                                'complaint'  => __('employees::filament/pages/my-submissions.form.fields.complaint'),
+                                'suggestion' => __('employees::filament/pages/my-submissions.form.fields.suggestion'),
+                                'inquiry'    => __('employees::filament/pages/my-submissions.form.fields.inquiry'),
+                                'feedback'   => __('employees::filament/pages/my-submissions.form.fields.feedback'),
+                            ])
+                            ->required()
+                            ->live(),
+                        TextInput::make('subject')
+                            ->label(__('employees::filament/pages/my-submissions.form.fields.subject'))
+                            ->placeholder(__('employees::filament/pages/my-submissions.form.fields.subject-placeholder'))
+                            ->required()
+                            ->maxLength(255),
+                        Textarea::make('body')
+                            ->label(__('employees::filament/pages/my-submissions.form.fields.body'))
+                            ->placeholder(__('employees::filament/pages/my-submissions.form.fields.body-placeholder'))
+                            ->required()
+                            ->rows(6),
+                        FileUpload::make('attachments')
+                            ->label(__('employees::filament/pages/my-submissions.form.fields.attachments'))
+                            ->multiple()
+                            ->maxFiles(3)
+                            ->maxSize(5120)
+                            ->disk('local')
+                            ->directory('submissions')
+                            ->nullable(),
+                    ]),
+            ])
+            ->statePath('data');
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('employees::filament/pages/my-submissions.navigation.title');
@@ -53,46 +98,6 @@ class MySubmissions extends Page implements HasForms
     public static function canAccess(): bool
     {
         return Auth::check();
-    }
-
-    protected function getFormSchema(): array
-    {
-        return [
-            Section::make(__('employees::filament/pages/my-submissions.form.section.title'))
-                ->description(__('employees::filament/pages/my-submissions.form.section.description'))
-                ->schema([
-                    Hidden::make('employee_id')
-                        ->default(fn () => $this->getAuthEmployee()?->id),
-                    Select::make('type')
-                        ->label(__('employees::filament/pages/my-submissions.form.fields.type'))
-                        ->options([
-                            'complaint'  => __('employees::filament/pages/my-submissions.form.fields.complaint'),
-                            'suggestion' => __('employees::filament/pages/my-submissions.form.fields.suggestion'),
-                            'inquiry'    => __('employees::filament/pages/my-submissions.form.fields.inquiry'),
-                            'feedback'   => __('employees::filament/pages/my-submissions.form.fields.feedback'),
-                        ])
-                        ->required()
-                        ->live(),
-                    TextInput::make('subject')
-                        ->label(__('employees::filament/pages/my-submissions.form.fields.subject'))
-                        ->placeholder(__('employees::filament/pages/my-submissions.form.fields.subject-placeholder'))
-                        ->required()
-                        ->maxLength(255),
-                    Textarea::make('body')
-                        ->label(__('employees::filament/pages/my-submissions.form.fields.body'))
-                        ->placeholder(__('employees::filament/pages/my-submissions.form.fields.body-placeholder'))
-                        ->required()
-                        ->rows(6),
-                    FileUpload::make('attachments')
-                        ->label(__('employees::filament/pages/my-submissions.form.fields.attachments'))
-                        ->multiple()
-                        ->maxFiles(3)
-                        ->maxSize(5120)
-                        ->disk('private')
-                        ->directory('submissions')
-                        ->nullable(),
-                ]),
-        ];
     }
 
     public function submit(): void

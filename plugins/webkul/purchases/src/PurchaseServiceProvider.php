@@ -49,6 +49,7 @@ class PurchaseServiceProvider extends PackageServiceProvider
                 '2026_04_22_115707_create_purchases_order_line_moves_table_from_purchases',
                 '2026_04_23_043411_add_procurement_group_id_column_in_purchases_orders_table_from_purchases',
                 '2026_04_23_043412_add_procurement_group_id_column_in_purchases_order_lines_table_from_purchases',
+                '2026_05_17_130404_add_custom_fields_to_purchase_orders_table',
             ])
             ->runsMigrations()
             ->hasSettings([

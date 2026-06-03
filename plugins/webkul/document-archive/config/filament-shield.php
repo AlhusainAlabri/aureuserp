@@ -5,6 +5,7 @@ use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource;
 use Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget;
+use Webkul\DocumentArchive\Filament\Widgets\ExpiringSoonFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\RecentFilesWidget;
 
 return [
@@ -32,6 +33,7 @@ return [
     'widgets' => [
         'exclude' => [
             DocumentStatsWidget::class,
+            ExpiringSoonFilesWidget::class,
             RecentFilesWidget::class,
         ],
     ],

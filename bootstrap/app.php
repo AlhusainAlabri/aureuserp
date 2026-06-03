@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckEmployeeFileClosure;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             SetLocale::class,
+            CheckEmployeeFileClosure::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

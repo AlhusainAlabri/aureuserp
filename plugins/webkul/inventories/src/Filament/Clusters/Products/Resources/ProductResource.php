@@ -55,6 +55,16 @@ class ProductResource extends BaseProductResource
         return __('inventories::filament/clusters/products/resources/product.navigation.title');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inventories::filament/clusters/products/resources/product.navigation.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inventories::filament/clusters/products/resources/product.navigation.title');
+    }
+
     public static function form(Schema $schema): Schema
     {
         $schema = BaseProductResource::form($schema);

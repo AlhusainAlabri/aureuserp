@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\ProjectResource\Pages;
 
+use App\Filament\Actions\ExportProjectPerformancePdfAction;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
@@ -15,6 +16,7 @@ class ViewProject extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            ExportProjectPerformancePdfAction::make(),
             ChatterAction::make()
                 ->resource(static::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),

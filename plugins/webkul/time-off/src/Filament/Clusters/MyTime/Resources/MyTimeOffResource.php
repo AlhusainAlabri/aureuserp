@@ -2,6 +2,8 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\MyTime\Resources;
 
+use App\Filament\Extensions\TimeOffResourceExtensions;
+use App\Filament\Resources\MyTimeOff\Pages\ViewMyTimeOff;
 use BackedEnum;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -17,7 +19,6 @@ use Webkul\TimeOff\Filament\Clusters\MyTime;
 use Webkul\TimeOff\Filament\Clusters\MyTime\Resources\MyTimeOffResource\Pages\CreateMyTimeOff;
 use Webkul\TimeOff\Filament\Clusters\MyTime\Resources\MyTimeOffResource\Pages\EditMyTimeOff;
 use Webkul\TimeOff\Filament\Clusters\MyTime\Resources\MyTimeOffResource\Pages\ListMyTimeOffs;
-use Webkul\TimeOff\Filament\Clusters\MyTime\Resources\MyTimeOffResource\Pages\ViewMyTimeOff;
 use Webkul\TimeOff\Models\Leave;
 use Webkul\TimeOff\Traits\TimeOffHelper;
 
@@ -120,6 +121,7 @@ class MyTimeOffResource extends Resource
                                     ->label(__('time-off::filament/clusters/management/resources/time-off.infolist.entries.attachment'))
                                     ->visible(fn ($record) => $record->holidayStatus?->support_document),
                             ]),
+                        ...TimeOffResourceExtensions::substituteInfolistSection(),
                     ])->columnSpanFull(),
             ]);
     }

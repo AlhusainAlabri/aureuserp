@@ -11,16 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('analytic_records', function (Blueprint $table) {
-            $table->foreignId('project_id')
-                ->nullable()
-                ->constrained('projects_projects')
-                ->nullOnDelete();
+        if (! Schema::hasTable('analytic_records')) {
+            return;
+        }
 
-            $table->foreignId('task_id')
-                ->nullable()
-                ->constrained('projects_tasks')
-                ->nullOnDelete();
+        Schema::table('analytic_records', function (Blueprint $table): void {
+            if (! Schema::hasColumn('analytic_records', 'project_id') && Schema::hasTable('projects_projects')) {
+                $table->foreignId('project_id')
+                    ->nullable()
+                    ->constrained('projects_projects')
+                    ->nullOnDelete();
+            }
+
+            if (! Schema::hasColumn('analytic_records', 'task_id') && Schema::hasTable('projects_tasks')) {
+                $table->foreignId('task_id')
+                    ->nullable()
+                    ->constrained('projects_tasks')
+                    ->nullOnDelete();
+            }
         });
     }
 
@@ -29,9 +37,18 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('analytic_records', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('project_id');
-            $table->dropConstrainedForeignId('task_id');
+        if (! Schema::hasTable('analytic_records')) {
+            return;
+        }
+
+        Schema::table('analytic_records', function (Blueprint $table): void {
+            if (Schema::hasColumn('analytic_records', 'project_id')) {
+                $table->dropConstrainedForeignId('project_id');
+            }
+
+            if (Schema::hasColumn('analytic_records', 'task_id')) {
+                $table->dropConstrainedForeignId('task_id');
+            }
         });
     }
 };

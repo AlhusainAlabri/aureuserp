@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'ar'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -99,17 +99,17 @@ return [
     */
 
     'supported_locales' => [
-        'en' => [
-            'label'  => 'English',
-            'native' => 'English',
-            'flag'   => 'us',
-            'rtl'    => false,
-        ],
         'ar' => [
             'label'  => 'Arabic',
             'native' => 'العربية',
             'flag'   => 'sa',
             'rtl'    => true,
+        ],
+        'en' => [
+            'label'  => 'English',
+            'native' => 'English',
+            'flag'   => 'us',
+            'rtl'    => false,
         ],
     ],
 

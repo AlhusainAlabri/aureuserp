@@ -1,0 +1,25 @@
+{
+    "name": "webkul/payroll",
+    "description": "Payroll management — salary components, batches, payslips, loans, WPS export",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Payroll\\PayrollServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Payroll\\": "src/",
+            "Webkul\\Payroll\\Database\\Factories\\": "database/factories/",
+            "Webkul\\Payroll\\Database\\Seeders\\": "database/seeders/"
+        }
+    }
+}

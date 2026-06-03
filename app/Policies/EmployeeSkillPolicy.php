@@ -12,7 +12,7 @@ class EmployeeSkillPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(AuthUser $authUser, EmployeeSkill $employeeSkill): bool
+    public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('view_any_employee_employee::skill');
     }
@@ -37,7 +37,7 @@ class EmployeeSkillPolicy
         return $authUser->can('delete_employee_employee::skill');
     }
 
-    public function deleteAny(AuthUser $authUser, EmployeeSkill $employeeSkill): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
         return $authUser->can('delete_any_employee_employee::skill');
     }
@@ -47,7 +47,7 @@ class EmployeeSkillPolicy
         return $authUser->can('restore_employee_employee::skill');
     }
 
-    public function restoreAny(AuthUser $authUser, EmployeeSkill $employeeSkill): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
         return $authUser->can('restore_any_employee_employee::skill');
     }
@@ -57,7 +57,7 @@ class EmployeeSkillPolicy
         return $authUser->can('force_delete_employee_employee::skill');
     }
 
-    public function forceDeleteAny(AuthUser $authUser, EmployeeSkill $employeeSkill): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
         return $authUser->can('force_delete_any_employee_employee::skill');
     }

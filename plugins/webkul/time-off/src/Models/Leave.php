@@ -58,6 +58,10 @@ class Leave extends Model
         'number_of_hours',
         'request_hour_from',
         'request_hour_to',
+        'substitute_employee_id',
+        'substitute_accepted_at',
+        'substitute_declined_at',
+        'substitute_notes',
     ];
 
     public function getLogAttributeLabels(): array
