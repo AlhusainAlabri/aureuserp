@@ -3,6 +3,7 @@
 namespace App\Filament\Recruitment\Pages;
 
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
+use App\Filament\Recruitment\Widgets\JobPositionStatsWidget;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
@@ -12,7 +13,6 @@ use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\EmployeeJobPosition;
 use Webkul\Recruitment\Filament\Pages\Recruitments as BaseRecruitmentDashboard;
 use Webkul\Recruitment\Filament\Widgets\ApplicantChartWidget;
-use Webkul\Recruitment\Filament\Widgets\JobPositionStatsWidget;
 use Webkul\Recruitment\Models\Stage;
 use Webkul\Support\Models\Company;
 
@@ -37,26 +37,55 @@ class ExtendedRecruitmentDashboard extends BaseRecruitmentDashboard
                             ->label(__('recruitments::filament/pages/recruitment.filters-form.job-position'))
                             ->multiple()
                             ->searchable()
-                            ->preload()
-                            ->options(fn () => EmployeeJobPosition::where('is_active', true)->pluck('name', 'id')),
+                            ->getSearchResultsUsing(fn (string $search): array => EmployeeJobPosition::query()
+                                ->where('is_active', true)
+                                ->where('name', 'like', "%{$search}%")
+                                ->limit(50)
+                                ->pluck('name', 'id')
+                                ->all())
+                            ->getOptionLabelsUsing(fn (array $values): array => EmployeeJobPosition::query()
+                                ->whereIn('id', $values)
+                                ->pluck('name', 'id')
+                                ->all()),
                         Select::make('selectedDepartments')
                             ->label(__('recruitments::filament/pages/recruitment.filters-form.departments'))
                             ->multiple()
                             ->searchable()
-                            ->preload()
-                            ->options(fn () => Department::pluck('name', 'id')),
+                            ->getSearchResultsUsing(fn (string $search): array => Department::query()
+                                ->where('name', 'like', "%{$search}%")
+                                ->limit(50)
+                                ->pluck('name', 'id')
+                                ->all())
+                            ->getOptionLabelsUsing(fn (array $values): array => Department::query()
+                                ->whereIn('id', $values)
+                                ->pluck('name', 'id')
+                                ->all()),
                         Select::make('selectedCompanies')
                             ->label(__('recruitments::filament/pages/recruitment.filters-form.companies'))
                             ->multiple()
                             ->searchable()
-                            ->preload()
-                            ->options(fn () => Company::pluck('name', 'id')),
+                            ->getSearchResultsUsing(fn (string $search): array => Company::query()
+                                ->where('name', 'like', "%{$search}%")
+                                ->limit(50)
+                                ->pluck('name', 'id')
+                                ->all())
+                            ->getOptionLabelsUsing(fn (array $values): array => Company::query()
+                                ->whereIn('id', $values)
+                                ->pluck('name', 'id')
+                                ->all()),
                         Select::make('selectedStages')
                             ->label(__('recruitments::filament/pages/recruitment.filters-form.stages'))
                             ->multiple()
                             ->searchable()
-                            ->preload()
-                            ->options(fn () => Stage::pluck('name', 'id')),
+                            ->getSearchResultsUsing(fn (string $search): array => Stage::query()
+                                ->where('name', 'like', "%{$search}%")
+                                ->limit(50)
+                                ->pluck('name', 'id')
+                                ->all())
+                            ->getOptionLabelsUsing(fn (array $values): array => Stage::query()
+                                ->whereIn('id', $values)
+                                ->pluck('name', 'id')
+                                ->all()),
                         Select::make('status')
                             ->label(__('recruitments::filament/pages/recruitment.filters-form.status.title'))
                             ->options([

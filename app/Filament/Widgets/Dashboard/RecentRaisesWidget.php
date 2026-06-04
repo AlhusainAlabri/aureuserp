@@ -16,7 +16,7 @@ class RecentRaisesWidget extends BaseWidget
 
     protected static ?int $sort = 6;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function getColumnSpan(): int|string|array
     {

@@ -21,7 +21,7 @@ class MyTasksTodayWidget extends BaseWidget
 
     protected static ?int $sort = 18;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected string $view = 'filament.widgets.dashboard.my-tasks-today';
 

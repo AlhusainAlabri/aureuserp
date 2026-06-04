@@ -9,6 +9,7 @@ use App\Listeners\Purchases\ConvertApprovedPurchaseToExpense;
 use App\Services\Purchases\InternalRequestLineService;
 use App\Services\Purchases\PurchaseExpenseConversionService;
 use App\Services\Purchases\PurchasePaymentService;
+use App\Support\PermissionTables;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -107,7 +108,7 @@ class PurchaseExtensionsServiceProvider extends ServiceProvider
 
     protected function registerPermissions(): void
     {
-        if (! class_exists(Permission::class)) {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
             return;
         }
 

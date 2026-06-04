@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\Dashboard\DashboardMetricCache;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,18 @@ class RevenueExpensesChartWidget extends ChartWidget
     }
 
     protected function getData(): array
+    {
+        return DashboardMetricCache::rememberWithFilters(
+            'revenue_expenses_chart',
+            $this->pageFilters ?? [],
+            fn (): array => $this->buildChartData(),
+        );
+    }
+
+    /**
+     * @return array{datasets: array<int, array<string, mixed>>, labels: array<int, string>}
+     */
+    protected function buildChartData(): array
     {
         try {
             $months = [];

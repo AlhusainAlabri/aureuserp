@@ -13,9 +13,9 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Department;
-use Webkul\Employee\Models\Employee;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Project;
 use Webkul\Project\Models\Task;
@@ -58,16 +58,27 @@ class TaskResourceExtensions
                 ->columnSpanFull(),
             Select::make('project_id')
                 ->label(__('projects::filament/resources/task.form.sections.settings.fields.project'))
-                ->options(fn (): array => Project::query()->pluck('name', 'id')->all())
                 ->searchable()
-                ->preload()
+                ->getSearchResultsUsing(fn (string $search): array => Project::query()
+                    ->where('name', 'like', "%{$search}%")
+                    ->limit(50)
+                    ->pluck('name', 'id')
+                    ->all())
+                ->getOptionLabelUsing(fn ($value): ?string => Project::query()->find($value)?->name)
                 ->columnSpan(1),
             Select::make('users')
                 ->label(__('projects::filament/resources/task.form.sections.settings.fields.assignees'))
-                ->options(fn (): array => User::query()->pluck('name', 'id')->all())
                 ->multiple()
                 ->searchable()
-                ->preload()
+                ->getSearchResultsUsing(fn (string $search): array => User::query()
+                    ->where('name', 'like', "%{$search}%")
+                    ->limit(50)
+                    ->pluck('name', 'id')
+                    ->all())
+                ->getOptionLabelsUsing(fn (array $values): array => User::query()
+                    ->whereIn('id', $values)
+                    ->pluck('name', 'id')
+                    ->all())
                 ->columnSpan(1),
             DateTimePicker::make('deadline')
                 ->label(__('projects::filament/resources/task.form.sections.settings.fields.deadline'))
@@ -86,27 +97,40 @@ class TaskResourceExtensions
 
             $schema[] = Select::make('owner_id')
                 ->label(__('tasks.fields.owner'))
-                ->options(fn (): array => User::query()->pluck('name', 'id')->all())
                 ->searchable()
-                ->preload()
+                ->getSearchResultsUsing(fn (string $search): array => User::query()
+                    ->where('name', 'like', "%{$search}%")
+                    ->limit(50)
+                    ->pluck('name', 'id')
+                    ->all())
+                ->getOptionLabelUsing(fn ($value): ?string => User::query()->find($value)?->name)
                 ->default(fn (): ?int => auth()->id())
                 ->columnSpan(1);
 
             if (Schema::hasTable('projects_task_categories')) {
                 $schema[] = Select::make('category_id')
                     ->label(__('tasks.fields.category'))
-                    ->options(fn (): array => TaskCategory::query()->where('is_active', true)->pluck('name', 'id')->all())
                     ->searchable()
-                    ->preload()
+                    ->getSearchResultsUsing(fn (string $search): array => TaskCategory::query()
+                        ->where('is_active', true)
+                        ->where('name', 'like', "%{$search}%")
+                        ->limit(50)
+                        ->pluck('name', 'id')
+                        ->all())
+                    ->getOptionLabelUsing(fn ($value): ?string => TaskCategory::query()->find($value)?->name)
                     ->columnSpan(1);
             }
 
             if (Schema::hasTable('employees_departments')) {
                 $schema[] = Select::make('department_id')
                     ->label(__('tasks.fields.department'))
-                    ->options(fn (): array => Department::query()->pluck('name', 'id')->all())
                     ->searchable()
-                    ->preload()
+                    ->getSearchResultsUsing(fn (string $search): array => Department::query()
+                        ->where('name', 'like', "%{$search}%")
+                        ->limit(50)
+                        ->pluck('name', 'id')
+                        ->all())
+                    ->getOptionLabelUsing(fn ($value): ?string => Department::query()->find($value)?->name)
                     ->columnSpan(1);
             }
 
@@ -138,6 +162,32 @@ class TaskResourceExtensions
         return TaskStatePresenter::defaultState();
     }
 
+    public static function applyTableEagerLoads(Builder $query): Builder
+    {
+        $with = [
+            'users.employee',
+            'project',
+            'milestone',
+            'partner',
+            'stage',
+            'tags',
+        ];
+
+        if (Schema::hasColumn('projects_tasks', 'owner_id')) {
+            $with[] = 'owner';
+        }
+
+        if (Schema::hasTable('projects_task_categories')) {
+            $with[] = 'category';
+        }
+
+        if (Schema::hasTable('employees_departments')) {
+            $with[] = 'department';
+        }
+
+        return $query->with($with);
+    }
+
     /** @return array<int, TextColumn> */
     public static function extraTableColumns(): array
     {
@@ -151,15 +201,11 @@ class TaskResourceExtensions
             ->label(__('projects-extensions::columns.manager'))
             ->state(function ($record): string {
                 if (! $record->relationLoaded('users')) {
-                    $record->load('users');
+                    $record->load('users.employee');
                 }
 
                 $names = $record->users
-                    ->map(function (User $user): ?string {
-                        $employee = Employee::query()->where('user_id', $user->id)->first();
-
-                        return $employee?->name ?? $user->name;
-                    })
+                    ->map(fn (User $user): ?string => $user->employee?->name ?? $user->name)
                     ->filter()
                     ->values()
                     ->all();

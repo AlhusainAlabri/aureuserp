@@ -3,8 +3,8 @@
 namespace App\Filament\DocumentArchive\Pages;
 
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
+use App\Filament\DocumentArchive\Widgets\DocumentStatsWidget;
 use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard as BaseDocumentDashboard;
-use Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget;
 use Webkul\DocumentArchive\Filament\Widgets\ExpiringSoonFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\RecentFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\StorageByFolderChartWidget;

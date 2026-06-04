@@ -20,7 +20,7 @@ class MyUpcomingMeetingsWidget extends BaseWidget
 
     protected static ?int $sort = 19;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function getTableHeading(): string|Htmlable|null
     {

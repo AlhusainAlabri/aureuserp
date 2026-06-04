@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
                 $select->searchPrompt(fn (): string => __('filament-forms::components.select.search_prompt'));
                 $select->searchingMessage(fn (): string => __('filament-forms::components.select.searching_message'));
                 $select->noSearchResultsMessage(fn (): string => __('filament-forms::components.select.no_search_results_message'));
+                $select->preload(false);
             });
 
             DatePicker::configureUsing(function (DatePicker $picker): void {

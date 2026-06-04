@@ -140,25 +140,40 @@ class HrExtensionSchemaService
 
     protected function ensureEmployeeSelfAssessmentsTable(): void
     {
-        if (Schema::hasTable('employee_self_assessments')) {
+        if (! Schema::hasTable('employee_self_assessments')) {
+            Schema::create('employee_self_assessments', function (Blueprint $table): void {
+                $table->id();
+                $table->foreignId('employee_id')->constrained('employees_employees')->cascadeOnDelete();
+                $table->unsignedSmallInteger('period_year');
+                $table->unsignedTinyInteger('period_month');
+                $table->text('employee_comments')->nullable();
+                $table->string('attachment_path')->nullable();
+                $table->timestamp('submitted_at')->nullable();
+                $table->enum('status', ['draft', 'submitted', 'reviewed'])->default('draft');
+                $table->text('manager_feedback')->nullable();
+                $table->foreignId('reviewed_by')->nullable()->constrained('users');
+                $table->timestamp('reviewed_at')->nullable();
+                $table->foreignId('creator_id')->constrained('users');
+                $table->timestamps();
+                $table->unique(['employee_id', 'period_year', 'period_month'], 'emp_self_assess_period_unique');
+            });
+
             return;
         }
 
-        Schema::create('employee_self_assessments', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('employee_id')->constrained('employees_employees')->cascadeOnDelete();
-            $table->unsignedSmallInteger('period_year');
-            $table->unsignedTinyInteger('period_month');
-            $table->text('employee_comments')->nullable();
-            $table->string('attachment_path')->nullable();
-            $table->timestamp('submitted_at')->nullable();
-            $table->enum('status', ['draft', 'submitted', 'reviewed'])->default('draft');
-            $table->text('manager_feedback')->nullable();
-            $table->foreignId('reviewed_by')->nullable()->constrained('users');
-            $table->timestamp('reviewed_at')->nullable();
-            $table->foreignId('creator_id')->constrained('users');
-            $table->timestamps();
-            $table->unique(['employee_id', 'period_year', 'period_month']);
+        $this->ensureEmployeeSelfAssessmentsPeriodUnique();
+    }
+
+    protected function ensureEmployeeSelfAssessmentsPeriodUnique(): void
+    {
+        $indexName = 'emp_self_assess_period_unique';
+
+        if (in_array($indexName, Schema::getIndexListing('employee_self_assessments'), true)) {
+            return;
+        }
+
+        Schema::table('employee_self_assessments', function (Blueprint $table) use ($indexName): void {
+            $table->unique(['employee_id', 'period_year', 'period_month'], $indexName);
         });
     }
 

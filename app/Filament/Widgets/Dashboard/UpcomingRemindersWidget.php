@@ -21,7 +21,7 @@ class UpcomingRemindersWidget extends BaseWidget
 
     protected static ?int $sort = 21;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function getTableHeading(): string|Htmlable|null
     {

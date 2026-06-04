@@ -22,7 +22,7 @@ class LowStockWidget extends BaseWidget
 
     protected static ?int $sort = 3;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
 

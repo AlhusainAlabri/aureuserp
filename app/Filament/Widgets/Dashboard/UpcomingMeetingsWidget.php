@@ -18,7 +18,7 @@ class UpcomingMeetingsWidget extends BaseWidget
 
     protected static ?int $sort = 10;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function getColumnSpan(): int|string|array
     {

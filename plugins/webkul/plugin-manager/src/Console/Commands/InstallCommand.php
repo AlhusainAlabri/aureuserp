@@ -470,39 +470,38 @@ class InstallCommand extends Command
 
     protected function getPhpExecutablePath(): string
     {
-        $phpPath = trim(shell_exec('which php 2>/dev/null') ?: '');
-
-        if (
-            $phpPath
-            && file_exists($phpPath)
-        ) {
-            return $phpPath;
-        }
-
-        $phpPath = PHP_BINARY;
-
-        if (strpos($phpPath, 'fpm') !== false) {
-            $phpPath = str_replace('fpm', '', $phpPath);
-        }
-
-        if (file_exists($phpPath)) {
-            return $phpPath;
-        }
-
-        $commonPaths = [
-            '/usr/local/bin/php',
-            '/usr/bin/php',
-            '/opt/homebrew/bin/php',
-            '/Users/'.get_current_user().'/Library/Application Support/Herd/bin/php',
-        ];
-
-        foreach ($commonPaths as $path) {
+        foreach ($this->phpExecutableCandidates() as $path) {
             if (file_exists($path)) {
                 return $path;
             }
         }
 
         return 'php';
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function phpExecutableCandidates(): array
+    {
+        $phpBinary = PHP_BINARY;
+
+        if (str_contains($phpBinary, 'fpm')) {
+            $phpBinary = str_replace('fpm', '', $phpBinary);
+        }
+
+        $whichPhp = trim(shell_exec('which php 2>/dev/null') ?: '');
+
+        return array_values(array_unique(array_filter([
+            $phpBinary !== '' ? $phpBinary : null,
+            $whichPhp !== '' ? $whichPhp : null,
+            '/opt/alt/php84/usr/bin/php',
+            '/opt/alt/php83/usr/bin/php',
+            '/usr/local/bin/php',
+            '/usr/bin/php',
+            '/opt/homebrew/bin/php',
+            '/Users/'.get_current_user().'/Library/Application Support/Herd/bin/php',
+        ])));
     }
 
     protected function buildTimeoutCommand(int $seconds, string $command): string

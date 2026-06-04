@@ -9,6 +9,7 @@ use App\Models\Hr\EmployeeSelfAssessment;
 use App\Models\Hr\EmployeeTraining;
 use App\Observers\EmployeeDepartmentObserver;
 use App\Services\Hr\HrExtensionSchemaService;
+use App\Support\PermissionTables;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
@@ -94,7 +95,7 @@ class HrExtensionsServiceProvider extends ServiceProvider
 
     public function registerHrPermissions(): void
     {
-        if (! class_exists(Role::class)) {
+        if (! class_exists(Role::class) || ! PermissionTables::areReady()) {
             return;
         }
 

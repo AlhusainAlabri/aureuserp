@@ -102,6 +102,7 @@ trait EmployeeSalaryRaisesRelation
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('approvedBy'))
             ->columns([
                 TextColumn::make('effective_date')
                     ->label(__('hr-extensions::salary_raise.fields.effective_date'))

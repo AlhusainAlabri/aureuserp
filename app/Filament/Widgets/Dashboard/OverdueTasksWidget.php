@@ -19,7 +19,7 @@ class OverdueTasksWidget extends BaseWidget
 
     protected static ?int $sort = 2;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
 

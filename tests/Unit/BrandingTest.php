@@ -2,6 +2,7 @@
 
 use App\Support\Branding;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Schema;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
@@ -54,6 +55,23 @@ it('returns branding fallback when no company exists', function (): void {
     Company::query()->delete();
 
     expect(Branding::displayName())->toBe('Fallback ERP');
+});
+
+it('returns branding without cache table during fresh install', function (): void {
+    config([
+        'cache.default'     => 'database',
+        'branding.fallback' => 'Install Fallback',
+    ]);
+
+    Schema::partialMock()
+        ->shouldReceive('hasTable')
+        ->with('cache')
+        ->andReturn(false)
+        ->shouldReceive('hasTable')
+        ->with('companies')
+        ->andReturn(false);
+
+    expect(Branding::displayName())->toBe('Install Fallback');
 });
 
 it('does not include aureus in dashboard pdf footer translation', function (): void {

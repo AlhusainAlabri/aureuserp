@@ -13,6 +13,7 @@ use App\Services\Inventory\ConsumptionTransferService;
 use App\Services\Inventory\InventoryMovementReportService;
 use App\Services\Inventory\ProductPurchaseHistoryService;
 use App\Services\Inventory\ReplenishmentProcurementService;
+use App\Support\PermissionTables;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -94,7 +95,7 @@ class InventoryExtensionsServiceProvider extends ServiceProvider
 
     protected function registerPermissions(): void
     {
-        if (! class_exists(Permission::class)) {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
             return;
         }
 

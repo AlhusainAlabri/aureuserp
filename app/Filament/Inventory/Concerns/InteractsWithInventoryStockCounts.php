@@ -3,40 +3,19 @@
 namespace App\Filament\Inventory\Concerns;
 
 use App\Support\FilamentUrl;
-use Illuminate\Support\Facades\Schema;
+use App\Support\Inventory\InventoryStockCounter;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\ReplenishmentResource;
-use Webkul\Inventory\Models\OrderPoint;
 
 trait InteractsWithInventoryStockCounts
 {
     protected function countBelowMinimum(): int
     {
-        if (! Schema::hasTable('inventories_order_points')) {
-            return 0;
-        }
-
-        return OrderPoint::query()
-            ->with('product')
-            ->get()
-            ->filter(fn (OrderPoint $point): bool => ReplenishmentResource::isBelowMinimum($point))
-            ->count();
+        return InventoryStockCounter::countBelowMinimum();
     }
 
     protected function countOutOfStock(): int
     {
-        if (! Schema::hasTable('inventories_order_points')) {
-            return 0;
-        }
-
-        return OrderPoint::query()
-            ->with('product')
-            ->get()
-            ->filter(function (OrderPoint $point): bool {
-                $product = $point->product;
-
-                return $product && (float) $product->available_qty <= 0;
-            })
-            ->count();
+        return InventoryStockCounter::countOutOfStock();
     }
 
     protected function replenishmentBelowMinimumUrl(): string

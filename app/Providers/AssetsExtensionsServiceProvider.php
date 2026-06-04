@@ -7,6 +7,7 @@ use App\Filament\Extensions\AssetResourceExtensions\ListAssets;
 use App\Services\Assets\AssetBorrowingEventService;
 use App\Services\Assets\AssetBorrowingNotificationService;
 use App\Services\Assets\AssetSignatureStorageService;
+use App\Support\PermissionTables;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -64,7 +65,7 @@ class AssetsExtensionsServiceProvider extends ServiceProvider
 
     protected function registerPermissions(): void
     {
-        if (! class_exists(Permission::class)) {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
             return;
         }
 

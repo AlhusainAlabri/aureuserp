@@ -202,7 +202,8 @@ it('allows employee self service pages when linked', function (): void {
 
 it('has employee self assessment table', function (): void {
     expect(Schema::hasTable('employee_self_assessments'))->toBeTrue()
-        ->and(Schema::hasTable('employee_contracts'))->toBeTrue();
+        ->and(Schema::hasTable('employee_contracts'))->toBeTrue()
+        ->and(Schema::hasIndex('employee_self_assessments', 'emp_self_assess_period_unique'))->toBeTrue();
 });
 
 it('stores warning acknowledgment fields', function (): void {

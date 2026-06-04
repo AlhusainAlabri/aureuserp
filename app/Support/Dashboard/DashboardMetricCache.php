@@ -26,4 +26,14 @@ class DashboardMetricCache
 
         Cache::forget("dashboard.metrics.{$userId}.{$locale}.{$key}");
     }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+    public static function rememberWithFilters(string $key, array $filters, Closure $callback, int $seconds = 300): mixed
+    {
+        $filterHash = md5(json_encode($filters));
+
+        return self::remember("{$key}.{$filterHash}", $callback, $seconds);
+    }
 }

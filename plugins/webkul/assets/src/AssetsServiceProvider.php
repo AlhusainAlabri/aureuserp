@@ -30,6 +30,7 @@ class AssetsServiceProvider extends PackageServiceProvider
                 '2026_05_31_100000_add_request_fields_to_asset_borrowings_table',
                 '2026_05_31_100001_add_signature_fields_to_asset_borrowings_table',
                 '2026_05_31_100002_add_vehicle_fields_to_assets_table',
+                '2026_05_31_120003_create_asset_borrowing_events_table',
             ])
             ->hasDependencies([
                 'employees',

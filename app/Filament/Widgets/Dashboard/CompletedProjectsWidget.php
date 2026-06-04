@@ -22,7 +22,7 @@ class CompletedProjectsWidget extends BaseWidget
 
     protected static ?int $sort = 13;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected static ?string $pollingInterval = null;
 

@@ -22,7 +22,7 @@ class UnreadCorrespondenceWidget extends BaseWidget
 
     protected static ?int $sort = 11;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     public function getTableHeading(): string|Htmlable|null
     {

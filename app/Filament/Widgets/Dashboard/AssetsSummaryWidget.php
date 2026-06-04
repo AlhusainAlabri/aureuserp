@@ -18,7 +18,7 @@ class AssetsSummaryWidget extends BaseWidget
 
     protected static ?int $sort = 4;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
 

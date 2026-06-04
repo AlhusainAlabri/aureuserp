@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -10,6 +11,19 @@ use Webkul\Support\Models\Company;
 class Branding
 {
     public static function displayName(?int $companyId = null): string
+    {
+        if (! self::canUseCache()) {
+            return self::resolveDisplayName($companyId);
+        }
+
+        $cacheKey = $companyId !== null
+            ? "branding.company.{$companyId}"
+            : 'branding.default.'.(Auth::id() ?? 'guest');
+
+        return Cache::remember($cacheKey, 3600, fn (): string => self::resolveDisplayName($companyId));
+    }
+
+    protected static function resolveDisplayName(?int $companyId): string
     {
         if ($companyId !== null) {
             $name = self::companyName($companyId);
@@ -36,6 +50,19 @@ class Branding
         }
 
         return (string) config('branding.fallback', config('app.name', 'Laravel'));
+    }
+
+    public static function forgetCache(?int $companyId = null): void
+    {
+        if (! self::canUseCache()) {
+            return;
+        }
+
+        if ($companyId !== null) {
+            Cache::forget("branding.company.{$companyId}");
+        }
+
+        Cache::forget('branding.default.'.(Auth::id() ?? 'guest'));
     }
 
     protected static function companyName(int $companyId): ?string
@@ -67,5 +94,22 @@ class Branding
     protected static function hasCompaniesTable(): bool
     {
         return Schema::hasTable('companies');
+    }
+
+    protected static function canUseCache(): bool
+    {
+        if (! self::cacheStoreUsesDatabase()) {
+            return true;
+        }
+
+        return Schema::hasTable('cache');
+    }
+
+    protected static function cacheStoreUsesDatabase(): bool
+    {
+        $store = config('cache.default');
+        $driver = config("cache.stores.{$store}.driver");
+
+        return $driver === 'database';
     }
 }

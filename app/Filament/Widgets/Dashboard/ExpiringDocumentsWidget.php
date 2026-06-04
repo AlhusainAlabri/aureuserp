@@ -21,7 +21,7 @@ class ExpiringDocumentsWidget extends BaseWidget
 
     protected static ?int $sort = 4;
 
-    protected static bool $isLazy = false;
+    protected static bool $isLazy = true;
 
     protected function getHeading(): ?string
     {

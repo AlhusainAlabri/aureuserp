@@ -16,6 +16,8 @@ class CheckEmployeeFileClosure
             return $next($request);
         }
 
+        $user->loadMissing(['roles', 'employee']);
+
         $employee = $user->employee;
 
         if ($employee && (bool) $employee->is_closed) {

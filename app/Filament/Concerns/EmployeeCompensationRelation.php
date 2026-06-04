@@ -28,6 +28,7 @@ trait EmployeeCompensationRelation
         }
 
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('component'))
             ->columns([
                 TextColumn::make('component.code')
                     ->label(__('payroll::payroll.fields.code')),
