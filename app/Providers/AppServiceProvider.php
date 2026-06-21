@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
@@ -28,6 +31,24 @@ class AppServiceProvider extends ServiceProvider
         }
 
         config(['app.name' => brand_name()]);
+
+        FileUpload::configureUsing(function (FileUpload $component): void {
+            if ($component->getVisibility() === 'public') {
+                $component->disk('public');
+            }
+        });
+
+        ImageColumn::configureUsing(function (ImageColumn $column): void {
+            if (str($column->getName())->contains('avatar')) {
+                $column->disk('public');
+            }
+        });
+
+        ImageEntry::configureUsing(function (ImageEntry $entry): void {
+            if (str($entry->getName())->contains('avatar')) {
+                $entry->disk('public');
+            }
+        });
 
         Filament::serving(function (): void {
             Select::configureUsing(function (Select $select): void {

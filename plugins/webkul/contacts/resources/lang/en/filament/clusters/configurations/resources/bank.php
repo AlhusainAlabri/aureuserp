@@ -5,4 +5,9 @@ return [
         'title' => 'Banks',
         'group' => 'Bank Accounts',
     ],
+
+    'model' => [
+        'single' => 'Bank',
+        'plural' => 'Banks',
+    ],
 ];

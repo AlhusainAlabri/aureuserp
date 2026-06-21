@@ -6,6 +6,8 @@ return [
     ],
 
     'header-actions' => [
+        'chatter' => 'Chatter',
+
         'delete' => [
             'notification' => [
                 'title' => 'Employee deleted',

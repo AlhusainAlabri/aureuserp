@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources\EmployeeResource\Pages;
 
+use App\Filament\Concerns\HasEmployeeRelatedPageTranslations;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
@@ -11,6 +12,7 @@ class ManageResume extends ManageRelatedRecords
 {
     use EmployeeResumeRelation;
     use HasEmployeeRecordNavigationTabs;
+    use HasEmployeeRelatedPageTranslations;
 
     protected static string $resource = EmployeeResource::class;
 
@@ -21,5 +23,10 @@ class ManageResume extends ManageRelatedRecords
     public static function getNavigationLabel(): string
     {
         return __('employees::filament/resources/employee/pages/manage-resume.navigation.title');
+    }
+
+    protected static function employeeRelatedPageTranslationKey(): string
+    {
+        return 'employees::filament/resources/employee/pages/manage-resume';
     }
 }

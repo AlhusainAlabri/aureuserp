@@ -16,6 +16,7 @@ class ViewEmployee extends BaseViewEmployee
     {
         return [
             ChatterAction::make()
+                ->label(__('employees::filament/resources/employee/pages/view-employee.header-actions.chatter'))
                 ->resource(static::$resource)
                 ->activityPlans(ActivityPlan::employees()->pluck('name', 'id')),
             CloseEmployeeFileAction::make(),

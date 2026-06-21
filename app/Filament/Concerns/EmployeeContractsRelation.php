@@ -119,7 +119,8 @@ trait EmployeeContractsRelation
             ->emptyStateDescription(__('hr-extensions::contract.empty_description'))
             ->headerActions([
                 CreateAction::make()
-                    ->label(__('hr-extensions::contract.actions.add')),
+                    ->label(__('hr-extensions::contract.actions.add'))
+                    ->modalHeading(__('hr-extensions::contract.actions.add')),
             ])
             ->recordActions([
                 Action::make('viewContract')

@@ -62,6 +62,7 @@
                                 @continue($item['isHidden'] ?? false)
 
                                 <x-filament::dropdown.list.item
+                                    tag="a"
                                     :href="$item['url']"
                                     :icon="$item['isActive'] && ($item['activeIcon'] ?? null) ? $item['activeIcon'] : ($item['icon'] ?? null)"
                                     :badge="$item['badge'] ?? null"

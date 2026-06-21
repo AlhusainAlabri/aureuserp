@@ -1,9 +1,10 @@
 <?php
 
+use App\Filament\Resources\EmployeeResource\Pages\CreateEmployee;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Webkul\Employee\Enums\DistanceUnit;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
-use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\CreateEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\EditEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\OverviewEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ViewEmployee;
@@ -20,10 +21,10 @@ beforeEach(function (): void {
 it('completes the employee create to overview flow', function (): void {
     Livewire::test(CreateEmployee::class)
         ->fillForm([
-            'name'            => 'CRUD Flow Employee',
-            'membership_type' => 'employee',
-            'work_email'      => 'crud.flow@example.com',
-            'job_title'       => 'Operations Lead',
+            'name'       => 'CRUD Flow Employee',
+            'work_email' => 'crud.flow@example.com',
+            'job_title'  => 'Operations Lead',
+            ...requiredEmployeeFormData($this->user),
         ])
         ->call('create')
         ->assertHasNoFormErrors()
@@ -38,6 +39,45 @@ it('completes the employee create to overview flow', function (): void {
         ->assertSuccessful()
         ->assertSee('CRUD Flow Employee')
         ->assertSee('Operations Lead');
+});
+
+it('creates an employee when optional schema columns are absent from the database payload', function (): void {
+    Livewire::test(CreateEmployee::class)
+        ->fillForm([
+            'name'       => 'Schema Safe Employee',
+            'work_email' => 'schema.safe@example.com',
+            'job_title'  => 'Coordinator',
+            ...requiredEmployeeFormData($this->user),
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertNotified();
+
+    expect(Employee::query()->where('name', 'Schema Safe Employee')->exists())->toBeTrue();
+});
+
+it('requires mandatory employee fields on create', function (): void {
+    $expectedErrors = [
+        'mobile_phone'       => 'required',
+        'civil_id'           => 'required',
+        'employment_type_id' => 'required',
+        'company_id'         => 'required',
+    ];
+
+    if (Schema::hasTable('department_employee')) {
+        $expectedErrors['departments'] = 'required';
+    } else {
+        $expectedErrors['department_id'] = 'required';
+    }
+
+    Livewire::test(CreateEmployee::class)
+        ->fillForm([
+            'name'            => 'Incomplete Employee',
+            'membership_type' => 'employee',
+        ])
+        ->call('create')
+        ->assertHasFormErrors($expectedErrors)
+        ->assertNotNotified();
 });
 
 it('completes the employee edit to overview flow', function (): void {

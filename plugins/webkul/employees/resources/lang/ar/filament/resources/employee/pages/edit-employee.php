@@ -7,8 +7,10 @@ return [
     ],
 
     'header-actions' => [
+        'chatter' => 'المحادثات',
+
         'delete' => [
-            'label' => 'موظف جديد',
+            'label' => 'حذف',
 
             'notification' => [
                 'title' => 'تم حذف الموظف',

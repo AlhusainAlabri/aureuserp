@@ -1,14 +1,16 @@
 <?php
 
+use App\Filament\Resources\EmployeeResource\Pages\CreateEmployee;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use Webkul\Employee\Enums\DistanceUnit;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
-use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\CreateEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\EditEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ListEmployees;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\OverviewEmployee;
+use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\Employee;
 use Webkul\Employee\Models\EmployeeDocument;
 use Webkul\Employee\Models\EmployeeWarning;
@@ -17,6 +19,8 @@ use Webkul\Employee\Models\WarningType;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
+require_once __DIR__.'/Employees/EmployeeTestHelpers.php';
+
 function createEmployeeForResourceTest(bool $isActive = true): Employee
 {
     $user = User::factory()->create();
@@ -24,15 +28,36 @@ function createEmployeeForResourceTest(bool $isActive = true): Employee
         'name'       => 'Test Company',
         'company_id' => 'test-'.uniqid(),
     ]);
-
-    return Employee::create([
-        'user_id'    => $user->id,
+    $department = Department::query()->create([
+        'name'       => 'Resource Test Department',
         'creator_id' => $user->id,
-        'company_id' => $company->id,
-        'name'       => $user->name,
-        'work_email' => $user->email,
-        'is_active'  => $isActive,
     ]);
+    $employmentType = EmploymentType::create([
+        'name'       => 'Permanent',
+        'code'       => 'permanent-'.uniqid(),
+        'creator_id' => $user->id,
+    ]);
+
+    $employee = Employee::create([
+        'user_id'            => $user->id,
+        'creator_id'         => $user->id,
+        'company_id'         => $company->id,
+        'department_id'      => $department->id,
+        'employment_type_id' => $employmentType->id,
+        'mobile_phone'       => '+96890000001',
+        'civil_id'           => '98765432109',
+        'name'               => $user->name,
+        'work_email'         => $user->email,
+        'is_active'          => $isActive,
+    ]);
+
+    if (Schema::hasTable('department_employee')) {
+        $employee->departments()->sync([
+            $department->id => ['is_primary' => true, 'start_date' => now()->toDateString()],
+        ]);
+    }
+
+    return $employee;
 }
 
 beforeEach(function (): void {
@@ -76,8 +101,8 @@ it('redirects to overview after creating an employee', function (): void {
 
     Livewire::test(CreateEmployee::class)
         ->fillForm([
-            'name'            => 'Overview Redirect Employee',
-            'membership_type' => 'employee',
+            'name' => 'Overview Redirect Employee',
+            ...requiredEmployeeFormData($this->user),
         ])
         ->call('create')
         ->assertHasNoFormErrors();

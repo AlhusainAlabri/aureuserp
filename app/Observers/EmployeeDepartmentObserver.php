@@ -7,12 +7,25 @@ use Webkul\Employee\Models\Employee;
 
 class EmployeeDepartmentObserver
 {
+    private static bool $isSyncing = false;
+
     public function saved(Employee $employee): void
     {
-        if (! Schema::hasTable('department_employee')) {
+        if (self::$isSyncing || ! Schema::hasTable('department_employee')) {
             return;
         }
 
+        self::$isSyncing = true;
+
+        try {
+            $this->syncEmployeeDepartments($employee);
+        } finally {
+            self::$isSyncing = false;
+        }
+    }
+
+    protected function syncEmployeeDepartments(Employee $employee): void
+    {
         $pivotRows = $employee->departments()->get();
 
         if ($pivotRows->isEmpty() && $employee->department_id) {

@@ -42,13 +42,20 @@ trait HasContactConfigurationBreadcrumbs
 
     protected function getHeaderActions(): array
     {
-        return [
+        $actions = [
             Action::make('backToContacts')
                 ->label(__('contacts-extensions::actions.back_to_contacts'))
                 ->icon('heroicon-o-arrow-uturn-left')
                 ->color('gray')
                 ->url(PartnerResource::getUrl('index')),
-            ...parent::getHeaderActions(),
         ];
+
+        if (method_exists($this, 'getConfigurationCreateHeaderAction')) {
+            $actions[] = $this->getConfigurationCreateHeaderAction();
+        } else {
+            $actions = array_merge($actions, parent::getHeaderActions());
+        }
+
+        return $actions;
     }
 }

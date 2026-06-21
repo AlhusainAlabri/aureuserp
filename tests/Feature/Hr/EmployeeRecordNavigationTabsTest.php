@@ -110,3 +110,12 @@ it('uses session locale when building filament urls', function (): void {
     expect(FilamentUrl::appendLocaleToUrl('/admin/employees/employees/1/overview'))
         ->toBe('/admin/employees/employees/1/overview?lang=ar');
 });
+
+it('defines overflow dropdown items as anchor links so navigation works', function (): void {
+    $contents = file_get_contents(resource_path('views/filament/widgets/employee-record-navigation-tabs.blade.php'));
+
+    expect($contents)
+        ->toContain('<x-filament::dropdown.list.item')
+        ->toContain('tag="a"')
+        ->toContain(':href="$item[\'url\']"');
+});

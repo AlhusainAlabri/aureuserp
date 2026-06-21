@@ -37,6 +37,11 @@ return [
                 'oman-phone-hint'        => 'Include country code, e.g. +968 for Oman.',
                 'civil-id-helper'        => 'National civil identification number used for compliance tracking.',
                 'civil-id-expiry-helper' => 'Expiry date is used for compliance alerts on the overview and employee list.',
+                'avatar'                 => 'Photo',
+                'open-mailbox'           => 'Open mailbox',
+                'open-mobile-phone'      => 'Call mobile',
+                'open-work-phone'        => 'Call work phone',
+                'deleted-option-suffix'  => ' (Deleted)',
             ],
         ],
 

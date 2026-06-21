@@ -7,8 +7,10 @@ return [
     ],
 
     'header-actions' => [
+        'chatter' => 'Chatter',
+
         'delete' => [
-            'label' => 'New Employee',
+            'label' => 'Delete',
 
             'notification' => [
                 'title' => 'Employee deleted',

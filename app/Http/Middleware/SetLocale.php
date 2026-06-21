@@ -29,12 +29,11 @@ class SetLocale
 
         if ($user !== null) {
             $locale = $queryLang
-                ?? $this->pick(Session::get('locale'), $supported)
                 ?? $this->pick($user->language ?? null, $supported)
                 ?? $fallback;
 
-            if ($queryLang !== null && Session::get('locale') !== $locale) {
-                Session::put('locale', $locale);
+            if (Session::has('locale')) {
+                Session::forget('locale');
             }
         } else {
             $locale = $queryLang

@@ -3,7 +3,9 @@
 use Filament\Facades\Filament;
 use Filament\Pages\Page;
 use Webkul\Contact\Filament\Clusters\Configurations;
+use Webkul\Contact\Filament\Clusters\Configurations\Resources\TagResource;
 use Webkul\Contact\Filament\Clusters\Configurations\Resources\TagResource\Pages\ManageTags;
+use Webkul\Contact\Filament\Clusters\Configurations\Resources\TitleResource;
 use Webkul\Contact\Filament\Resources\PartnerResource;
 
 it('keeps global page navigation registration enabled', function (): void {
@@ -44,6 +46,31 @@ it('shows breadcrumbs linking back to contacts on configuration pages', function
             (new ManageTags)->getTitle(),
         ]);
 });
+
+it('resolves configuration navigation and model labels from contacts translations', function (
+    string $resourceClass,
+    string $expectedNavigationEn,
+    string $expectedNavigationAr,
+    string $expectedModelEn,
+    string $expectedModelAr,
+): void {
+    if (! class_exists($resourceClass)) {
+        $this->markTestSkipped('Contacts plugin is not installed.');
+    }
+
+    app()->setLocale('en');
+
+    expect($resourceClass::getNavigationLabel())->toBe($expectedNavigationEn)
+        ->and($resourceClass::getModelLabel())->toBe($expectedModelEn);
+
+    app()->setLocale('ar');
+
+    expect($resourceClass::getNavigationLabel())->toBe($expectedNavigationAr)
+        ->and($resourceClass::getModelLabel())->toBe($expectedModelAr);
+})->with([
+    [TagResource::class, 'Tags', 'الوسوم', 'Tag', 'وسم'],
+    [TitleResource::class, 'Titles', 'الألقاب', 'Title', 'لقب'],
+]);
 
 it('uses arabic empty state headings on configuration tables', function (): void {
     if (! class_exists(ManageTags::class)) {

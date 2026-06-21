@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\ExtendedEmployeeDocumentsRelation;
+use App\Filament\Concerns\HasEmployeeRelatedPageTranslations;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
@@ -11,6 +12,7 @@ class ManageDocuments extends ManageRelatedRecords
 {
     use ExtendedEmployeeDocumentsRelation;
     use HasEmployeeRecordNavigationTabs;
+    use HasEmployeeRelatedPageTranslations;
 
     protected static string $resource = EmployeeResource::class;
 
@@ -23,8 +25,8 @@ class ManageDocuments extends ManageRelatedRecords
         return __('employees::filament/resources/employee/pages/manage-documents.navigation.title');
     }
 
-    public function getTitle(): string
+    protected static function employeeRelatedPageTranslationKey(): string
     {
-        return static::getNavigationLabel();
+        return 'employees::filament/resources/employee/pages/manage-documents';
     }
 }

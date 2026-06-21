@@ -160,31 +160,6 @@ class ContactExtensionsServiceProvider extends ServiceProvider
             'filament/resources/partner.infolist.sections.general.fields.account-type' => 'نوع الحساب',
         ], 'ar', 'partners');
 
-        Lang::addLines([
-            'filament/clusters/configurations/resources/tag.model.single'           => 'وسم',
-            'filament/clusters/configurations/resources/tag.model.plural'           => 'وسوم',
-            'filament/clusters/configurations/resources/title.model.single'         => 'لقب',
-            'filament/clusters/configurations/resources/title.model.plural'         => 'ألقاب',
-            'filament/clusters/configurations/resources/industry.model.single'      => 'صناعة',
-            'filament/clusters/configurations/resources/industry.model.plural'      => 'صناعات',
-            'filament/clusters/configurations/resources/bank.model.single'          => 'بنك',
-            'filament/clusters/configurations/resources/bank.model.plural'          => 'بنوك',
-            'filament/clusters/configurations/resources/bank-account.model.single'  => 'حساب بنكي',
-            'filament/clusters/configurations/resources/bank-account.model.plural'  => 'حسابات بنكية',
-        ], 'ar', 'contacts');
-
-        Lang::addLines([
-            'filament/clusters/configurations/resources/tag.model.single'           => 'tag',
-            'filament/clusters/configurations/resources/tag.model.plural'           => 'tags',
-            'filament/clusters/configurations/resources/title.model.single'         => 'title',
-            'filament/clusters/configurations/resources/title.model.plural'         => 'titles',
-            'filament/clusters/configurations/resources/industry.model.single'      => 'industry',
-            'filament/clusters/configurations/resources/industry.model.plural'      => 'industries',
-            'filament/clusters/configurations/resources/bank.model.single'          => 'bank',
-            'filament/clusters/configurations/resources/bank.model.plural'          => 'banks',
-            'filament/clusters/configurations/resources/bank-account.model.single'  => 'bank account',
-            'filament/clusters/configurations/resources/bank-account.model.plural'  => 'bank accounts',
-        ], 'en', 'contacts');
     }
 
     protected function registerLivewireOverrides(): void

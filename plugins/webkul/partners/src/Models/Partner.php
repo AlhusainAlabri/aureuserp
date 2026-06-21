@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Models;
 
+use App\Support\Media\PublicMediaUrl;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Webkul\Chatter\Traits\HasChatter;
 use Webkul\Chatter\Traits\HasLogActivity;
 use Webkul\Partner\Database\Factories\PartnerFactory;
@@ -85,7 +85,7 @@ class Partner extends Authenticatable implements FilamentUser
             return;
         }
 
-        return Storage::url($this->avatar);
+        return PublicMediaUrl::url($this->avatar);
     }
 
     public function country(): BelongsTo

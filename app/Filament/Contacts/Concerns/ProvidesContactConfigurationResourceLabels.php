@@ -6,6 +6,11 @@ trait ProvidesContactConfigurationResourceLabels
 {
     abstract protected static function contactConfigurationTranslationKey(): string;
 
+    public static function getContactConfigurationTranslationKey(): string
+    {
+        return static::contactConfigurationTranslationKey();
+    }
+
     public static function getModelLabel(): string
     {
         return __(static::contactConfigurationTranslationKey().'.model.single');

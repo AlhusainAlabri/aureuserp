@@ -160,6 +160,7 @@ class EmployeeResource extends Resource
                                     ->relationship('partner', 'avatar')
                                     ->schema([
                                         FileUpload::make('avatar')
+                                            ->label(__('employees::filament/resources/employee.form.sections.fields.avatar'))
                                             ->image()
                                             ->hiddenLabel()
                                             ->automaticallyResizeImagesMode('cover')
@@ -175,6 +176,7 @@ class EmployeeResource extends Resource
                                     ->label(__('employees::filament/resources/employee.form.sections.fields.work-email'))
                                     ->suffixAction(
                                         Action::make('open_mailbox')
+                                            ->label(__('employees::filament/resources/employee.form.sections.fields.open-mailbox'))
                                             ->icon('heroicon-o-envelope')
                                             ->color('gray')
                                             ->action(function (Set $set, ?string $state) {
@@ -200,13 +202,16 @@ class EmployeeResource extends Resource
                                     ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
                                     ->searchable()
                                     ->preload()
+                                    ->required(fn (): bool => ! DbSchema::hasTable('department_employee'))
                                     ->createOptionForm(fn (Schema $schema) => DepartmentResource::form($schema))
                                     ->visible(fn (): bool => ! DbSchema::hasTable('department_employee')),
                                 TextInput::make('mobile_phone')
                                     ->label(__('employees::filament/resources/employee.form.sections.fields.work-mobile'))
                                     ->helperText(__('employees::filament/resources/employee.form.sections.fields.oman-phone-hint'))
+                                    ->required()
                                     ->suffixAction(
                                         Action::make('open_mobile_phone')
+                                            ->label(__('employees::filament/resources/employee.form.sections.fields.open-mobile-phone'))
                                             ->icon('heroicon-o-phone')
                                             ->color('blue')
                                             ->action(function (Set $set, $state) {
@@ -226,6 +231,7 @@ class EmployeeResource extends Resource
                                     ->helperText(__('employees::filament/resources/employee.form.sections.fields.oman-phone-hint'))
                                     ->suffixAction(
                                         Action::make('open_work_phone')
+                                            ->label(__('employees::filament/resources/employee.form.sections.fields.open-work-phone'))
                                             ->icon('heroicon-o-phone')
                                             ->color('blue')
                                             ->action(function (Set $set, $state) {
@@ -280,7 +286,7 @@ class EmployeeResource extends Resource
                                 TextInput::make('civil_id')
                                     ->label(__('employees::filament/resources/employee.form.sections.fields.civil-id'))
                                     ->helperText(__('employees::filament/resources/employee.form.sections.fields.civil-id-helper'))
-                                    ->nullable(),
+                                    ->required(),
                                 DatePicker::make('civil_id_expiry')
                                     ->label(__('employees::filament/resources/employee.form.sections.fields.civil-id-expiry'))
                                     ->helperText(__('employees::filament/resources/employee.form.sections.fields.civil-id-expiry-helper'))
@@ -374,11 +380,13 @@ class EmployeeResource extends Resource
                                                                     ->relationship('employmentType', 'name')
                                                                     ->searchable()
                                                                     ->preload()
+                                                                    ->required()
                                                                     ->label(__('employees::filament/resources/employee.form.tabs.work-information.fields.employment-type')),
                                                                 Select::make('company_id')
                                                                     ->relationship('company', 'name')
                                                                     ->searchable()
                                                                     ->preload()
+                                                                    ->required()
                                                                     ->prefixIcon('heroicon-o-building-office')
                                                                     ->label(__('employees::filament/resources/employee.form.tabs.work-information.fields.company'))
                                                                     ->createOptionForm(fn (Schema $schema) => CompanyResource::form($schema)),

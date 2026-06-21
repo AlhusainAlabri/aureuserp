@@ -7,13 +7,18 @@ use Webkul\Employee\Models\Employee;
 
 class EmployeeDepartmentService
 {
-    public function syncDepartments(Employee $employee, array $departmentIds, ?int $primaryDepartmentId = null): void
+    public function syncDepartments(Employee $employee, array $departmentIds, int|string|null $primaryDepartmentId = null): void
     {
         if (! Schema::hasTable('department_employee')) {
             return;
         }
 
-        $departmentIds = array_values(array_unique(array_filter($departmentIds)));
+        $departmentIds = array_values(array_unique(array_map(
+            intval(...),
+            array_filter($departmentIds, fn (mixed $id): bool => filled($id)),
+        )));
+
+        $primaryDepartmentId = filled($primaryDepartmentId) ? (int) $primaryDepartmentId : null;
 
         if ($departmentIds === []) {
             return;

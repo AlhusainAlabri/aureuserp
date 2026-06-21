@@ -6,6 +6,8 @@ return [
     ],
 
     'header-actions' => [
+        'chatter' => 'المحادثات',
+
         'delete' => [
             'notification' => [
                 'title' => 'تم حذف الموظف',

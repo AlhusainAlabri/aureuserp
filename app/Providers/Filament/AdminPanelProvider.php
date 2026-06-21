@@ -50,6 +50,7 @@ use App\Filament\Widgets\Dashboard\UpcomingMeetingsWidget;
 use App\Filament\Widgets\Dashboard\UpcomingRemindersWidget;
 use App\Filament\Widgets\Dashboard\WarningsIssuedWidget;
 use App\Http\Middleware\CheckEmployeeFileClosure;
+use App\Http\Middleware\SetLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Actions\Action;
@@ -285,6 +286,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetLocale::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

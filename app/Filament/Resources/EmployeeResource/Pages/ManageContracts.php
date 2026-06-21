@@ -23,6 +23,11 @@ class ManageContracts extends ManageRelatedRecords
         return __('hr-extensions::contract.navigation');
     }
 
+    public function getBreadcrumb(): string
+    {
+        return static::getNavigationLabel();
+    }
+
     public function getTitle(): string
     {
         return static::getNavigationLabel();

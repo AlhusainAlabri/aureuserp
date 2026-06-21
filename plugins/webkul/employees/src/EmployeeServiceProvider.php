@@ -43,6 +43,7 @@ class EmployeeServiceProvider extends PackageServiceProvider
                 '2026_05_17_125131_create_employees_employee_warnings_table',
                 '2026_05_17_132428_create_employee_submissions_table',
                 '2026_05_17_132429_create_employee_submission_replies_table',
+                '2026_05_23_071130_add_employment_type_id_to_employees_employees_table',
             ])
             ->runsMigrations()
             ->hasSeeder('Webkul\\Employee\\Database\Seeders\\DatabaseSeeder')

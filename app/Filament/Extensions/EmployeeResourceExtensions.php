@@ -53,6 +53,7 @@ class EmployeeResourceExtensions
                         ->searchable()
                         ->preload()
                         ->live()
+                        ->required()
                         ->dehydrated(false)
                         ->afterStateUpdated(function (Set $set, ?array $state): void {
                             if (is_array($state) && count($state) > 0) {

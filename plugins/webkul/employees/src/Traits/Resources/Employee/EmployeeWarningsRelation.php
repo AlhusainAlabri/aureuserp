@@ -157,6 +157,7 @@ trait EmployeeWarningsRelation
             ->headerActions([
                 CreateAction::make()
                     ->label(__('employees::filament/resources/employee.relation-manager/warnings.table.header-actions.add-warning'))
+                    ->modalHeading(__('employees::filament/resources/employee.relation-manager/warnings.table.header-actions.add-warning'))
                     ->icon('heroicon-o-exclamation-triangle')
                     ->successNotification(
                         Notification::make()

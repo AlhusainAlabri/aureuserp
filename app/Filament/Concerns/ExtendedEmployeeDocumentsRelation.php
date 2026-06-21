@@ -126,7 +126,8 @@ trait ExtendedEmployeeDocumentsRelation
                     ->limit(30),
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->label(__('employees::filament/resources/employee/pages/manage-documents.actions.create')),
             ])
             ->recordActions([
                 Action::make('view')

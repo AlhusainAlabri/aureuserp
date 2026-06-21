@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Filament\Resources;
 
+use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -34,7 +35,6 @@ use Webkul\Payroll\Filament\Resources\PayrollBatchResource\RelationManagers\Pays
 use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Support\PayrollCalendar;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class PayrollBatchResource extends Resource
