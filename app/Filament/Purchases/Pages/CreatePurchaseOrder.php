@@ -11,8 +11,17 @@ use Webkul\Purchase\Models\PurchaseOrder as PurchaseOrderModel;
 
 class CreatePurchaseOrder extends BaseCreatePurchaseOrder
 {
+    use SetsDefaultPurchaseCurrency;
+
     /** @var array<int, array<string, mixed>> */
     protected array $pendingInternalLineItems = [];
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->applyDefaultOmrCurrency();
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

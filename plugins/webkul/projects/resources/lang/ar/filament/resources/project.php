@@ -95,7 +95,7 @@ return [
         ],
 
         'actions' => [
-            'tasks'      => ':count مهام',
+            'tasks'      => '{0} لا مهام|{1} :count مهمة|[2,*] :count مهام',
             'milestones' => ':completed مراحل رئيسية مكتملة من أصل :all',
 
             'restore' => [

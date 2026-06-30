@@ -77,4 +77,8 @@ return [
         'plugin'           => 'الإضافات',
         'setting'          => 'الإعدادات',
     ],
+
+    'footer' => [
+        'sentence' => 'طُور بواسطة NODHUM TECHNOLOGY · v:version',
+    ],
 ];

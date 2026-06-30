@@ -105,6 +105,7 @@ class AssetResource extends Resource
                             ->label(__('assets::assets.fields.category'))
                             ->options(AssetCategory::class)
                             ->searchable()
+                            ->searchPrompt(__('filament-forms::components.select.search_prompt'))
                             ->live()
                             ->columnSpan(1),
                         TextInput::make('plate_number')
@@ -170,6 +171,13 @@ class AssetResource extends Resource
                     ->sortable(),
                 TextColumn::make('category')
                     ->label(__('assets::assets.fields.category'))
+                    ->formatStateUsing(function (?AssetCategory $state, Asset $record): string {
+                        if ($state instanceof AssetCategory) {
+                            return $state->getLabel();
+                        }
+
+                        return AssetCategory::tryFrom((string) $record->getRawOriginal('category'))?->getLabel() ?? '—';
+                    })
                     ->placeholder('—')
                     ->toggleable(),
                 TextColumn::make('status')
@@ -197,12 +205,7 @@ class AssetResource extends Resource
                     ->options(AssetStatus::class),
                 SelectFilter::make('category')
                     ->label(__('assets::assets.fields.category'))
-                    ->options(fn (): array => Asset::query()
-                        ->whereNotNull('category')
-                        ->distinct()
-                        ->orderBy('category')
-                        ->pluck('category', 'category')
-                        ->all()),
+                    ->options(AssetCategory::class),
             ])
             ->recordActions([
                 ViewAction::make()
@@ -232,6 +235,7 @@ class AssetResource extends Resource
                             ->label(__('assets::assets.fields.name')),
                         TextEntry::make('category')
                             ->label(__('assets::assets.fields.category'))
+                            ->formatStateUsing(fn (?AssetCategory $state): string => $state?->getLabel() ?? '—')
                             ->placeholder('—'),
                         TextEntry::make('status')
                             ->label(__('assets::assets.fields.status'))
@@ -248,14 +252,16 @@ class AssetResource extends Resource
                             ->placeholder('—'),
                         TextEntry::make('purchased_at')
                             ->label(__('assets::assets.fields.purchased_at'))
-                            ->date()
+                            ->formatStateUsing(fn (?Asset $record): ?string => $record->purchased_at?->locale(app()->getLocale())->translatedFormat('j F Y'))
                             ->placeholder('—'),
                         TextEntry::make('activeBorrowing.employee.name')
                             ->label(__('assets::assets.fields.borrowed_by'))
                             ->placeholder('—'),
                         TextEntry::make('activeBorrowing.due_at')
                             ->label(__('assets::assets.fields.due_at'))
-                            ->dateTime()
+                            ->formatStateUsing(fn (?Asset $record): ?string => $record->activeBorrowing?->due_at
+                                ? $record->activeBorrowing->due_at->locale(app()->getLocale())->translatedFormat('j F Y H:i')
+                                : null)
                             ->placeholder('—'),
                         TextEntry::make('description')
                             ->label(__('assets::assets.fields.description'))

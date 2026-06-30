@@ -16,7 +16,7 @@ class ProjectOrdersRelationManager extends RelationManager
 
     public static function getTitle($ownerRecord = null, ?string $pageClass = null): string
     {
-        return __('projects-extensions::relations.orders');
+        return __('projects-extensions::project-relations.orders');
     }
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool

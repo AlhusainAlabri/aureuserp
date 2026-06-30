@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Filament\Pages\Dashboard as OrgDashboard;
+use App\Filament\Pages\ModuleLauncher;
 use Filament\Navigation\NavigationItem;
 use Illuminate\Support\Collection;
 use Webkul\Project\Filament\Pages\Dashboard as ProjectDashboard;
@@ -18,6 +19,7 @@ class DashboardNavigationOrder
      * @var array<class-string, int>
      */
     private const ORDER_BY_PAGE = [
+        ModuleLauncher::class       => -10,
         OrgDashboard::class         => 0,
         ProjectDashboard::class     => 10,
         RecruitmentDashboard::class => 20,

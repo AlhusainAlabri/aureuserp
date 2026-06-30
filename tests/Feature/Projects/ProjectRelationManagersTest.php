@@ -161,9 +161,9 @@ it('ProjectRelationManagersTest: meetings relation manager creates a project mee
 it('ProjectRelationManagersTest: relation tab labels are translated in Arabic', function (): void {
     app()->setLocale('ar');
 
-    expect(__('projects-extensions::relations.task_stages'))->toBe('مراحل المهام')
-        ->and(__('projects-extensions::relations.documents'))->toBe('المستندات')
-        ->and(__('projects-extensions::relations.meetings'))->toBe('الاجتماعات')
+    expect(__('projects-extensions::project-relations.task_stages'))->toBe('مراحل المهام')
+        ->and(__('projects-extensions::project-relations.documents'))->toBe('المستندات')
+        ->and(__('projects-extensions::project-relations.meetings'))->toBe('الاجتماعات')
         ->and(__('projects-extensions::actions.add_document'))->toBe('إضافة مستند')
         ->and(__('projects-extensions::actions.add_meeting'))->toBe('إضافة اجتماع');
 });

@@ -64,10 +64,10 @@ class AssetsByCategoryChartWidget extends ChartWidget
                 'backgroundColor' => array_slice($colors, 0, $rows->count()),
             ]],
             'labels' => $rows->map(function ($row): string {
-                $category = $row->category;
+                $category = $row->getAttributes()['category'] ?? null;
 
                 return AssetCategory::tryFrom((string) $category)?->getLabel()
-                    ?? (string) $category;
+                    ?? (string) ($category ?? '—');
             })->all(),
         ];
     }

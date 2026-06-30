@@ -2,8 +2,9 @@
 
 return [
     'navigation' => [
-        'title' => 'لوحة التحكم',
-        'group' => 'لوحة التحكم',
+        'title'    => 'لوحة التحكم',
+        'overview' => 'نظرة تنفيذية',
+        'group'    => 'لوحة التحكم',
     ],
 
     'greeting'    => 'مرحباً، :name',

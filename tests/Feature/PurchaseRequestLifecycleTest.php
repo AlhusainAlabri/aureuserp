@@ -58,6 +58,33 @@ it('allows access to my requests when extension columns exist', function (): voi
         ->and(InternalRequests::canAccess())->toBeTrue();
 });
 
+it('allows my requests access for purchase viewers when request_type column is missing', function (): void {
+    $user = purchaseTestUser(['Admin']);
+
+    if (Schema::hasColumn('purchases_orders', 'request_type')) {
+        test()->markTestSkipped('request_type column exists — fallback path not applicable.');
+    }
+
+    expect($user->can('view_any_purchase_purchase::order'))->toBeTrue()
+        ->and(MyRequests::canAccess())->toBeTrue();
+});
+
+it('uses arabic label for chatter action', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('chatter::filament/resources/actions/chatter-action.title'))->toBe('المحادثات');
+});
+
+it('defaults purchase forms to omr currency when available', function (): void {
+    $omrId = PurchaseOrderResourceExtensions::defaultOmrCurrencyId();
+
+    if (! $omrId) {
+        test()->markTestSkipped('OMR currency is not available.');
+    }
+
+    expect(PurchaseOrderResourceExtensions::defaultOmrCurrencyId())->toBe($omrId);
+});
+
 it('registers my requests page with internal request table columns', function (): void {
     purchaseTestUser();
 

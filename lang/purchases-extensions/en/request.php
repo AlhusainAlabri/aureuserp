@@ -12,12 +12,14 @@ return [
         'quotation'         => 'Quotation or invoice',
         'payment_voucher'   => 'Payment voucher',
         'vendor_hint'       => 'Optional — shop or company name for this purchase',
+        'notes'             => 'Notes',
     ],
     'payment' => [
         'section_title'    => 'Payment tracking',
         'amount_paid'      => 'Amount paid',
         'amount_remaining' => 'Amount remaining',
         'record_payment'   => 'Record payment',
+        'paid_at'          => 'Payment date',
     ],
     'notifications' => [
         'voucher_required' => [
@@ -42,6 +44,7 @@ return [
     'navigation' => [
         'my_requests'       => 'My Requests',
         'internal_requests' => 'Internal Requests',
+        'quotations'        => 'RFQs',
     ],
     'actions' => [
         'new_request' => 'New request',

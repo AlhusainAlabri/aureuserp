@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Assets\Models\AssetBorrowing;
@@ -73,7 +74,9 @@ class AssetBorrowingResource extends Resource
     {
         $instance = new static;
 
-        return $instance->configureBorrowingTable($table);
+        return $instance->configureBorrowingTable(
+            $table->query(fn (): Builder => AssetBorrowing::query()->with(['asset', 'employee', 'requestedBy']))
+        );
     }
 
     public static function infolist(Schema $schema): Schema
@@ -95,14 +98,15 @@ class AssetBorrowingResource extends Resource
                             ->badge(),
                         TextEntry::make('due_at')
                             ->label(__('assets::assets.fields.due_at'))
-                            ->dateTime(),
+                            ->formatStateUsing(fn (AssetBorrowing $record): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($record->due_at))
+                            ->placeholder('—'),
                         TextEntry::make('borrowed_at')
                             ->label(__('assets::assets.fields.borrowed_at'))
-                            ->dateTime()
+                            ->formatStateUsing(fn (AssetBorrowing $record): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($record->borrowed_at))
                             ->placeholder('—'),
                         TextEntry::make('returned_at')
                             ->label(__('assets::assets.fields.returned_at'))
-                            ->dateTime()
+                            ->formatStateUsing(fn (AssetBorrowing $record): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($record->returned_at))
                             ->placeholder('—'),
                         TextEntry::make('rejection_reason')
                             ->label(__('assets-extensions::fields.rejection_reason'))

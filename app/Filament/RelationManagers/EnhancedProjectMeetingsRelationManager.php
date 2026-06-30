@@ -27,7 +27,7 @@ class EnhancedProjectMeetingsRelationManager extends RelationManager
 
     public static function getTitle($ownerRecord = null, ?string $pageClass = null): string
     {
-        return __('projects-extensions::relations.meetings');
+        return __('projects-extensions::project-relations.meetings');
     }
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool

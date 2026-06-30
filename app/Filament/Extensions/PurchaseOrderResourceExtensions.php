@@ -11,17 +11,21 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Schema as DatabaseSchema;
+use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\Employee;
+use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
 use Webkul\Partner\Models\Partner;
 use Webkul\Product\Models\Product;
 use Webkul\Support\Models\Currency;
@@ -46,7 +50,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, mixed> */
     public static function requestDetailsFormSection(): array
     {
-        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -82,7 +86,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, mixed> */
     public static function internalRequestFormSection(): array
     {
-        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -161,7 +165,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, TextColumn> */
     public static function extraTableColumns(): array
     {
-        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -182,7 +186,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultOmrCurrencyId(): ?int
     {
         return once(function (): ?int {
-            if (! Schema::hasTable('support_currencies')) {
+            if (! DatabaseSchema::hasTable('support_currencies')) {
                 return null;
             }
 
@@ -191,6 +195,19 @@ class PurchaseOrderResourceExtensions
                 ->orWhere('full_name', 'like', '%Omani%')
                 ->value('id');
         });
+    }
+
+    /** @return array<int, string> */
+    public static function localizedDepartmentOptions(): array
+    {
+        if (! class_exists(Department::class)) {
+            return [];
+        }
+
+        return Department::query()
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->all();
     }
 
     public static function formatOmrAmount(mixed $amount): string
@@ -202,7 +219,7 @@ class PurchaseOrderResourceExtensions
 
     public static function applyTableCustomizations(Table $table): Table
     {
-        return $table->columns(
+        $table = $table->columns(
             collect($table->getColumns())
                 ->map(function ($column) {
                     if (! $column instanceof TextColumn) {
@@ -223,12 +240,24 @@ class PurchaseOrderResourceExtensions
                 })
                 ->all()
         );
+
+        return $table->filters(
+            collect($table->getFilters())
+                ->map(function ($filter) {
+                    if ($filter->getName() !== 'requesting_department_id') {
+                        return $filter;
+                    }
+
+                    return $filter->options(fn (): array => static::localizedDepartmentOptions());
+                })
+                ->all()
+        );
     }
 
     /** @return array<string, PresetView> */
     public static function presetTableViews(): array
     {
-        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -275,7 +304,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, Repeater> */
     public static function productRepeaterFields(Repeater $standardRepeater): array
     {
-        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
             return [$standardRepeater];
         }
 
@@ -364,7 +393,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultInternalLineProductId(): ?int
     {
         return once(function (): ?int {
-            if (! Schema::hasTable('products_products')) {
+            if (! DatabaseSchema::hasTable('products_products')) {
                 return null;
             }
 
@@ -391,7 +420,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultMiscSupplierId(): ?int
     {
         return once(function (): ?int {
-            if (! Schema::hasTable('partners_partners')) {
+            if (! DatabaseSchema::hasTable('partners_partners')) {
                 return null;
             }
 
@@ -439,6 +468,53 @@ class PurchaseOrderResourceExtensions
             'price_tax'        => 0,
             'price_total'      => round($subTotal, 4),
         ];
+    }
+
+    public static function localizeForm(Schema $schema): Schema
+    {
+        static::walkFormComponents(
+            $schema->getComponents(withHidden: true),
+            function (Component $component): void {
+                if ($component instanceof FormProgressStepper && $component->getName() === 'state') {
+                    $component->label(__('purchases::models/order.log-attributes.state'));
+                }
+
+                if ($component instanceof Select && in_array($component->getName(), [
+                    'requesting_department_id',
+                    'beneficiary_department_id',
+                ], true)) {
+                    $component->options(fn (): array => static::localizedDepartmentOptions());
+                }
+
+                if ($component instanceof Select && $component->getName() === 'currency_id') {
+                    $component->default(fn (): ?int => static::defaultOmrCurrencyId());
+                }
+            },
+        );
+
+        return $schema;
+    }
+
+    /**
+     * @param  array<Component>  $components
+     */
+    protected static function walkFormComponents(array $components, \Closure $callback): void
+    {
+        foreach ($components as $component) {
+            $callback($component);
+
+            if (! method_exists($component, 'getChildComponents')) {
+                continue;
+            }
+
+            $children = $component->getChildComponents();
+
+            if ($children === []) {
+                continue;
+            }
+
+            static::walkFormComponents($children, $callback);
+        }
     }
 
     protected static function resolveRequestType(mixed $requestType): ?RequestType

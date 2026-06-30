@@ -3,6 +3,7 @@
 namespace Webkul\Assets\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Webkul\Assets\Enums\AssetCategory;
 use Webkul\Assets\Enums\AssetStatus;
 use Webkul\Assets\Models\Asset;
 use Webkul\Security\Models\User;
@@ -20,7 +21,7 @@ class AssetFactory extends Factory
         return [
             'name'           => fake()->words(3, true),
             'description'    => fake()->sentence(),
-            'category'       => fake()->randomElement(['electronics', 'furniture', 'vehicles', 'equipment']),
+            'category'       => fake()->randomElement(AssetCategory::cases())->value,
             'serial_number'  => fake()->unique()->bothify('SN-####-????'),
             'status'         => AssetStatus::Available,
             'value'          => fake()->randomFloat(3, 50, 5000),

@@ -95,7 +95,7 @@ return [
         ],
 
         'actions' => [
-            'tasks'      => ':count Tasks',
+            'tasks'      => '{0} No tasks|{1} :count task|[2,*] :count tasks',
             'milestones' => ':completed milestones completed out of :all',
 
             'restore' => [

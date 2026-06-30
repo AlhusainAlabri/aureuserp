@@ -2,8 +2,9 @@
 
 return [
     'navigation' => [
-        'title' => 'Dashboard',
-        'group' => 'Dashboard',
+        'title'    => 'Dashboard',
+        'overview' => 'Executive Overview',
+        'group'    => 'Dashboard',
     ],
 
     'greeting'    => 'Welcome back, :name',

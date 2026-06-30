@@ -1,7 +1,10 @@
 <?php
 
+use App\Providers\AccountExtensionsServiceProvider;
+use App\Providers\AccountingExtensionsServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AssetsExtensionsServiceProvider;
+use App\Providers\ChatterExtensionsServiceProvider;
 use App\Providers\ContactExtensionsServiceProvider;
 use App\Providers\DashboardExtensionsServiceProvider;
 use App\Providers\EmployeeExtensionsServiceProvider;
@@ -47,6 +50,7 @@ use Webkul\Website\WebsiteServiceProvider;
 
 return [
     AppServiceProvider::class,
+    ChatterExtensionsServiceProvider::class,
     HrExtensionsServiceProvider::class,
     InventoryExtensionsServiceProvider::class,
     AssetsExtensionsServiceProvider::class,
@@ -54,6 +58,8 @@ return [
     DashboardExtensionsServiceProvider::class,
     PurchaseExtensionsServiceProvider::class,
     SalesExtensionsServiceProvider::class,
+    AccountExtensionsServiceProvider::class,
+    AccountingExtensionsServiceProvider::class,
     AdminPanelProvider::class,
     CustomerPanelProvider::class,
     AccountingServiceProvider::class,

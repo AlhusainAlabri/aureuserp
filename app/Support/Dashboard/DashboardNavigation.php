@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\PluginManager\Package;
 use Webkul\Project\Filament\Resources\ProjectResource;
 use Webkul\Project\Filament\Resources\TaskResource;
 
@@ -15,7 +16,7 @@ class DashboardNavigation
 {
     public static function meetingApprovalsUrl(): ?string
     {
-        if (! class_exists(MeetingResource::class)) {
+        if (! self::meetingsAreAvailable()) {
             return null;
         }
 
@@ -26,7 +27,7 @@ class DashboardNavigation
 
     public static function correspondenceApprovalsUrl(): ?string
     {
-        if (! class_exists(CorrespondenceResource::class)) {
+        if (! self::correspondenceIsAvailable()) {
             return null;
         }
 
@@ -37,7 +38,7 @@ class DashboardNavigation
 
     public static function meetingsIndexUrl(): ?string
     {
-        if (! class_exists(MeetingResource::class)) {
+        if (! self::meetingsAreAvailable()) {
             return null;
         }
 
@@ -48,7 +49,7 @@ class DashboardNavigation
 
     public static function correspondenceIndexUrl(): ?string
     {
-        if (! class_exists(CorrespondenceResource::class)) {
+        if (! self::correspondenceIsAvailable()) {
             return null;
         }
 
@@ -97,5 +98,19 @@ class DashboardNavigation
         return FilamentUrl::appendLocaleToUrl(
             EmployeeResource::getUrl('index'),
         );
+    }
+
+    protected static function correspondenceIsAvailable(): bool
+    {
+        return class_exists(CorrespondenceResource::class)
+            && Schema::hasTable('correspondences')
+            && Package::isPluginInstalled('correspondence');
+    }
+
+    protected static function meetingsAreAvailable(): bool
+    {
+        return class_exists(MeetingResource::class)
+            && Schema::hasTable('meetings')
+            && Package::isPluginInstalled('meetings');
     }
 }

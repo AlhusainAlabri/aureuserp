@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Livewire\ModuleLauncherGlobalSearch;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -14,6 +15,7 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use ReflectionClass;
 use Webkul\Security\Models\User;
 
@@ -66,6 +68,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->booted(function (): void {
+            Livewire::component('module-launcher-global-search', ModuleLauncherGlobalSearch::class);
+
             FilamentView::resolved(function (ViewManager $viewManager): void {
                 $this->removeSupportUserMenuVersionHook($viewManager);
             });

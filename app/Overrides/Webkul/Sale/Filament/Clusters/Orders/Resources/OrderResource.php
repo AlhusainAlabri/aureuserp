@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Orders\Resources;
 
+use App\Filament\Sales\Pages\ManageSalesOrderDocuments;
 use BackedEnum;
 use Filament\Resources\Pages\Page;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,6 +56,7 @@ class OrderResource extends QuotationResource
             EditOrder::class,
             ManageInvoices::class,
             ManageDeliveries::class,
+            ManageSalesOrderDocuments::class,
         ]);
     }
 
@@ -67,6 +69,7 @@ class OrderResource extends QuotationResource
             'edit'       => EditOrder::route('/{record}/edit'),
             'invoices'   => ManageInvoices::route('/{record}/invoices'),
             'deliveries' => ManageDeliveries::route('/{record}/deliveries'),
+            'documents'  => ManageSalesOrderDocuments::route('/{record}/documents'),
         ];
     }
 

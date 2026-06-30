@@ -42,8 +42,16 @@ class MyRequests extends ListPurchaseOrders
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('purchases_orders')
-            && Schema::hasColumn('purchases_orders', 'request_type');
+        if (! Auth::check() || ! Schema::hasTable('purchases_orders')) {
+            return false;
+        }
+
+        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+            return Auth::user()->can('view_any_purchase_purchase::order')
+                || Auth::user()->can('page_MyRequests');
+        }
+
+        return true;
     }
 
     protected function getHeaderActions(): array

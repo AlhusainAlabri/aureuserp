@@ -24,7 +24,7 @@ class AdminNavigationMenu
     ];
 
     private const PRIMARY_URL_PATTERNS = [
-        'icon-dashboard'        => ['/admin$'],
+        'icon-dashboard'        => ['/admin$', '/admin/org-overview', '/admin/overview', '/admin/home'],
         'icon-contacts'         => ['/admin/contact/contacts'],
         'icon-sales'            => ['/admin/sale/orders/quotations', '/admin/sale/orders'],
         'icon-purchases'        => ['/admin/purchase/orders'],

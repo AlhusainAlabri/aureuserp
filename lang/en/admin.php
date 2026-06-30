@@ -77,4 +77,8 @@ return [
         'plugin'           => 'Plugins',
         'setting'          => 'Settings',
     ],
+
+    'footer' => [
+        'sentence' => 'Developed by NODHUM TECHNOLOGY · v:version',
+    ],
 ];

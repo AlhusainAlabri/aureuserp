@@ -4,6 +4,8 @@ namespace App\Filament\Projects\Pages;
 
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
 use App\Filament\Widgets\Projects\ProjectAverageCompletionWidget;
+use App\Filament\Widgets\Projects\TopAssigneesWidget;
+use App\Filament\Widgets\Projects\TopProjectsWidget;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
@@ -15,8 +17,6 @@ use Webkul\Project\Filament\Pages\Dashboard as BaseProjectDashboard;
 use Webkul\Project\Filament\Widgets\StatsOverviewWidget;
 use Webkul\Project\Filament\Widgets\TaskByStageChart;
 use Webkul\Project\Filament\Widgets\TaskByStateChart;
-use Webkul\Project\Filament\Widgets\TopAssigneesWidget;
-use Webkul\Project\Filament\Widgets\TopProjectsWidget;
 use Webkul\Project\Models\Project;
 use Webkul\Project\Models\Tag;
 use Webkul\Security\Models\User;

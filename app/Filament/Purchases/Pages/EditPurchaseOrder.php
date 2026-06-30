@@ -5,11 +5,14 @@ namespace App\Filament\Purchases\Pages;
 use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use App\Services\Purchases\InternalRequestLineService;
 use Webkul\Purchase\Facades\PurchaseOrder;
-use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource\Pages\EditPurchaseOrder as BaseEditPurchaseOrder;
+use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource\Pages\EditOrder;
+use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource;
 use Webkul\Purchase\Models\PurchaseOrder as PurchaseOrderModel;
 
-class EditPurchaseOrder extends BaseEditPurchaseOrder
+class EditPurchaseOrder extends EditOrder
 {
+    protected static string $resource = PurchaseOrderResource::class;
+
     /** @var array<int, array<string, mixed>> */
     protected array $pendingInternalLineItems = [];
 

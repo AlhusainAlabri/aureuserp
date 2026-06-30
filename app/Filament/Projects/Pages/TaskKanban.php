@@ -6,6 +6,7 @@ use App\Enums\Projects\TaskPriorityLevel;
 use App\Filament\Extensions\TaskResourceExtensions;
 use App\Filament\Projects\Concerns\InteractsWithTaskFilters;
 use App\Services\Projects\TaskNotificationService;
+use App\Services\Projects\TaskStageHelper;
 use App\Services\Projects\TaskStatePresenter;
 use App\Support\FilamentUrl;
 use BackedEnum;
@@ -18,6 +19,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Filament\Resources\TaskResource;
+use Webkul\Project\Models\Project;
 use Webkul\Project\Models\Task;
 use Webkul\Project\Models\TaskStage;
 
@@ -140,13 +142,31 @@ class TaskKanban extends Page
     /** @return Collection<int, TaskStage> */
     public function getStages(): Collection
     {
-        return TaskStage::query()
+        $stages = TaskStage::query()
             ->when($this->filterProjectId, fn ($query) => $query->where(function ($inner): void {
                 $inner->where('project_id', $this->filterProjectId)->orWhereNull('project_id');
             }))
             ->where('is_active', true)
             ->orderBy('sort')
             ->get();
+
+        if ($stages->isEmpty() && $this->filterProjectId) {
+            $project = Project::query()->find($this->filterProjectId);
+
+            if ($project) {
+                TaskStageHelper::seedDefaultsForProject($project);
+
+                $stages = TaskStage::query()
+                    ->where(function ($query): void {
+                        $query->where('project_id', $this->filterProjectId)->orWhereNull('project_id');
+                    })
+                    ->where('is_active', true)
+                    ->orderBy('sort')
+                    ->get();
+            }
+        }
+
+        return $stages;
     }
 
     /** @return array<int, Collection<int, Task>> */

@@ -293,6 +293,36 @@ it('CorrespondencePluginTest: department seeder is idempotent', function (): voi
         ->and(Department::query()->count())->toBe($afterFirst);
 });
 
+it('CorrespondencePluginTest: department seeder assigns unique codes for arabic department names', function (): void {
+    if (! Schema::hasTable('employees_departments')) {
+        test()->markTestSkipped('employees_departments table is not available.');
+    }
+
+    $company = correspondenceCompany();
+    $creatorId = User::query()->value('id');
+
+    $first = Webkul\Employee\Models\Department::query()->create([
+        'name'       => 'الإدارة',
+        'company_id' => $company->id,
+        'creator_id' => $creatorId,
+    ]);
+
+    $second = Webkul\Employee\Models\Department::query()->create([
+        'name'       => 'الإدارة العليا',
+        'company_id' => $company->id,
+        'creator_id' => $creatorId,
+    ]);
+
+    (new CorrespondenceDepartmentSeeder)->run();
+
+    $codes = Department::query()
+        ->whereIn('employees_department_id', [$first->id, $second->id])
+        ->pluck('code');
+
+    expect($codes)->toHaveCount(2)
+        ->and($codes->unique()->count())->toBe(2);
+});
+
 it('CorrespondencePluginTest: incoming correspondence can be marked as read', function (): void {
     $user = correspondenceUser();
     $correspondence = Correspondence::factory()->incoming()->create([

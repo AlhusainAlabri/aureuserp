@@ -4,16 +4,21 @@ namespace App\Filament\Extensions;
 
 use Closure;
 use Filament\Forms\Components\Field;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Webkul\Partner\Enums\AccountType;
 
 class PartnerResourceExtensions
 {
@@ -25,11 +30,7 @@ class PartnerResourceExtensions
                 static::localizeHardcodedGroupHeading($component, 'infolist');
 
                 if ($component instanceof TextEntry) {
-                    $label = match ($component->getName()) {
-                        'account_type' => __('partners::filament/resources/partner.infolist.sections.general.fields.account-type'),
-                        'name'         => __('partners::filament/resources/partner.infolist.sections.general.fields.name'),
-                        default        => null,
-                    };
+                    $label = static::partnerInfolistFieldLabel($component->getName());
 
                     if ($label !== null) {
                         $component->label($label);
@@ -65,9 +66,29 @@ class PartnerResourceExtensions
             $schema->getComponents(withHidden: true),
             function (Component $component): void {
                 static::localizeHardcodedGroupHeading($component, 'form');
+                static::localizeHardcodedTabLabel($component, 'form');
 
                 if ($component instanceof Radio && $component->getName() === 'account_type') {
                     $component->label(__('partners::filament/resources/partner.form.sections.general.fields.account-type'));
+                }
+
+                if ($component instanceof TextInput && $component->getName() === 'name') {
+                    $component->label(__('partners::filament/resources/partner.form.sections.general.fields.name'));
+                    $component->placeholder(fn (Get $get): string => $get('account_type') === AccountType::COMPANY->value
+                        ? __('contacts-extensions::placeholders.name-company')
+                        : __('contacts-extensions::placeholders.name-individual'));
+                }
+
+                if ($component instanceof TextInput && $component->getName() === 'tax_id') {
+                    $component->placeholder(__('contacts-extensions::placeholders.tax-id'));
+                }
+
+                if ($component instanceof TextInput && $component->getName() === 'job_title') {
+                    $component->placeholder(__('contacts-extensions::placeholders.job-title'));
+                }
+
+                if ($component instanceof FileUpload && $component->getName() === 'avatar') {
+                    $component->label(__('partners::filament/resources/partner.form.sections.general.fields.avatar'));
                 }
 
                 if ($component instanceof Field) {
@@ -100,6 +121,33 @@ class PartnerResourceExtensions
         });
 
         return $table;
+    }
+
+    protected static function partnerInfolistFieldLabel(?string $name): ?string
+    {
+        return match ($name) {
+            'account_type'     => __('partners::filament/resources/partner.infolist.sections.general.fields.account-type'),
+            'name'             => __('partners::filament/resources/partner.infolist.sections.general.fields.name'),
+            'tax_id'           => __('partners::filament/resources/partner.infolist.sections.general.fields.tax-id'),
+            'job_title'        => __('partners::filament/resources/partner.infolist.sections.general.fields.job-title'),
+            'phone'            => __('partners::filament/resources/partner.infolist.sections.general.fields.phone'),
+            'mobile'           => __('partners::filament/resources/partner.infolist.sections.general.fields.mobile'),
+            'email'            => __('partners::filament/resources/partner.infolist.sections.general.fields.email'),
+            'website'          => __('partners::filament/resources/partner.infolist.sections.general.fields.website'),
+            'title.name'       => __('partners::filament/resources/partner.infolist.sections.general.fields.title'),
+            'tags.name'        => __('partners::filament/resources/partner.infolist.sections.general.fields.tags'),
+            'street1'          => __('partners::filament/resources/partner.infolist.sections.general.address.fields.street1'),
+            'street2'          => __('partners::filament/resources/partner.infolist.sections.general.address.fields.street2'),
+            'city'             => __('partners::filament/resources/partner.infolist.sections.general.address.fields.city'),
+            'zip'              => __('partners::filament/resources/partner.infolist.sections.general.address.fields.zip'),
+            'country.name'     => __('partners::filament/resources/partner.infolist.sections.general.address.fields.country'),
+            'state.name'       => __('partners::filament/resources/partner.infolist.sections.general.address.fields.state'),
+            'user.name'        => __('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.responsible'),
+            'company_registry' => __('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.company-id'),
+            'reference'        => __('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.reference'),
+            'industry.name'    => __('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.industry'),
+            default            => null,
+        };
     }
 
     protected static function partnerFormFieldLabel(?string $name): ?string
@@ -169,13 +217,14 @@ class PartnerResourceExtensions
         }
 
         $translated = match ($heading) {
+            'General' => __("partners::filament/resources/partner.{$context}.sections.general.title"),
             'Sales'   => __("partners::filament/resources/partner.{$context}.tabs.sales-purchase.groups.sales"),
             'Others'  => __("partners::filament/resources/partner.{$context}.tabs.sales-purchase.groups.others"),
             'Address' => __('partners::filament/resources/partner.infolist.sections.general.address.title'),
             default   => null,
         };
 
-        if ($translated === null) {
+        if ($translated === null || str_starts_with($translated, 'partners::')) {
             return;
         }
 
@@ -184,6 +233,30 @@ class PartnerResourceExtensions
         } else {
             $component->label($translated);
         }
+    }
+
+    protected static function localizeHardcodedTabLabel(Component $component, string $context): void
+    {
+        if (! $component instanceof Tab) {
+            return;
+        }
+
+        $label = $component->getLabel();
+
+        if (! is_string($label)) {
+            return;
+        }
+
+        $translated = match ($label) {
+            'Sales and Purchases' => __("partners::filament/resources/partner.{$context}.tabs.sales-purchase.title"),
+            default               => null,
+        };
+
+        if ($translated === null || str_starts_with($translated, 'partners::')) {
+            return;
+        }
+
+        $component->label($translated);
     }
 
     /**
@@ -205,6 +278,14 @@ class PartnerResourceExtensions
      */
     protected static function getNestedComponents(Component $component): array
     {
+        if (method_exists($component, 'getTabs')) {
+            $tabs = $component->getTabs();
+
+            if (is_array($tabs) && $tabs !== []) {
+                return $tabs;
+            }
+        }
+
         if (! method_exists($component, 'getChildComponents')) {
             return [];
         }

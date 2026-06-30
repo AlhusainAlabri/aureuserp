@@ -59,11 +59,11 @@ class Dashboard extends BaseDashboard
     use InteractsWithAdvancedDashboard;
     use InteractsWithOrgDashboardCommandCenter;
 
-    protected static string $routePath = '/';
+    protected static string $routePath = 'org-overview';
 
-    protected static ?string $slug = 'home';
+    protected static ?string $slug = 'org-overview';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 5;
 
     protected string $view = 'filament.pages.org-dashboard';
 
@@ -77,7 +77,7 @@ class Dashboard extends BaseDashboard
 
     public static function getNavigationLabel(): string
     {
-        return __('dashboard.navigation.title');
+        return __('dashboard.navigation.overview');
     }
 
     public static function getNavigationGroup(): string

@@ -36,6 +36,7 @@ class PendingBorrowingRequests extends BaseBorrowingRequestsPage
     {
         return AssetBorrowing::query()
             ->with(['asset', 'employee', 'requestedBy'])
-            ->where('status', BorrowingStatus::Pending);
+            ->where('status', BorrowingStatus::Pending)
+            ->orderByDesc('created_at');
     }
 }

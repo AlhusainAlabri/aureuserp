@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Filament\Contacts\Resources\PartnerResource\Pages\ListPartners as ExtendedListPartners;
 use Filament\Facades\Filament;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use ReflectionClass;
@@ -31,7 +30,7 @@ class ContactExtensionsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->restoreGlobalPageNavigationRegistration();
-        $this->registerPartnerTranslationOverrides();
+        $this->loadTranslationsFrom(lang_path('contacts-extensions'), 'contacts-extensions');
 
         $this->app->booted(function (): void {
             $this->registerLivewireOverrides();
@@ -151,15 +150,6 @@ class ContactExtensionsServiceProvider extends ServiceProvider
         }
 
         require app_path('Overrides/Webkul/Contact/Filament/Resources/PartnerResource.php');
-    }
-
-    protected function registerPartnerTranslationOverrides(): void
-    {
-        Lang::addLines([
-            'filament/resources/partner.form.sections.general.fields.account-type'     => 'نوع الحساب',
-            'filament/resources/partner.infolist.sections.general.fields.account-type' => 'نوع الحساب',
-        ], 'ar', 'partners');
-
     }
 
     protected function registerLivewireOverrides(): void

@@ -24,7 +24,7 @@ class ProjectDocumentsRelationManager extends RelationManager
 
     public static function getTitle($ownerRecord = null, ?string $pageClass = null): string
     {
-        return __('projects-extensions::relations.documents');
+        return __('projects-extensions::project-relations.documents');
     }
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool

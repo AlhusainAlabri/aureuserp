@@ -14,6 +14,7 @@ use App\Filament\Inventory\Pages\ProductPurchaseHistoryPage;
 use App\Filament\Inventory\Pages\RecordConsumption;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\InternalRequests;
+use App\Filament\Pages\ModuleLauncher;
 use App\Filament\Pages\MyEmployeeProfile;
 use App\Filament\Pages\MyEmployeeSubmissions;
 use App\Filament\Pages\MyRequests;
@@ -22,6 +23,7 @@ use App\Filament\Pages\MyWarnings;
 use App\Filament\Projects\Pages\OperationsCalendar;
 use App\Filament\Projects\Pages\TaskKanban;
 use App\Filament\Projects\Pages\TaskOperationsHub;
+use App\Filament\Resources\DashboardShortcutResource;
 use App\Filament\Widgets\Dashboard\ActiveLoansWidget;
 use App\Filament\Widgets\Dashboard\ActiveProjectsWidget;
 use App\Filament\Widgets\Dashboard\AssetsSummaryWidget;
@@ -85,7 +87,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->homeUrl(fn (): string => Dashboard::getUrl())
+            ->homeUrl(fn (): string => ModuleLauncher::getUrl())
             ->login()
             ->favicon(asset('images/favicon.ico'))
             ->brandLogo(fn (): string => filament()->auth()->check()
@@ -207,12 +209,14 @@ class AdminPanelProvider extends PanelProvider
                         'sm'      => 2,
                     ]),
                 EasyFooterPlugin::make()
-                    ->withSentence('Developed by NODHUM TECHNOLOGY · v'.config('app.version')),
+                    ->withSentence(__('admin.footer.sentence', ['version' => config('app.version')])),
             ])
             ->resources([
                 AssetBorrowingResource::class,
+                DashboardShortcutResource::class,
             ])
             ->pages([
+                ModuleLauncher::class,
                 Dashboard::class,
                 MyRequests::class,
                 InternalRequests::class,

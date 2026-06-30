@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
+use Webkul\Assets\Enums\BorrowingStatus;
 use Webkul\Assets\Models\Asset;
 use Webkul\Assets\Models\AssetBorrowing;
 use Webkul\Employee\Models\Employee;
@@ -30,11 +31,14 @@ it('loads the asset borrowing view page without index route error', function ():
     $asset = Asset::factory()->create();
 
     $borrowing = AssetBorrowing::query()->create([
-        'asset_id'    => $asset->id,
-        'employee_id' => $employee->id,
-        'due_at'      => now()->addDays(5),
+        'asset_id'     => $asset->id,
+        'employee_id'  => $employee->id,
+        'due_at'       => now()->addDays(5),
+        'status'       => BorrowingStatus::Pending,
+        'requested_by' => $user->id,
     ]);
 
     Livewire::test(ViewAssetBorrowing::class, ['record' => $borrowing->id])
-        ->assertSuccessful();
+        ->assertSuccessful()
+        ->assertDontSee('-0001');
 });

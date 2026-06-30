@@ -4,6 +4,7 @@
 @source '../../../../resources/views/**/*';
 @source '../../../../plugins/webkul/*/resources/views/**/*.blade.php';
 @source '../../../../plugins/webkul/*/src/Filament/**/*.php';
+@source '../../../../vendor/guava/filament-icon-picker/resources/**/*';
 
 .fi-simple-layout {
     position: relative;
@@ -79,6 +80,40 @@
     @apply min-w-[16rem];
 }
 
+.module-launcher__logo {
+    display: block;
+    width: auto;
+    max-width: 14rem;
+    height: auto;
+    max-height: 4.5rem;
+    object-fit: contain;
+}
+
+.module-launcher-global-search__input {
+    @apply min-h-12 text-base;
+}
+
+.module-launcher-global-search__results {
+    @apply mt-2 w-full;
+}
+
+.module-launcher__toolbar .fi-ac {
+    @apply gap-2;
+}
+
+.module-launcher__meta {
+    @apply px-2;
+}
+
+.module-launcher__icon svg {
+    @apply shrink-0;
+}
+
+.fi-page-launcher .fi-header,
+.fi-page-module-launcher .fi-header {
+    @apply hidden;
+}
+
 .org-dashboard-command-center__filters-fields .fi-sc {
     @apply w-full;
 }
@@ -89,4 +124,21 @@
 
 .org-dashboard-command-center__filters-fields .fi-fo-field-wrp {
     @apply mb-0;
+}
+
+/* Primary app menu — Zakat Committee brand (green + gold) */
+.fi-topbar-item .fi-topbar-item-btn {
+    @apply text-gray-700 transition-colors duration-150 dark:text-gray-300;
+}
+
+.fi-topbar-item .fi-topbar-item-btn:hover {
+    @apply bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200;
+}
+
+.fi-topbar-item.fi-active .fi-topbar-item-btn {
+    @apply bg-emerald-50 font-semibold text-emerald-800 ring-1 ring-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-100 dark:ring-emerald-800;
+}
+
+.fi-topbar-open-sidebar-btn + .fi-topbar-close-sidebar-btn + .fi-dropdown .fi-icon-btn {
+    @apply text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40;
 }

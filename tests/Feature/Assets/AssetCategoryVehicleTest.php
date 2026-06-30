@@ -21,7 +21,7 @@ it('persists vehicle category and fields on assets', function (): void {
         'status'              => AssetStatus::Available,
     ]);
 
-    expect($asset->fresh()->category)->toBe(AssetCategory::Vehicle->value)
+    expect($asset->fresh()->category)->toBe(AssetCategory::Vehicle)
         ->and($asset->fresh()->plate_number)->toBe('B 98765')
         ->and($asset->fresh()->registration_number)->toBe('REG-2026-001')
         ->and($asset->fresh()->mileage)->toBe(45200);

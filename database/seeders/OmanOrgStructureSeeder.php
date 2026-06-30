@@ -16,7 +16,7 @@ class OmanOrgStructureSeeder extends Seeder
             return;
         }
 
-        if (Department::query()->where('name', 'Social Research Department')->exists()) {
+        if (Department::query()->where('name', 'دائرة البحوث الاجتماعية')->exists()) {
             return;
         }
 
@@ -26,15 +26,15 @@ class OmanOrgStructureSeeder extends Seeder
             : null;
 
         $socialResearch = Department::query()->create([
-            'name'       => 'Social Research Department',
+            'name'       => 'دائرة البحوث الاجتماعية',
             'company_id' => $companyId,
             'creator_id' => $creatorId,
         ]);
 
         foreach ([
-            'Reception Section',
-            'Family Services Section',
-            'Audit Section',
+            'قسم الاستقبال',
+            'قسم خدمات الأسرة',
+            'قسم التدقيق',
         ] as $sectionName) {
             Department::query()->create([
                 'name'       => $sectionName,
@@ -45,13 +45,13 @@ class OmanOrgStructureSeeder extends Seeder
         }
 
         $informationSystems = Department::query()->create([
-            'name'       => 'Information Systems Department',
+            'name'       => 'دائرة نظم المعلومات',
             'company_id' => $companyId,
             'creator_id' => $creatorId,
         ]);
 
         Department::query()->create([
-            'name'       => 'Information Systems Section',
+            'name'       => 'قسم نظم المعلومات',
             'parent_id'  => $informationSystems->id,
             'company_id' => $companyId,
             'creator_id' => $creatorId,

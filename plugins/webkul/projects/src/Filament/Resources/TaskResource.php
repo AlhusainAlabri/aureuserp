@@ -130,6 +130,7 @@ class TaskResource extends Resource
                 Group::make()
                     ->schema([
                         FormProgressStepper::make('stage_id')
+                            ->label(__('projects::models/task.log-attributes.stage'))
                             ->hiddenLabel()
                             ->inline()
                             ->required()

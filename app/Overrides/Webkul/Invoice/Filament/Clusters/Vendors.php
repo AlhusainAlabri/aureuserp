@@ -1,0 +1,25 @@
+<?php
+
+namespace Webkul\Invoice\Filament\Clusters;
+
+use Filament\Clusters\Cluster;
+
+class Vendors extends Cluster
+{
+    protected static ?string $slug = 'invoices/vendors';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('invoices::filament/clusters/vendors.navigation.title');
+    }
+
+    public static function getNavigationGroup(): string
+    {
+        return __('invoices::filament/clusters/vendors.navigation.group');
+    }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return __('invoices::filament/clusters/vendors.navigation.title');
+    }
+}

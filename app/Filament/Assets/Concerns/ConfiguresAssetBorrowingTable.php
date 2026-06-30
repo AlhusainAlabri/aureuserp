@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Webkul\Assets\Enums\BorrowingStatus;
 use Webkul\Assets\Models\AssetBorrowing;
 
@@ -19,7 +20,6 @@ trait ConfiguresAssetBorrowingTable
     public function configureBorrowingTable(Table $table): Table
     {
         return $table
-            ->query(AssetBorrowing::query()->with(['asset', 'employee', 'requestedBy']))
             ->columns([
                 TextColumn::make('asset.asset_number')
                     ->label(__('assets::assets.fields.asset_number'))
@@ -37,15 +37,17 @@ trait ConfiguresAssetBorrowingTable
                     ->badge(),
                 TextColumn::make('due_at')
                     ->label(__('assets::assets.fields.due_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => static::formatBorrowingDateTime($state))
+                    ->placeholder('—')
                     ->sortable(),
                 TextColumn::make('borrowed_at')
                     ->label(__('assets::assets.fields.borrowed_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => static::formatBorrowingDateTime($state))
+                    ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('returned_at')
                     ->label(__('assets::assets.fields.returned_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => static::formatBorrowingDateTime($state))
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -72,7 +74,24 @@ trait ConfiguresAssetBorrowingTable
         $employeeId = auth()->user()?->employee?->id;
 
         return AssetBorrowing::query()
-            ->with(['asset', 'employee'])
+            ->with(['asset', 'employee', 'requestedBy'])
             ->when($employeeId, fn (Builder $query) => $query->where('employee_id', $employeeId), fn (Builder $query) => $query->whereRaw('1 = 0'));
+    }
+
+    public static function formatBorrowingDateTime(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $date = $value instanceof \DateTimeInterface
+            ? Carbon::instance($value)
+            : Carbon::parse($value);
+
+        if ($date->year < 1) {
+            return null;
+        }
+
+        return $date->locale(app()->getLocale())->translatedFormat('j F Y H:i');
     }
 }

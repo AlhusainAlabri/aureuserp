@@ -8,6 +8,7 @@ use App\Observers\ProjectTaskObserver;
 use App\Services\Projects\ProjectCompletionService;
 use App\Services\Projects\ProjectFinancialSummaryService;
 use App\Services\Projects\TaskNotificationService;
+use App\Services\Projects\TaskStageHelper;
 use App\Services\Projects\UnifiedTaskQueryService;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
@@ -30,6 +31,8 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->loadTranslationsFrom(lang_path('projects-extensions'), 'projects-extensions');
+
         $this->restoreGlobalPageNavigationRegistration();
 
         $this->registerConfigurationsClusterOverride();
@@ -44,8 +47,6 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
     {
         $this->restoreGlobalPageNavigationRegistration();
 
-        $this->loadTranslationsFrom(lang_path('projects-extensions'), 'projects-extensions');
-
         $this->app->booted(function (): void {
             $this->registerLivewireOverrides();
         });
@@ -57,6 +58,12 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
 
         if (! class_exists(Task::class)) {
             return;
+        }
+
+        if (class_exists(Project::class)) {
+            Project::created(function (Project $project): void {
+                TaskStageHelper::seedDefaultsForProject($project);
+            });
         }
 
         $this->registerProjectRelations();

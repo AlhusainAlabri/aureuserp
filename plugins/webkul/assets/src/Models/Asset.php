@@ -3,6 +3,7 @@
 namespace Webkul\Assets\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Webkul\Assets\Database\Factories\AssetFactory;
+use Webkul\Assets\Enums\AssetCategory;
 use Webkul\Assets\Enums\AssetStatus;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -45,6 +47,18 @@ class Asset extends Model
             'value'        => 'decimal:3',
             'purchased_at' => 'date',
         ];
+    }
+
+    protected function category(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): ?AssetCategory => filled($value) ? AssetCategory::tryFrom($value) : null,
+            set: fn (AssetCategory|string|null $value): ?string => match (true) {
+                $value instanceof AssetCategory => $value->value,
+                is_string($value)               => AssetCategory::tryFrom($value)?->value ?? $value,
+                default                         => null,
+            },
+        );
     }
 
     public function getModelTitle(): string

@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\ModuleLauncher;
 use App\Support\DashboardNavigationOrder;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
@@ -22,7 +23,7 @@ it('evaluates registered navigation group labels in arabic locale', function ():
         ->and($dashboardGroup->getLabel())->toBe(__('admin.navigation.dashboard', locale: 'ar'));
 });
 
-it('lists the org dashboard first within the dashboard navigation group', function (): void {
+it('lists the module launcher first within the dashboard navigation group', function (): void {
     Filament::setCurrentPanel(Filament::getPanel('admin'));
 
     $dashboardGroup = collect(Filament::getNavigation())
@@ -35,8 +36,9 @@ it('lists the org dashboard first within the dashboard navigation group', functi
         ->values()
         ->all();
 
-    expect($labels[0])->toBe(Dashboard::getNavigationLabel())
-        ->and(Dashboard::getNavigationSort())->toBe(0);
+    expect($labels[0])->toBe(ModuleLauncher::getNavigationLabel())
+        ->and($labels)->toContain(Dashboard::getNavigationLabel())
+        ->and(ModuleLauncher::getNavigationSort())->toBeLessThan(Dashboard::getNavigationSort());
 });
 
 it('maps employee navigation items to the registered arabic group with icon', function (): void {

@@ -26,12 +26,12 @@ class TaskResourceExtensions
 {
     public static function getModelLabel(): string
     {
-        return __('projects::filament/resources/task.navigation.title');
+        return __('projects::models/task.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('projects::filament/resources/task.title');
+        return __('projects::filament/resources/task.navigation.title');
     }
 
     public static function featuredPriorityColumnLabel(): string

@@ -18,7 +18,7 @@ class ProjectInvoicesRelationManager extends RelationManager
 
     public static function getTitle($ownerRecord = null, ?string $pageClass = null): string
     {
-        return __('projects-extensions::relations.invoices');
+        return __('projects-extensions::project-relations.invoices');
     }
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool

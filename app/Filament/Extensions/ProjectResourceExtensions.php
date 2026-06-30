@@ -24,6 +24,16 @@ use Webkul\TableViews\Filament\Components\PresetView;
 
 class ProjectResourceExtensions
 {
+    public static function getModelLabel(): string
+    {
+        return __('projects::models/project.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('projects::filament/resources/project.navigation.title');
+    }
+
     /** @return array<int, mixed> */
     public static function kpiInfolistSection(): array
     {
@@ -194,25 +204,25 @@ class ProjectResourceExtensions
         $groups = [];
 
         if (Schema::hasTable('purchases_orders')) {
-            $groups[] = RelationGroup::make(__('projects-extensions::relations.orders'), [
+            $groups[] = RelationGroup::make(__('projects-extensions::project-relations.orders'), [
                 ProjectOrdersRelationManager::class,
             ])->icon('heroicon-o-shopping-cart');
         }
 
         if (Schema::hasTable('accounts_account_moves') && Schema::hasColumn('accounts_account_moves', 'project_id')) {
-            $groups[] = RelationGroup::make(__('projects-extensions::relations.invoices'), [
+            $groups[] = RelationGroup::make(__('projects-extensions::project-relations.invoices'), [
                 ProjectInvoicesRelationManager::class,
             ])->icon('heroicon-o-banknotes');
         }
 
         if (Schema::hasTable('doc_files')) {
-            $groups[] = RelationGroup::make(__('projects-extensions::relations.documents'), [
+            $groups[] = RelationGroup::make(__('projects-extensions::project-relations.documents'), [
                 ProjectDocumentsRelationManager::class,
             ])->icon('heroicon-o-document');
         }
 
         if (Schema::hasTable('meetings')) {
-            $groups[] = RelationGroup::make(__('projects-extensions::relations.meetings'), [
+            $groups[] = RelationGroup::make(__('projects-extensions::project-relations.meetings'), [
                 EnhancedProjectMeetingsRelationManager::class,
             ])->icon('heroicon-o-clipboard-document-list');
         }

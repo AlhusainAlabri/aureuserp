@@ -12,12 +12,14 @@ return [
         'quotation'         => 'عرض السعر أو الفاتورة',
         'payment_voucher'   => 'سند الصرف',
         'vendor_hint'       => 'اختياري — اسم المحل أو الشركة لهذا الشراء',
+        'notes'             => 'ملاحظات',
     ],
     'payment' => [
         'section_title'    => 'تتبع الدفعات',
         'amount_paid'      => 'المبلغ المدفوع',
         'amount_remaining' => 'المبلغ المتبقي',
         'record_payment'   => 'تسجيل دفعة',
+        'paid_at'          => 'تاريخ الدفع',
     ],
     'notifications' => [
         'voucher_required' => [
@@ -42,6 +44,7 @@ return [
     'navigation' => [
         'my_requests'       => 'طلباتي',
         'internal_requests' => 'الطلبات الداخلية',
+        'quotations'        => 'طلبات عروض الأسعار',
     ],
     'actions' => [
         'new_request' => 'طلب جديد',

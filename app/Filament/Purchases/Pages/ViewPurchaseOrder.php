@@ -56,7 +56,7 @@ class ViewPurchaseOrder extends ViewOrder
                         ->required()
                         ->minValue(0.001),
                     DateTimePicker::make('paid_at')
-                        ->label(__('purchases-extensions::request.fields.expected_delivery'))
+                        ->label(__('purchases-extensions::request.payment.paid_at'))
                         ->default(now())
                         ->required(),
                     FileUpload::make('voucher_path')
@@ -64,7 +64,7 @@ class ViewPurchaseOrder extends ViewOrder
                         ->disk('private')
                         ->directory(fn (): string => 'purchases/payment-vouchers/'.now()->year),
                     Textarea::make('notes')
-                        ->label(__('purchases-extensions::request.fields.justification'))
+                        ->label(__('purchases-extensions::request.fields.notes'))
                         ->rows(2),
                 ])
                 ->action(function (array $data): void {

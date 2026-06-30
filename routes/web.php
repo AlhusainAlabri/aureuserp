@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Inventory\InventoryReportDownloadController;
+use App\Http\Controllers\PrivateFileServeController;
 use App\Http\Controllers\SetUserLocaleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -13,6 +14,10 @@ if (! request()->getRequestUri() == '/login') {
 
 Route::get('/inventory/reports/download', InventoryReportDownloadController::class)
     ->name('inventory.reports.download')
+    ->middleware(['auth', 'signed']);
+
+Route::get('/private-files/serve', PrivateFileServeController::class)
+    ->name('private-files.serve')
     ->middleware(['auth', 'signed']);
 
 Route::get('/employees/documents/{document}/download', function (EmployeeDocument $document) {

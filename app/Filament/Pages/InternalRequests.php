@@ -7,6 +7,7 @@ use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use Filament\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource;
@@ -41,8 +42,16 @@ class InternalRequests extends ListPurchaseOrders
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('purchases_orders')
-            && Schema::hasColumn('purchases_orders', 'request_type');
+        if (! Auth::check() || ! Schema::hasTable('purchases_orders')) {
+            return false;
+        }
+
+        if (! Schema::hasColumn('purchases_orders', 'request_type')) {
+            return Auth::user()->can('view_any_purchase_purchase::order')
+                || Auth::user()->can('page_InternalRequests');
+        }
+
+        return true;
     }
 
     protected function getHeaderActions(): array

@@ -3,6 +3,7 @@
 namespace Webkul\Project\Filament\Resources;
 
 use App\Filament\Extensions\ProjectResourceExtensions;
+use App\Filament\Projects\Resources\ProjectResource\Pages\ListProjects;
 use App\Filament\Resources\ProjectResource\Pages\ManageTasks;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -57,7 +58,6 @@ use Webkul\Project\Enums\ProjectVisibility;
 use Webkul\Project\Filament\Clusters\Configurations\Resources\TagResource;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\CreateProject;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\EditProject;
-use Webkul\Project\Filament\Resources\ProjectResource\Pages\ListProjects;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ManageMilestones;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ViewProject;
 use Webkul\Project\Filament\Resources\ProjectResource\RelationManagers\MilestonesRelationManager;
@@ -87,6 +87,16 @@ class ProjectResource extends Resource
         return __('projects::filament/resources/project.navigation.title');
     }
 
+    public static function getModelLabel(): string
+    {
+        return ProjectResourceExtensions::getModelLabel();
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return ProjectResourceExtensions::getPluralModelLabel();
+    }
+
     public static function getNavigationGroup(): string
     {
         return __('projects::filament/resources/project.navigation.group');
@@ -112,6 +122,7 @@ class ProjectResource extends Resource
                 Group::make()
                     ->schema([
                         FormProgressStepper::make('stage_id')
+                            ->label(__('projects::filament/resources/project.table.columns.stage'))
                             ->hiddenLabel()
                             ->inline()
                             ->required()
@@ -430,7 +441,11 @@ class ProjectResource extends Resource
                     }),
 
                 Action::make('tasks')
-                    ->label(fn (Project $record): string => __('projects::filament/resources/project.table.actions.tasks', ['count' => $record->tasks->whereNull('parent_id')->count()]))
+                    ->label(fn (Project $record): string => trans_choice(
+                        'projects::filament/resources/project.table.actions.tasks',
+                        $record->tasks->whereNull('parent_id')->count(),
+                        ['count' => $record->tasks->whereNull('parent_id')->count()],
+                    ))
                     ->icon('heroicon-m-clipboard-document-list')
                     ->color('gray')
                     ->url('https:example.com/tasks/{record}')
@@ -689,12 +704,12 @@ class ProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make(__('projects-extensions::relations.task_stages'), [
+            RelationGroup::make(__('projects-extensions::project-relations.task_stages'), [
                 TaskStagesRelationManager::class,
             ])
                 ->icon('heroicon-o-squares-2x2'),
 
-            RelationGroup::make('Milestones', [
+            RelationGroup::make(__('projects::filament/clusters/configurations/resources/milestone.navigation.title'), [
                 MilestonesRelationManager::class,
             ])
                 ->icon('heroicon-o-flag'),
