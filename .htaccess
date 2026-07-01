@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Block web access to Laravel internals (repo root = public_html on Hostinger)
+    RewriteRule ^(app|bootstrap|config|database|plugins|resources|routes|storage|tests|vendor|node_modules|\.github)(/|$) - [F,L,NC]
+    RewriteRule ^(\.env|\.env\.|composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml|\.git|\.gitignore|README\.md|auth\.md)(/.*)?$ - [F,L,NC]
+
+    # Route all requests into Laravel's public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<Files ".env">
+    Require all denied
+</Files>
+
+<FilesMatch "^\.env\.">
+    Require all denied
+</FilesMatch>
