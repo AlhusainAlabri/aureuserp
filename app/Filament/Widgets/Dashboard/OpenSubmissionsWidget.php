@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class OpenSubmissionsWidget extends BaseWidget
 {
@@ -38,7 +38,7 @@ class OpenSubmissionsWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('employee_submissions')) {
+            if (! SchemaMemo::hasTable('employee_submissions')) {
                 return [
                     Stat::make(__('dashboard.widgets.open_submissions'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

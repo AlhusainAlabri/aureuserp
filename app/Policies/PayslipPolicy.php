@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Payroll\Models\Payslip;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PayslipPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Payslip $payslip): bool
     {
         return $authUser->can('view_any_payroll_payslip');
@@ -61,4 +61,5 @@ class PayslipPolicy
     {
         return $authUser->can('email_pdf_payroll_payslip');
     }
+
 }

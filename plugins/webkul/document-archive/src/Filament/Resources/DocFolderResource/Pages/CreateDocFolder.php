@@ -12,6 +12,17 @@ class CreateDocFolder extends CreateRecord
 
     protected static string $resource = DocFolderResource::class;
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        if (filled(request()->query('parent_id'))) {
+            $this->form->fill([
+                'parent_id' => (int) request()->query('parent_id'),
+            ]);
+        }
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         unset($data['password'], $data['remove_password']);

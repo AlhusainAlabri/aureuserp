@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Manufacturing\Models\WorkCenter;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WorkCenterPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, WorkCenter $workCenter): bool
     {
         return $authUser->can('view_any_manufacturing_work::center');
@@ -66,4 +66,5 @@ class WorkCenterPolicy
     {
         return $authUser->can('reorder_manufacturing_work::center');
     }
+
 }

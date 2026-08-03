@@ -12,6 +12,7 @@ use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CustomerPanelProvider;
 use App\Providers\HrExtensionsServiceProvider;
 use App\Providers\InventoryExtensionsServiceProvider;
+use App\Providers\PerformanceServiceProvider;
 use App\Providers\ProjectExtensionsServiceProvider;
 use App\Providers\PurchaseExtensionsServiceProvider;
 use App\Providers\SalesExtensionsServiceProvider;
@@ -49,40 +50,43 @@ use Webkul\Timesheet\TimesheetServiceProvider;
 use Webkul\Website\WebsiteServiceProvider;
 
 return [
-    AppServiceProvider::class,
-    ChatterExtensionsServiceProvider::class,
-    HrExtensionsServiceProvider::class,
-    InventoryExtensionsServiceProvider::class,
-    AssetsExtensionsServiceProvider::class,
-    ProjectExtensionsServiceProvider::class,
-    DashboardExtensionsServiceProvider::class,
-    PurchaseExtensionsServiceProvider::class,
-    SalesExtensionsServiceProvider::class,
     AccountExtensionsServiceProvider::class,
     AccountingExtensionsServiceProvider::class,
+    AppServiceProvider::class,
+    AssetsExtensionsServiceProvider::class,
+    ChatterExtensionsServiceProvider::class,
+    ContactExtensionsServiceProvider::class,
+    DashboardExtensionsServiceProvider::class,
+    EmployeeExtensionsServiceProvider::class,
     AdminPanelProvider::class,
     CustomerPanelProvider::class,
-    AccountingServiceProvider::class,
+    HrExtensionsServiceProvider::class,
+    InventoryExtensionsServiceProvider::class,
+    PerformanceServiceProvider::class,
+    ProjectExtensionsServiceProvider::class,
+    PurchaseExtensionsServiceProvider::class,
+    SalesExtensionsServiceProvider::class,
     AccountServiceProvider::class,
+    AccountingServiceProvider::class,
     AnalyticServiceProvider::class,
+    AssetsServiceProvider::class,
     BlogServiceProvider::class,
     ChatterServiceProvider::class,
     ContactServiceProvider::class,
-    ContactExtensionsServiceProvider::class,
-    EmployeeExtensionsServiceProvider::class,
     CorrespondenceServiceProvider::class,
     DocumentArchiveServiceProvider::class,
     EmployeeServiceProvider::class,
     FieldServiceProvider::class,
+    FullCalendarServiceProvider::class,
     InventoryServiceProvider::class,
     InvoiceServiceProvider::class,
     ManufacturingServiceProvider::class,
-    AssetsServiceProvider::class,
     MeetingsServiceProvider::class,
     MyNotesServiceProvider::class,
     PartnerServiceProvider::class,
     PaymentServiceProvider::class,
     PayrollServiceProvider::class,
+    PluginManagerServiceProvider::class,
     ProductServiceProvider::class,
     ProjectServiceProvider::class,
     PurchaseServiceProvider::class,
@@ -92,8 +96,6 @@ return [
     SupportServiceProvider::class,
     TableViewsServiceProvider::class,
     TimeOffServiceProvider::class,
-    FullCalendarServiceProvider::class,
     TimesheetServiceProvider::class,
     WebsiteServiceProvider::class,
-    PluginManagerServiceProvider::class,
 ];

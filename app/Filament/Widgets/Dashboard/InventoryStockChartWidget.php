@@ -4,10 +4,10 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Inventory\Concerns\InteractsWithInventoryStockCounts;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\Inventory\InventoryStockCounter;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Support\Facades\Schema;
-use Webkul\Inventory\Models\OrderPoint;
 
 class InventoryStockChartWidget extends ChartWidget
 {
@@ -30,7 +30,7 @@ class InventoryStockChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('inventories_order_points')) {
+        if (! SchemaMemo::hasTable('inventories_order_points')) {
             return $this->emptyPluginData();
         }
 
@@ -59,11 +59,7 @@ class InventoryStockChartWidget extends ChartWidget
 
     protected function countTotalSkus(): int
     {
-        if (! Schema::hasTable('inventories_order_points')) {
-            return 0;
-        }
-
-        return (int) OrderPoint::query()->count();
+        return InventoryStockCounter::countTotalSkus();
     }
 
     /**

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Manufacturing\Models\Order;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrderPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Order $order): bool
     {
         return $authUser->can('view_any_manufacturing_manufacturing::order');
@@ -41,4 +41,5 @@ class OrderPolicy
     {
         return $authUser->can('delete_any_manufacturing_manufacturing::order');
     }
+
 }

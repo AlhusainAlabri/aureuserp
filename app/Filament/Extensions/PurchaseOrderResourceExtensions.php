@@ -4,6 +4,8 @@ namespace App\Filament\Extensions;
 
 use App\Enums\Purchases\RequestType;
 use App\Enums\Purchases\Urgency;
+use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -22,7 +24,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema as DatabaseSchema;
 use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\Employee;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
@@ -33,6 +34,8 @@ use Webkul\TableViews\Filament\Components\PresetView;
 
 class PurchaseOrderResourceExtensions
 {
+    use OptimizesRepeaterSelects;
+
     public static function requiresVendor(mixed $requestType): bool
     {
         $type = self::resolveRequestType($requestType);
@@ -50,7 +53,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, mixed> */
     public static function requestDetailsFormSection(): array
     {
-        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
+        if (! SchemaMemo::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -86,7 +89,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, mixed> */
     public static function internalRequestFormSection(): array
     {
-        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
+        if (! SchemaMemo::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -165,7 +168,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, TextColumn> */
     public static function extraTableColumns(): array
     {
-        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
+        if (! SchemaMemo::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -186,7 +189,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultOmrCurrencyId(): ?int
     {
         return once(function (): ?int {
-            if (! DatabaseSchema::hasTable('support_currencies')) {
+            if (! SchemaMemo::hasTable('support_currencies')) {
                 return null;
             }
 
@@ -257,7 +260,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<string, PresetView> */
     public static function presetTableViews(): array
     {
-        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
+        if (! SchemaMemo::hasColumn('purchases_orders', 'request_type')) {
             return [];
         }
 
@@ -304,7 +307,7 @@ class PurchaseOrderResourceExtensions
     /** @return array<int, Repeater> */
     public static function productRepeaterFields(Repeater $standardRepeater): array
     {
-        if (! DatabaseSchema::hasColumn('purchases_orders', 'request_type')) {
+        if (! SchemaMemo::hasColumn('purchases_orders', 'request_type')) {
             return [$standardRepeater];
         }
 
@@ -393,7 +396,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultInternalLineProductId(): ?int
     {
         return once(function (): ?int {
-            if (! DatabaseSchema::hasTable('products_products')) {
+            if (! SchemaMemo::hasTable('products_products')) {
                 return null;
             }
 
@@ -420,7 +423,7 @@ class PurchaseOrderResourceExtensions
     public static function defaultMiscSupplierId(): ?int
     {
         return once(function (): ?int {
-            if (! DatabaseSchema::hasTable('partners_partners')) {
+            if (! SchemaMemo::hasTable('partners_partners')) {
                 return null;
             }
 
@@ -492,7 +495,7 @@ class PurchaseOrderResourceExtensions
             },
         );
 
-        return $schema;
+        return static::optimizeFormSelects($schema);
     }
 
     /**

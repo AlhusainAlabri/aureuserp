@@ -27,6 +27,10 @@
             @endif
             <button type="submit">{{ __('document-archive::document-archive.password.submit') }}</button>
         </form>
+
+        <a href="{{ \Webkul\DocumentArchive\Filament\Pages\DocumentManager::getUrl(\Webkul\DocumentArchive\Support\FilamentUrl::withLocale()) }}" style="display:inline-block;margin-top:1.5rem;color:#64748b;font-size:0.875rem;text-decoration:none;">
+            ← {{ __('document-archive::document-archive.manager.back_to_manager') }}
+        </a>
     </div>
 </body>
 </html>

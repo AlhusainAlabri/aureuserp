@@ -11,6 +11,7 @@ use Livewire\Livewire;
 use ReflectionClass;
 use Webkul\Employee\Filament\Clusters\Configurations as EmployeeConfigurations;
 use Webkul\Employee\Filament\Clusters\Reportings;
+use Webkul\Employee\Filament\Resources\CoreSubmissionResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ListEmployees as BaseListEmployees;
 use Webkul\Employee\Filament\Resources\SubmissionResource;
 use Webkul\Employee\Filament\Resources\SubmissionResource\Pages\ListSubmissions as BaseListSubmissions;
@@ -24,6 +25,8 @@ class EmployeeExtensionsServiceProvider extends ServiceProvider
         $this->registerReportingsClusterOverride();
 
         $this->registerConfigurationsClusterOverride();
+
+        $this->registerSubmissionResourceOverride();
     }
 
     public function boot(): void
@@ -88,6 +91,47 @@ class EmployeeExtensionsServiceProvider extends ServiceProvider
             },
             prepend: true,
         );
+    }
+
+    protected function registerSubmissionResourceOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== SubmissionResource::class) {
+                    return false;
+                }
+
+                $this->ensureCoreSubmissionResourceIsLoaded();
+
+                require app_path('Overrides/Webkul/Employee/Filament/Resources/SubmissionResource.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function ensureCoreSubmissionResourceIsLoaded(): void
+    {
+        if (class_exists(CoreSubmissionResource::class, false)) {
+            return;
+        }
+
+        $source = base_path('plugins/webkul/employees/src/Filament/Resources/SubmissionResource.php');
+        $cachePath = storage_path('framework/cache/core_submission_resource.php');
+
+        if (! file_exists($cachePath) || filemtime($cachePath) < filemtime($source)) {
+            $code = file_get_contents($source);
+            $code = preg_replace('/\bclass SubmissionResource\b/', 'class CoreSubmissionResource', $code, 1);
+
+            if (! is_dir(dirname($cachePath))) {
+                mkdir(dirname($cachePath), 0755, true);
+            }
+
+            file_put_contents($cachePath, $code);
+        }
+
+        require $cachePath;
     }
 
     protected function registerLivewireOverrides(): void

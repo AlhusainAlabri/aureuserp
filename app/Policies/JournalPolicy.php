@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Accounting\Models\Journal;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class JournalPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Journal $journal): bool
     {
         return $authUser->can('view_any_accounting_journal');
@@ -46,4 +46,5 @@ class JournalPolicy
     {
         return $authUser->can('reorder_accounting_journal');
     }
+
 }

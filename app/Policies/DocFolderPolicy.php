@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\DocumentArchive\Models\DocFolder;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DocFolderPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, DocFolder $docFolder): bool
     {
         return $authUser->can('view_any_document_archive_doc::folder');
@@ -46,4 +46,5 @@ class DocFolderPolicy
     {
         return $authUser->can('manage_permissions_document_archive_doc::folder');
     }
+
 }

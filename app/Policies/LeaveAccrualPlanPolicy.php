@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\TimeOff\Models\LeaveAccrualPlan;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LeaveAccrualPlanPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, LeaveAccrualPlan $leaveAccrualPlan): bool
     {
         return $authUser->can('view_any_time_off_accrual::plan');
@@ -41,4 +41,5 @@ class LeaveAccrualPlanPolicy
     {
         return $authUser->can('delete_any_time_off_accrual::plan');
     }
+
 }

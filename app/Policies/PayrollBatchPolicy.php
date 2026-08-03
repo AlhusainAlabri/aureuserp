@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Payroll\Models\PayrollBatch;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PayrollBatchPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, PayrollBatch $payrollBatch): bool
     {
         return $authUser->can('view_any_payroll_payroll::batch');
@@ -81,4 +81,5 @@ class PayrollBatchPolicy
     {
         return $authUser->can('reject_payroll_payroll::batch');
     }
+
 }

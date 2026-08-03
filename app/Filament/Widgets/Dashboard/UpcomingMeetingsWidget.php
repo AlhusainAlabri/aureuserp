@@ -3,12 +3,12 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Meetings\Models\Meeting;
 
 class UpcomingMeetingsWidget extends BaseWidget
@@ -32,7 +32,7 @@ class UpcomingMeetingsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('meetings')) {
+        if (! SchemaMemo::hasTable('meetings')) {
             return $table
                 ->query($this->emptyTableQuery(Meeting::class, [
                     'id'           => '0',

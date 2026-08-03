@@ -3,12 +3,12 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Meetings\Models\Meeting;
 
 class MeetingsActivityChartWidget extends ChartWidget
@@ -31,7 +31,7 @@ class MeetingsActivityChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('meetings') || ! class_exists(Meeting::class)) {
+        if (! SchemaMemo::hasTable('meetings') || ! class_exists(Meeting::class)) {
             return $this->emptyPluginData();
         }
 

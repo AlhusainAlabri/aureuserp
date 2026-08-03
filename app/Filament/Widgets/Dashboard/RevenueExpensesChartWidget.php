@@ -4,10 +4,10 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
 use App\Support\Dashboard\DashboardMetricCache;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class RevenueExpensesChartWidget extends ChartWidget
 {
@@ -48,7 +48,7 @@ class RevenueExpensesChartWidget extends ChartWidget
                 $month = now()->subMonths($i);
                 $months[] = $month->translatedFormat('M Y');
 
-                if (! Schema::hasTable('accounts_moves')) {
+                if (! SchemaMemo::hasTable('accounts_moves')) {
                     $revenue[] = 0;
                     $expenses[] = 0;
 

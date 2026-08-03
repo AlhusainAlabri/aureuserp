@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class RecruitmentPipelineWidget extends BaseWidget
 {
@@ -23,7 +23,7 @@ class RecruitmentPipelineWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('job_applications')) {
+            if (! SchemaMemo::hasTable('job_applications')) {
                 return [
                     Stat::make(__('dashboard.widgets.recruitment'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

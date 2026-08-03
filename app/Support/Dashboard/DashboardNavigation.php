@@ -4,7 +4,7 @@ namespace App\Support\Dashboard;
 
 use App\Filament\Projects\Pages\TaskOperationsHub;
 use App\Support\FilamentUrl;
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
@@ -60,7 +60,7 @@ class DashboardNavigation
 
     public static function taskOperationsHubUrl(): ?string
     {
-        if (! Schema::hasTable('projects_tasks') || ! TaskOperationsHub::canAccess()) {
+        if (! SchemaMemo::hasTable('projects_tasks') || ! TaskOperationsHub::canAccess()) {
             return null;
         }
 
@@ -103,14 +103,14 @@ class DashboardNavigation
     protected static function correspondenceIsAvailable(): bool
     {
         return class_exists(CorrespondenceResource::class)
-            && Schema::hasTable('correspondences')
+            && SchemaMemo::hasTable('correspondences')
             && Package::isPluginInstalled('correspondence');
     }
 
     protected static function meetingsAreAvailable(): bool
     {
         return class_exists(MeetingResource::class)
-            && Schema::hasTable('meetings')
+            && SchemaMemo::hasTable('meetings')
             && Package::isPluginInstalled('meetings');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Livewire\ModuleLauncherGlobalSearch;
+use App\Support\ExtensionSchema;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -13,11 +14,13 @@ use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use ReflectionClass;
 use Webkul\Security\Models\User;
+use Wezlo\FilamentApproval\FilamentApprovalServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (! app()->isProduction()) {
+            ExtensionSchema::ensureAttachmentTables();
+        }
+
+        $this->registerFilamentApprovalBladeComponents();
+
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
@@ -74,6 +83,20 @@ class AppServiceProvider extends ServiceProvider
                 $this->removeSupportUserMenuVersionHook($viewManager);
             });
         });
+    }
+
+    protected function registerFilamentApprovalBladeComponents(): void
+    {
+        if (! class_exists(FilamentApprovalServiceProvider::class)) {
+            return;
+        }
+
+        foreach ([
+            'filament-approval::components.approval-status-badge',
+            'filament-approval::components.approval-timeline',
+        ] as $view) {
+            Blade::component($view, $view);
+        }
     }
 
     protected function removeSupportUserMenuVersionHook(ViewManager $viewManager): void

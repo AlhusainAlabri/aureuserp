@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\PackageType;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PackageTypePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, PackageType $packageType): bool
     {
         return $authUser->can('view_any_inventory_package::type');
@@ -46,4 +46,5 @@ class PackageTypePolicy
     {
         return $authUser->can('reorder_inventory_package::type');
     }
+
 }

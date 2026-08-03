@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Manufacturing\Models\WorkOrder;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WorkOrderPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, WorkOrder $workOrder): bool
     {
         return $authUser->can('view_any_manufacturing_work::order');
@@ -41,4 +41,5 @@ class WorkOrderPolicy
     {
         return $authUser->can('delete_any_manufacturing_work::order');
     }
+
 }

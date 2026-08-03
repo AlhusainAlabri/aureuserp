@@ -1,12 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
+use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\DocumentArchive\Filament\Actions\DownloadDocumentAction;
 use Webkul\DocumentArchive\Filament\Actions\PreviewDocumentAction;
 use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard;
@@ -14,6 +15,8 @@ use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\EditDocFile;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\ListDocFiles;
+use Webkul\DocumentArchive\Filament\Resources\DocFolderResource;
+use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\CreateDocFolder;
 use Webkul\DocumentArchive\Filament\Widgets\ExpiringSoonFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\RecentFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\StorageByFolderChartWidget;
@@ -31,29 +34,12 @@ use Webkul\DocumentArchive\Services\DocumentStorageService;
 use Webkul\DocumentArchive\Services\DocumentTagService;
 use Webkul\DocumentArchive\Support\FilamentUrl;
 use Webkul\Security\Models\User;
-use Webkul\Support\Models\Company;
 
 // Install ERP base + plugin once per process (static flag survives across tests).
 beforeEach(function (): void {
-    static $booted = false;
-
-    if (! $booted) {
-        if (Company::query()->doesntExist()) {
-            Artisan::call('erp:install', [
-                '--force'          => true,
-                '--no-interaction' => true,
-                '--admin-name'     => 'Test Admin',
-                '--admin-email'    => 'admin@test.com',
-                '--admin-password' => 'password',
-            ]);
-        }
-
-        if (! Schema::hasTable('doc_folders')) {
-            Artisan::call('document-archive:install', ['--no-interaction' => true]);
-        }
-
-        $booted = true;
-    }
+    FeatureTestBootstrap::bootstrap([
+        'document-archive' => 'doc_folders',
+    ]);
 });
 
 // ─── Reference Numbers ────────────────────────────────────────────────────────
@@ -418,6 +404,11 @@ function documentArchiveFilamentUser(?User $user = null): User
         'view_any_document_archive_doc::file',
         'view_document_archive_doc::file',
         'create_document_archive_doc::file',
+        'update_document_archive_doc::file',
+        'delete_document_archive_doc::file',
+        'create_document_archive_doc::folder',
+        'update_document_archive_doc::folder',
+        'delete_document_archive_doc::folder',
     ] as $permission) {
         Permission::query()->firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         if (! $user->can($permission)) {
@@ -439,14 +430,49 @@ it('renders the document manager page', function (): void {
         ->assertSee(__('document-archive::document-archive.actions.upload'));
 });
 
+it('uploads a document from the manager without a custom name', function (): void {
+    documentArchiveFilamentUser();
+
+    Storage::fake('private');
+
+    $folder = DocFolder::factory()->create();
+    $tempPath = app(DocumentStorageService::class)->temporaryDirectory().'/quarterly-report.pdf';
+    Storage::disk('private')->put($tempPath, '%PDF-1.4 test content');
+
+    Livewire::test(DocumentManager::class)
+        ->callAction('upload', data: [
+            'upload'    => [$tempPath],
+            'name'      => null,
+            'folder_id' => $folder->id,
+        ])
+        ->assertNotified();
+
+    $file = DocFile::query()->latest('id')->first();
+
+    expect($file)->not->toBeNull()
+        ->and($file->folder_id)->toBe($folder->id)
+        ->and($file->name)->toBe('quarterly-report')
+        ->and($file->extension)->toBe('pdf')
+        ->and(Storage::disk('private')->exists($file->file_path))->toBeTrue();
+});
+
 it('switches document manager view modes', function (): void {
     documentArchiveFilamentUser();
 
     Livewire::test(DocumentManager::class)
+        ->assertSet('viewMode', 'grid')
         ->set('viewMode', 'list')
         ->assertSet('viewMode', 'list')
+        ->set('viewMode', 'grid')
+        ->assertSet('viewMode', 'grid');
+});
+
+it('falls back to grid when explorer view mode is requested', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(DocumentManager::class)
         ->set('viewMode', 'explorer')
-        ->assertSet('viewMode', 'explorer');
+        ->assertSet('viewMode', 'grid');
 });
 
 it('lists files in the selected folder on the document manager', function (): void {
@@ -805,7 +831,9 @@ it('counts tag usage for dashboard charts', function (): void {
         'tags'      => [['name' => 'Draft', 'color' => '#22c55e']],
     ]);
 
-    $counts = app(DocumentTagService::class)->tagUsageCounts();
+    $counts = app(DocumentTagService::class)->tagUsageCounts(
+        DocFile::query()->where('folder_id', $folder->id),
+    );
 
     expect($counts['HR'] ?? 0)->toBe(2)
         ->and($counts['Draft'] ?? 0)->toBe(1);
@@ -928,4 +956,196 @@ it('exposes preview and overflow actions on dashboard tables', function (): void
         ->assertTableActionExists('download')
         ->assertTableActionExists('previewFromName')
         ->assertTableActionExists('share');
+});
+
+it('registers files in navigation but keeps folders hidden', function (): void {
+    expect(DocFileResource::shouldRegisterNavigation())->toBeTrue()
+        ->and(DocFolderResource::shouldRegisterNavigation())->toBeFalse();
+});
+
+it('shows the document archive files page title', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(ListDocFiles::class)
+        ->assertSee(__('document-archive::document-archive.files.page_title'));
+});
+
+it('uploads a document with privacy and expiry from the manager', function (): void {
+    documentArchiveFilamentUser();
+
+    Storage::fake('private');
+
+    $folder = DocFolder::factory()->create();
+    $tempPath = app(DocumentStorageService::class)->temporaryDirectory().'/secure-doc.pdf';
+    Storage::disk('private')->put($tempPath, '%PDF-1.4 secure');
+
+    Livewire::test(DocumentManager::class)
+        ->callAction('upload', data: [
+            'upload'      => [$tempPath],
+            'folder_id'   => $folder->id,
+            'is_private'  => true,
+            'expiry_date' => now()->addMonth()->toDateString(),
+        ])
+        ->assertNotified();
+
+    $file = DocFile::query()->latest('id')->first();
+
+    expect($file)->not->toBeNull()
+        ->and($file->is_private)->toBeTrue()
+        ->and($file->expiry_date?->toDateString())->toBe(now()->addMonth()->toDateString());
+});
+
+it('creates a folder from the manager modal with parent folder', function (): void {
+    documentArchiveFilamentUser();
+
+    $parent = DocFolder::factory()->create(['name' => 'Parent Folder']);
+
+    Livewire::test(DocumentManager::class)
+        ->call('selectFolder', $parent->id)
+        ->callAction('createFolder', data: [
+            'name'        => 'Child From Modal',
+            'description' => 'Nested folder',
+            'parent_id'   => $parent->id,
+        ])
+        ->assertNotified();
+
+    expect(DocFolder::query()->where('name', 'Child From Modal')->value('parent_id'))->toBe($parent->id);
+});
+
+it('renames a folder from the manager', function (): void {
+    documentArchiveFilamentUser();
+
+    $folder = DocFolder::factory()->create(['name' => 'Old Name']);
+
+    Livewire::test(DocumentManager::class)
+        ->callAction('renameFolder', arguments: ['folderId' => $folder->id], data: [
+            'name' => 'New Name',
+        ])
+        ->assertNotified();
+
+    expect($folder->fresh()->name)->toBe('New Name');
+});
+
+it('moves a folder from the manager', function (): void {
+    documentArchiveFilamentUser();
+
+    $parent = DocFolder::factory()->create(['name' => 'Parent']);
+    $folder = DocFolder::factory()->create(['name' => 'Movable', 'parent_id' => null]);
+    $destination = DocFolder::factory()->create(['name' => 'Destination']);
+
+    Livewire::test(DocumentManager::class)
+        ->callAction('moveFolder', arguments: ['folderId' => $folder->id], data: [
+            'parent_id' => $destination->id,
+        ])
+        ->assertNotified();
+
+    expect($folder->fresh()->parent_id)->toBe($destination->id);
+});
+
+it('builds the full folder tree in a single query', function (): void {
+    $root = DocFolder::factory()->create(['name' => 'Tree Root']);
+    $child = DocFolder::factory()->create(['name' => 'Tree Child', 'parent_id' => $root->id]);
+    $grand = DocFolder::factory()->create(['name' => 'Tree Grand', 'parent_id' => $child->id]);
+
+    DB::flushQueryLog();
+    DB::enableQueryLog();
+
+    $tree = DocFolder::buildTree();
+    $treeRoot = $tree->firstWhere('id', $root->id);
+
+    expect(count(DB::getQueryLog()))->toBe(1)
+        ->and($treeRoot)->not->toBeNull()
+        ->and($treeRoot->children->firstWhere('id', $child->id)?->children->firstWhere('id', $grand->id)?->name)->toBe('Tree Grand');
+});
+
+it('expands a folder in the sidebar when selected', function (): void {
+    documentArchiveFilamentUser();
+
+    $parent = DocFolder::factory()->create(['name' => 'Parent']);
+    $child = DocFolder::factory()->create(['name' => 'Child', 'parent_id' => $parent->id]);
+
+    Livewire::test(DocumentManager::class)
+        ->call('selectFolder', $parent->id)
+        ->assertSet('expandedFolderIds', fn (array $ids): bool => in_array($parent->id, $ids, true))
+        ->call('selectFolder', $child->id)
+        ->assertSet('expandedFolderIds', fn (array $ids): bool => in_array($parent->id, $ids, true) && in_array($child->id, $ids, true));
+});
+
+it('filters files by tag using exact tag matching', function (): void {
+    documentArchiveFilamentUser();
+
+    $folder = DocFolder::factory()->create();
+    DocFile::factory()->create([
+        'folder_id' => $folder->id,
+        'name'      => 'HR Policy',
+        'tags'      => [['name' => 'HR', 'color' => '#ff0000']],
+    ]);
+    DocFile::factory()->create([
+        'folder_id' => $folder->id,
+        'name'      => 'Other File',
+        'tags'      => [['name' => 'Finance', 'color' => '#00ff00']],
+    ]);
+
+    Livewire::test(DocumentManager::class)
+        ->call('selectFolder', $folder->id)
+        ->set('filterTag', 'HR')
+        ->assertSee('HR Policy')
+        ->assertDontSee('Other File');
+});
+
+it('supports bulk move for selected files', function (): void {
+    documentArchiveFilamentUser();
+
+    $source = DocFolder::factory()->create();
+    $target = DocFolder::factory()->create();
+    $files = DocFile::factory()->count(2)->create(['folder_id' => $source->id]);
+
+    Livewire::test(DocumentManager::class)
+        ->set('selectedFiles', $files->pluck('id')->all())
+        ->callAction('bulkMove', data: ['folder_id' => $target->id])
+        ->assertNotified();
+
+    expect(DocFile::query()->where('folder_id', $target->id)->count())->toBe(2);
+});
+
+it('paginates files in the document manager', function (): void {
+    documentArchiveFilamentUser();
+
+    $folder = DocFolder::factory()->create();
+    DocFile::factory()->count(30)->create(['folder_id' => $folder->id]);
+
+    Livewire::test(DocumentManager::class)
+        ->call('selectFolder', $folder->id)
+        ->assertSet('perPage', 24)
+        ->assertSeeHtml('wire:click="gotoPage');
+});
+
+it('prefills parent folder when creating from folder resource query string', function (): void {
+    documentArchiveFilamentUser();
+
+    $parent = DocFolder::factory()->create();
+
+    Livewire::withQueryParams(['parent_id' => (string) $parent->id])
+        ->test(CreateDocFolder::class)
+        ->assertFormSet([
+            'parent_id' => $parent->id,
+        ]);
+});
+
+it('toggles the mobile folder drawer', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(DocumentManager::class)
+        ->assertSet('showFolderDrawer', false)
+        ->call('toggleFolderDrawer')
+        ->assertSet('showFolderDrawer', true);
+});
+
+it('shows the advanced list banner on the files resource', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(ListDocFiles::class)
+        ->assertSuccessful()
+        ->assertSee(__('document-archive::document-archive.manager.advanced_list_banner'))
+        ->assertSee(__('document-archive::document-archive.manager.open_manager'));
 });

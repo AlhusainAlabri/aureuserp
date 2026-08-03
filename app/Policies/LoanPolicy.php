@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Payroll\Models\Loan;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LoanPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Loan $loan): bool
     {
         return $authUser->can('view_any_payroll_loan');
@@ -66,4 +66,5 @@ class LoanPolicy
     {
         return $authUser->can('reject_payroll_loan');
     }
+
 }

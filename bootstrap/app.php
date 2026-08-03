@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RecordSlowQueries;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -22,6 +23,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocale::class,
         ]);
+
+        if (filter_var(env('SLOW_QUERY_LOG_ENABLED', false), FILTER_VALIDATE_BOOL)) {
+            $middleware->web(append: [
+                RecordSlowQueries::class,
+            ]);
+        }
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (ValidationException $e, $request) {

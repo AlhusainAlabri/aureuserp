@@ -13,15 +13,11 @@ use App\Services\Inventory\ConsumptionTransferService;
 use App\Services\Inventory\InventoryMovementReportService;
 use App\Services\Inventory\ProductPurchaseHistoryService;
 use App\Services\Inventory\ReplenishmentProcurementService;
-use App\Support\PermissionTables;
+use App\Support\SchemaMemo;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\ReplenishmentResource\Pages\ManageReplenishment as BaseManageReplenishment;
 use Webkul\Inventory\Filament\Clusters\Products\Resources\ProductResource\Pages\ViewProduct as BaseViewProduct;
 use Webkul\Inventory\Models\OrderPoint;
@@ -49,7 +45,7 @@ class InventoryExtensionsServiceProvider extends ServiceProvider
             ]);
         }
 
-        if (! Schema::hasTable('inventories_order_points')) {
+        if (! SchemaMemo::hasTable('inventories_order_points')) {
             return;
         }
 
@@ -62,7 +58,6 @@ class InventoryExtensionsServiceProvider extends ServiceProvider
         });
 
         $this->registerPolicies();
-        $this->registerPermissions();
     }
 
     protected function registerLivewireOverrides(): void
@@ -91,41 +86,5 @@ class InventoryExtensionsServiceProvider extends ServiceProvider
     protected function registerPolicies(): void
     {
         Gate::policy(OrderPoint::class, OrderPointPolicy::class);
-    }
-
-    protected function registerPermissions(): void
-    {
-        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
-            return;
-        }
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $permissions = [
-            'page_inventory_dashboard',
-            'page_inventory_movement_report',
-            'page_inventory_record_consumption',
-            'page_inventory_product_purchase_history',
-            'reorder_inventory_replenishment',
-            'widget_filament_low_stock_widget',
-        ];
-
-        foreach ($permissions as $name) {
-            Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
-        }
-
-        foreach (['Admin', 'admin_manager', 'super_admin', 'general_manager', 'finance_manager', 'manager'] as $roleName) {
-            $role = Role::query()->where('name', $roleName)->where('guard_name', 'web')->first();
-
-            if (! $role) {
-                continue;
-            }
-
-            foreach ($permissions as $permission) {
-                if (! $role->hasPermissionTo($permission)) {
-                    $role->givePermissionTo($permission);
-                }
-            }
-        }
     }
 }

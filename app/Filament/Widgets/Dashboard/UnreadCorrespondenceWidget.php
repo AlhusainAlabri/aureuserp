@@ -4,13 +4,13 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Correspondence\Models\Correspondence;
 
@@ -31,7 +31,7 @@ class UnreadCorrespondenceWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('correspondences')) {
+        if (! SchemaMemo::hasTable('correspondences')) {
             return $table
                 ->query($this->emptyTableQuery(Correspondence::class, [
                     'id'               => '0',
@@ -50,7 +50,7 @@ class UnreadCorrespondenceWidget extends BaseWidget
 
         $query = Correspondence::query()
             ->when(
-                Schema::hasTable('correspondence_reads') && $user,
+                SchemaMemo::hasTable('correspondence_reads') && $user,
                 fn ($query) => $query->unreadFor($user),
                 fn ($query) => $query->where('direction', 'incoming')->where('status', 'received'),
             )

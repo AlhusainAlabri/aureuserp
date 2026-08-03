@@ -8,16 +8,22 @@ use Illuminate\Database\Eloquent\Builder;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Services\DocumentAccessService;
 use Webkul\DocumentArchive\Services\DocumentTagService;
+use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 
 class TopTagsChartWidget extends ChartWidget
 {
     protected static ?int $sort = 1;
+
+    protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
 
     protected ?string $maxHeight = '280px';
 
     protected int|string|array $columnSpan = 1;
+
+    /** @var array<string, array{count: int, color: string}>|null */
+    protected ?array $cachedTagCounts = null;
 
     public function getHeading(): string|Htmlable|null
     {
@@ -51,10 +57,7 @@ class TopTagsChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $tagCounts = app(DocumentTagService::class)->tagUsageCountsWithColors(
-            $this->accessibleFilesQuery(),
-            10,
-        );
+        $tagCounts = $this->getTagCounts();
 
         if ($tagCounts === []) {
             return [
@@ -81,16 +84,26 @@ class TopTagsChartWidget extends ChartWidget
 
     public function getDescription(): string|Htmlable|null
     {
-        $tagCounts = app(DocumentTagService::class)->tagUsageCounts(
-            $this->accessibleFilesQuery(),
-            1,
-        );
-
-        if ($tagCounts === []) {
+        if ($this->getTagCounts() === []) {
             return __('document-archive::document-archive.dashboard.charts.empty');
         }
 
         return null;
+    }
+
+    /**
+     * @return array<string, array{count: int, color: string}>
+     */
+    protected function getTagCounts(): array
+    {
+        if ($this->cachedTagCounts !== null) {
+            return $this->cachedTagCounts;
+        }
+
+        return $this->cachedTagCounts = DocumentDashboardCache::remember('top_tags', fn (): array => app(DocumentTagService::class)->tagUsageCountsWithColors(
+            $this->accessibleFilesQuery(),
+            10,
+        ));
     }
 
     protected function accessibleFilesQuery(): Builder

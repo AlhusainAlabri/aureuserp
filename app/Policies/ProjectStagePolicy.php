@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Project\Models\ProjectStage;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProjectStagePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, ProjectStage $projectStage): bool
     {
         return $authUser->can('view_any_project_project::stage');
@@ -66,4 +66,5 @@ class ProjectStagePolicy
     {
         return $authUser->can('reorder_project_project::stage');
     }
+
 }

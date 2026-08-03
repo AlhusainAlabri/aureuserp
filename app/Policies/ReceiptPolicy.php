@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\Receipt;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ReceiptPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Receipt $receipt): bool
     {
         return $authUser->can('view_any_inventory_receipt');
@@ -41,4 +41,5 @@ class ReceiptPolicy
     {
         return $authUser->can('delete_any_inventory_receipt');
     }
+
 }

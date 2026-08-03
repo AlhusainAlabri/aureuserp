@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Correspondence\Models\Correspondence;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CorrespondencePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Correspondence $correspondence): bool
     {
         return $authUser->can('view_any_correspondence_correspondence');
@@ -66,4 +66,5 @@ class CorrespondencePolicy
     {
         return $authUser->can('view_all_departments_correspondence_correspondence');
     }
+
 }

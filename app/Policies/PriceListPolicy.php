@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Product\Models\PriceList;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PriceListPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, PriceList $priceList): bool
     {
         return $authUser->can('view_any_product_price::list');
@@ -46,4 +46,5 @@ class PriceListPolicy
     {
         return $authUser->can('reorder_product_price::list');
     }
+
 }

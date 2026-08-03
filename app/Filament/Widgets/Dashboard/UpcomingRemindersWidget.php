@@ -4,13 +4,13 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Schema;
 use Webkul\MyNotes\Models\Note;
 
 class UpcomingRemindersWidget extends BaseWidget
@@ -30,7 +30,7 @@ class UpcomingRemindersWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('notes')) {
+        if (! SchemaMemo::hasTable('notes')) {
             return $table
                 ->query($this->emptyTableQuery(Note::class, [
                     'id'            => '0',

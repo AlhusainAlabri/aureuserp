@@ -9,6 +9,7 @@ use App\Filament\RelationManagers\ProjectOrdersRelationManager;
 use App\Services\Projects\ProjectCompletionService;
 use App\Services\Projects\ProjectFinancialSummaryService;
 use App\Services\Projects\ProjectStageHelper;
+use App\Support\SchemaMemo;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Schemas\Components\Grid;
@@ -16,7 +17,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Filament\Resources\ProjectCorrespondencesRelationManager;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Project;
@@ -37,7 +37,7 @@ class ProjectResourceExtensions
     /** @return array<int, mixed> */
     public static function kpiInfolistSection(): array
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return [];
         }
 
@@ -64,7 +64,7 @@ class ProjectResourceExtensions
                                     return app(ProjectFinancialSummaryService::class)->formatOmr($summary['purchase_total']);
                                 })
                                 ->icon('heroicon-o-shopping-cart')
-                                ->visible(fn (): bool => Schema::hasTable('purchases_orders'))
+                                ->visible(fn (): bool => SchemaMemo::hasTable('purchases_orders'))
                                 ->columnSpan(1),
                             TextEntry::make('financial_invoice_total')
                                 ->label(__('projects-extensions::kpi.invoice_total'))
@@ -74,7 +74,7 @@ class ProjectResourceExtensions
                                     return app(ProjectFinancialSummaryService::class)->formatOmr($summary['invoice_total']);
                                 })
                                 ->icon('heroicon-o-banknotes')
-                                ->visible(fn (): bool => Schema::hasTable('accounts_account_moves'))
+                                ->visible(fn (): bool => SchemaMemo::hasTable('accounts_account_moves'))
                                 ->columnSpan(1),
                             TextEntry::make('financial_grand_total')
                                 ->label(__('projects-extensions::kpi.grand_total'))
@@ -88,15 +88,15 @@ class ProjectResourceExtensions
                                 ->columnSpan(1),
                             TextEntry::make('meetings_count')
                                 ->label(__('projects-extensions::kpi.meetings_count'))
-                                ->state(fn (Project $record): int => Schema::hasTable('meetings') ? $record->meetings()->count() : 0)
+                                ->state(fn (Project $record): int => SchemaMemo::hasTable('meetings') ? $record->meetings()->count() : 0)
                                 ->icon('heroicon-o-clipboard-document-list')
-                                ->visible(fn (): bool => Schema::hasTable('meetings'))
+                                ->visible(fn (): bool => SchemaMemo::hasTable('meetings'))
                                 ->columnSpan(1),
                             TextEntry::make('documents_count')
                                 ->label(__('projects-extensions::kpi.documents_count'))
-                                ->state(fn (Project $record): int => Schema::hasTable('doc_files') ? $record->docFiles()->count() : 0)
+                                ->state(fn (Project $record): int => SchemaMemo::hasTable('doc_files') ? $record->docFiles()->count() : 0)
                                 ->icon('heroicon-o-document')
-                                ->visible(fn (): bool => Schema::hasTable('doc_files'))
+                                ->visible(fn (): bool => SchemaMemo::hasTable('doc_files'))
                                 ->columnSpan(1),
                             TextEntry::make('open_tasks_count')
                                 ->label(__('projects-extensions::kpi.tasks_open'))
@@ -129,7 +129,7 @@ class ProjectResourceExtensions
     /** @return array<int, Stack> */
     public static function extraTableStacks(): array
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return [];
         }
 
@@ -152,7 +152,7 @@ class ProjectResourceExtensions
     /** @return array<int, TextColumn> */
     public static function extraTableColumns(): array
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return [];
         }
 
@@ -176,7 +176,7 @@ class ProjectResourceExtensions
     /** @return array<string, PresetView> */
     public static function presetTableViews(): array
     {
-        if (! Schema::hasTable('projects_projects') || ! ProjectStageHelper::isAvailable()) {
+        if (! SchemaMemo::hasTable('projects_projects') || ! ProjectStageHelper::isAvailable()) {
             return [];
         }
 
@@ -203,31 +203,31 @@ class ProjectResourceExtensions
     {
         $groups = [];
 
-        if (Schema::hasTable('purchases_orders')) {
+        if (SchemaMemo::hasTable('purchases_orders')) {
             $groups[] = RelationGroup::make(__('projects-extensions::project-relations.orders'), [
                 ProjectOrdersRelationManager::class,
             ])->icon('heroicon-o-shopping-cart');
         }
 
-        if (Schema::hasTable('accounts_account_moves') && Schema::hasColumn('accounts_account_moves', 'project_id')) {
+        if (SchemaMemo::hasTable('accounts_account_moves') && SchemaMemo::hasColumn('accounts_account_moves', 'project_id')) {
             $groups[] = RelationGroup::make(__('projects-extensions::project-relations.invoices'), [
                 ProjectInvoicesRelationManager::class,
             ])->icon('heroicon-o-banknotes');
         }
 
-        if (Schema::hasTable('doc_files')) {
+        if (SchemaMemo::hasTable('doc_files')) {
             $groups[] = RelationGroup::make(__('projects-extensions::project-relations.documents'), [
                 ProjectDocumentsRelationManager::class,
             ])->icon('heroicon-o-document');
         }
 
-        if (Schema::hasTable('meetings')) {
+        if (SchemaMemo::hasTable('meetings')) {
             $groups[] = RelationGroup::make(__('projects-extensions::project-relations.meetings'), [
                 EnhancedProjectMeetingsRelationManager::class,
             ])->icon('heroicon-o-clipboard-document-list');
         }
 
-        if (Schema::hasTable('correspondences') && class_exists(ProjectCorrespondencesRelationManager::class)) {
+        if (SchemaMemo::hasTable('correspondences') && class_exists(ProjectCorrespondencesRelationManager::class)) {
             $groups[] = RelationGroup::make(__('correspondence::correspondence.relations.project_correspondences'), [
                 ProjectCorrespondencesRelationManager::class,
             ])->icon('heroicon-o-envelope');

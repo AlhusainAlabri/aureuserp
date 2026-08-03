@@ -6,7 +6,27 @@ use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast;
 use Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository;
 use Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository;
+use Webkul\Account\Settings\CustomerInvoiceSettings;
+use Webkul\Account\Settings\DefaultAccountSettings;
+use Webkul\Account\Settings\TaxesSettings;
+use Webkul\Inventory\Settings\LogisticSettings;
+use Webkul\Inventory\Settings\OperationSettings as InventoryOperationSettings;
+use Webkul\Inventory\Settings\TraceabilitySettings;
+use Webkul\Inventory\Settings\WarehouseSettings;
+use Webkul\Manufacturing\Settings\OperationSettings as ManufacturingOperationSettings;
+use Webkul\Manufacturing\Settings\PlanningSettings;
+use Webkul\Product\Settings\ProductSettings as CoreProductSettings;
+use Webkul\Project\Settings\TaskSettings;
+use Webkul\Project\Settings\TimeSettings;
+use Webkul\Purchase\Settings\OrderSettings;
+use Webkul\Purchase\Settings\ProductSettings as PurchaseProductSettings;
+use Webkul\Sale\Settings\InvoiceSettings;
+use Webkul\Sale\Settings\PriceSettings;
+use Webkul\Sale\Settings\ProductSettings as SaleProductSettings;
+use Webkul\Sale\Settings\QuotationAndOrderSettings;
+use Webkul\Security\Settings\CurrencySettings;
 use Webkul\Security\Settings\UserSettings;
+use Webkul\Website\Settings\ContactSettings;
 
 return [
 
@@ -16,6 +36,26 @@ return [
      */
     'settings' => [
         UserSettings::class,
+        CurrencySettings::class,
+        CustomerInvoiceSettings::class,
+        DefaultAccountSettings::class,
+        TaxesSettings::class,
+        WarehouseSettings::class,
+        InventoryOperationSettings::class,
+        LogisticSettings::class,
+        TraceabilitySettings::class,
+        ManufacturingOperationSettings::class,
+        PlanningSettings::class,
+        CoreProductSettings::class,
+        TaskSettings::class,
+        TimeSettings::class,
+        OrderSettings::class,
+        PurchaseProductSettings::class,
+        InvoiceSettings::class,
+        PriceSettings::class,
+        SaleProductSettings::class,
+        QuotationAndOrderSettings::class,
+        ContactSettings::class,
     ],
 
     /*
@@ -69,10 +109,11 @@ return [
      * additional prefix.
      */
     'cache' => [
-        'enabled' => env('SETTINGS_CACHE_ENABLED', false),
+        'enabled' => env('SETTINGS_CACHE_ENABLED', true),
         'store'   => null,
         'prefix'  => null,
         'ttl'     => null,
+        'memo'    => env('SETTINGS_CACHE_MEMO', true),
     ],
 
     /*

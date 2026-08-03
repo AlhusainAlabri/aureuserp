@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Sale\Models\Attribute;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AttributePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Attribute $attribute): bool
     {
         return $authUser->can('view_any_sale_product::attribute');
@@ -66,4 +66,5 @@ class AttributePolicy
     {
         return $authUser->can('reorder_sale_product::attribute');
     }
+
 }

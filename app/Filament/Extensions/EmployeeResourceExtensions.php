@@ -12,6 +12,7 @@ use App\Filament\Resources\EmployeeResource\Pages\ManageSelfAssessments;
 use App\Filament\Resources\EmployeeResource\Pages\ManageTrainings;
 use App\Filament\Resources\EmployeeResource\Pages\ManageWarnings;
 use App\Filament\Resources\EmployeeResource\Pages\ViewEmployee;
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
@@ -22,7 +23,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageMeetings;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageResume;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageSkill;
@@ -34,7 +34,7 @@ class EmployeeResourceExtensions
     /** @return array<int, mixed> */
     public static function departmentsFormSection(): array
     {
-        if (! Schema::hasTable('department_employee')) {
+        if (! SchemaMemo::hasTable('department_employee')) {
             return [];
         }
 
@@ -51,7 +51,6 @@ class EmployeeResourceExtensions
                         )
                         ->getOptionLabelFromRecordUsing(fn (Department $record): string => $record->complete_name ?? $record->name)
                         ->searchable()
-                        ->preload()
                         ->live()
                         ->required()
                         ->dehydrated(false)
@@ -77,7 +76,7 @@ class EmployeeResourceExtensions
     /** @return array<int, mixed> */
     public static function employmentFormSection(): array
     {
-        if (! Schema::hasColumn('employees_employees', 'primary_job_responsibilities')) {
+        if (! SchemaMemo::hasColumn('employees_employees', 'primary_job_responsibilities')) {
             return [];
         }
 
@@ -97,7 +96,7 @@ class EmployeeResourceExtensions
     /** @return array<int, TextColumn> */
     public static function extraTableColumns(): array
     {
-        if (! Schema::hasTable('department_employee')) {
+        if (! SchemaMemo::hasTable('department_employee')) {
             return [];
         }
 
@@ -113,7 +112,7 @@ class EmployeeResourceExtensions
     /** @return array<int, TernaryFilter> */
     public static function extraTableFilters(): array
     {
-        if (! Schema::hasColumn('employees_employees', 'is_closed')) {
+        if (! SchemaMemo::hasColumn('employees_employees', 'is_closed')) {
             return [];
         }
 
@@ -168,7 +167,7 @@ class EmployeeResourceExtensions
     /** @return array<int, mixed> */
     public static function fileStatusInfolistSection(): array
     {
-        if (! Schema::hasColumn('employees_employees', 'is_closed')) {
+        if (! SchemaMemo::hasColumn('employees_employees', 'is_closed')) {
             return [];
         }
 

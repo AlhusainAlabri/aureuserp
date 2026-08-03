@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\TimeOff\Models\LeaveMandatoryDay;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LeaveMandatoryDayPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, LeaveMandatoryDay $leaveMandatoryDay): bool
     {
         return $authUser->can('view_any_time_off_mandatory::day');
@@ -41,4 +41,5 @@ class LeaveMandatoryDayPolicy
     {
         return $authUser->can('delete_any_time_off_mandatory::day');
     }
+
 }

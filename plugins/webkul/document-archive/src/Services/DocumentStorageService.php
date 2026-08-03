@@ -21,6 +21,24 @@ class DocumentStorageService
     /**
      * @param  TemporaryUploadedFile|UploadedFile|array<int, string>|string|null  $upload
      */
+    public function resolveDisplayName(mixed $upload, ?string $customName = null): string
+    {
+        if (filled($customName)) {
+            return $customName;
+        }
+
+        $originalFilename = $this->resolveOriginalFilename($upload);
+
+        if ($originalFilename === null) {
+            return '';
+        }
+
+        return pathinfo($originalFilename, PATHINFO_FILENAME);
+    }
+
+    /**
+     * @param  TemporaryUploadedFile|UploadedFile|array<int, string>|string|null  $upload
+     */
     public function attachToFile(DocFile $file, mixed $upload): void
     {
         $path = $this->resolveUploadPath($upload);
@@ -176,6 +194,30 @@ class DocumentStorageService
         }
 
         return Storage::disk($this->disk())->exists($file->file_path);
+    }
+
+    /**
+     * @param  TemporaryUploadedFile|UploadedFile|array<int, string>|string|null  $upload
+     */
+    protected function resolveOriginalFilename(mixed $upload): ?string
+    {
+        if ($upload === null || $upload === []) {
+            return null;
+        }
+
+        if (is_array($upload)) {
+            $upload = $upload[array_key_first($upload)] ?? null;
+        }
+
+        if ($upload instanceof TemporaryUploadedFile || $upload instanceof UploadedFile) {
+            return $upload->getClientOriginalName();
+        }
+
+        if (is_string($upload) && $upload !== '') {
+            return basename($upload);
+        }
+
+        return null;
     }
 
     /**

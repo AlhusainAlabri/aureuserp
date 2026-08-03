@@ -8,10 +8,10 @@ use App\Filament\Inventory\Pages\InventoryDashboard;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
 use App\Support\Dashboard\DashboardMetricCache;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class LowStockWidget extends BaseWidget
 {
@@ -34,7 +34,7 @@ class LowStockWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('inventories_order_points')) {
+            if (! SchemaMemo::hasTable('inventories_order_points')) {
                 return [
                     Stat::make(__('dashboard.widgets.low_stock'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Models\Order;
 
@@ -29,7 +29,7 @@ class MissingReceiptsWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('purchases_orders') || ! Schema::hasColumn('purchases_orders', 'receipt_uploaded')) {
+            if (! SchemaMemo::hasTable('purchases_orders') || ! SchemaMemo::hasColumn('purchases_orders', 'receipt_uploaded')) {
                 return [
                     Stat::make(__('dashboard.widgets.missing_receipts'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

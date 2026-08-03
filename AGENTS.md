@@ -910,6 +910,30 @@ it('can add attendees', function (): void {
 });
 ```
 
+### 21.1 Test database isolation (critical)
+
+Tests **must never** run destructive bootstraps (`migrate:fresh`, `erp:install --force`) against the development database.
+
+**Setup (one time per machine):**
+
+```bash
+cp .env.testing.example .env.testing
+# Copy APP_KEY and DB_PASSWORD from .env into .env.testing
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS nodhum_erp_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+
+PHPUnit uses `nodhum_erp_test` (see `phpunit.xml`). `TestBootstrapHelper` refuses `migrate:fresh` unless the database name ends with `_test` or is SQLite `:memory:`.
+
+**Safe commands:**
+
+```bash
+php artisan test --compact tests/Feature/Documents/DocumentArchiveTest.php
+```
+
+**Avoid** running the full suite against `nodhum_erp` (dev). If dev data was wiped accidentally, reinstall plugins and reset admin per `auth.md`.
+
+Feature tests should use `Tests\Helpers\FeatureTestBootstrap::bootstrap()` instead of calling `erp:install` directly.
+
 ---
 
 ## 22. Code Formatting
@@ -985,12 +1009,19 @@ php artisan down --secret="TOKEN"
 git pull origin client/oman
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
+php artisan permissions:sync-extensions
 php artisan shield:generate --all
 php artisan optimize
 php artisan filament:cache-components  # production only — never in dev
 php artisan queue:restart
 php artisan up
 ```
+
+**Performance notes:**
+- Set `CACHE_STORE=file` (never `database` in production — adds ~15 SQL round-trips per request).
+- Set `DEBUGBAR_ENABLED=false` in production.
+- Extension permissions are synced via `permissions:sync-extensions` on deploy — not on every HTTP request.
+- HR/extension schema ensures run via migrations only in production (`HrExtensionSchemaService::ensure()` is skipped when `APP_ENV=production`).
 
 ---
 

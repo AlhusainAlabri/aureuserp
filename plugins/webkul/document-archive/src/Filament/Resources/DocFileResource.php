@@ -45,6 +45,8 @@ use Webkul\Project\Models\Project;
 
 class DocFileResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = true;
+
     protected static ?string $model = DocFile::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document';

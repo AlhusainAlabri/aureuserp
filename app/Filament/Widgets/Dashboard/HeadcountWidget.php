@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class HeadcountWidget extends ChartWidget
 {
@@ -27,7 +27,7 @@ class HeadcountWidget extends ChartWidget
     protected function getData(): array
     {
         try {
-            if (! Schema::hasTable('employees_employees')) {
+            if (! SchemaMemo::hasTable('employees_employees')) {
                 return [
                     'datasets' => [[
                         'data'            => [1],

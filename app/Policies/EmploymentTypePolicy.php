@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\EmploymentType;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EmploymentTypePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, EmploymentType $employmentType): bool
     {
         return $authUser->can('view_any_recruitment_employment::type');
@@ -46,4 +46,5 @@ class EmploymentTypePolicy
     {
         return $authUser->can('reorder_recruitment_employment::type');
     }
+
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Sale\Models\Packaging;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PackagingPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Packaging $packaging): bool
     {
         return $authUser->can('view_any_sale_packaging');
@@ -46,4 +46,5 @@ class PackagingPolicy
     {
         return $authUser->can('reorder_sale_packaging');
     }
+
 }

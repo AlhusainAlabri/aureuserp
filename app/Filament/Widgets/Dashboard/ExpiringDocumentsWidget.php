@@ -6,11 +6,11 @@ use App\Filament\Widgets\Dashboard\Concerns\ConfiguresClickableStat;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
 use App\Support\Dashboard\DashboardMetricCache;
 use App\Support\Dashboard\DashboardNavigation;
+use App\Support\SchemaMemo;
 use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\EmployeeDocument;
 
 class ExpiringDocumentsWidget extends BaseWidget
@@ -31,7 +31,7 @@ class ExpiringDocumentsWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('employees_employee_documents')) {
+            if (! SchemaMemo::hasTable('employees_employee_documents')) {
                 return [
                     Stat::make(__('dashboard.widgets.expiring_documents'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

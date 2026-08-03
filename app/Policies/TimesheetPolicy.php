@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Timesheet\Models\Timesheet;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TimesheetPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Timesheet $timesheet): bool
     {
         return $authUser->can('view_any_timesheet_timesheet');
@@ -36,4 +36,5 @@ class TimesheetPolicy
     {
         return $authUser->can('delete_any_timesheet_timesheet');
     }
+
 }

@@ -3,12 +3,13 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\Dashboard\DashboardMetricCache;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Models\Correspondence;
 
 class CorrespondenceVolumeChartWidget extends ChartWidget
@@ -31,10 +32,22 @@ class CorrespondenceVolumeChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('correspondences') || ! class_exists(Correspondence::class)) {
+        if (! SchemaMemo::hasTable('correspondences') || ! class_exists(Correspondence::class)) {
             return $this->emptyPluginData();
         }
 
+        return DashboardMetricCache::rememberWithFilters(
+            'correspondence_volume_chart',
+            $this->pageFilters ?? [],
+            fn (): array => $this->buildChartData(),
+        );
+    }
+
+    /**
+     * @return array{datasets: list<array<string, mixed>>, labels: list<string>}
+     */
+    protected function buildChartData(): array
+    {
         $startDate = $this->pageFilters['startDate'] ?? now()->subDays(30)->format('Y-m-d');
         $endDate = $this->pageFilters['endDate'] ?? now()->format('Y-m-d');
 

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Widgets\Dashboard;
 
+use App\Support\SchemaMemo;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Enums\PayslipStatus;
 use Webkul\Payroll\Filament\Pages\MyPayslips;
@@ -22,7 +22,7 @@ class MyPayslipWidget extends Widget
 
     public function mount(): void
     {
-        if (! Schema::hasTable('payroll_payslips')) {
+        if (! SchemaMemo::hasTable('payroll_payslips')) {
             return;
         }
 

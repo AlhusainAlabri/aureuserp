@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class MyLeaveBalanceWidget extends BaseWidget
 {
@@ -23,7 +23,7 @@ class MyLeaveBalanceWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            $hasTable = Schema::hasTable('hr_leave_allocations') || Schema::hasTable('time_off_allocations');
+            $hasTable = SchemaMemo::hasTable('hr_leave_allocations') || SchemaMemo::hasTable('time_off_allocations');
 
             if (! $hasTable) {
                 return [

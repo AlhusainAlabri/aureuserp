@@ -3,9 +3,9 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Models\Order;
 
@@ -36,7 +36,7 @@ class PurchasesSpendChartWidget extends ChartWidget
             $date = now()->subMonths($i);
             $months[] = $date->translatedFormat('M Y');
 
-            if (! Schema::hasTable('purchases_orders')) {
+            if (! SchemaMemo::hasTable('purchases_orders')) {
                 $amounts[] = 0;
 
                 continue;

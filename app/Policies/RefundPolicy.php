@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Invoice\Models\Refund;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RefundPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Refund $refund): bool
     {
         return $authUser->can('view_any_invoice_refund');
@@ -46,4 +46,5 @@ class RefundPolicy
     {
         return $authUser->can('reorder_invoice_refund');
     }
+
 }

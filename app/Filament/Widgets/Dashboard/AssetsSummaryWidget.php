@@ -7,9 +7,9 @@ use App\Filament\Assets\Pages\AssetsDashboard;
 use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class AssetsSummaryWidget extends BaseWidget
 {
@@ -24,13 +24,13 @@ class AssetsSummaryWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        return Schema::hasTable('assets')
+        return SchemaMemo::hasTable('assets')
             && auth()->user()?->can('page_assets_dashboard');
     }
 
     protected function getStats(): array
     {
-        if (! Schema::hasTable('assets')) {
+        if (! SchemaMemo::hasTable('assets')) {
             return [
                 Stat::make(__('assets-extensions::navigation.dashboard'), __('assets-extensions::dashboard.plugin_missing'))
                     ->color('gray'),

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Project\Models\TaskStage;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskStagePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, TaskStage $taskStage): bool
     {
         return $authUser->can('view_any_project_task::stage');
@@ -66,4 +66,5 @@ class TaskStagePolicy
     {
         return $authUser->can('reorder_project_task::stage');
     }
+
 }

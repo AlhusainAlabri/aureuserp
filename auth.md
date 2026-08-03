@@ -26,3 +26,22 @@ php artisan plugins:install --include-core
 •	إدارة الأصول و الاستعارة و تنبيهات
 o	ممكن نعدد قيمه – مبلغ لكل اصل
 
+
+# If `erp:install` fails with `Duplicate entry ... role_has_permissions`
+# the DB is in a partial state (no `storage/installed`, but roles/permissions exist).
+# Do NOT re-run `erp:install` alone — wipe first (steps 1–2), then reinstall.
+
+# 1) Wipe the database completely
+php artisan migrate:fresh --force
+# 2) Remove the "already installed" marker
+rm -f storage/installed
+# 3) Reinstall core ERP (admin, roles, permissions, seeders)
+php artisan erp:install --no-interaction \
+  --admin-name="Admin" \
+  --admin-email="nodhumtech@gmail.com" \
+  --admin-password="Oman@999"
+# 4) Install all plugins (respects dependencies)
+php artisan plugins:install --all --include-core --no-interaction --stop-on-error
+# 5) Clear caches
+php artisan optimize:clear
+php artisan queue:restart

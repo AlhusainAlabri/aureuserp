@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Partner\Models\Industry;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class IndustryPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Industry $industry): bool
     {
         return $authUser->can('view_any_partner_industry');
@@ -61,4 +61,5 @@ class IndustryPolicy
     {
         return $authUser->can('force_delete_any_partner_industry');
     }
+
 }

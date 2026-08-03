@@ -5,6 +5,7 @@ namespace Webkul\DocumentArchive\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Webkul\DocumentArchive\Models\DocFile;
+use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 
 class DocumentTagService
 {
@@ -23,6 +24,22 @@ class DocumentTagService
      * @return array<string, string>
      */
     public function suggestions(): array
+    {
+        return DocumentDashboardCache::rememberGlobal('tag_suggestions', fn (): array => $this->buildSuggestions());
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    public function colorMap(): array
+    {
+        return DocumentDashboardCache::rememberGlobal('tag_color_map', fn (): array => $this->buildColorMap());
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function buildSuggestions(): array
     {
         return DocFile::query()
             ->pluck('tags')
@@ -54,7 +71,7 @@ class DocumentTagService
     /**
      * @return array<string, string|null>
      */
-    public function colorMap(): array
+    protected function buildColorMap(): array
     {
         return DocFile::query()
             ->pluck('tags')
@@ -195,12 +212,8 @@ class DocumentTagService
      */
     public function tagUsageCounts(?Builder $baseQuery = null, int $limit = 10): array
     {
-        $query = $baseQuery ?? DocFile::query();
-
-        return $this->extractTagNamesFromQuery($query)
-            ->countBy(fn (string $name): string => $name)
-            ->sortDesc()
-            ->take($limit)
+        return collect($this->tagUsageCountsWithColors($baseQuery, $limit))
+            ->mapWithKeys(fn (array $entry, string $name): array => [$name => $entry['count']])
             ->all();
     }
 
@@ -209,32 +222,51 @@ class DocumentTagService
      */
     public function tagUsageCountsWithColors(?Builder $baseQuery = null, int $limit = 10): array
     {
-        $colorMap = $this->colorMap();
+        $query = $baseQuery ?? DocFile::query();
 
-        return collect($this->tagUsageCounts($baseQuery, $limit))
-            ->mapWithKeys(fn (int $count, string $name): array => [
-                $name => [
-                    'count' => $count,
-                    'color' => $colorMap[$name] ?? self::DEFAULT_TAG_COLOR,
-                ],
+        return $this->extractTagsWithColorsFromQuery($query)
+            ->groupBy('name')
+            ->map(fn (Collection $group): array => [
+                'count' => $group->count(),
+                'color' => $group->first(fn (array $tag): bool => filled($tag['color'] ?? null))['color']
+                    ?? $group->first()['color']
+                    ?? self::DEFAULT_TAG_COLOR,
             ])
+            ->sortByDesc('count')
+            ->take($limit)
             ->all();
     }
 
-    protected function extractTagNamesFromQuery(Builder $query): Collection
+    /**
+     * @return Collection<int, array{name: string, color: string|null}>
+     */
+    protected function extractTagsWithColorsFromQuery(Builder $query): Collection
     {
         return $query->pluck('tags')
             ->filter()
             ->flatMap(function (?array $tags): Collection {
-                return collect($tags)->map(function (array|string $tag): ?string {
+                return collect($tags)->map(function (array|string $tag): ?array {
                     if (is_string($tag)) {
-                        return $tag;
+                        return ['name' => $tag, 'color' => null];
                     }
 
                     $name = trim((string) ($tag['name'] ?? ''));
 
-                    return $name !== '' ? $name : null;
+                    if ($name === '') {
+                        return null;
+                    }
+
+                    return [
+                        'name'  => $name,
+                        'color' => $tag['color'] ?? null,
+                    ];
                 })->filter();
             });
+    }
+
+    protected function extractTagNamesFromQuery(Builder $query): Collection
+    {
+        return $this->extractTagsWithColorsFromQuery($query)
+            ->pluck('name');
     }
 }

@@ -7,7 +7,6 @@ use App\Filament\Inventory\Pages\InventoryDashboard;
 use App\Filament\Pages\Dashboard as OrgDashboard;
 use App\Filament\Projects\Pages\TaskOperationsHub;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Filament\Pages\CorrespondenceDashboard;
 use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard;
 use Webkul\Meetings\Filament\Pages\MeetingDashboard;
@@ -117,7 +116,7 @@ class DashboardRegistry
             return null;
         }
 
-        if ($table !== null && ! Schema::hasTable($table)) {
+        if ($table !== null && ! SchemaMemo::hasTable($table)) {
             return null;
         }
 

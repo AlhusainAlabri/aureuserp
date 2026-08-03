@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Employee\Models\WorkLocation;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WorkLocationPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, WorkLocation $workLocation): bool
     {
         return $authUser->can('view_any_employee_work::location');
@@ -61,4 +61,5 @@ class WorkLocationPolicy
     {
         return $authUser->can('force_delete_any_employee_work::location');
     }
+
 }

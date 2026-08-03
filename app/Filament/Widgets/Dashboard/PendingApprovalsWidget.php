@@ -6,10 +6,10 @@ use App\Filament\Widgets\Dashboard\Concerns\ConfiguresClickableStat;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
 use App\Support\Dashboard\DashboardMetricCache;
 use App\Support\Dashboard\DashboardNavigation;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 use Wezlo\FilamentApproval\Enums\ApprovalStatus;
 use Wezlo\FilamentApproval\Models\Approval;
 
@@ -33,7 +33,7 @@ class PendingApprovalsWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('approvals')) {
+            if (! SchemaMemo::hasTable('approvals')) {
                 return [
                     Stat::make(__('dashboard.widgets.pending_approvals'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

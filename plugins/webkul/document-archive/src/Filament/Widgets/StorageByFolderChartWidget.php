@@ -5,15 +5,17 @@ namespace Webkul\DocumentArchive\Filament\Widgets;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Webkul\DocumentArchive\Models\DocFile;
-use Webkul\DocumentArchive\Models\DocFolder;
 use Webkul\DocumentArchive\Services\DocumentAccessService;
+use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 
 class StorageByFolderChartWidget extends ChartWidget
 {
     protected static ?int $sort = 2;
+
+    protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
 
@@ -49,14 +51,7 @@ class StorageByFolderChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $folders = $this->accessibleFilesQuery()
-            ->reorder()
-            ->select('folder_id', DB::raw('SUM(file_size) as total_bytes'))
-            ->whereNotNull('folder_id')
-            ->groupBy('folder_id')
-            ->orderByDesc('total_bytes')
-            ->limit(8)
-            ->get();
+        $folders = $this->getTopFoldersByStorage(limit: 8);
 
         if ($folders->isEmpty()) {
             return [
@@ -65,12 +60,8 @@ class StorageByFolderChartWidget extends ChartWidget
             ];
         }
 
-        $folderNames = DocFolder::query()
-            ->whereIn('id', $folders->pluck('folder_id'))
-            ->pluck('name', 'id');
-
-        $labels = $folders->map(function ($row) use ($folderNames): string {
-            $name = $folderNames[$row->folder_id] ?? __('document-archive::document-archive.manager.root');
+        $labels = $folders->map(function ($row): string {
+            $name = $row->folder_name ?? __('document-archive::document-archive.manager.root');
 
             return strlen($name) > 24 ? substr($name, 0, 21).'...' : $name;
         })->all();
@@ -93,14 +84,7 @@ class StorageByFolderChartWidget extends ChartWidget
 
     public function getDescription(): string|Htmlable|null
     {
-        $folders = $this->accessibleFilesQuery()
-            ->reorder()
-            ->select('folder_id', DB::raw('SUM(file_size) as total_bytes'))
-            ->whereNotNull('folder_id')
-            ->groupBy('folder_id')
-            ->orderByDesc('total_bytes')
-            ->limit(1)
-            ->get();
+        $folders = $this->getTopFoldersByStorage(limit: 1);
 
         if ($folders->isEmpty()) {
             return __('document-archive::document-archive.dashboard.charts.empty');
@@ -111,6 +95,33 @@ class StorageByFolderChartWidget extends ChartWidget
         return __('document-archive::document-archive.dashboard.charts.largest_folder', [
             'size' => Number::fileSize($largest),
         ]);
+    }
+
+    protected function getTopFoldersByStorage(int $limit): Collection
+    {
+        $rows = once(fn (): array => DocumentDashboardCache::remember('storage_by_folder', function (): array {
+            return $this->accessibleFilesQuery()
+                ->reorder()
+                ->join('doc_folders', 'doc_folders.id', '=', 'doc_files.folder_id')
+                ->select('doc_files.folder_id')
+                ->selectRaw('doc_folders.name as folder_name')
+                ->selectRaw('SUM(doc_files.file_size) as total_bytes')
+                ->groupBy('doc_files.folder_id', 'doc_folders.name')
+                ->orderByDesc('total_bytes')
+                ->limit(8)
+                ->get()
+                ->map(fn ($row): array => [
+                    'folder_id'   => (int) $row->folder_id,
+                    'folder_name' => (string) $row->folder_name,
+                    'total_bytes' => (int) $row->total_bytes,
+                ])
+                ->all();
+        }));
+
+        return collect($rows)
+            ->take($limit)
+            ->map(fn (array $row): object => (object) $row)
+            ->values();
     }
 
     protected function accessibleFilesQuery(): Builder

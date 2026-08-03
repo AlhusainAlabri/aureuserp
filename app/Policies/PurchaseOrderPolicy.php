@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Purchase\Models\PurchaseOrder;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PurchaseOrderPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, PurchaseOrder $purchaseOrder): bool
     {
         return $authUser->can('view_any_purchase_purchase::order');
@@ -41,4 +41,5 @@ class PurchaseOrderPolicy
     {
         return $authUser->can('delete_any_purchase_purchase::order');
     }
+
 }

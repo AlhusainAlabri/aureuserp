@@ -2,6 +2,7 @@
 
 namespace App\Filament\Extensions;
 
+use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
 use Closure;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
@@ -10,6 +11,8 @@ use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressSteppe
 
 class SalesQuotationResourceExtensions
 {
+    use OptimizesRepeaterSelects;
+
     public static function localizeForm(Schema $schema): Schema
     {
         static::walkComponents(
@@ -21,7 +24,7 @@ class SalesQuotationResourceExtensions
             },
         );
 
-        return $schema;
+        return static::optimizeFormSelects($schema);
     }
 
     public static function localizeTable(Table $table): Table

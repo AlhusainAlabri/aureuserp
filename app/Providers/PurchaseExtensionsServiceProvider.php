@@ -10,14 +10,10 @@ use App\Models\Purchases\PurchaseOrderAttachment;
 use App\Services\Purchases\InternalRequestLineService;
 use App\Services\Purchases\PurchaseExpenseConversionService;
 use App\Services\Purchases\PurchasePaymentService;
-use App\Support\PermissionTables;
+use App\Support\SchemaMemo;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\CorePurchaseOrderResource;
@@ -56,7 +52,6 @@ class PurchaseExtensionsServiceProvider extends ServiceProvider
         }
 
         $this->registerLivewireOverrides();
-        $this->registerPermissions();
         $this->registerListeners();
         $this->registerOrderHooks();
         $this->registerOrderDocumentRelation();
@@ -268,7 +263,7 @@ class PurchaseExtensionsServiceProvider extends ServiceProvider
         });
 
         Order::saved(function (Order $order): void {
-            if (! Schema::hasColumn('purchases_orders', 'amount_remaining')) {
+            if (! SchemaMemo::hasColumn('purchases_orders', 'amount_remaining')) {
                 return;
             }
 
@@ -310,35 +305,5 @@ class PurchaseExtensionsServiceProvider extends ServiceProvider
     protected function registerListeners(): void
     {
         Event::listen(ApprovalCompleted::class, ConvertApprovedPurchaseToExpense::class);
-    }
-
-    protected function registerPermissions(): void
-    {
-        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
-            return;
-        }
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $permissions = [
-            'page_purchases_department_report',
-            'page_MyRequests',
-            'page_InternalRequests',
-        ];
-
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate(
-                ['name' => $permissionName],
-                ['guard_name' => 'web'],
-            );
-        }
-
-        foreach (['Admin', 'admin_manager', 'super_admin', 'general_manager', 'finance_manager', 'manager'] as $roleName) {
-            $role = Role::where('name', $roleName)->where('guard_name', 'web')->first();
-
-            if ($role) {
-                $role->givePermissionTo($permissions);
-            }
-        }
     }
 }

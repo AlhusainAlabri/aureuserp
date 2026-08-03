@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\InternalTransfer;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InternalTransferPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, InternalTransfer $internalTransfer): bool
     {
         return $authUser->can('view_any_inventory_internal');
@@ -41,4 +41,5 @@ class InternalTransferPolicy
     {
         return $authUser->can('delete_any_inventory_internal');
     }
+
 }

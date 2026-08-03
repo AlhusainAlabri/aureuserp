@@ -3,8 +3,8 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Support\Facades\Schema;
 use Webkul\MyNotes\Filament\Widgets\MyNotesBoardWidget as BaseMyNotesBoardWidget;
 
 class MyNotesBoardWidget extends BaseMyNotesBoardWidget
@@ -16,7 +16,7 @@ class MyNotesBoardWidget extends BaseMyNotesBoardWidget
 
     public static function canView(): bool
     {
-        return Schema::hasTable('notes');
+        return SchemaMemo::hasTable('notes');
     }
 
     public function getColumnSpan(): int|string|array

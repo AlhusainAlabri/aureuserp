@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\Dropship;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DropshipPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Dropship $dropship): bool
     {
         return $authUser->can('view_any_inventory_dropship');
@@ -41,4 +41,5 @@ class DropshipPolicy
     {
         return $authUser->can('delete_any_inventory_dropship');
     }
+
 }

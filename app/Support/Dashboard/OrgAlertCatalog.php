@@ -11,10 +11,10 @@ use App\Filament\Inventory\Pages\InventoryDashboard;
 use App\Models\Hr\EmployeeTraining;
 use App\Services\Projects\UnifiedTaskQueryService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Correspondence\Models\Correspondence;
 use Webkul\Employee\Filament\Resources\SubmissionResource;
 use Webkul\Employee\Models\EmployeeDocument;
@@ -141,8 +141,8 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.pending_approvals',
                 'severity' => 'danger',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_FINANCE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('approvals'),
-                'count'    => fn (): int => Schema::hasTable('approvals')
+                'visible'  => fn (): bool => SchemaMemo::hasTable('approvals'),
+                'count'    => fn (): int => SchemaMemo::hasTable('approvals')
                     ? (int) Approval::query()->where('status', ApprovalStatus::Pending)->count()
                     : 0,
                 'url'      => fn (): ?string => DashboardNavigation::meetingApprovalsUrl()
@@ -179,8 +179,8 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.missing_receipts',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_FINANCE],
-                'visible'  => fn (): bool => Schema::hasTable('purchases_orders')
-                    && Schema::hasColumn('purchases_orders', 'receipt_uploaded'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('purchases_orders')
+                    && SchemaMemo::hasColumn('purchases_orders', 'receipt_uploaded'),
                 'count'    => fn (): int => (int) Order::query()
                     ->whereIn('state', [OrderState::PURCHASE->value, OrderState::DONE->value])
                     ->where('receipt_uploaded', false)
@@ -195,7 +195,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.low_stock',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_FINANCE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('inventories_order_points'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('inventories_order_points'),
                 'count'    => fn (): int => (new self)->countBelowMinimum(),
                 'url'      => fn (): ?string => FilamentUrl::appendLocaleToUrl(InventoryDashboard::getUrl()),
             ],
@@ -205,7 +205,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.out_of_stock',
                 'severity' => 'danger',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_FINANCE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('inventories_order_points'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('inventories_order_points'),
                 'count'    => fn (): int => (new self)->countOutOfStock(),
                 'url'      => fn (): ?string => FilamentUrl::appendLocaleToUrl(InventoryDashboard::getUrl()),
             ],
@@ -215,7 +215,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.expiring_documents',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_HR],
-                'visible'  => fn (): bool => Schema::hasTable('employees_employee_documents'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('employees_employee_documents'),
                 'count'    => fn (): int => (int) EmployeeDocument::query()
                     ->whereNotNull('expiry_date')
                     ->whereBetween('expiry_date', [Carbon::today(), Carbon::today()->addDays(30)])
@@ -228,7 +228,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.expired_documents',
                 'severity' => 'danger',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_HR],
-                'visible'  => fn (): bool => Schema::hasTable('employees_employee_documents'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('employees_employee_documents'),
                 'count'    => fn (): int => (int) EmployeeDocument::query()
                     ->whereNotNull('expiry_date')
                     ->where('expiry_date', '<', Carbon::today())
@@ -241,7 +241,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.expiring_certificates',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_HR],
-                'visible'  => fn (): bool => Schema::hasTable('employee_trainings'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('employee_trainings'),
                 'count'    => fn (): int => (int) EmployeeTraining::query()
                     ->whereNotNull('certificate_expiry_date')
                     ->whereBetween('certificate_expiry_date', [Carbon::today(), Carbon::today()->addDays(60)])
@@ -254,11 +254,11 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.unread_correspondence',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('correspondences'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('correspondences'),
                 'count'    => function (?User $user): int {
                     $query = Correspondence::query();
 
-                    if (Schema::hasTable('correspondence_reads') && $user) {
+                    if (SchemaMemo::hasTable('correspondence_reads') && $user) {
                         return $query->unreadFor($user)->count();
                     }
 
@@ -275,7 +275,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.urgent_correspondence',
                 'severity' => 'danger',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('correspondences'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('correspondences'),
                 'count'    => fn (): int => (int) Correspondence::query()
                     ->where('direction', 'incoming')
                     ->where('priority', 'urgent')
@@ -289,7 +289,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.open_applicants',
                 'severity' => 'info',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_HR],
-                'visible'  => fn (): bool => Schema::hasTable('recruitments_applicants'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('recruitments_applicants'),
                 'count'    => fn (): int => (int) Applicant::query()
                     ->where('is_active', true)
                     ->whereNull('date_closed')
@@ -304,7 +304,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.overdue_borrowings',
                 'severity' => 'danger',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('asset_borrowings'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('asset_borrowings'),
                 'count'    => fn (): int => (new self)->countOverdueBorrowings(),
                 'url'      => fn (): ?string => FilamentUrl::appendLocaleToUrl(AssetsDashboard::getUrl()),
             ],
@@ -314,7 +314,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.pending_asset_requests',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_MANAGER],
-                'visible'  => fn (): bool => Schema::hasTable('asset_borrowings'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('asset_borrowings'),
                 'count'    => fn (): int => (new self)->countPendingRequests(),
                 'url'      => fn (): ?string => FilamentUrl::appendLocaleToUrl(PendingBorrowingRequests::getUrl()),
             ],
@@ -324,7 +324,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.open_submissions',
                 'severity' => 'info',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_HR],
-                'visible'  => fn (): bool => Schema::hasTable('employees_employee_submissions'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('employees_employee_submissions'),
                 'count'    => fn (): int => (int) EmployeeSubmission::query()
                     ->whereIn('status', ['open', 'under_review', 'pending'])
                     ->count(),
@@ -338,7 +338,7 @@ class OrgAlertCatalog
                 'label'    => 'dashboard.alerts.items.pending_receipts',
                 'severity' => 'warning',
                 'scopes'   => [self::SCOPE_EXECUTIVE, self::SCOPE_FINANCE],
-                'visible'  => fn (): bool => Schema::hasTable('inventories_order_points'),
+                'visible'  => fn (): bool => SchemaMemo::hasTable('inventories_order_points'),
                 'count'    => fn (): int => (new self)->countPendingReceipts(),
                 'url'      => fn (): ?string => (new self)->pendingReceiptsUrl(),
             ],

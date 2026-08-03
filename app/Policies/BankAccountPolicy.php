@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Partner\Models\BankAccount;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BankAccountPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, BankAccount $bankAccount): bool
     {
         return $authUser->can('view_any_partner_bank::account');
@@ -61,4 +61,5 @@ class BankAccountPolicy
     {
         return $authUser->can('force_delete_any_partner_bank::account');
     }
+
 }

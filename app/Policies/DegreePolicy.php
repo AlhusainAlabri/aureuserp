@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\Degree;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DegreePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Degree $degree): bool
     {
         return $authUser->can('view_any_recruitment_degree');
@@ -46,4 +46,5 @@ class DegreePolicy
     {
         return $authUser->can('reorder_recruitment_degree');
     }
+
 }

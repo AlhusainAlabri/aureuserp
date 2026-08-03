@@ -21,6 +21,11 @@ use Webkul\DocumentArchive\Support\FilamentUrl;
 
 trait ConfiguresDocumentFileTable
 {
+    protected function isDashboardDocumentFileTable(): bool
+    {
+        return false;
+    }
+
     protected function configureDocumentFileTable(Table $table): Table
     {
         $expiringSoonDays = (int) config('document-archive.expiring_soon_days', 7);
@@ -32,7 +37,9 @@ trait ConfiguresDocumentFileTable
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('warning')
                     ->tooltip(__('document-archive::document-archive.missing_file.title'))
-                    ->visible(fn (?DocFile $record): bool => $record !== null && ! app(DocumentStorageService::class)->fileExists($record)),
+                    ->visible(fn (?DocFile $record): bool => ! $this->isDashboardDocumentFileTable()
+                        && $record !== null
+                        && ! app(DocumentStorageService::class)->fileExists($record)),
                 TextColumn::make('reference_number')
                     ->label(__('document-archive::document-archive.fields.reference_number')),
                 TextColumn::make('name')

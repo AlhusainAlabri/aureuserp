@@ -6,12 +6,12 @@ use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
 use App\Services\Projects\ProjectCompletionService;
 use App\Services\Projects\ProjectStageHelper;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Project\Models\Project;
 
 class CompletedProjectsWidget extends BaseWidget
@@ -33,7 +33,7 @@ class CompletedProjectsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return $table
                 ->query($this->emptyTableQuery(Project::class, [
                     'id'         => '0',

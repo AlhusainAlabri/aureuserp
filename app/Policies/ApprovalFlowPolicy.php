@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Wezlo\FilamentApproval\Models\ApprovalFlow;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApprovalFlowPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, ApprovalFlow $approvalFlow): bool
     {
         return $authUser->can('view_any_filament_approval_approval::flow');
@@ -66,4 +66,5 @@ class ApprovalFlowPolicy
     {
         return $authUser->can('reorder_filament_approval_approval::flow');
     }
+
 }

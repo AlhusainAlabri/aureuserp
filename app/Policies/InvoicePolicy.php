@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Invoice\Models\Invoice;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InvoicePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Invoice $invoice): bool
     {
         return $authUser->can('view_any_invoice_invoice');
@@ -46,4 +46,5 @@ class InvoicePolicy
     {
         return $authUser->can('reorder_invoice_invoice');
     }
+
 }

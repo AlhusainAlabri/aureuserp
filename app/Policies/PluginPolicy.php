@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\PluginManager\Models\Plugin;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PluginPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Plugin $plugin): bool
     {
         return $authUser->can('view_any_plugin_manager_plugin');
@@ -46,4 +46,5 @@ class PluginPolicy
     {
         return $authUser->can('reorder_plugin_manager_plugin');
     }
+
 }

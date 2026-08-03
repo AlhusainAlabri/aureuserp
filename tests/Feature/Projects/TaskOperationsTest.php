@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
+use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Filament\Resources\TaskResource;
 use Webkul\Project\Models\Project;
@@ -21,48 +22,20 @@ use Webkul\Project\Models\Task;
 use Webkul\Project\Models\TaskStage;
 use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
-use Webkul\Support\Models\Company;
-use Webkul\Support\Models\Currency;
 
 beforeEach(function (): void {
-    static $booted = false;
+    FeatureTestBootstrap::bootstrap([
+        'projects' => 'projects_projects',
+    ]);
 
-    if (! $booted) {
-        foreach ([1, 2, 3] as $index) {
-            Currency::query()->firstOrCreate(
-                ['iso_numeric' => sprintf('%03d', $index)],
-                [
-                    'name'           => "Test Currency {$index}",
-                    'symbol'         => 'T',
-                    'decimal_places' => 2,
-                    'full_name'      => "Test Currency {$index}",
-                    'rounding'       => 0.01,
-                    'active'         => true,
-                ],
-            );
-        }
-
-        if (Company::query()->doesntExist()) {
-            Artisan::call('erp:install', [
-                '--force'          => true,
-                '--no-interaction' => true,
-                '--admin-name'     => 'Test Admin',
-                '--admin-email'    => 'admin@test.com',
-                '--admin-password' => 'password',
-            ]);
-        }
-
-        foreach ([
-            'page_task_operations_hub',
-            'page_task_kanban',
-            'page_operations_calendar',
-            'view_any_project_task',
-            'create_project_task',
-        ] as $permission) {
-            Permission::findOrCreate($permission, 'web');
-        }
-
-        $booted = true;
+    foreach ([
+        'page_task_operations_hub',
+        'page_task_kanban',
+        'page_operations_calendar',
+        'view_any_project_task',
+        'create_project_task',
+    ] as $permission) {
+        Permission::findOrCreate($permission, 'web');
     }
 
     if (! Schema::hasTable('projects_tasks')) {

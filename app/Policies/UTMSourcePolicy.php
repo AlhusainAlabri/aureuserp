@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\UTMSource;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UTMSourcePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, UTMSource $uTMSource): bool
     {
         return $authUser->can('view_any_recruitment_u::t::m::source');
@@ -41,4 +41,5 @@ class UTMSourcePolicy
     {
         return $authUser->can('delete_any_recruitment_u::t::m::source');
     }
+
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Meetings\Models\Meeting;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MeetingPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Meeting $meeting): bool
     {
         return $authUser->can('view_any_meetings_meeting');
@@ -71,4 +71,5 @@ class MeetingPolicy
     {
         return $authUser->can('manage_attachments_meetings_meeting');
     }
+
 }

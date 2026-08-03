@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Invoice\Models\CreditNote;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CreditNotePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, CreditNote $creditNote): bool
     {
         return $authUser->can('view_any_invoice_credit::note');
@@ -46,4 +46,5 @@ class CreditNotePolicy
     {
         return $authUser->can('reorder_invoice_credit::note');
     }
+
 }

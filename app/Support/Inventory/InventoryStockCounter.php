@@ -3,14 +3,14 @@
 namespace App\Support\Inventory;
 
 use App\Support\Dashboard\DashboardMetricCache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Inventory\Models\OrderPoint;
-use Webkul\Inventory\Models\Product;
 
 class InventoryStockCounter
 {
     /**
-     * @return array{below_minimum: int, out_of_stock: int}
+     * @return array{below_minimum: int, out_of_stock: int, total_skus: int}
      */
     public static function counts(): array
     {
@@ -29,52 +29,58 @@ class InventoryStockCounter
         return self::counts()['out_of_stock'];
     }
 
+    public static function countTotalSkus(): int
+    {
+        return self::counts()['total_skus'];
+    }
+
     /**
-     * @return array{below_minimum: int, out_of_stock: int}
+     * @return array{below_minimum: int, out_of_stock: int, total_skus: int}
      */
     protected static function computeCounts(): array
     {
         if (! Schema::hasTable('inventories_order_points')) {
-            return ['below_minimum' => 0, 'out_of_stock' => 0];
+            return ['below_minimum' => 0, 'out_of_stock' => 0, 'total_skus' => 0];
         }
 
-        $points = OrderPoint::query()
-            ->select(['id', 'product_id', 'product_min_qty'])
-            ->get();
+        $totalSkus = (int) OrderPoint::query()->count();
 
-        if ($points->isEmpty()) {
-            return ['below_minimum' => 0, 'out_of_stock' => 0];
+        if ($totalSkus === 0) {
+            return ['below_minimum' => 0, 'out_of_stock' => 0, 'total_skus' => 0];
         }
 
-        $products = Product::query()
-            ->whereIn('id', $points->pluck('product_id')->unique()->filter())
-            ->get()
-            ->keyBy('id');
+        /** @var array<int, float> $onHandByProduct */
+        $onHandByProduct = Schema::hasTable('inventories_product_quantities')
+            ? DB::table('inventories_product_quantities')
+                ->selectRaw('product_id, COALESCE(SUM(quantity), 0) as on_hand')
+                ->groupBy('product_id')
+                ->pluck('on_hand', 'product_id')
+                ->map(fn (mixed $quantity): float => (float) $quantity)
+                ->all()
+            : [];
 
         $belowMinimum = 0;
         $outOfStock = 0;
 
-        foreach ($points as $point) {
-            $product = $products->get($point->product_id);
+        OrderPoint::query()
+            ->select(['product_id', 'product_min_qty'])
+            ->cursor()
+            ->each(function (OrderPoint $point) use (&$belowMinimum, &$outOfStock, $onHandByProduct): void {
+                $onHand = $onHandByProduct[$point->product_id] ?? 0.0;
 
-            if (! $product) {
-                continue;
-            }
+                if ($onHand <= 0) {
+                    $outOfStock++;
+                }
 
-            $available = (float) $product->available_qty;
-
-            if ($available <= 0) {
-                $outOfStock++;
-            }
-
-            if ($available < (float) $point->product_min_qty) {
-                $belowMinimum++;
-            }
-        }
+                if ($onHand < (float) $point->product_min_qty) {
+                    $belowMinimum++;
+                }
+            });
 
         return [
             'below_minimum' => $belowMinimum,
             'out_of_stock'  => $outOfStock,
+            'total_skus'    => $totalSkus,
         ];
     }
 }

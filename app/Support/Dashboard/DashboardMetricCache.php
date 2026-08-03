@@ -19,6 +19,15 @@ class DashboardMetricCache
         );
     }
 
+    public static function rememberGlobal(string $key, Closure $callback, int $seconds = 300): mixed
+    {
+        return Cache::remember(
+            "dashboard.metrics.global.{$key}",
+            $seconds,
+            $callback,
+        );
+    }
+
     public static function forget(string $key): void
     {
         $userId = auth()->id() ?? 'guest';

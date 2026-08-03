@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Accounting\Models\FiscalPosition;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FiscalPositionPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, FiscalPosition $fiscalPosition): bool
     {
         return $authUser->can('view_any_accounting_fiscal::position');
@@ -46,4 +46,5 @@ class FiscalPositionPolicy
     {
         return $authUser->can('reorder_accounting_fiscal::position');
     }
+
 }

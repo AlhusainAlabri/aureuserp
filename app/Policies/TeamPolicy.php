@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Security\Models\Team;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TeamPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Team $team): bool
     {
         return $authUser->can('view_any_security_team');
@@ -41,4 +41,5 @@ class TeamPolicy
     {
         return $authUser->can('delete_any_security_team');
     }
+
 }

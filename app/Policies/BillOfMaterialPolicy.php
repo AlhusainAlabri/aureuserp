@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Manufacturing\Models\BillOfMaterial;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BillOfMaterialPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, BillOfMaterial $billOfMaterial): bool
     {
         return $authUser->can('view_any_manufacturing_bills::of::material');
@@ -61,4 +61,5 @@ class BillOfMaterialPolicy
     {
         return $authUser->can('force_delete_any_manufacturing_bills::of::material');
     }
+
 }

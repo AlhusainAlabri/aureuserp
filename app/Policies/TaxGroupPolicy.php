@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Invoice\Models\TaxGroup;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaxGroupPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, TaxGroup $taxGroup): bool
     {
         return $authUser->can('view_any_invoice_tax::group');
@@ -46,4 +46,5 @@ class TaxGroupPolicy
     {
         return $authUser->can('reorder_invoice_tax::group');
     }
+
 }

@@ -24,11 +24,7 @@ beforeEach(function (): void {
     TestBootstrapHelper::ensureERPInstalled();
 
     if (! Schema::hasTable('doc_folders')) {
-        Artisan::call('migrate', [
-            '--path'     => 'plugins/webkul/document-archive/database/migrations',
-            '--realpath' => false,
-            '--force'    => true,
-        ]);
+        Artisan::call('document-archive:install', ['--no-interaction' => true]);
     }
 });
 
@@ -294,6 +290,14 @@ it('stores uploaded files on the private disk via the storage service', function
         ->and($file->extension)->toBe('pdf')
         ->and(Storage::disk('private')->exists($file->file_path))->toBeTrue()
         ->and($file->versions()->count())->toBe(1);
+});
+
+it('resolves a display name from the uploaded filename when none is provided', function (): void {
+    $storage = app(DocumentStorageService::class);
+
+    expect($storage->resolveDisplayName('documents/temp/quarterly-report.pdf'))->toBe('quarterly-report')
+        ->and($storage->resolveDisplayName(['documents/temp/quarterly-report.pdf']))->toBe('quarterly-report')
+        ->and($storage->resolveDisplayName('documents/temp/quarterly-report.pdf', 'Custom Title'))->toBe('Custom Title');
 });
 
 it('normalizes legacy and structured document tags', function (): void {

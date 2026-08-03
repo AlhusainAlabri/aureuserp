@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Purchase\Models\ProductSupplier;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProductSupplierPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, ProductSupplier $productSupplier): bool
     {
         return $authUser->can('view_any_purchase_vendor::price');
@@ -46,4 +46,5 @@ class ProductSupplierPolicy
     {
         return $authUser->can('reorder_purchase_vendor::price');
     }
+
 }

@@ -145,7 +145,11 @@
                         </div>
                     @endif
 
-                    @livewire($statWidgetClass)
+                    @livewire(
+                        $statWidgetClass,
+                        $statWidgetClass::getDefaultProperties(),
+                        key('command-center-'.class_basename($statWidgetClass)),
+                    )
                 </div>
             @endforeach
         </div>

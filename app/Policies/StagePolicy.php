@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\Stage;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class StagePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Stage $stage): bool
     {
         return $authUser->can('view_any_recruitment_stage');
@@ -46,4 +46,5 @@ class StagePolicy
     {
         return $authUser->can('reorder_recruitment_stage');
     }
+
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
 use App\Services\Projects\UnifiedTaskQueryService;
+use App\Support\Dashboard\DashboardMetricCache;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Webkul\Project\Enums\TaskState;
@@ -33,6 +34,18 @@ class TasksCompletionChartWidget extends ChartWidget
             return $this->emptyPluginData();
         }
 
+        return DashboardMetricCache::rememberWithFilters(
+            'tasks_completion_chart',
+            $this->pageFilters ?? [],
+            fn (): array => $this->buildChartData(),
+        );
+    }
+
+    /**
+     * @return array{datasets: list<array<string, mixed>>, labels: list<string>}
+     */
+    protected function buildChartData(): array
+    {
         $startDate = $this->pageFilters['startDate'] ?? null;
         $endDate = $this->pageFilters['endDate'] ?? null;
 

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Employee\Models\EmployeeSubmission;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EmployeeSubmissionPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, EmployeeSubmission $employeeSubmission): bool
     {
         return $authUser->can('view_any_employee_submission');
@@ -66,4 +66,5 @@ class EmployeeSubmissionPolicy
     {
         return $authUser->can('reorder_employee_submission');
     }
+
 }

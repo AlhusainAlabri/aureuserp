@@ -7,8 +7,18 @@ use Illuminate\Support\Facades\Schema;
 
 class HrExtensionSchemaService
 {
+    protected static bool $ensured = false;
+
+    protected static bool $documentTypesChecked = false;
+
     public function ensure(): void
     {
+        if (static::$ensured) {
+            return;
+        }
+
+        static::$ensured = true;
+
         if (! Schema::hasTable('employees_employees')) {
             return;
         }
@@ -188,6 +198,12 @@ class HrExtensionSchemaService
 
     protected function ensureEmployeeDocumentTypes(): void
     {
+        if (static::$documentTypesChecked) {
+            return;
+        }
+
+        static::$documentTypesChecked = true;
+
         if (! Schema::hasTable('employees_employee_documents')) {
             return;
         }
@@ -196,10 +212,14 @@ class HrExtensionSchemaService
             return;
         }
 
-        $column = collect(Schema::getColumns('employees_employee_documents'))
-            ->firstWhere('name', 'document_type');
+        if (! Schema::hasColumn('employees_employee_documents', 'document_type')) {
+            return;
+        }
 
-        if ($column && str_contains((string) ($column['type_name'] ?? ''), 'professional_conduct')) {
+        $columnType = Schema::getConnection()
+            ->selectOne("SHOW COLUMNS FROM `employees_employee_documents` WHERE Field = 'document_type'");
+
+        if ($columnType !== null && str_contains((string) ($columnType->Type ?? ''), 'professional_conduct')) {
             return;
         }
 
@@ -336,5 +356,11 @@ class HrExtensionSchemaService
 
             break;
         }
+    }
+
+    public static function resetForTesting(): void
+    {
+        static::$ensured = false;
+        static::$documentTypesChecked = false;
     }
 }

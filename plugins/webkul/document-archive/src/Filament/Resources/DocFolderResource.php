@@ -29,6 +29,8 @@ use Webkul\DocumentArchive\Models\DocFolder;
 
 class DocFolderResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = DocFolder::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-folder';

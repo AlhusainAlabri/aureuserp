@@ -2,11 +2,11 @@
 
 use App\Filament\Resources\ProjectResource\Pages\ManageTasks;
 use Filament\Actions\Testing\TestAction;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
+use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Project;
 use Webkul\Project\Models\Task;
@@ -14,38 +14,11 @@ use Webkul\Project\Models\TaskStage;
 use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
-use Webkul\Support\Models\Currency;
 
 beforeEach(function (): void {
-    static $booted = false;
-
-    if (! $booted) {
-        foreach ([1, 2, 3] as $index) {
-            Currency::query()->firstOrCreate(
-                ['iso_numeric' => sprintf('%03d', $index)],
-                [
-                    'name'           => "Test Currency {$index}",
-                    'symbol'         => 'T',
-                    'decimal_places' => 2,
-                    'full_name'      => "Test Currency {$index}",
-                    'rounding'       => 0.01,
-                    'active'         => true,
-                ]
-            );
-        }
-
-        if (Company::query()->doesntExist()) {
-            Artisan::call('erp:install', [
-                '--force'          => true,
-                '--no-interaction' => true,
-                '--admin-name'     => 'Test Admin',
-                '--admin-email'    => 'admin@test.com',
-                '--admin-password' => 'password',
-            ]);
-        }
-
-        $booted = true;
-    }
+    FeatureTestBootstrap::bootstrap([
+        'projects' => 'projects_projects',
+    ]);
 
     if (! Schema::hasTable('projects_projects')) {
         test()->markTestSkipped('Projects plugin is not installed.');

@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class WarningsIssuedWidget extends BaseWidget
 {
@@ -23,7 +23,7 @@ class WarningsIssuedWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! Schema::hasTable('employee_warnings')) {
+            if (! SchemaMemo::hasTable('employee_warnings')) {
                 return [
                     Stat::make(__('dashboard.widgets.warnings_issued'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),

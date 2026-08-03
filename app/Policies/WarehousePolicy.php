@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\Warehouse;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WarehousePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Warehouse $warehouse): bool
     {
         return $authUser->can('view_any_inventory_warehouse');
@@ -66,4 +66,5 @@ class WarehousePolicy
     {
         return $authUser->can('reorder_inventory_warehouse');
     }
+
 }

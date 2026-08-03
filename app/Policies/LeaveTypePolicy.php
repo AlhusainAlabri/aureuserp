@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\TimeOff\Models\LeaveType;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LeaveTypePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, LeaveType $leaveType): bool
     {
         return $authUser->can('view_any_time_off_leave::type');
@@ -66,4 +66,5 @@ class LeaveTypePolicy
     {
         return $authUser->can('reorder_time_off_leave::type');
     }
+
 }

@@ -3,12 +3,12 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Models\Hr\EmployeeSalaryRaise;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Schema;
 
 class RecentRaisesWidget extends BaseWidget
 {
@@ -30,7 +30,7 @@ class RecentRaisesWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('employee_salary_raises')) {
+        if (! SchemaMemo::hasTable('employee_salary_raises')) {
             return $table
                 ->query(EmployeeSalaryRaise::query()->whereRaw('1 = 0'))
                 ->columns([TextColumn::make('effective_date')])

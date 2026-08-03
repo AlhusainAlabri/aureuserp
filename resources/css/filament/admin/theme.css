@@ -142,3 +142,202 @@
 .fi-topbar-open-sidebar-btn + .fi-topbar-close-sidebar-btn + .fi-dropdown .fi-icon-btn {
     @apply text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40;
 }
+
+/* Document Manager — sidebar + content (avoids missing Tailwind responsive width utilities) */
+.document-manager {
+    display: grid;
+    gap: 1rem;
+    min-height: calc(100vh - 12rem);
+}
+
+@media (min-width: 1024px) {
+    .document-manager {
+        grid-template-columns: 18rem minmax(0, 1fr);
+    }
+}
+
+.document-manager__sidebar {
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229 231 235);
+    background-color: white;
+}
+
+.dark .document-manager__sidebar {
+    border-color: rgb(55 65 81);
+    background-color: rgb(31 41 55);
+}
+
+.document-manager__sidebar.is-open {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    display: flex;
+    width: 18rem;
+    max-width: 85vw;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+@media (min-width: 1024px) {
+    .document-manager__sidebar {
+        display: flex;
+    }
+
+    .document-manager__sidebar.is-open {
+        position: static;
+        width: auto;
+        max-width: none;
+        box-shadow: none;
+    }
+
+    .document-manager__sidebar-close {
+        display: none;
+    }
+}
+
+.document-manager__content {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229 231 235);
+    background-color: white;
+}
+
+.dark .document-manager__content {
+    border-color: rgb(55 65 81);
+    background-color: rgb(31 41 55);
+}
+
+.document-manager__card {
+    position: relative;
+}
+
+.document-manager__card-checkbox {
+    position: absolute;
+    top: 0.625rem;
+    inset-inline-start: 0.625rem;
+    z-index: 10;
+}
+
+.document-manager__card-badge {
+    position: absolute;
+    top: 0.625rem;
+    inset-inline-end: 0.625rem;
+    z-index: 10;
+}
+
+.document-manager-filters {
+    padding: 1rem;
+    background-color: rgb(249 250 251);
+}
+
+.dark .document-manager-filters {
+    background-color: rgb(17 24 39 / 0.5);
+}
+
+.document-manager-filters__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.document-manager-filters__title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgb(107 114 128);
+}
+
+.dark .document-manager-filters__title {
+    color: rgb(156 163 175);
+}
+
+.document-manager-filters__reset {
+    font-size: 0.75rem;
+    color: rgb(5 150 105);
+}
+
+.document-manager-filters__reset:hover {
+    text-decoration: underline;
+}
+
+.document-manager-filters__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .document-manager-filters__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .document-manager-filters__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .document-manager-filters__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.document-manager-filters__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.document-manager-filters__field--toggle {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(229 231 235);
+    background-color: white;
+}
+
+.dark .document-manager-filters__field--toggle {
+    border-color: rgb(55 65 81);
+    background-color: rgb(31 41 55);
+}
+
+.document-manager-filters__label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgb(55 65 81);
+}
+
+.dark .document-manager-filters__label {
+    color: rgb(209 213 219);
+}
+
+.document-manager-filters__input {
+    width: 100%;
+    min-height: 2.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(209 213 219);
+    background-color: white;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: rgb(17 24 39);
+}
+
+.dark .document-manager-filters__input {
+    border-color: rgb(75 85 99);
+    background-color: rgb(17 24 39);
+    color: rgb(243 244 246);
+}

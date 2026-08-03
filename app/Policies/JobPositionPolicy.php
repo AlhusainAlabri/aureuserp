@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\JobPosition;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class JobPositionPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, JobPosition $jobPosition): bool
     {
         return $authUser->can('view_any_recruitment_job::position');
@@ -66,4 +66,5 @@ class JobPositionPolicy
     {
         return $authUser->can('reorder_recruitment_job::position');
     }
+
 }

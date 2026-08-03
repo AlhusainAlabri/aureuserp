@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Employee\Models\Employee;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EmployeePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Employee $employee): bool
     {
         return $authUser->can('view_any_employee_employee');
@@ -61,4 +61,5 @@ class EmployeePolicy
     {
         return $authUser->can('force_delete_any_employee_employee');
     }
+
 }

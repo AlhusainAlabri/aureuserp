@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\StorageCategory;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class StorageCategoryPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, StorageCategory $storageCategory): bool
     {
         return $authUser->can('view_any_inventory_storage::category');
@@ -46,4 +46,5 @@ class StorageCategoryPolicy
     {
         return $authUser->can('reorder_inventory_storage::category');
     }
+
 }

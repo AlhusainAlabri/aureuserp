@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Assets\Models\Asset;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssetPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Asset $asset): bool
     {
         return $authUser->can('view_any_assets_asset');
@@ -51,4 +51,5 @@ class AssetPolicy
     {
         return $authUser->can('return_asset_assets_asset');
     }
+
 }

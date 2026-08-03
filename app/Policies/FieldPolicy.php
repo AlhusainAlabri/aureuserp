@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Field\Models\Field;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class FieldPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Field $field): bool
     {
         return $authUser->can('view_any_field_field');
@@ -66,4 +66,5 @@ class FieldPolicy
     {
         return $authUser->can('reorder_field_field');
     }
+
 }

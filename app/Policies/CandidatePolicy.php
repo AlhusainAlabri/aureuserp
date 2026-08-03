@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Recruitment\Models\Candidate;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CandidatePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Candidate $candidate): bool
     {
         return $authUser->can('view_any_recruitment_candidate');
@@ -61,4 +61,5 @@ class CandidatePolicy
     {
         return $authUser->can('force_delete_any_recruitment_candidate');
     }
+
 }

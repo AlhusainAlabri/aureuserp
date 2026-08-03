@@ -1,17 +1,12 @@
 @props([
     'file',
-    'viewMode' => 'grid',
 ])
-
-@php
-    $isExplorer = $viewMode === 'explorer';
-@endphp
 
 <div class="flex items-center gap-1" x-data="{ open: false }" @click.stop>
     <button
         type="button"
         wire:click="openFile({{ $file->id }})"
-        class="p-1.5 rounded hover:bg-primary-50 dark:hover:bg-primary-500/10 text-primary-600 dark:text-primary-400"
+        class="p-2 min-h-11 min-w-11 md:min-h-8 md:min-w-8 rounded hover:bg-primary-50 dark:hover:bg-primary-500/10 text-primary-600 dark:text-primary-400 inline-flex items-center justify-center"
         title="{{ __('document-archive::document-archive.actions.preview') }}"
     >
         <x-filament::icon icon="heroicon-o-eye" class="w-4 h-4" />
@@ -20,7 +15,7 @@
     <button
         type="button"
         wire:click="downloadFile({{ $file->id }})"
-        class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+        class="p-2 min-h-11 min-w-11 md:min-h-8 md:min-w-8 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 inline-flex items-center justify-center"
         title="{{ __('document-archive::document-archive.actions.download') }}"
     >
         <x-filament::icon icon="heroicon-o-arrow-down-tray" class="w-4 h-4" />
@@ -30,7 +25,7 @@
         <button
             type="button"
             @click="open = !open"
-            class="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+            class="p-2 min-h-11 min-w-11 md:min-h-8 md:min-w-8 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 inline-flex items-center justify-center"
             title="{{ __('document-archive::document-archive.manager.actions.more') }}"
         >
             <x-filament::icon icon="heroicon-o-ellipsis-vertical" class="w-4 h-4" />

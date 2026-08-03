@@ -4,14 +4,14 @@ namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
-use App\Services\Projects\ProjectCompletionService;
 use App\Services\Projects\ProjectStageHelper;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Schema;
+use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Project;
 
 class ActiveProjectsWidget extends BaseWidget
@@ -24,6 +24,8 @@ class ActiveProjectsWidget extends BaseWidget
 
     protected static ?string $pollingInterval = null;
 
+    protected static bool $isLazy = true;
+
     public function getTableHeading(): string|Htmlable|null
     {
         return __('dashboard.widgets.active_projects');
@@ -31,7 +33,7 @@ class ActiveProjectsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return $table
                 ->query($this->emptyTableQuery(Project::class, [
                     'id'         => '0',
@@ -47,6 +49,17 @@ class ActiveProjectsWidget extends BaseWidget
             ->query(
                 Project::query()
                     ->with(['stage', 'user'])
+                    ->withCount([
+                        'tasks as active_tasks_count' => fn ($query) => $query
+                            ->whereNull('parent_id')
+                            ->where('state', '!=', TaskState::CANCELLED->value),
+                        'tasks as done_tasks_count' => fn ($query) => $query
+                            ->whereNull('parent_id')
+                            ->where('state', TaskState::DONE->value),
+                        'milestones as total_milestones_count',
+                        'milestones as completed_milestones_count' => fn ($query) => $query
+                            ->where('is_completed', true),
+                    ])
                     ->when(
                         ProjectStageHelper::isAvailable(),
                         fn ($query) => ProjectStageHelper::applyStageFilter($query->where('is_active', true), 'in_progress'),
@@ -68,9 +81,21 @@ class ActiveProjectsWidget extends BaseWidget
 
                 TextColumn::make('completion_percentage')
                     ->label(__('projects-extensions::columns.completion'))
-                    ->state(fn (Project $record): string => app(ProjectCompletionService::class)->formatPercentage(
-                        app(ProjectCompletionService::class)->calculate($record),
-                    )),
+                    ->state(function (Project $record): string {
+                        if ($record->active_tasks_count > 0) {
+                            $percentage = round(($record->done_tasks_count / $record->active_tasks_count) * 100, 1);
+
+                            return number_format($percentage, 1).'%';
+                        }
+
+                        if ($record->total_milestones_count > 0) {
+                            $percentage = round(($record->completed_milestones_count / $record->total_milestones_count) * 100, 1);
+
+                            return number_format($percentage, 1).'%';
+                        }
+
+                        return '0.0%';
+                    }),
 
                 TextColumn::make('user.name')
                     ->label(__('projects-extensions::columns.manager'))

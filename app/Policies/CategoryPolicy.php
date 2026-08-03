@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Sale\Models\Category;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Category $category): bool
     {
         return $authUser->can('view_any_sale_product::category');
@@ -41,4 +41,5 @@ class CategoryPolicy
     {
         return $authUser->can('delete_any_sale_product::category');
     }
+
 }

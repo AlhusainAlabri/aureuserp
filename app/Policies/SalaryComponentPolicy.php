@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Payroll\Models\SalaryComponent;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SalaryComponentPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, SalaryComponent $salaryComponent): bool
     {
         return $authUser->can('view_any_payroll_salary::component');
@@ -41,4 +41,5 @@ class SalaryComponentPolicy
     {
         return $authUser->can('delete_any_payroll_salary::component');
     }
+
 }

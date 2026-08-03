@@ -2,7 +2,7 @@
 
 namespace App\Filament\Concerns;
 
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 use Webkul\Employee\Models\Employee;
 
 trait FiltersEmployeeFormDataForDatabaseSchema
@@ -17,7 +17,7 @@ trait FiltersEmployeeFormDataForDatabaseSchema
 
         return collect($data)
             ->only((new Employee)->getFillable())
-            ->filter(fn (mixed $value, string $column): bool => Schema::hasColumn($table, $column))
+            ->filter(fn (mixed $value, string $column): bool => SchemaMemo::hasColumn($table, $column))
             ->all();
     }
 }

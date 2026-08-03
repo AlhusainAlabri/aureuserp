@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Project\Models\Task;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Task $task): bool
     {
         return $authUser->can('view_any_project_task');
@@ -66,4 +66,5 @@ class TaskPolicy
     {
         return $authUser->can('reorder_project_task');
     }
+
 }

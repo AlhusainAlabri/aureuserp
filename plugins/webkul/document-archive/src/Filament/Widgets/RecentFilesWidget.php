@@ -12,7 +12,16 @@ class RecentFilesWidget extends BaseWidget
 
     protected static ?int $sort = 2;
 
+    protected static bool $isLazy = true;
+
+    protected ?string $placeholderHeight = '320px';
+
     protected int|string|array $columnSpan = 'full';
+
+    protected function isDashboardDocumentFileTable(): bool
+    {
+        return true;
+    }
 
     public function getTableHeading(): ?string
     {

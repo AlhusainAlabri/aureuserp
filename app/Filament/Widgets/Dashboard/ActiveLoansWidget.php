@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardTableLayout;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Payroll\Enums\LoanStatus;
 use Webkul\Payroll\Models\Loan;
 
@@ -38,7 +38,7 @@ class ActiveLoansWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('payroll_loans')) {
+        if (! SchemaMemo::hasTable('payroll_loans')) {
             return $table
                 ->query(Loan::query()->whereRaw('1 = 0'))
                 ->columns([

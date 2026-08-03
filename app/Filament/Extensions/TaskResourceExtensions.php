@@ -5,6 +5,7 @@ namespace App\Filament\Extensions;
 use App\Enums\Projects\TaskPriorityLevel;
 use App\Models\Projects\TaskCategory;
 use App\Services\Projects\TaskStatePresenter;
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -14,7 +15,6 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Department;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Project;
@@ -43,8 +43,8 @@ class TaskResourceExtensions
 
     public static function extendedFieldsAvailable(): bool
     {
-        return Schema::hasTable('projects_tasks')
-            && Schema::hasColumn('projects_tasks', 'priority_level');
+        return SchemaMemo::hasTable('projects_tasks')
+            && SchemaMemo::hasColumn('projects_tasks', 'priority_level');
     }
 
     /** @return array<int, mixed> */
@@ -107,7 +107,7 @@ class TaskResourceExtensions
                 ->default(fn (): ?int => auth()->id())
                 ->columnSpan(1);
 
-            if (Schema::hasTable('projects_task_categories')) {
+            if (SchemaMemo::hasTable('projects_task_categories')) {
                 $schema[] = Select::make('category_id')
                     ->label(__('tasks.fields.category'))
                     ->searchable()
@@ -121,7 +121,7 @@ class TaskResourceExtensions
                     ->columnSpan(1);
             }
 
-            if (Schema::hasTable('employees_departments')) {
+            if (SchemaMemo::hasTable('employees_departments')) {
                 $schema[] = Select::make('department_id')
                     ->label(__('tasks.fields.department'))
                     ->searchable()
@@ -173,15 +173,15 @@ class TaskResourceExtensions
             'tags',
         ];
 
-        if (Schema::hasColumn('projects_tasks', 'owner_id')) {
+        if (SchemaMemo::hasColumn('projects_tasks', 'owner_id')) {
             $with[] = 'owner';
         }
 
-        if (Schema::hasTable('projects_task_categories')) {
+        if (SchemaMemo::hasTable('projects_task_categories')) {
             $with[] = 'category';
         }
 
-        if (Schema::hasTable('employees_departments')) {
+        if (SchemaMemo::hasTable('employees_departments')) {
             $with[] = 'department';
         }
 
@@ -193,7 +193,7 @@ class TaskResourceExtensions
     {
         $columns = [];
 
-        if (! Schema::hasTable('employees_employees')) {
+        if (! SchemaMemo::hasTable('employees_employees')) {
             return $columns;
         }
 
@@ -223,7 +223,7 @@ class TaskResourceExtensions
             ->toggleable()
             ->placeholder('—');
 
-        if (Schema::hasTable('projects_task_categories')) {
+        if (SchemaMemo::hasTable('projects_task_categories')) {
             $columns[] = TextColumn::make('category.name')
                 ->label(__('tasks.columns.category'))
                 ->badge()
@@ -232,7 +232,7 @@ class TaskResourceExtensions
                 ->placeholder('—');
         }
 
-        if (Schema::hasTable('employees_departments')) {
+        if (SchemaMemo::hasTable('employees_departments')) {
             $columns[] = TextColumn::make('department.name')
                 ->label(__('tasks.columns.department'))
                 ->toggleable()
@@ -274,7 +274,7 @@ class TaskResourceExtensions
             ->modalHeading(__('tasks.actions.archive'))
             ->modalDescription(__('tasks.actions.archive_confirm'))
             ->action(function (Task $record): void {
-                if (Schema::hasColumn('projects_tasks', 'completed_at')) {
+                if (SchemaMemo::hasColumn('projects_tasks', 'completed_at')) {
                     $record->forceFill([
                         'state'        => TaskState::DONE,
                         'completed_at' => now(),

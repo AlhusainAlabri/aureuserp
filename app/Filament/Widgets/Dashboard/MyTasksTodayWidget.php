@@ -6,11 +6,11 @@ use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\Dashboard\Concerns\BuildsEmptyTableQueries;
 use App\Services\Projects\UnifiedTaskQueryService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\Widget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Employee;
 use Webkul\TimeOff\Models\Leave;
 
@@ -58,11 +58,11 @@ class MyTasksTodayWidget extends BaseWidget
     /** @return Collection<int, Leave> */
     public function getSubstituteCoverages(): Collection
     {
-        if (! class_exists(Leave::class) || ! Schema::hasTable('time_off_leaves')) {
+        if (! class_exists(Leave::class) || ! SchemaMemo::hasTable('time_off_leaves')) {
             return collect();
         }
 
-        if (! Schema::hasColumn('time_off_leaves', 'substitute_employee_id')) {
+        if (! SchemaMemo::hasColumn('time_off_leaves', 'substitute_employee_id')) {
             return collect();
         }
 

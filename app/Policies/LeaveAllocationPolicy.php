@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\TimeOff\Models\LeaveAllocation;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LeaveAllocationPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, LeaveAllocation $leaveAllocation): bool
     {
         return $authUser->can('view_any_time_off_my::allocation');
@@ -41,4 +41,5 @@ class LeaveAllocationPolicy
     {
         return $authUser->can('delete_any_time_off_my::allocation');
     }
+
 }

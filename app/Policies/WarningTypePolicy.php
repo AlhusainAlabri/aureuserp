@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Employee\Models\WarningType;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WarningTypePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, WarningType $warningType): bool
     {
         return $authUser->can('view_any_employee_warning::type');
@@ -66,4 +66,5 @@ class WarningTypePolicy
     {
         return $authUser->can('reorder_employee_warning::type');
     }
+
 }

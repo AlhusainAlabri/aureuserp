@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Assets\Models\AssetBorrowing;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AssetBorrowingPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, AssetBorrowing $assetBorrowing): bool
     {
         return $authUser->can('view_any_filament_asset::borrowing');
@@ -66,4 +66,5 @@ class AssetBorrowingPolicy
     {
         return $authUser->can('reorder_filament_asset::borrowing');
     }
+
 }

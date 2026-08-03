@@ -11,10 +11,10 @@ use App\Listeners\Hr\NotifyLeaveSubstitute;
 use App\Mail\LeaveSubstituteRequestMail;
 use App\Models\Hr\EmployeeSalaryRaise;
 use App\Models\Hr\EmployeeTraining;
-use App\Providers\HrExtensionsServiceProvider;
 use App\Services\Hr\EmployeeDepartmentService;
 use App\Services\Hr\EmployeeFileClosureService;
 use App\Services\Hr\LeaveSubstituteService;
+use App\Support\ExtensionPermissionsSync;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -458,7 +458,7 @@ it('provides purchase list preset views by request type', function (): void {
 it('assigns hr file permissions to admin role on boot', function (): void {
     Role::query()->firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
 
-    app()->getProvider(HrExtensionsServiceProvider::class)->registerHrPermissions();
+    app(ExtensionPermissionsSync::class)->syncHr();
 
     $role = Role::query()->where('name', 'Admin')->first();
 

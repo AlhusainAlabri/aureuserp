@@ -30,6 +30,15 @@ class ShareDocumentAction
         return Action::make($name)
             ->label(__('document-archive::document-archive.actions.share'))
             ->icon('heroicon-o-share')
+            ->visible(function (array $arguments): bool {
+                $file = DocFile::query()->find($arguments['fileId'] ?? null);
+
+                if (! $file) {
+                    return false;
+                }
+
+                return auth()->user()?->can('share', $file) ?? false;
+            })
             ->schema(static::schema())
             ->action(function (array $data, array $arguments): void {
                 $file = DocFile::query()->find($arguments['fileId'] ?? null);
@@ -37,6 +46,8 @@ class ShareDocumentAction
                 if (! $file) {
                     return;
                 }
+
+                abort_unless(auth()->user()?->can('share', $file) ?? false, 403);
 
                 static::createShareLink($file, $data);
             });

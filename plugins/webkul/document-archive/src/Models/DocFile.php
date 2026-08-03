@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Number;
 use Webkul\DocumentArchive\Database\Factories\DocFileFactory;
+use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
@@ -97,6 +98,11 @@ class DocFile extends Model
     {
         return $query->whereNotNull('expiry_date')
             ->whereBetween('expiry_date', [now()->toDateString(), now()->addDays($days)->toDateString()]);
+    }
+
+    public function scopeWithTag(Builder $query, string $tagName): Builder
+    {
+        return $query->withAnyTag([$tagName]);
     }
 
     /**
@@ -308,6 +314,14 @@ class DocFile extends Model
             $file->creator_id ??= Auth::id();
             $file->company_id ??= Auth::user()?->default_company_id;
             $file->reference_number ??= static::nextReferenceNumber(now()->year);
+        });
+
+        static::saved(function (): void {
+            DocumentDashboardCache::flush();
+        });
+
+        static::deleted(function (): void {
+            DocumentDashboardCache::flush();
         });
     }
 

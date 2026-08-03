@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Invoice\Models\PaymentTerm;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PaymentTermPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, PaymentTerm $paymentTerm): bool
     {
         return $authUser->can('view_any_invoice_payment::term');
@@ -66,4 +66,5 @@ class PaymentTermPolicy
     {
         return $authUser->can('reorder_invoice_payment::term');
     }
+
 }

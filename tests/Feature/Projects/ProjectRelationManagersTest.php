@@ -3,12 +3,12 @@
 use App\Filament\RelationManagers\EnhancedProjectMeetingsRelationManager;
 use App\Filament\RelationManagers\ProjectDocumentsRelationManager;
 use Filament\Actions\Testing\TestAction;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
+use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Models\DocFolder;
 use Webkul\Meetings\Models\Meeting;
@@ -16,46 +16,13 @@ use Webkul\Project\Filament\Resources\ProjectResource\Pages\ViewProject;
 use Webkul\Project\Models\Project;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
-use Webkul\Support\Models\Currency;
 
 beforeEach(function (): void {
-    static $booted = false;
-
-    if (! $booted) {
-        foreach ([1, 2, 3] as $index) {
-            Currency::query()->firstOrCreate(
-                ['iso_numeric' => sprintf('%03d', $index)],
-                [
-                    'name'           => "Test Currency {$index}",
-                    'symbol'         => 'T',
-                    'decimal_places' => 2,
-                    'full_name'      => "Test Currency {$index}",
-                    'rounding'       => 0.01,
-                    'active'         => true,
-                ]
-            );
-        }
-
-        if (Company::query()->doesntExist()) {
-            Artisan::call('erp:install', [
-                '--force'          => true,
-                '--no-interaction' => true,
-                '--admin-name'     => 'Test Admin',
-                '--admin-email'    => 'admin@test.com',
-                '--admin-password' => 'password',
-            ]);
-        }
-
-        if (! Schema::hasTable('doc_folders')) {
-            Artisan::call('document-archive:install', ['--no-interaction' => true]);
-        }
-
-        if (! Schema::hasTable('meetings')) {
-            Artisan::call('meetings:install', ['--no-interaction' => true]);
-        }
-
-        $booted = true;
-    }
+    FeatureTestBootstrap::bootstrap([
+        'document-archive' => 'doc_folders',
+        'meetings'         => 'meetings',
+        'projects'         => 'projects_projects',
+    ]);
 });
 
 function projectRelationsUser(array $permissions = []): User

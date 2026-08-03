@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Manufacturing\Models\Lot;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LotPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Lot $lot): bool
     {
         return $authUser->can('view_any_manufacturing_lot');
@@ -41,4 +41,5 @@ class LotPolicy
     {
         return $authUser->can('delete_any_manufacturing_lot');
     }
+
 }

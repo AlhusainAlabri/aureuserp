@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\ProductQuantity;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProductQuantityPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, ProductQuantity $productQuantity): bool
     {
         return $authUser->can('view_any_inventory_quantity');
@@ -41,4 +41,5 @@ class ProductQuantityPolicy
     {
         return $authUser->can('delete_any_inventory_quantity');
     }
+
 }

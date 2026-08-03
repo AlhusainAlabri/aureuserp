@@ -13,12 +13,14 @@ use App\Services\Projects\UnifiedTaskQueryService;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use ReflectionClass;
 use Webkul\Account\Models\Move;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\Employee\Models\Department;
+use Webkul\PluginManager\Package;
 use Webkul\Project\Filament\Clusters\Configurations;
 use Webkul\Project\Filament\Clusters\Settings\Pages\ManageTasks as ProjectManageTasksSettings;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ListProjects as BaseListProjects;
@@ -140,9 +142,17 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
             return;
         }
 
+        if (! Package::isPluginInstalled('projects')) {
+            return;
+        }
+
         $panel = Filament::getCurrentPanel();
 
         if (! $panel || $panel->getId() !== 'admin') {
+            return;
+        }
+
+        if (! Route::has(ProjectManageTasksSettings::getRouteName($panel))) {
             return;
         }
 

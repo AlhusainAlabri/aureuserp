@@ -3,6 +3,7 @@
 namespace Webkul\DocumentArchive\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -144,6 +145,26 @@ class DocFolder extends Model
         }
 
         return $descendants;
+    }
+
+    public static function buildTree(): EloquentCollection
+    {
+        /** @var Collection<int|null, Collection<int, DocFolder>> $grouped */
+        $grouped = static::query()->ordered()->get()->groupBy('parent_id');
+
+        $build = function (?int $parentId) use (&$build, $grouped): EloquentCollection {
+            $nodes = ($grouped->get($parentId) ?? collect())
+                ->map(function (DocFolder $folder) use (&$build): DocFolder {
+                    $folder->setRelation('children', $build($folder->id));
+
+                    return $folder;
+                })
+                ->values();
+
+            return new EloquentCollection($nodes->all());
+        };
+
+        return $build(null);
     }
 
     public function canBeAccessedBy(?User $user): bool

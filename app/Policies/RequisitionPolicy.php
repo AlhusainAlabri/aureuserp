@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Purchase\Models\Requisition;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RequisitionPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Requisition $requisition): bool
     {
         return $authUser->can('view_any_purchase_purchase::agreement');
@@ -61,4 +61,5 @@ class RequisitionPolicy
     {
         return $authUser->can('force_delete_any_purchase_purchase::agreement');
     }
+
 }

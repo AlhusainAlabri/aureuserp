@@ -2,6 +2,7 @@
 
 namespace App\Filament\Extensions;
 
+use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
 use Carbon\Carbon;
 use Closure;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,8 @@ use Webkul\Support\Models\Currency;
 
 class AccountingResourceExtensions
 {
+    use OptimizesRepeaterSelects;
+
     public static function localizeForm(Schema $schema): Schema
     {
         static::walkComponents(
@@ -28,7 +31,7 @@ class AccountingResourceExtensions
             },
         );
 
-        return $schema;
+        return static::optimizeFormSelects($schema);
     }
 
     /**

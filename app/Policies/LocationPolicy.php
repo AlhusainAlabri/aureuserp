@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\Location;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LocationPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Location $location): bool
     {
         return $authUser->can('view_any_inventory_location');
@@ -61,4 +61,5 @@ class LocationPolicy
     {
         return $authUser->can('force_delete_any_inventory_location');
     }
+
 }

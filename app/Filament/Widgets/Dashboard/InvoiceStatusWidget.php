@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class InvoiceStatusWidget extends ChartWidget
 {
@@ -27,7 +27,7 @@ class InvoiceStatusWidget extends ChartWidget
     protected function getData(): array
     {
         try {
-            if (! Schema::hasTable('accounts_moves')) {
+            if (! SchemaMemo::hasTable('accounts_moves')) {
                 return [
                     'datasets' => [[
                         'data'            => [1],

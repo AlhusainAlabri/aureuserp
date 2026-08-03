@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\DocumentArchive\Models\DocFile;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DocFilePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, DocFile $docFile): bool
     {
         return $authUser->can('view_any_document_archive_doc::file');
@@ -51,4 +51,5 @@ class DocFilePolicy
     {
         return $authUser->can('share_document_archive_doc::file');
     }
+
 }

@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Department;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Models\Order;
@@ -30,7 +30,7 @@ class DeptSpendingChartWidget extends ChartWidget
     protected function getData(): array
     {
         try {
-            if (! Schema::hasTable('purchases_orders') || ! Schema::hasColumn('purchases_orders', 'requesting_department_id')) {
+            if (! SchemaMemo::hasTable('purchases_orders') || ! SchemaMemo::hasColumn('purchases_orders', 'requesting_department_id')) {
                 return [
                     'datasets' => [[
                         'data'            => [1],

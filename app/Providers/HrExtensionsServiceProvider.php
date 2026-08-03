@@ -9,14 +9,10 @@ use App\Models\Hr\EmployeeSelfAssessment;
 use App\Models\Hr\EmployeeTraining;
 use App\Observers\EmployeeDepartmentObserver;
 use App\Services\Hr\HrExtensionSchemaService;
-use App\Support\PermissionTables;
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\Employee;
 use Webkul\Employee\Models\EmployeeSubmission;
@@ -48,11 +44,12 @@ class HrExtensionsServiceProvider extends ServiceProvider
             return;
         }
 
-        app(HrExtensionSchemaService::class)->ensure();
+        if (! $this->app->isProduction()) {
+            app(HrExtensionSchemaService::class)->ensure();
+        }
 
         $this->registerEmployeeRelations();
         Employee::observe(EmployeeDepartmentObserver::class);
-        $this->registerHrPermissions();
 
         if (class_exists(Leave::class)) {
             Leave::resolveRelationUsing('substituteEmployee', fn (Leave $leave) => $leave->belongsTo(Employee::class, 'substitute_employee_id'));
@@ -88,47 +85,8 @@ class HrExtensionsServiceProvider extends ServiceProvider
         Employee::resolveRelationUsing('closedBy', fn (Employee $employee) => $employee->belongsTo(User::class, 'closed_by'));
         Employee::resolveRelationUsing('reopenedBy', fn (Employee $employee) => $employee->belongsTo(User::class, 'reopened_by'));
 
-        if (class_exists(Payslip::class) && Schema::hasTable('payroll_payslips')) {
+        if (class_exists(Payslip::class) && SchemaMemo::hasTable('payroll_payslips')) {
             Employee::resolveRelationUsing('payslips', fn (Employee $employee) => $employee->hasMany(Payslip::class, 'employee_id'));
         }
-    }
-
-    public function registerHrPermissions(): void
-    {
-        if (! class_exists(Role::class) || ! PermissionTables::areReady()) {
-            return;
-        }
-
-        $permissions = [
-            'close_employee_file',
-            'reopen_employee_file',
-            'review_self_assessment',
-            'view_any_self_assessment',
-        ];
-
-        foreach ($permissions as $permission) {
-            Permission::query()->firstOrCreate([
-                'name'       => $permission,
-                'guard_name' => 'web',
-            ]);
-        }
-
-        foreach (['Admin', 'hr_manager', 'super_admin'] as $roleName) {
-            $role = Role::query()->where('name', $roleName)->first();
-
-            if ($role) {
-                $role->givePermissionTo(['close_employee_file', 'reopen_employee_file', 'review_self_assessment', 'view_any_self_assessment']);
-            }
-        }
-
-        foreach (['manager', 'department_manager'] as $roleName) {
-            $role = Role::query()->where('name', $roleName)->first();
-
-            if ($role) {
-                $role->givePermissionTo(['review_self_assessment']);
-            }
-        }
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

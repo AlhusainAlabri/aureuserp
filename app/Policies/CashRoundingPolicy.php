@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Accounting\Models\CashRounding;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CashRoundingPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, CashRounding $cashRounding): bool
     {
         return $authUser->can('view_any_accounting_cash::rounding');
@@ -41,4 +41,5 @@ class CashRoundingPolicy
     {
         return $authUser->can('delete_any_accounting_cash::rounding');
     }
+
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Sale\Models\OrderToInvoice;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrderToInvoicePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, OrderToInvoice $orderToInvoice): bool
     {
         return $authUser->can('view_any_sale_order::to::invoice');
@@ -61,4 +61,5 @@ class OrderToInvoicePolicy
     {
         return $authUser->can('force_delete_any_sale_order::to::invoice');
     }
+
 }

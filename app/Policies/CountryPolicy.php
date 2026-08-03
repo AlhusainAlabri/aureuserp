@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Support\Models\Country;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CountryPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Country $country): bool
     {
         return $authUser->can('view_any_support_country');
@@ -41,4 +41,5 @@ class CountryPolicy
     {
         return $authUser->can('delete_any_support_country');
     }
+
 }

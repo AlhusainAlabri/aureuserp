@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Support\Models\UOMCategory;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UOMCategoryPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, UOMCategory $uOMCategory): bool
     {
         return $authUser->can('view_any_support_u::o::m::category');
@@ -41,4 +41,5 @@ class UOMCategoryPolicy
     {
         return $authUser->can('delete_any_support_u::o::m::category');
     }
+
 }

@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Filament\Widgets\Dashboard\Concerns\HasOrgDashboardChartLayout;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class RecruitmentPipelineChartWidget extends ChartWidget
 {
@@ -28,7 +28,7 @@ class RecruitmentPipelineChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('recruitments_applicants') || ! Schema::hasTable('recruitments_stages')) {
+        if (! SchemaMemo::hasTable('recruitments_applicants') || ! SchemaMemo::hasTable('recruitments_stages')) {
             return $this->emptyPluginData();
         }
 

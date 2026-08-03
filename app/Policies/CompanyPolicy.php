@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Support\Models\Company;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CompanyPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Company $company): bool
     {
         return $authUser->can('view_any_support_company');
@@ -66,4 +66,5 @@ class CompanyPolicy
     {
         return $authUser->can('reorder_support_company');
     }
+
 }

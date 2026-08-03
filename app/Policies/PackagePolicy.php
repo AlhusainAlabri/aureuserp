@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\Package;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PackagePolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Package $package): bool
     {
         return $authUser->can('view_any_inventory_package');
@@ -41,4 +41,5 @@ class PackagePolicy
     {
         return $authUser->can('delete_any_inventory_package');
     }
+
 }

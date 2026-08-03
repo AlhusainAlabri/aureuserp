@@ -2,12 +2,16 @@
 
 namespace Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
 use Webkul\DocumentArchive\Models\DocFile;
+use Webkul\DocumentArchive\Support\FilamentUrl;
 
 class ListDocFiles extends ListRecords
 {
@@ -16,8 +20,23 @@ class ListDocFiles extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('openManager')
+                ->label(__('document-archive::document-archive.manager.open_manager'))
+                ->icon('heroicon-o-folder-open')
+                ->url(DocumentManager::getUrl(FilamentUrl::withLocale()))
+                ->color('gray'),
             CreateAction::make(),
         ];
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('document-archive::document-archive.files.page_title');
+    }
+
+    public function getSubheading(): ?string
+    {
+        return __('document-archive::document-archive.manager.advanced_list_banner');
     }
 
     public function getDefaultActiveTab(): string|int|null

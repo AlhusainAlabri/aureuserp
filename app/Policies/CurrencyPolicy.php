@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Support\Models\Currency;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CurrencyPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser, Currency $currency): bool
     {
         return $authUser->can('view_any_support_currency');
@@ -41,4 +41,5 @@ class CurrencyPolicy
     {
         return $authUser->can('delete_any_support_currency');
     }
+
 }
