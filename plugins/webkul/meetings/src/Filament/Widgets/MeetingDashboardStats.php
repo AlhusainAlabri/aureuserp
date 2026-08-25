@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
 use Webkul\Meetings\Filament\Widgets\Concerns\InteractsWithMeetingDashboardFilters;
-use Webkul\Meetings\Models\Meeting;
 use Webkul\Meetings\Models\MeetingTask;
 
 class MeetingDashboardStats extends BaseWidget
@@ -87,7 +86,7 @@ class MeetingDashboardStats extends BaseWidget
                 label: __('meetings::meetings.dashboard.stats.this_week'),
                 value: $meetings->clone()->whereBetween('meeting_date', [now(), now()->addDays(7)])->count(),
                 description: __('meetings::meetings.dashboard.stats.next', [
-                    'title' => str($nextMeeting?->title ?? '-')->limit(20),
+                    'title' => str($nextMeeting?->title ?? __('meetings::meetings.common.none'))->limit(20),
                 ]),
                 descriptionIcon: 'heroicon-m-calendar-days',
                 color: 'success',
@@ -150,7 +149,9 @@ class MeetingDashboardStats extends BaseWidget
 
         if ($previous === 0) {
             return [
-                'description' => __('meetings::meetings.dashboard.stats.vs_last_month', ['change' => '—']),
+                'description' => __('meetings::meetings.dashboard.stats.vs_last_month', [
+                    'change' => __('meetings::meetings.common.no_change'),
+                ]),
                 'icon'        => 'heroicon-m-minus',
             ];
         }
@@ -194,9 +195,6 @@ class MeetingDashboardStats extends BaseWidget
 
     protected function pendingApprovalsQuery(): Builder
     {
-        return Meeting::query()
-            ->whereHas('approvals.stepInstances', fn (Builder $query): Builder => $query
-                ->where('status', 'waiting')
-                ->whereJsonContains('assigned_approver_ids', auth()->id()));
+        return $this->pendingApprovalsForUserQuery();
     }
 }

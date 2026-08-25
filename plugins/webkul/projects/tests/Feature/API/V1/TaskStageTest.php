@@ -1,5 +1,6 @@
 <?php
 
+use Webkul\Project\Models\Project;
 use Webkul\Project\Models\TaskStage;
 use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
@@ -48,11 +49,15 @@ it('forbids listing task stages without permission', function () {
 it('lists task stages for authorized users', function () {
     actingAsTaskStageApiUser(['view_any_project_task::stage']);
 
-    TaskStage::factory()->count(2)->create();
+    $project = Project::factory()->create();
 
-    $this->getJson(taskStageRoute('index'))
+    TaskStage::factory()->count(2)->create([
+        'project_id' => $project->id,
+    ]);
+
+    $this->getJson(taskStageRoute('index').'?filter[project_id]='.$project->id)
         ->assertOk()
-        ->assertJsonCount(2, 'data');
+        ->assertJsonCount(6, 'data');
 });
 
 it('creates a task stage with valid payload', function () {

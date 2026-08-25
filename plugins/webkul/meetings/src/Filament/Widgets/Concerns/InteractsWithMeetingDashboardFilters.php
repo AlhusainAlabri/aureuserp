@@ -4,6 +4,7 @@ namespace Webkul\Meetings\Filament\Widgets\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
+use Webkul\Meetings\Models\Meeting;
 
 trait InteractsWithMeetingDashboardFilters
 {
@@ -59,5 +60,17 @@ trait InteractsWithMeetingDashboardFilters
         return $query
             ->when(filled($startDate), fn (Builder $builder): Builder => $builder->whereDate('due_date', '>=', $startDate))
             ->when(filled($endDate), fn (Builder $builder): Builder => $builder->whereDate('due_date', '<=', $endDate));
+    }
+
+    protected function pendingApprovalsForUserQuery(): Builder
+    {
+        if (! Schema::hasTable('meetings') || ! Schema::hasTable('approvals')) {
+            return Meeting::query()->whereRaw('1 = 0');
+        }
+
+        return Meeting::query()
+            ->whereHas('approvals.stepInstances', fn (Builder $query): Builder => $query
+                ->where('status', 'waiting')
+                ->whereJsonContains('assigned_approver_ids', auth()->id()));
     }
 }

@@ -13,6 +13,7 @@ use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
 use Webkul\Meetings\Filament\Widgets\Concerns\InteractsWithMeetingDashboardFilters;
 use Webkul\Meetings\Models\Meeting;
+use Webkul\Meetings\Support\MeetingDateFormatter;
 
 class UpcomingMeetingsTable extends TableWidget
 {
@@ -51,7 +52,7 @@ class UpcomingMeetingsTable extends TableWidget
                     ->wrap(),
                 TextColumn::make('meeting_date')
                     ->label(__('meetings::meetings.fields.meeting_date'))
-                    ->formatStateUsing(fn ($state, Meeting $record): string => $record->meeting_date?->translatedFormat('l، d F Y - h:i A') ?? '-'),
+                    ->formatStateUsing(fn ($state, Meeting $record): string => MeetingDateFormatter::formatDateTime($record->meeting_date)),
                 TextColumn::make('status')
                     ->label(__('meetings::meetings.fields.status'))
                     ->formatStateUsing(fn (?string $state): string => MeetingResource::statusOptions()[$state] ?? (string) $state)

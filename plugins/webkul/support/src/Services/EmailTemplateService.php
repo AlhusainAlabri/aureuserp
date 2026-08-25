@@ -11,64 +11,106 @@ use Webkul\Support\Models\EmailTemplate;
 
 class EmailTemplateService
 {
-    public function getTemplate(string $templateCode, string $locale = 'en')
+    public function getTemplate(string $templateCode, string $locale = 'en'): EmailTemplate
     {
-        return EmailTemplate::where('code', $templateCode)
+        return EmailTemplate::query()
+            ->where('code', $templateCode)
             ->where('is_active', true)
             ->firstOrFail();
     }
 
+    /**
+     * @param  array<string, mixed>  $variables
+     */
     public function replaceVariables(string $content, array $variables): string
     {
-        return preg_replace_callback('/\{\{(.*?)\}\}/', function ($matches) use ($variables) {
+        return preg_replace_callback('/\{\{(.*?)\}\}/', function (array $matches) use ($variables): string {
             $key = trim($matches[1]);
 
             return $variables[$key] ?? $matches[0];
         }, $content);
     }
 
-    public function composeEmail(string $templateCode, array $variables = [], string $locale = 'en')
+    /**
+     * @param  array<string, mixed>  $variables
+     * @return array<string, mixed>
+     */
+    public function composeEmail(string $templateCode, array $variables = [], string $locale = 'en'): array
     {
         $template = $this->getTemplate($templateCode, $locale);
 
-        $composedEmail = [
+        return [
             'body'    => $this->replaceVariables($template->content, $variables),
             'subject' => $this->replaceVariables($template->subject, $variables),
             'layout'  => $template->layout,
             ...$variables,
         ];
-
-        return $composedEmail;
     }
 
-    public function send(string $templateCode, string $recipientEmail, string $recipientName, array $variables = [], string $locale = 'en', array $attachments = [])
-    {
+    /**
+     * @param  array<string, mixed>  $variables
+     * @param  array<int, array<string, mixed>>  $attachments
+     */
+    public function send(
+        string $templateCode,
+        string $recipientEmail,
+        string $recipientName,
+        array $variables = [],
+        string $locale = 'en',
+        array $attachments = [],
+    ): bool {
         $emailData = $this->composeEmail($templateCode, $variables, $locale);
-
         $template = $this->getTemplate($templateCode, $locale);
 
         try {
             Mail::to($recipientEmail, $recipientName)
-                ->send((new DynamicEmail($emailData, Auth::user()))->withAttachments($attachments));
+                ->queue((new DynamicEmail($emailData, Auth::user()))->withAttachments($attachments));
 
-            $this->logEmail($template->id, $recipientEmail, $recipientName, $emailData['subject'], $variables, 'sent');
+            $this->logEmail(
+                templateId: $template->id,
+                recipientEmail: $recipientEmail,
+                recipientName: $recipientName,
+                subject: $emailData['subject'],
+                variables: $variables,
+                status: 'queued',
+                mailClass: DynamicEmail::class,
+            );
 
             return true;
-        } catch (Exception $e) {
-            $this->logEmail($template->id, $recipientEmail, $recipientName, $emailData['subject'] ?? '', $variables, 'failed', $e->getMessage());
+        } catch (Exception $exception) {
+            $this->logEmail(
+                templateId: $template->id,
+                recipientEmail: $recipientEmail,
+                recipientName: $recipientName,
+                subject: $emailData['subject'] ?? '',
+                variables: $variables,
+                status: 'failed',
+                errorMessage: $exception->getMessage(),
+                mailClass: DynamicEmail::class,
+            );
 
-            throw $e;
+            throw $exception;
         }
     }
 
-    protected function logEmail(int $templateId, string $recipientEmail, string $recipientName, string $subject, array $variables, string $status, ?string $errorMessage = null)
-    {
+    protected function logEmail(
+        int $templateId,
+        string $recipientEmail,
+        string $recipientName,
+        string $subject,
+        array $variables,
+        string $status,
+        ?string $errorMessage = null,
+        ?string $mailClass = null,
+    ): void {
         EmailLog::create([
             'email_template_id' => $templateId,
             'recipient_email'   => $recipientEmail,
             'recipient_name'    => $recipientName,
             'subject'           => $subject,
             'variables'         => $variables,
+            'sender_user_id'    => Auth::id(),
+            'mail_class'        => $mailClass,
             'status'            => $status,
             'error_message'     => $errorMessage,
             'sent_at'           => now(),

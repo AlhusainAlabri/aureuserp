@@ -22,7 +22,7 @@
                                     <p class="text-xs text-gray-500 font-mono">{{ $payslip->reference_number }}</p>
                                     <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
                                         {{ __('payroll::payroll.my_payslips.period') }}:
-                                        {{ sprintf('%02d/%d', $payslip->period_month, $payslip->period_year) }}
+                                        {{ $this->formatPeriod($payslip) }}
                                     </h3>
                                 </div>
                                 <x-filament::badge :color="$payslip->status->getColor()">

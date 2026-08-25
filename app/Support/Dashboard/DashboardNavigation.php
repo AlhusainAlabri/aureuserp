@@ -2,15 +2,21 @@
 
 namespace App\Support\Dashboard;
 
+use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Filament\Projects\Pages\TaskOperationsHub;
 use App\Support\FilamentUrl;
 use App\Support\SchemaMemo;
+use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
+use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource as CustomerInvoiceResource;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\Payroll\Filament\Resources\PayrollBatchResource;
 use Webkul\PluginManager\Package;
 use Webkul\Project\Filament\Resources\ProjectResource;
 use Webkul\Project\Filament\Resources\TaskResource;
+use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource;
+use Wezlo\FilamentApproval\Resources\ApprovalFlowResource;
 
 class DashboardNavigation
 {
@@ -33,6 +39,67 @@ class DashboardNavigation
 
         return FilamentUrl::appendLocaleToUrl(
             CorrespondenceResource::getUrl('index'),
+        );
+    }
+
+    public static function purchaseOrderApprovalsUrl(): ?string
+    {
+        if (! class_exists(PurchaseOrderResource::class) || ! SchemaMemo::hasTable('purchases_orders')) {
+            return null;
+        }
+
+        return FilamentUrl::appendLocaleToUrl(
+            PurchaseOrderResource::getUrl('index'),
+        );
+    }
+
+    public static function invoiceApprovalsUrl(): ?string
+    {
+        if (class_exists(CustomerInvoiceResource::class)) {
+            return FilamentUrl::appendLocaleToUrl(
+                CustomerInvoiceResource::getUrl('index'),
+            );
+        }
+
+        if (class_exists(InvoiceResource::class)) {
+            return FilamentUrl::appendLocaleToUrl(
+                InvoiceResource::getUrl('index'),
+            );
+        }
+
+        return null;
+    }
+
+    public static function payrollBatchApprovalsUrl(): ?string
+    {
+        if (! class_exists(PayrollBatchResource::class) || ! SchemaMemo::hasTable('payroll_batches')) {
+            return null;
+        }
+
+        return FilamentUrl::appendLocaleToUrl(
+            PayrollBatchResource::getUrl('index'),
+        );
+    }
+
+    public static function assetBorrowingApprovalsUrl(): ?string
+    {
+        if (! SchemaMemo::hasTable('asset_borrowings') || ! class_exists(PendingBorrowingRequests::class)) {
+            return null;
+        }
+
+        return FilamentUrl::appendLocaleToUrl(
+            PendingBorrowingRequests::getUrl(),
+        );
+    }
+
+    public static function approvalFlowsUrl(): ?string
+    {
+        if (! class_exists(ApprovalFlowResource::class) || ! SchemaMemo::hasTable('approval_flows')) {
+            return null;
+        }
+
+        return FilamentUrl::appendLocaleToUrl(
+            ApprovalFlowResource::getUrl('index'),
         );
     }
 

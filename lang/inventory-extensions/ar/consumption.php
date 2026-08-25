@@ -14,9 +14,10 @@ return [
         'source_location' => 'موقع المصدر',
     ],
     'notifications' => [
-        'recorded'      => 'تم تسجيل الاستهلاك',
-        'recorded_body' => 'تم إنشاء التحويل الداخلي :name.',
-        'failed'        => 'تعذّر إكمال التحويل',
+        'recorded'       => 'تم تسجيل الاستهلاك',
+        'recorded_body'  => 'تم إنشاء التحويل الداخلي :name.',
+        'view_operation' => 'عرض التحويل',
+        'failed'         => 'تعذّر إكمال التحويل',
     ],
     'plugin_missing'    => 'وحدة المخزون غير مثبتة.',
     'no_operation_type' => 'لم يتم تكوين نوع عملية التحويل الداخلي.',

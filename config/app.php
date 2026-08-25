@@ -121,7 +121,7 @@ return [
     | Here you may specify the base currency code for your application.
     |
     */
-    'currency' => env('APP_CURRENCY', 'USD'),
+    'currency' => env('APP_CURRENCY', 'OMR'),
 
     /*
     |--------------------------------------------------------------------------

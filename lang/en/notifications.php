@@ -1,0 +1,80 @@
+<?php
+
+return [
+    'categories' => [
+        'tasks'                   => 'Tasks & Projects',
+        'tasks_description'       => 'Task assignments, status changes, and deadline reminders.',
+        'assets'                  => 'Assets & Borrowing',
+        'assets_description'      => 'Borrowing requests, approvals, due dates, and overdue alerts.',
+        'hr'                      => 'Human Resources',
+        'hr_description'          => 'Leave requests, substitute assignments, and HR alerts.',
+        'inventory'               => 'Inventory',
+        'inventory_description'   => 'Low stock alerts and inventory notifications.',
+        'notes'                   => 'My Notes',
+        'notes_description'       => 'Note reminders and due alerts.',
+        'approvals'               => 'Approvals',
+        'approvals_description'   => 'Approval workflow requests and decisions (required).',
+        'accounting'              => 'Accounting',
+        'accounting_description'  => 'Invoice and finance alerts.',
+    ],
+
+    'preferences' => [
+        'navigation'               => 'Notification Preferences',
+        'title'                    => 'Notification Preferences',
+        'heading'                  => 'Manage your notifications',
+        'subheading'               => 'Choose how you receive alerts for each category.',
+        'database'                 => 'In-app notifications',
+        'email'                    => 'Email notifications',
+        'task_offsets'             => 'Task deadline reminders',
+        'task_offsets_description' => 'Choose when to receive reminders before task deadlines.',
+        'offsets'                  => [
+            'same_day'   => 'On the due date',
+            'one_day'    => '1 day before',
+            'three_days' => '3 days before',
+            'seven_days' => '7 days before',
+        ],
+        'actions' => [
+            'save' => 'Save preferences',
+        ],
+        'saved' => [
+            'title' => 'Preferences saved',
+            'body'  => 'Your notification settings have been updated.',
+        ],
+    ],
+
+    'operations' => [
+        'alerts' => [
+            'failed_jobs'   => ':count failed queue job(s) in the reporting window (threshold: :threshold).',
+            'failed_emails' => 'Email failure rate is :rate% (threshold: :threshold%).',
+            'queue_backlog' => 'Queue backlog is :count pending job(s) (threshold: :threshold).',
+        ],
+        'report' => [
+            'heading'                   => 'Notification operations report (:from → :to)',
+            'metric'                    => 'Metric',
+            'value'                     => 'Value',
+            'email_queued'              => 'Emails queued',
+            'email_sent'                => 'Emails sent',
+            'email_failed'              => 'Emails failed',
+            'email_failure_rate'        => 'Email failure rate',
+            'failed_jobs_period'        => 'Failed jobs (period)',
+            'failed_jobs_unresolved'    => 'Failed jobs (unresolved)',
+            'queue_pending'             => 'Pending queue jobs',
+            'database_notifications'    => 'In-app notifications created',
+            'alerts_heading'            => 'Alerts',
+            'healthy'                   => 'All notification thresholds are within limits.',
+            'dry_run'                   => 'Dry run complete — no email sent.',
+            'no_recipients'             => 'NOTIFICATION_OPS_EMAIL is not configured — skipped email report.',
+            'sent'                      => 'Report queued to :count recipient(s).',
+            'mail'                      => [
+                'subject_ok'       => 'Daily notification report — all clear',
+                'subject_alert'    => 'Daily notification report — action required',
+                'heading_ok'       => 'Notification systems healthy',
+                'heading_alert'    => 'Notification systems need attention',
+                'period'           => 'Reporting window: :from → :to',
+                'email_section'    => 'Email delivery',
+                'queue_section'    => 'Queue & in-app activity',
+                'recent_failures'  => 'Recent failed jobs',
+            ],
+        ],
+    ],
+];

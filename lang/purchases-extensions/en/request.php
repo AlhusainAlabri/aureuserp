@@ -64,6 +64,44 @@ return [
         'technical_support' => 'Tech support',
         'office_supplies'   => 'Office supplies',
         'maintenance'       => 'Maintenance',
+        'other'             => 'Other',
+    ],
+    'vendor_email' => [
+        'rfq' => [
+            'subject' => 'Request for Quotation #:reference',
+            'body'    => <<<'MD'
+Dear **:vendor**
+
+Here is in attachment a request for quotation **:reference**.
+
+If you have any questions, please do not hesitate to contact us.
+
+[Accept](:accept_url) | [Decline](:decline_url)
+
+Best regards,
+
+--
+:sender
+MD,
+        ],
+        'po' => [
+            'subject'          => 'Purchase Order #:reference',
+            'no_planned_date'  => 'to be confirmed',
+            'body'             => <<<'MD'
+Dear **:vendor**
+
+Here is in attachment a purchase order **:reference** amounting to **:amount**.
+
+The receipt is expected for **:planned_at**.
+
+Could you please acknowledge the receipt of this order?
+
+Best regards,
+
+--
+:sender
+MD,
+        ],
     ],
     'currency' => [
         'format' => 'OMR :amount',

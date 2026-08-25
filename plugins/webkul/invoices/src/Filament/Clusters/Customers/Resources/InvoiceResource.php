@@ -2,6 +2,7 @@
 
 namespace Webkul\Invoice\Filament\Clusters\Customers\Resources;
 
+use App\Filament\Infolists\ApprovalStatusSection;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Utilities\Get;
@@ -19,7 +20,6 @@ use Webkul\Invoice\Models\Invoice;
 use Webkul\Security\Traits\HasResourcePermissionQuery;
 use Webkul\Support\Filament\Forms\Components\Repeater;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class InvoiceResource extends BaseInvoiceResource

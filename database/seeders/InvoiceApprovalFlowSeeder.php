@@ -6,39 +6,65 @@ use Illuminate\Database\Seeder;
 use Webkul\Invoice\Models\Invoice;
 use Wezlo\FilamentApproval\ApproverResolvers\RoleResolver;
 use Wezlo\FilamentApproval\Models\ApprovalFlow;
+use Wezlo\FilamentApproval\Models\ApprovalStep;
 
 class InvoiceApprovalFlowSeeder extends Seeder
 {
     public function run(): void
     {
-        $morphClass = (new Invoice)->getMorphClass();
+        $models = array_filter([
+            class_exists(Invoice::class) ? Invoice::class : null,
+            class_exists(\Webkul\Accounting\Models\Invoice::class) ? \Webkul\Accounting\Models\Invoice::class : null,
+        ]);
 
-        if (ApprovalFlow::where('approvable_type', $morphClass)->exists()) {
-            return;
+        foreach ($models as $modelClass) {
+            $this->seedFlowForModel($modelClass);
         }
+    }
 
-        $flow = ApprovalFlow::create([
-            'name'            => 'Invoice Approval Flow',
-            'description'     => '3-step sequential approval flow for customer invoices.',
-            'approvable_type' => $morphClass,
-            'is_active'       => true,
+    protected function seedFlowForModel(string $modelClass): void
+    {
+        $morphClass = (new $modelClass)->getMorphClass();
+
+        $flow = ApprovalFlow::firstOrCreate(
+            ['approvable_type' => $morphClass],
+            [
+                'name'        => __('invoices-extensions::approval.flow_name'),
+                'description' => __('invoices-extensions::approval.flow_description'),
+                'is_active'   => true,
+            ]
+        );
+
+        $flow->update([
+            'name'        => __('invoices-extensions::approval.flow_name'),
+            'description' => __('invoices-extensions::approval.flow_description'),
+            'is_active'   => true,
         ]);
 
         $steps = [
-            ['order' => 1, 'name' => 'Accountant Review',    'role' => 'accountant'],
-            ['order' => 2, 'name' => 'Finance Manager Review', 'role' => 'finance_manager'],
-            ['order' => 3, 'name' => 'CFO Approval',          'role' => 'cfo'],
+            ['order' => 1, 'name' => __('invoices-extensions::approval.steps.manager'), 'role' => 'manager'],
+            ['order' => 2, 'name' => __('invoices-extensions::approval.steps.finance_manager'), 'role' => 'finance_manager'],
+            ['order' => 3, 'name' => __('invoices-extensions::approval.steps.general_manager'), 'role' => 'general_manager'],
         ];
 
         foreach ($steps as $step) {
-            $flow->steps()->create([
-                'name'               => $step['name'],
-                'order'              => $step['order'],
-                'type'               => 'single',
-                'approver_resolver'  => RoleResolver::class,
-                'approver_config'    => ['role' => $step['role']],
-                'required_approvals' => 1,
-            ]);
+            ApprovalStep::updateOrCreate(
+                [
+                    'approval_flow_id' => $flow->id,
+                    'order'            => $step['order'],
+                ],
+                [
+                    'name'               => $step['name'],
+                    'type'               => 'single',
+                    'approver_resolver'  => RoleResolver::class,
+                    'approver_config'    => ['role' => $step['role']],
+                    'required_approvals' => 1,
+                ]
+            );
         }
+
+        $flow->steps()
+            ->where('order', '>', count($steps))
+            ->delete();
     }
 }

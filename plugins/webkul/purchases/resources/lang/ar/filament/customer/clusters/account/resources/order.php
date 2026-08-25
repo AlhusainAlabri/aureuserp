@@ -10,6 +10,18 @@ return [
         ],
     ],
 
+    'products' => [
+        'columns' => [
+            'product'          => 'المنتج',
+            'quantity'         => 'الكمية',
+            'quantity_units'   => ':count وحدة',
+            'unit_price'       => 'سعر الوحدة',
+            'taxes'            => 'الضرائب',
+            'discount'         => 'الخصم %',
+            'amount'           => 'المبلغ',
+        ],
+    ],
+
     'infolist' => [
         'settings' => [
             'entries' => [

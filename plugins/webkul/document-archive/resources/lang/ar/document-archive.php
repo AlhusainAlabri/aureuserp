@@ -155,6 +155,7 @@ return [
             'files_count'       => 'الملفات',
             'storage'           => 'التخزين (بايت)',
             'empty'             => 'لا توجد بيانات بعد',
+            'empty_label'       => 'لا توجد بيانات',
             'largest_folder'    => 'أكبر مجلد: :size',
         ],
     ],

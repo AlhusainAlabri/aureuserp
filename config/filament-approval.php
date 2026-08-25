@@ -66,6 +66,7 @@ return [
     |--------------------------------------------------------------------------
     | Navigation Group
     |--------------------------------------------------------------------------
+    | Must match the Filament panel navigation group key (see AdminPanelProvider).
     */
     'navigation_group' => 'Approvals',
 

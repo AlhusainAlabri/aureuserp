@@ -4,22 +4,109 @@
     <meta charset="UTF-8">
     <title>{{ __('projects-extensions::reports.title') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #1F2937; direction: {{ $is_rtl ? 'rtl' : 'ltr' }}; }
-        .header { background: #EA580C; color: #fff; padding: 16px; border-radius: 6px; margin-bottom: 16px; }
-        .header h1 { margin: 0 0 6px; font-size: 20px; }
-        .meta { font-size: 11px; opacity: 0.9; }
-        .section { margin-bottom: 14px; border: 1px solid #E5E7EB; border-radius: 6px; padding: 12px; }
-        .section h2 { margin: 0 0 8px; font-size: 14px; color: #111827; }
-        .grid { width: 100%; border-collapse: collapse; }
-        .grid td { padding: 6px 8px; border-bottom: 1px solid #F3F4F6; }
-        .label { color: #6B7280; width: 45%; }
-        .value { font-weight: bold; }
-        .footer { margin-top: 20px; font-size: 10px; color: #9CA3AF; text-align: center; }
+        @font-face {
+            font-family: 'Cairo';
+            src: local('Cairo');
+        }
+
+        body {
+            font-family: {{ $is_rtl ? "'Cairo', 'Amiri', sans-serif" : "'DejaVu Sans', sans-serif" }};
+            font-size: 12px;
+            color: #1F2937;
+            direction: {{ $is_rtl ? 'rtl' : 'ltr' }};
+            margin: 24px 24px 48px;
+        }
+
+        .header {
+            background: #EA580C;
+            color: #fff;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .header-top {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .header-logo,
+        .header-title {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .header-logo img {
+            max-height: 48px;
+            max-width: 120px;
+        }
+
+        .header h1 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+
+        .meta {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin-bottom: 14px;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .section h2 {
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #111827;
+        }
+
+        .grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grid td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .label {
+            color: #6B7280;
+            width: 45%;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 16px;
+            left: 24px;
+            right: 24px;
+            font-size: 10px;
+            color: #9CA3AF;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>{{ $project->name }}</h1>
+        <div class="header-top">
+            @if ($logo_src)
+                <div class="header-logo">
+                    <img src="{{ $logo_src }}" alt="{{ config('app.name') }}">
+                </div>
+            @endif
+            <div class="header-title">
+                <h1>{{ $project->name }}</h1>
+            </div>
+        </div>
         <div class="meta">{{ __('projects-extensions::reports.title') }}</div>
         <div class="meta">{{ __('projects-extensions::reports.generated_at') }}: {{ $generated_at }}</div>
         <div class="meta">{{ __('projects-extensions::reports.period') }}: {{ $period }}</div>
@@ -82,7 +169,7 @@
                 @foreach ($upcoming_milestones as $milestone)
                     <tr>
                         <td class="label">{{ $milestone->name }}</td>
-                        <td class="value">{{ $milestone->deadline?->format('d M Y') }}</td>
+                        <td class="value">{{ $milestone->deadline?->locale(app()->getLocale())->translatedFormat('d M Y') }}</td>
                     </tr>
                 @endforeach
             </table>
@@ -90,5 +177,24 @@
     @endif
 
     <div class="footer">{{ $project->name }} · {{ $generated_at }}</div>
+
+    @php
+        $pageFooterTemplate = __('projects-extensions::reports.page_footer', [
+            'page' => '{PAGE_NUM}',
+            'total' => '{PAGE_COUNT}',
+        ]);
+    @endphp
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $font = $fontMetrics->getFont('DejaVu Sans');
+            $size = 9;
+            $pageText = @json($pageFooterTemplate);
+            $width = $fontMetrics->getTextWidth($pageText, $font, $size);
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 24;
+            $pdf->page_text($x, $y, $pageText, $font, $size, [0.45, 0.45, 0.45]);
+        }
+    </script>
 </body>
 </html>

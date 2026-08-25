@@ -1,6 +1,12 @@
 <?php
 
 use App\Filament\Assets\Pages\AssetsDashboard;
+use App\Filament\Assets\Widgets\AssetOverviewStatsWidget;
+use App\Filament\Assets\Widgets\AssetsByCategoryChartWidget;
+use App\Filament\Assets\Widgets\DueSoonBorrowingsWidget;
+use App\Filament\Assets\Widgets\OverdueBorrowingsWidget;
+use App\Filament\Assets\Widgets\RecentBorrowingsWidget;
+use App\Filament\Widgets\Dashboard\AssetsSummaryWidget;
 use App\Support\FilamentUrl;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -34,7 +40,8 @@ it('shows overview stats widget on the assets dashboard', function (): void {
     Livewire::test(AssetsDashboard::class)
         ->assertSee(__('assets::assets.widgets.stats.available'))
         ->assertSee(__('assets::assets.widgets.stats.borrowed'))
-        ->assertSee(__('assets::assets.widgets.stats.overdue'));
+        ->assertSee(__('assets::assets.widgets.stats.overdue'))
+        ->assertSee(__('assets-extensions::dashboard.pending_requests'));
 });
 
 it('shows dashboard section headings in the current locale', function (): void {
@@ -43,7 +50,39 @@ it('shows dashboard section headings in the current locale', function (): void {
     Livewire::test(AssetsDashboard::class)
         ->assertSee(__('assets-extensions::dashboard.due_soon'))
         ->assertSee(__('assets-extensions::dashboard.overdue'))
-        ->assertSee(__('assets-extensions::dashboard.recent_activity'));
+        ->assertSee(__('assets-extensions::dashboard.recent_activity'))
+        ->assertSee(__('assets-extensions::dashboard.by_category'))
+        ->assertSee(__('assets-extensions::dashboard.pending_requests'));
+});
+
+it('renders all assets dashboard widgets without errors', function (): void {
+    Livewire::test(AssetOverviewStatsWidget::class)->assertSuccessful();
+    Livewire::test(DueSoonBorrowingsWidget::class)->assertSuccessful();
+    Livewire::test(OverdueBorrowingsWidget::class)->assertSuccessful();
+    Livewire::test(RecentBorrowingsWidget::class)->assertSuccessful();
+    Livewire::test(AssetsByCategoryChartWidget::class)->assertSuccessful();
+});
+
+it('renders arabic overview stats and table widget labels', function (): void {
+    app()->setLocale('ar');
+
+    Livewire::test(AssetOverviewStatsWidget::class)
+        ->assertSee(__('assets-extensions::dashboard.pending_requests'))
+        ->assertSee(__('assets::assets.widgets.stats.available'))
+        ->assertSee(__('assets::assets.widgets.stats.borrowed'))
+        ->assertSee(__('assets::assets.widgets.stats.overdue'));
+
+    Livewire::test(DueSoonBorrowingsWidget::class)
+        ->assertSee(__('assets-extensions::dashboard.view_borrowed_assets'));
+});
+
+it('renders the main org dashboard assets summary widget in arabic', function (): void {
+    app()->setLocale('ar');
+
+    Livewire::test(AssetsSummaryWidget::class)
+        ->assertSuccessful()
+        ->assertSee(__('assets-extensions::dashboard.pending_requests'))
+        ->assertSee(__('assets::assets.widgets.stats.overdue'));
 });
 
 it('builds locale-aware asset list urls from stats concern', function (): void {

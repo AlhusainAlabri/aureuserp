@@ -68,7 +68,7 @@ class PurchasePlugin implements Plugin
                         NavigationItem::make('settings')
                             ->label(fn () => __('purchases::app.navigation.settings.label'))
                             ->url(fn () => ManageProducts::getUrl())
-                            ->group('Purchase')
+                            ->group(fn (): string => __('admin.navigation.purchase'))
                             ->sort(4)
                             ->visible(fn () => ManageProducts::canAccess()),
                     ]);

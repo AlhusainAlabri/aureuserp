@@ -18,7 +18,7 @@ class ExtendedDocumentDashboard extends BaseDocumentDashboard
 
     public function getTitle(): string
     {
-        return __('dashboard.hub.documents');
+        return __('document-archive::document-archive.dashboard.page_title');
     }
 
     public function getSubheading(): ?string
@@ -35,17 +35,11 @@ class ExtendedDocumentDashboard extends BaseDocumentDashboard
 
     public function getWidgets(): array
     {
-        $widgets = [
+        return [
             TopTagsChartWidget::class,
             StorageByFolderChartWidget::class,
+            ExpiringSoonFilesWidget::class,
+            RecentFilesWidget::class,
         ];
-
-        if (request('filter') === 'expiring') {
-            $widgets[] = ExpiringSoonFilesWidget::class;
-        }
-
-        $widgets[] = RecentFilesWidget::class;
-
-        return $widgets;
     }
 }

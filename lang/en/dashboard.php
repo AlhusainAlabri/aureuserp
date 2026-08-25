@@ -135,6 +135,8 @@ return [
         'invoice_approvals'        => 'Invoice Approvals',
         'meeting_approvals'        => 'Meeting Approvals',
         'correspondence_approvals' => 'Correspondence Approvals',
+        'purchase_approvals'       => 'Purchase Approvals',
+        'payroll_approvals'        => 'Payroll & Asset Approvals',
         'total_pending'            => ':count total pending',
         'overdue_tasks'            => 'Overdue Tasks',
         'oldest_overdue'           => ':days days overdue',
@@ -223,6 +225,7 @@ return [
     'no_upcoming_reminders' => 'No upcoming reminders',
     'view_all'              => 'View All',
     'overdue'               => 'Overdue',
+    'payslip_filename'      => 'Payslip_:reference.pdf',
 
     'empty' => [
         'no_correspondences'                => 'No correspondence',

@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Filament\Accounting\Widgets\JournalChartWidget as LocalizedJournalChartWidget;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Webkul\Account\Models\Account;
 use Webkul\Account\Models\Journal;
 use Webkul\Accounting\Filament\Clusters\Accounting;
@@ -17,12 +19,20 @@ use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResourc
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalItemResource;
 use Webkul\Accounting\Filament\Clusters\Customers;
 use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource as AccountingInvoiceResource;
+use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\ViewInvoice;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\BalanceSheet;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\CoreBalanceSheet;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\CoreGeneralLedger;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\CorePartnerLedger;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\CoreProfitLoss;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\CoreTrialBalance;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\AgedPayableExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\AgedReceivableExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\BalanceSheetExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\GeneralLedgerExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\PartnerLedgerExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\ProfitAndLossExport;
+use Webkul\Accounting\Filament\Clusters\Reporting\Pages\Exports\TrialBalanceExport;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\GeneralLedger;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\PartnerLedger;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\ProfitLoss;
@@ -30,6 +40,7 @@ use Webkul\Accounting\Filament\Clusters\Reporting\Pages\TrialBalance;
 use Webkul\Accounting\Filament\Clusters\Vendors;
 use Webkul\Accounting\Filament\Clusters\Vendors\Resources\BillResource;
 use Webkul\Accounting\Filament\Pages\Overview;
+use Webkul\Accounting\Models\Invoice;
 
 class AccountingExtensionsServiceProvider extends ServiceProvider
 {
@@ -37,7 +48,9 @@ class AccountingExtensionsServiceProvider extends ServiceProvider
     {
         $this->registerClusterOverrides();
         $this->registerResourceOverrides();
+        $this->registerModelOverrides();
         $this->registerPageOverrides();
+        $this->registerExportOverrides();
     }
 
     public function boot(): void
@@ -45,6 +58,8 @@ class AccountingExtensionsServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(lang_path('accounting-extensions'), 'accounting-extensions');
 
         View::prependNamespace('accounting', resource_path('views/vendor/accounting'));
+
+        Livewire::component('accounting-journal-chart', LocalizedJournalChartWidget::class);
 
         if (! class_exists(Journal::class)) {
             return;
@@ -115,8 +130,37 @@ class AccountingExtensionsServiceProvider extends ServiceProvider
         }
     }
 
+    protected function registerModelOverrides(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== Invoice::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Accounting/Models/Invoice.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
     protected function registerPageOverrides(): void
     {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== ViewInvoice::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Accounting/Filament/Clusters/Customers/Resources/InvoiceResource/Pages/ViewInvoice.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+
         $this->registerCoreClassOverride(
             CreateJournalEntry::class,
             CoreCreateJournalEntry::class,
@@ -167,6 +211,31 @@ class AccountingExtensionsServiceProvider extends ServiceProvider
                 $sourceClass,
                 $coreSourceClass,
                 'Overrides/Webkul/Accounting/Filament/Clusters/Reporting/Pages/'.$sourceClass.'.php',
+            );
+        }
+    }
+
+    protected function registerExportOverrides(): void
+    {
+        $exports = [
+            BalanceSheetExport::class     => ['BalanceSheetExport', 'CoreBalanceSheetExport', 'balance_sheet_export.php'],
+            ProfitAndLossExport::class    => ['ProfitAndLossExport', 'CoreProfitAndLossExport', 'profit_and_loss_export.php'],
+            TrialBalanceExport::class     => ['TrialBalanceExport', 'CoreTrialBalanceExport', 'trial_balance_export.php'],
+            GeneralLedgerExport::class    => ['GeneralLedgerExport', 'CoreGeneralLedgerExport', 'general_ledger_export.php'],
+            PartnerLedgerExport::class    => ['PartnerLedgerExport', 'CorePartnerLedgerExport', 'partner_ledger_export.php'],
+            AgedReceivableExport::class   => ['AgedReceivableExport', 'CoreAgedReceivableExport', 'aged_receivable_export.php'],
+            AgedPayableExport::class      => ['AgedPayableExport', 'CoreAgedPayableExport', 'aged_payable_export.php'],
+        ];
+
+        foreach ($exports as $class => [$sourceClass, $coreSourceClass, $cacheFile]) {
+            $this->registerCoreClassOverride(
+                $class,
+                'Webkul\\Accounting\\Filament\\Clusters\\Reporting\\Pages\\Exports\\'.$coreSourceClass,
+                'plugins/webkul/accounting/src/Filament/Clusters/Reporting/Pages/Exports/'.$sourceClass.'.php',
+                $cacheFile,
+                $sourceClass,
+                $coreSourceClass,
+                'Overrides/Webkul/Accounting/Filament/Clusters/Reporting/Pages/Exports/'.$sourceClass.'.php',
             );
         }
     }

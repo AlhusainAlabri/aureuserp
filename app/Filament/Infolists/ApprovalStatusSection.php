@@ -55,12 +55,12 @@ class ApprovalStatusSection
                         TextEntry::make('approval_step_name_display')
                             ->label(__('filament-approval::approval.infolist.step'))
                             ->state(fn (Model $record): ?string => $record->currentApproval()?->currentStepInstance()?->step?->name)
-                            ->placeholder('N/A'),
+                            ->placeholder(__('approval.placeholders.not_available')),
                         TextEntry::make('approval_step_status_display')
                             ->label(__('filament-approval::approval.infolist.status'))
                             ->state(fn (Model $record): mixed => $record->currentApproval()?->currentStepInstance()?->status)
                             ->badge()
-                            ->placeholder('N/A'),
+                            ->placeholder(__('approval.placeholders.not_available')),
                         TextEntry::make('pending_approvers_display')
                             ->label(__('filament-approval::approval.infolist.pending_approvers'))
                             ->state(function (Model $record): string {

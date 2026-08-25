@@ -2,11 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Enums\NavigationMenuType;
 use App\Filament\Assets\Pages\AssetsDashboard;
 use App\Filament\Assets\Pages\MyBorrowedAssets;
 use App\Filament\Assets\Pages\MyBorrowingRequests;
 use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Filament\Assets\Resources\AssetBorrowingResource;
+use App\Filament\Clusters\Settings\Pages\ManageNavigation;
+use App\Filament\Clusters\Settings\Pages\ManageOperations;
+use App\Filament\Clusters\System\Pages\SystemHealthDashboard;
 use App\Filament\Inventory\Pages\InventoryDashboard;
 use App\Filament\Inventory\Pages\MovementReportArchivesPage;
 use App\Filament\Inventory\Pages\MovementReportPage;
@@ -20,10 +24,12 @@ use App\Filament\Pages\MyEmployeeSubmissions;
 use App\Filament\Pages\MyRequests;
 use App\Filament\Pages\MySelfAssessment;
 use App\Filament\Pages\MyWarnings;
+use App\Filament\Pages\Settings\ManageNotificationPreferences;
 use App\Filament\Projects\Pages\OperationsCalendar;
 use App\Filament\Projects\Pages\TaskKanban;
 use App\Filament\Projects\Pages\TaskOperationsHub;
 use App\Filament\Resources\DashboardShortcutResource;
+use App\Filament\Resources\SystemBackupResource;
 use App\Filament\Widgets\Dashboard\ActiveLoansWidget;
 use App\Filament\Widgets\Dashboard\ActiveProjectsWidget;
 use App\Filament\Widgets\Dashboard\AssetsSummaryWidget;
@@ -53,6 +59,7 @@ use App\Filament\Widgets\Dashboard\UpcomingRemindersWidget;
 use App\Filament\Widgets\Dashboard\WarningsIssuedWidget;
 use App\Http\Middleware\CheckEmployeeFileClosure;
 use App\Http\Middleware\SetLocale;
+use App\Support\Navigation\NavigationMode;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Actions\Action;
@@ -87,7 +94,12 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->homeUrl(fn (): string => ModuleLauncher::getUrl())
+            ->homeUrl(function (): string {
+                return match (NavigationMode::resolve()->menuType) {
+                    NavigationMenuType::Sidebar => Dashboard::getUrl(),
+                    default                     => ModuleLauncher::getUrl(),
+                };
+            })
             ->login()
             ->favicon(asset('images/favicon.ico'))
             ->brandLogo(fn (): string => filament()->auth()->check()
@@ -110,7 +122,11 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
             ])
             ->unsavedChangesAlerts()
-            ->topNavigation()
+            ->topNavigation(fn (): bool => NavigationMode::resolve()->usesTopNavigation())
+            ->sidebarCollapsibleOnDesktop(fn (): bool => NavigationMode::resolve()->usesModuleSidebar())
+            ->sidebarFullyCollapsibleOnDesktop(fn (): bool => NavigationMode::resolve()->usesModuleSidebar())
+            ->sidebarWidth('17rem')
+            ->collapsedSidebarWidth('4.5rem')
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->userMenuItems([
@@ -176,7 +192,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label(fn (): string => __('admin.navigation.website'))
                     ->icon('icon-website'),
-                NavigationGroup::make()
+                NavigationGroup::make('Approvals')
                     ->label(fn (): string => __('admin.navigation.approvals'))
                     ->icon('icon-approvals'),
                 NavigationGroup::make()
@@ -214,8 +230,12 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 AssetBorrowingResource::class,
                 DashboardShortcutResource::class,
+                SystemBackupResource::class,
             ])
             ->pages([
+                ManageNavigation::class,
+                ManageOperations::class,
+                SystemHealthDashboard::class,
                 ModuleLauncher::class,
                 Dashboard::class,
                 MyRequests::class,
@@ -236,6 +256,7 @@ class AdminPanelProvider extends PanelProvider
                 MovementReportArchivesPage::class,
                 RecordConsumption::class,
                 ProductPurchaseHistoryPage::class,
+                ManageNotificationPreferences::class,
             ])
             ->widgets([
                 PendingApprovalsWidget::class,

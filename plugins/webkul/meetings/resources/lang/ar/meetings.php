@@ -7,6 +7,11 @@ return [
     'yes'        => 'نعم',
     'no'         => 'لا',
     'all'        => 'الكل',
+    'common'     => [
+        'not_available' => '—',
+        'no_change'     => '—',
+        'none'          => 'لا يوجد',
+    ],
     'navigation' => [
         'group'     => 'إدارة المحاضر',
         'dashboard' => 'لوحة المحاضر',
@@ -286,7 +291,10 @@ return [
             'pending_approval' => 'بانتظار الموافقة',
             'draft'            => 'مسودة',
         ],
-        'task_title'    => 'مهمة: :title',
+        'task_title'              => 'مهمة: :title',
+        'event_title'             => ':number — :title',
+        'event_title_with_status' => '[:status] :number — :title',
+        'time_off_title'          => ':status :name',
     ],
     'pdf' => [
         'title'    => 'محضر اجتماع',

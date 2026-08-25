@@ -1,5 +1,7 @@
 <?php
 
+use App\Settings\NavigationSettings;
+use App\Settings\OperationsSettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
@@ -56,6 +58,8 @@ return [
         SaleProductSettings::class,
         QuotationAndOrderSettings::class,
         ContactSettings::class,
+        NavigationSettings::class,
+        OperationsSettings::class,
     ],
 
     /*

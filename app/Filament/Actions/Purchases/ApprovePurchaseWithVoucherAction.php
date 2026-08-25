@@ -6,7 +6,6 @@ use App\Services\Purchases\PurchasePaymentService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
-use Filament\Support\Icons\Heroicon;
 use Wezlo\FilamentApproval\Actions\ApproveAction;
 use Wezlo\FilamentApproval\Services\ApprovalEngine;
 
@@ -23,7 +22,7 @@ class ApprovePurchaseWithVoucherAction extends ApproveAction
 
         $this
             ->label(__('filament-approval::approval.actions.approve'))
-            ->icon(Heroicon::OutlinedCheckCircle)
+            ->icon('heroicon-o-check-circle')
             ->color('success')
             ->visible(function (): bool {
                 $record = $this->getRecord();

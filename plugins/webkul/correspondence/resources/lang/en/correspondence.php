@@ -203,18 +203,32 @@ return [
     ],
 
     'dashboard' => [
+        'actions' => [
+            'view_all'           => 'View all',
+            'view_all_incoming'  => 'View all incoming',
+            'view_all_pending'   => 'View pending outgoing',
+            'view_all_urgent'    => 'View urgent',
+            'view_all_tasks'     => 'View all tasks',
+        ],
         'stats' => [
-            'outgoing_month'   => 'Outgoing This Month',
-            'incoming_month'   => 'Incoming This Month',
-            'pending_approval' => 'Pending Approval',
-            'overdue'          => 'Overdue Correspondence',
-            'my_approvals'     => 'My Pending Approvals',
+            'outgoing_month'     => 'Outgoing This Month',
+            'incoming_month'     => 'Incoming This Month',
+            'pending_approval'   => 'Pending Approval',
+            'overdue'            => 'Overdue Correspondence',
+            'my_approvals'       => 'My Pending Approvals',
+            'outgoing_hint'      => 'Open outgoing correspondence',
+            'incoming_hint'      => 'Open incoming correspondence',
+            'pending_hint'       => 'Open pending outgoing letters',
+            'overdue_hint'       => 'Open overdue correspondence',
+            'approvals_hint'     => 'Open items awaiting your approval',
+            'click_hint'         => 'Click a card to open the filtered list.',
         ],
         'sections' => [
             'incoming'         => 'Latest Incoming',
             'pending_outgoing' => 'Pending Outgoing',
             'my_approvals'     => 'My Pending Approvals',
             'urgent'           => 'Urgent Correspondence',
+            'tasks'            => 'Follow-up Tasks',
         ],
     ],
 

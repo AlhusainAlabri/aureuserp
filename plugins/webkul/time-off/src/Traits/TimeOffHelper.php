@@ -102,7 +102,7 @@ trait TimeOffHelper
 
                             DatePicker::make('request_date_to')
                                 ->native(false)
-                                ->label('To Date')
+                                ->label(__('time-off::filament/widgets/calendar-widget.form.fields.request-date-to'))
                                 ->hidden(fn (Get $get) => $get('request_unit_half'))
                                 ->required(fn (Get $get) => ! $get('request_unit_half'))
                                 ->live()
@@ -124,7 +124,7 @@ trait TimeOffHelper
                                 ->helperText(__('time-off::filament/widgets/calendar-widget.form.fields.half-day-helper'))
                                 ->afterStateUpdated(function ($state, Set $set, Get $get) {
                                     if ($state) {
-                                        $set('duration_info', '0.5 day');
+                                        $set('duration_info', $this->formatHalfDayDuration());
                                     } else {
                                         $this->updateDurationCalculation($set, $get);
                                     }
@@ -145,7 +145,7 @@ trait TimeOffHelper
                         ->live()
                         ->state(function (Get $get): string {
                             if ($get('request_unit_half')) {
-                                return '0.5 day';
+                                return $this->formatHalfDayDuration();
                             }
 
                             $startDate = $get('request_date_from');
@@ -158,17 +158,10 @@ trait TimeOffHelper
                             $start = Carbon::parse($startDate);
                             $end = $endDate ? Carbon::parse($endDate) : $start;
 
-                            $businessDays = $this->calculateBusinessDays($start, $end);
-                            $totalDays = $this->calculateTotalDays($start, $end);
-                            $weekendDays = $totalDays - $businessDays;
-
-                            $duration = $businessDays.' working day'.($businessDays !== 1 ? 's' : '');
-
-                            if ($weekendDays > 0) {
-                                $duration .= ' (+ '.$weekendDays.' weekend day'.($weekendDays !== 1 ? 's' : '').')';
-                            }
-
-                            return $duration;
+                            return $this->formatDurationDisplay(
+                                $this->calculateBusinessDays($start, $end),
+                                $this->calculateTotalDays($start, $end) - $this->calculateBusinessDays($start, $end),
+                            );
                         })
                         ->extraAttributes(['class' => 'font-medium text-primary-600 bg-primary-50 p-3 rounded-lg border border-primary-200']),
 
@@ -187,7 +180,7 @@ trait TimeOffHelper
     {
         if (! empty($data['request_unit_half'])) {
             return [
-                'duration_display' => '0.5 day',
+                'duration_display' => $this->formatHalfDayDuration(),
                 'number_of_days'   => 0.5,
                 'business_days'    => 0.5,
                 'total_days'       => 0.5,
@@ -204,14 +197,8 @@ trait TimeOffHelper
         $totalDays = $this->calculateTotalDays($startDate, $endDate);
         $weekendDays = $totalDays - $businessDays;
 
-        $durationDisplay = $businessDays.' working day'.($businessDays !== 1 ? 's' : '');
-
-        if ($weekendDays > 0) {
-            $durationDisplay .= ' (+ '.$weekendDays.' weekend day'.($weekendDays !== 1 ? 's' : '').')';
-        }
-
         return [
-            'duration_display' => $durationDisplay,
+            'duration_display' => $this->formatDurationDisplay($businessDays, $weekendDays),
             'number_of_days'   => $businessDays,
             'business_days'    => $businessDays,
             'total_days'       => $totalDays,
@@ -384,7 +371,7 @@ trait TimeOffHelper
         $endDate = $get('request_date_to');
 
         if (! $startDate) {
-            $set('duration_info', 'Please select dates');
+            $set('duration_info', __('time-off::filament/widgets/calendar-widget.form.fields.please-select-dates'));
 
             return;
         }
@@ -393,16 +380,31 @@ trait TimeOffHelper
         $end = $endDate ? Carbon::parse($endDate) : $start;
 
         $businessDays = $this->calculateBusinessDays($start, $end);
-        $totalDays = $this->calculateTotalDays($start, $end);
-        $weekendDays = $totalDays - $businessDays;
+        $weekendDays = $this->calculateTotalDays($start, $end) - $businessDays;
 
-        $duration = $businessDays.' working day'.($businessDays !== 1 ? 's' : '');
+        $set('duration_info', $this->formatDurationDisplay($businessDays, $weekendDays));
+    }
 
+    protected function formatHalfDayDuration(): string
+    {
+        return __('time-off::filament/widgets/calendar-widget.form.fields.half-day-duration', ['days' => '0.5']);
+    }
+
+    protected function formatDurationDisplay(int $businessDays, int $weekendDays = 0): string
+    {
         if ($weekendDays > 0) {
-            $duration .= ' (+ '.$weekendDays.' weekend day'.($weekendDays !== 1 ? 's' : '').')';
+            return trans_choice(
+                'time-off::filament/widgets/calendar-widget.modal-actions.edit.duration-display-with-weekend',
+                $businessDays,
+                ['count' => $businessDays, 'weekend' => $weekendDays],
+            );
         }
 
-        $set('duration_info', $duration);
+        return trans_choice(
+            'time-off::filament/widgets/calendar-widget.modal-actions.edit.duration-display',
+            $businessDays,
+            ['count' => $businessDays],
+        );
     }
 
     private function calculateBusinessDaysAndNumbers(array &$data): void

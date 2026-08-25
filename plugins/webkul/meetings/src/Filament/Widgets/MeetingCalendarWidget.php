@@ -12,6 +12,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Webkul\FullCalendar\Filament\Widgets\FullCalendarWidget;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
@@ -23,6 +24,8 @@ use Webkul\TimeOff\Models\Leave;
 class MeetingCalendarWidget extends FullCalendarWidget
 {
     use HasMeetingVisibility;
+
+    protected string $view = 'meetings::filament.widgets.meeting-calendar';
 
     public Model|string|null $model = null;
 
@@ -138,6 +141,10 @@ class MeetingCalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $fetchInfo): array
     {
+        if (! Schema::hasTable('meetings')) {
+            return [];
+        }
+
         return [
             ...($this->showMeetings ? $this->meetingEvents($fetchInfo) : []),
             ...($this->showTasks ? $this->taskEvents($fetchInfo) : []),
@@ -182,12 +189,19 @@ class MeetingCalendarWidget extends FullCalendarWidget
     protected function meetingEventTitle(Meeting $meeting): string
     {
         if (! $this->showUnconfirmedMeetings || $meeting->isConfirmed()) {
-            return "{$meeting->meeting_number} — {$meeting->title}";
+            return __('meetings::meetings.calendar.event_title', [
+                'number' => $meeting->meeting_number,
+                'title'  => $meeting->title,
+            ]);
         }
 
         $statusLabel = MeetingResource::statusOptions()[$meeting->status] ?? $meeting->status;
 
-        return "[{$statusLabel}] {$meeting->meeting_number} — {$meeting->title}";
+        return __('meetings::meetings.calendar.event_title_with_status', [
+            'status' => $statusLabel,
+            'number' => $meeting->meeting_number,
+            'title'  => $meeting->title,
+        ]);
     }
 
     /**
@@ -230,6 +244,10 @@ class MeetingCalendarWidget extends FullCalendarWidget
 
     protected function taskEvents(array $fetchInfo): array
     {
+        if (! Schema::hasTable('meeting_tasks')) {
+            return [];
+        }
+
         return $this->visibleTasksQuery()
             ->whereNotNull('due_date')
             ->whereBetween('due_date', [Carbon::parse($fetchInfo['start'])->toDateString(), Carbon::parse($fetchInfo['end'])->toDateString()])
@@ -262,7 +280,10 @@ class MeetingCalendarWidget extends FullCalendarWidget
             ->get()
             ->map(fn (Leave $leave): array => [
                 'id'              => 'time-off-'.$leave->id,
-                'title'           => $leave->holidayStatus?->name.' '.$leave->user?->name,
+                'title'           => __('meetings::meetings.calendar.time_off_title', [
+                    'status' => $leave->holidayStatus?->name ?? '',
+                    'name'   => $leave->user?->name ?? '',
+                ]),
                 'start'           => $leave->request_date_from,
                 'end'             => $leave->request_date_to ? Carbon::parse($leave->request_date_to)->addDay()->toDateString() : null,
                 'allDay'          => true,

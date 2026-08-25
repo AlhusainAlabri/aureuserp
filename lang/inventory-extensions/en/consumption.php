@@ -14,9 +14,10 @@ return [
         'source_location' => 'Source location',
     ],
     'notifications' => [
-        'recorded'      => 'Consumption recorded',
-        'recorded_body' => 'Internal transfer :name created.',
-        'failed'        => 'Could not complete transfer',
+        'recorded'       => 'Consumption recorded',
+        'recorded_body'  => 'Internal transfer :name created.',
+        'view_operation' => 'View transfer',
+        'failed'         => 'Could not complete transfer',
     ],
     'plugin_missing'    => 'Inventory plugin is not installed.',
     'no_operation_type' => 'No internal transfer operation type configured.',

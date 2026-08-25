@@ -48,6 +48,7 @@ class SupportServiceProvider extends PackageServiceProvider
                 '2024_12_17_082318_create_activity_type_suggestions_table',
                 '2025_01_03_061444_create_email_templates_table',
                 '2025_01_03_061445_create_email_logs_table',
+                '2026_08_25_200000_extend_email_logs_table',
                 '2025_01_03_105625_create_unit_of_measure_categories_table',
                 '2025_01_03_105627_create_unit_of_measures_table',
                 '2025_01_07_125015_add_partner_id_to_companies_table',

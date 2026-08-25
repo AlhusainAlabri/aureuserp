@@ -10,7 +10,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
-use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Support\FilamentUrl;
 
 class ListDocFiles extends ListRecords
@@ -56,16 +55,16 @@ class ListDocFiles extends ListRecords
 
         return [
             'all' => Tab::make(__('document-archive::document-archive.table.tabs.all'))
-                ->badge(DocFile::query()->count()),
+                ->badge(DocFileResource::accessibleFilesQuery()->count()),
             'private' => Tab::make(__('document-archive::document-archive.table.tabs.private'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('is_private', true))
-                ->badge(DocFile::query()->where('is_private', true)->count()),
+                ->badge(DocFileResource::accessibleFilesQuery()->where('is_private', true)->count()),
             'expiring_soon' => Tab::make(__('document-archive::document-archive.table.tabs.expiring_soon'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->expiringSoon($expiringSoonDays))
-                ->badge(DocFile::query()->expiringSoon($expiringSoonDays)->count()),
+                ->badge(DocFileResource::accessibleFilesQuery()->expiringSoon($expiringSoonDays)->count()),
             'expired' => Tab::make(__('document-archive::document-archive.table.tabs.expired'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->expired())
-                ->badge(DocFile::query()->expired()->count()),
+                ->badge(DocFileResource::accessibleFilesQuery()->expired()->count()),
         ];
     }
 }

@@ -23,6 +23,8 @@ class ExpiringDocumentsWidget extends BaseWidget
 
     protected static bool $isLazy = true;
 
+    protected ?string $pollingInterval = null;
+
     protected function getHeading(): ?string
     {
         return __('dashboard.widgets.expiring_documents');

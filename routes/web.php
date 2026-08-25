@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\HealthCheckController;
 use App\Http\Controllers\Inventory\InventoryReportDownloadController;
 use App\Http\Controllers\PrivateFileServeController;
 use App\Http\Controllers\SetUserLocaleController;
+use App\Http\Controllers\SystemBackupDownloadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Employee\Models\EmployeeDocument;
@@ -39,6 +41,14 @@ Route::get('/employees/documents/{document}/preview', function (EmployeeDocument
 Route::middleware(['web', 'auth'])->group(function (): void {
     Route::redirect('/admin/my-requests', '/admin/purchase/orders/my-requests');
     Route::redirect('/admin/internal-requests', '/admin/purchase/orders/internal-requests');
+});
+
+Route::get('/health', HealthCheckController::class)
+    ->name('health');
+
+Route::middleware(['auth'])->group(function (): void {
+    Route::get('/admin/operations/backups/{backup}/download', SystemBackupDownloadController::class)
+        ->name('operations.backups.download');
 });
 
 Route::middleware(['web'])->group(function (): void {

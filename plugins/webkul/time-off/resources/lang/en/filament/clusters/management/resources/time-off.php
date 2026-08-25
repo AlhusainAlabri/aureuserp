@@ -114,6 +114,8 @@ return [
             'date-from'         => 'Date From',
             'date-to'           => 'Date To',
             'status'            => 'Status',
+            'yes'               => 'Yes',
+            'no'                => 'No',
         ],
     ],
 ];

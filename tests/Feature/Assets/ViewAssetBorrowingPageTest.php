@@ -21,7 +21,7 @@ it('loads the asset borrowing view page without index route error', function ():
     $user = User::withoutEvents(fn (): User => User::factory()->create());
 
     foreach (['view_assets_asset_borrowing', 'view_any_assets_asset_borrowing'] as $permission) {
-        Permission::query()->firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        Permission::findOrCreate($permission, 'web');
         $user->givePermissionTo($permission);
     }
 

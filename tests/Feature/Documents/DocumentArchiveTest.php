@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\DocumentArchive\Pages\ExtendedDocumentDashboard;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -17,6 +18,7 @@ use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\EditDocFile;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\ListDocFiles;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource\Pages\CreateDocFolder;
+use Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget;
 use Webkul\DocumentArchive\Filament\Widgets\ExpiringSoonFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\RecentFilesWidget;
 use Webkul\DocumentArchive\Filament\Widgets\StorageByFolderChartWidget;
@@ -148,11 +150,13 @@ it('increments view and download counters', function (): void {
 // ─── Expiry Scopes ────────────────────────────────────────────────────────────
 
 it('scopes expiring-soon files within a window', function (): void {
+    $before = DocFile::query()->expiringSoon(7)->count();
+
     DocFile::factory()->expiringSoon(3)->create();   // within 7 days → counted
     DocFile::factory()->expiringSoon(30)->create();  // outside 7 days → excluded
     DocFile::factory()->create();                    // no expiry → excluded
 
-    expect(DocFile::query()->expiringSoon(7)->count())->toBe(1);
+    expect(DocFile::query()->expiringSoon(7)->count())->toBe($before + 1);
 });
 
 it('detects expiry status for view alerts', function (): void {
@@ -552,10 +556,12 @@ it('opens the expiring soon tab from the query string', function (): void {
 it('uses the configured expiring soon window', function (): void {
     config(['document-archive.expiring_soon_days' => 14]);
 
+    $before = DocFile::query()->expiringSoon(14)->count();
+
     DocFile::factory()->expiringSoon(10)->create();
     DocFile::factory()->expiringSoon(20)->create();
 
-    expect(DocFile::query()->expiringSoon(14)->count())->toBe(1);
+    expect(DocFile::query()->expiringSoon(14)->count())->toBe($before + 1);
 });
 
 it('detects when preview requires the password unlock page', function (): void {
@@ -615,19 +621,21 @@ it('lists only expiring soon files in the expiring widget', function (): void {
 
     DocFile::factory()->expiringSoon(30)->create([
         'folder_id' => DocFolder::factory()->create()->id,
+        'name'      => 'Outside Expiring Window File',
     ]);
 
     Livewire::test(ExpiringSoonFilesWidget::class)
         ->assertSuccessful()
         ->assertCanSeeTableRecords([$expiring])
-        ->assertCountTableRecords(1);
+        ->assertCanNotSeeTableRecords(
+            DocFile::query()->where('name', 'Outside Expiring Window File')->get(),
+        );
 });
 
-it('includes the expiring widget on the dashboard when filtered', function (): void {
+it('includes the expiring widget on the document dashboard', function (): void {
     documentArchiveFilamentUser();
 
-    $dashboard = Livewire::withQueryParams(['filter' => 'expiring'])
-        ->test(DocumentDashboard::class)
+    $dashboard = Livewire::test(DocumentDashboard::class)
         ->assertSuccessful();
 
     expect($dashboard->instance()->getWidgets())->toContain(ExpiringSoonFilesWidget::class);
@@ -650,6 +658,30 @@ it('opens preview in a modal from the document manager for unlocked files', func
     Livewire::test(DocumentManager::class)
         ->call('openFile', $file->id)
         ->assertActionMounted('previewDocument');
+});
+
+it('links the expiring stat card to the dashboard expiring section', function (): void {
+    documentArchiveFilamentUser();
+
+    app()->setLocale('ar');
+
+    $widget = Livewire::test(DocumentStatsWidget::class)->assertSuccessful();
+
+    $expiringUrl = (new ReflectionMethod($widget->instance(), 'expiringUrl'))
+        ->invoke($widget->instance());
+
+    expect($expiringUrl)
+        ->toContain('document-archive/dashboard')
+        ->toContain('#'.DocumentStatsWidget::EXPIRING_SECTION_ANCHOR)
+        ->toContain('lang=ar');
+});
+
+it('anchors the expiring soon widget for dashboard deep links', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(ExpiringSoonFilesWidget::class)
+        ->assertSuccessful()
+        ->assertSeeHtml('id="'.DocumentStatsWidget::EXPIRING_SECTION_ANCHOR.'"');
 });
 
 it('preserves locale in document archive internal urls', function (): void {
@@ -696,6 +728,57 @@ it('uses a dedicated document archive dashboard title', function (): void {
 
     Livewire::test(DocumentDashboard::class)
         ->assertSee(__('document-archive::document-archive.dashboard.page_title'));
+});
+
+it('renders the extended document dashboard hub title in arabic', function (): void {
+    documentArchiveFilamentUser();
+
+    app()->setLocale('ar');
+
+    Livewire::test(ExtendedDocumentDashboard::class)
+        ->assertSuccessful()
+        ->assertSee(__('document-archive::document-archive.dashboard.page_title'))
+        ->assertSee(__('dashboard.hub.documents_description'));
+});
+
+it('scopes the files resource list to accessible documents', function (): void {
+    $restrictedUser = User::withoutEvents(fn (): User => User::factory()->create());
+    $otherUser = User::withoutEvents(fn (): User => User::factory()->create());
+
+    Permission::query()->firstOrCreate([
+        'name'       => 'view_document_archive_doc::file',
+        'guard_name' => 'web',
+    ]);
+    $restrictedUser->givePermissionTo('view_document_archive_doc::file');
+
+    $folder = DocFolder::factory()->private()->create();
+    DocFolderPermission::create([
+        'folder_id'  => $folder->id,
+        'type'       => 'user',
+        'user_id'    => $restrictedUser->id,
+        'permission' => 'view',
+    ]);
+
+    $accessibleFile = DocFile::factory()->create([
+        'folder_id' => $folder->id,
+        'name'      => 'Accessible List File',
+    ]);
+
+    DocFile::factory()->create([
+        'folder_id' => DocFolder::factory()->private()->create()->id,
+        'name'      => 'Hidden List File',
+    ]);
+
+    test()->actingAs($restrictedUser);
+
+    $restrictedQuery = DocFileResource::getEloquentQuery();
+
+    expect($restrictedQuery->whereKey($accessibleFile->id)->exists())->toBeTrue()
+        ->and($restrictedQuery->where('name', 'Hidden List File')->exists())->toBeFalse();
+
+    test()->actingAs($otherUser);
+
+    expect(DocFileResource::getEloquentQuery()->whereKey($accessibleFile->id)->exists())->toBeFalse();
 });
 
 it('syncs tags through the document tag service', function (): void {
@@ -872,13 +955,29 @@ it('renders dashboard chart widgets', function (): void {
         ->assertSee(__('document-archive::document-archive.dashboard.charts.storage_by_folder'));
 });
 
+it('provides translated placeholder chart data when charts are empty', function (): void {
+    app()->setLocale('ar');
+
+    $topTagsWidget = app(TopTagsChartWidget::class);
+    $topTagsData = (new ReflectionMethod($topTagsWidget, 'emptyChartData'))->invoke($topTagsWidget);
+
+    expect($topTagsData['labels'])->toBe([__('document-archive::document-archive.dashboard.charts.empty_label')]);
+
+    $storageWidget = app(StorageByFolderChartWidget::class);
+    $storageData = (new ReflectionMethod($storageWidget, 'emptyChartData'))->invoke($storageWidget);
+
+    expect($storageData['labels'])->toBe([__('document-archive::document-archive.dashboard.charts.empty_label')]);
+});
+
 it('includes chart widgets on the document dashboard', function (): void {
     documentArchiveFilamentUser();
 
     $dashboard = Livewire::test(DocumentDashboard::class)->assertSuccessful();
 
     expect($dashboard->instance()->getWidgets())->toContain(TopTagsChartWidget::class)
-        ->and($dashboard->instance()->getWidgets())->toContain(StorageByFolderChartWidget::class);
+        ->and($dashboard->instance()->getWidgets())->toContain(StorageByFolderChartWidget::class)
+        ->and($dashboard->instance()->getWidgets())->toContain(ExpiringSoonFilesWidget::class)
+        ->and($dashboard->instance()->getWidgets())->toContain(RecentFilesWidget::class);
 });
 
 it('does not increment view count when previewing with embed flag', function (): void {

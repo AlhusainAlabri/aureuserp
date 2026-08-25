@@ -47,11 +47,13 @@ it('forbids listing projects without permission', function () {
 it('lists projects for authorized users', function () {
     actingAsProjectApiUser(['view_any_project_project']);
 
+    $existingCount = Project::query()->count();
+
     Project::factory()->count(2)->create();
 
     $this->getJson(projectRoute('index'))
         ->assertOk()
-        ->assertJsonCount(2, 'data');
+        ->assertJsonCount($existingCount + 2, 'data');
 });
 
 it('creates a project with valid payload', function () {

@@ -155,6 +155,7 @@ return [
             'files_count'        => 'Files',
             'storage'            => 'Storage (bytes)',
             'empty'              => 'No data available yet',
+            'empty_label'        => 'No data yet',
             'largest_folder'     => 'Largest folder: :size',
         ],
     ],

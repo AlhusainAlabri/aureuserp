@@ -24,7 +24,7 @@ class ExtendedCorrespondenceDashboard extends BaseCorrespondenceDashboard
 
     public function getSubheading(): ?string
     {
-        return __('dashboard.hub.correspondence_description');
+        return __('dashboard.hub.correspondence_description').' '.__('correspondence::correspondence.dashboard.stats.click_hint');
     }
 
     public function getHeaderWidgets(): array

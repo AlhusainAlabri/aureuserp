@@ -6,7 +6,6 @@ use App\Filament\Assets\Widgets\AssetOverviewStatsWidget;
 use App\Filament\Assets\Widgets\AssetsByCategoryChartWidget;
 use App\Filament\Assets\Widgets\DueSoonBorrowingsWidget;
 use App\Filament\Assets\Widgets\OverdueBorrowingsWidget;
-use App\Filament\Assets\Widgets\PendingRequestsWidget;
 use App\Filament\Assets\Widgets\RecentBorrowingsWidget;
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
 use App\Support\FilamentUrl;
@@ -90,7 +89,6 @@ class AssetsDashboard extends BaseDashboard
     {
         return [
             AssetOverviewStatsWidget::class,
-            PendingRequestsWidget::class,
         ];
     }
 

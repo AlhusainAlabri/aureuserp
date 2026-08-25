@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Hr\EmployeeContract;
+use App\Services\Hr\HrNotificationService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Security\Models\User;
@@ -15,7 +15,7 @@ class NotifyExpiringContracts extends Command
 
     protected $description = 'Send notifications for employment contracts expiring within 30 days';
 
-    public function handle(): int
+    public function handle(HrNotificationService $notifications): int
     {
         if (! Schema::hasTable('employee_contracts')) {
             $this->info('Employee contracts table not found.');
@@ -37,15 +37,20 @@ class NotifyExpiringContracts extends Command
             ->get();
 
         foreach ($contracts as $contract) {
+            $title = __('hr-extensions::contract.notifications.expiring_title');
+            $body = __('hr-extensions::contract.notifications.expiring_body', [
+                'employee' => $contract->employee->name,
+                'end_date' => $contract->end_date->format('Y-m-d'),
+            ]);
+
             foreach ($this->resolveRecipients($contract) as $user) {
-                Notification::make()
-                    ->title(__('hr-extensions::contract.notifications.expiring_title'))
-                    ->body(__('hr-extensions::contract.notifications.expiring_body', [
-                        'employee' => $contract->employee->name,
-                        'end_date' => $contract->end_date->format('Y-m-d'),
-                    ]))
-                    ->warning()
-                    ->sendToDatabase($user);
+                $notifications->dispatchAlert(
+                    recipient: $user,
+                    notificationKey: 'hr.expiring_contract',
+                    title: $title,
+                    body: $body,
+                    dedupKey: "hr.expiring_contract:{$contract->id}:user:{$user->id}:{$today->toDateString()}",
+                );
             }
 
             $contract->update(['notified_at' => $today]);

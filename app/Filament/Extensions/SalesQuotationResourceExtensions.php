@@ -6,6 +6,9 @@ use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
 use Closure;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
 
@@ -29,7 +32,40 @@ class SalesQuotationResourceExtensions
 
     public static function localizeTable(Table $table): Table
     {
+        static::walkTableColumns($table->getColumns(), function (Column $column): void {
+            if (! $column instanceof TextColumn) {
+                return;
+            }
+
+            $summarizerLabel = match ($column->getName()) {
+                'amount_untaxed' => __('sales-extensions::table.summarize.total'),
+                'amount_tax'     => __('sales-extensions::table.summarize.taxes'),
+                'amount_total'   => __('sales-extensions::table.summarize.total-amount'),
+                default          => null,
+            };
+
+            if ($summarizerLabel === null) {
+                return;
+            }
+
+            $column->summarize(Sum::make()->label($summarizerLabel));
+        });
+
         return $table;
+    }
+
+    /**
+     * @param  array<Column>  $columns
+     */
+    protected static function walkTableColumns(array $columns, Closure $callback): void
+    {
+        foreach ($columns as $column) {
+            $callback($column);
+
+            if (method_exists($column, 'getColumns')) {
+                static::walkTableColumns($column->getColumns(), $callback);
+            }
+        }
     }
 
     /**

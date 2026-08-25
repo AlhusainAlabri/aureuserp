@@ -41,6 +41,19 @@ it('resolves arabic partner field translations without partial override corrupti
         ->toBe('عام');
 });
 
+it('resolves english empty state and modal translations for contact pages', function (): void {
+    app()->setLocale('en');
+
+    expect(__('contacts::filament/resources/partner.pages.manage-contacts.empty.heading'))
+        ->toBe('No sub-contacts')
+        ->and(__('contacts::filament/resources/partner.pages.manage-contacts.empty.description'))
+        ->toBe('Add a contact to get started.')
+        ->and(__('contacts::filament/resources/partner.pages.manage-addresses.empty.heading'))
+        ->toBe('No addresses')
+        ->and(__('contacts::filament/resources/partner.pages.manage-addresses.create-modal.heading'))
+        ->toBe('Add address');
+});
+
 it('loads contacts extension translations in arabic', function (): void {
     app()->setLocale('ar');
 

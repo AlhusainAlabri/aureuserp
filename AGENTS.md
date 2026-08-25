@@ -1003,7 +1003,32 @@ php artisan migrate && php artisan shield:generate --all
 php artisan optimize:clear
 ```
 
-### Deploy (`./deploy.sh`)
+### Deploy (`scripts/deploy-prod.sh`)
+
+**One-time setup (local machine):**
+```bash
+cp .env.deploy.example .env.deploy
+# Edit DEPLOY_HOST, LARAVEL_PATH, optional DEPLOY_DOWN_SECRET
+chmod +x scripts/deploy-prod.sh
+```
+
+**Deploy changed files (default):**
+```bash
+bash scripts/deploy-prod.sh
+bash scripts/deploy-prod.sh changed --yes
+```
+
+**Full sync or specific paths:**
+```bash
+bash scripts/deploy-prod.sh all --yes
+bash scripts/deploy-prod.sh folders app database/migrations plugins/webkul/document-archive
+```
+
+**Flags:** `--no-migrate` `--no-optimize` `--no-shield` `--no-down` `--build` `--yes`
+
+Remote post-deploy (automatic): `composer install`, `migrate --force`, `permissions:sync-extensions`, `shield:generate --all`, `optimize`, `filament:cache-components`, `queue:restart`.
+
+**Manual deploy on the server** (git pull workflow):
 ```bash
 php artisan down --secret="TOKEN"
 git pull origin client/oman

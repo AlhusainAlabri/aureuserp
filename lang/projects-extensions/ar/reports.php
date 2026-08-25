@@ -14,4 +14,5 @@ return [
     'open_tasks'          => 'المهام المفتوحة',
     'email_subject'       => 'تقرير أداء المشروع الأسبوعي — :project',
     'email_body'          => 'يرجى الاطلاع على تقرير الأداء المرفق للمشروع :project.',
+    'page_footer'         => 'صفحة :page من :total',
 ];

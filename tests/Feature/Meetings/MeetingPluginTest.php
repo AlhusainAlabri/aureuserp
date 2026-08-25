@@ -21,6 +21,7 @@ use Webkul\Meetings\Models\Meeting;
 use Webkul\Meetings\Models\MeetingAttachment;
 use Webkul\Meetings\Models\MeetingAttendee;
 use Webkul\Meetings\Models\MeetingTask;
+use Webkul\Meetings\Support\MeetingDateFormatter;
 use Webkul\Project\Models\Project;
 use Webkul\Project\Models\ProjectStage;
 use Webkul\Security\Models\User;
@@ -572,4 +573,50 @@ it('MeetingPluginTest: calendar page includes helper subheading in Arabic', func
 
     expect(app(MeetingCalendar::class)->getSubheading())
         ->toContain('إضافة محضر');
+});
+
+it('MeetingPluginTest: calendar widget uses custom view with status legend support', function (): void {
+    expect(invade(app(MeetingCalendarWidget::class))->view)
+        ->toBe('meetings::filament.widgets.meeting-calendar')
+        ->and(app(MeetingCalendarWidget::class)->getStatusLegendItems())
+        ->toHaveCount(4);
+});
+
+it('MeetingPluginTest: dashboard subheading includes click hint in Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(app(MeetingDashboard::class)->getSubheading())
+        ->toBe(__('meetings::meetings.dashboard.stats.click_hint'));
+});
+
+it('MeetingPluginTest: upcoming meetings date format follows locale', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+    $meeting = Meeting::factory()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => '2026-05-20 14:30:00',
+    ]);
+
+    app()->setLocale('en');
+    $englishDate = MeetingDateFormatter::formatDateTime($meeting->meeting_date);
+    expect($englishDate)->not->toContain('،');
+
+    app()->setLocale('ar');
+    $arabicDate = MeetingDateFormatter::formatDateTime($meeting->meeting_date);
+    expect($arabicDate)->toContain('،');
+});
+
+it('MeetingPluginTest: calendar event titles use translated format', function (): void {
+    meetingsUser(['view_any_meetings_meeting']);
+    $meeting = Meeting::factory()->confirmed()->create([
+        'company_id'   => meetingsCompany()->id,
+        'meeting_date' => now()->addDay(),
+    ]);
+
+    $widget = app(MeetingCalendarWidget::class);
+    $title = invade($widget)->meetingEventTitle($meeting);
+
+    expect($title)->toBe(__('meetings::meetings.calendar.event_title', [
+        'number' => $meeting->meeting_number,
+        'title'  => $meeting->title,
+    ]));
 });

@@ -4,9 +4,10 @@ namespace App\Services\Projects;
 
 use App\Mail\Tasks\TaskDeadlineReminderMail;
 use App\Models\Projects\UserTaskReminderPreference;
-use Filament\Notifications\Notification;
+use App\Services\Notifications\NotificationChannel;
+use App\Services\Notifications\NotificationDefinition;
+use App\Services\Notifications\NotificationDispatcher;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Task;
@@ -14,6 +15,10 @@ use Webkul\Security\Models\User;
 
 class TaskNotificationService
 {
+    public function __construct(
+        private readonly NotificationDispatcher $notifications,
+    ) {}
+
     public function notifyNewAssignment(Task $task): void
     {
         if (! Schema::hasTable('projects_task_users')) {
@@ -27,10 +32,11 @@ class TaskNotificationService
                 continue;
             }
 
-            $this->sendDatabaseNotification(
-                $user,
-                __('tasks.notifications.assigned.title'),
-                __('tasks.notifications.assigned.body', ['title' => $task->title]),
+            $this->dispatchDatabaseOnly(
+                key: 'tasks.assigned',
+                recipient: $user,
+                title: __('tasks.notifications.assigned.title'),
+                body: __('tasks.notifications.assigned.body', ['title' => $task->title]),
             );
         }
     }
@@ -44,10 +50,11 @@ class TaskNotificationService
                 continue;
             }
 
-            $this->sendDatabaseNotification(
-                $user,
-                __('tasks.notifications.status_changed.title'),
-                __('tasks.notifications.status_changed.body', [
+            $this->dispatchDatabaseOnly(
+                key: 'tasks.status_changed',
+                recipient: $user,
+                title: __('tasks.notifications.status_changed.title'),
+                body: __('tasks.notifications.status_changed.body', [
                     'title'  => $task->title,
                     'status' => TaskStatePresenter::label($task->state),
                 ]),
@@ -93,26 +100,44 @@ class TaskNotificationService
                 continue;
             }
 
+            $isOverdue = $daysUntilDue < 0;
+            $title = $isOverdue
+                ? __('tasks.notifications.overdue.title')
+                : __('tasks.notifications.deadline.title');
+            $body = $isOverdue
+                ? __('tasks.notifications.overdue.body', ['title' => $task->title])
+                : __('tasks.notifications.deadline.body', [
+                    'title' => $task->title,
+                    'date'  => $task->deadline->format('d M Y'),
+                ]);
+
+            $definition = NotificationDefinition::make($isOverdue ? 'tasks.deadline.overdue' : 'tasks.deadline.reminder')
+                ->recipients([$user])
+                ->title($title)
+                ->body($body)
+                ->icon('heroicon-o-clipboard-document-check')
+                ->channels([NotificationChannel::Database, NotificationChannel::Mail])
+                ->databaseWhen(fn (User $recipient): bool => $preferences->database_enabled)
+                ->emailWhen(fn (User $recipient): bool => $preferences->email_enabled && filled($recipient->email))
+                ->mail(fn (User $recipient): TaskDeadlineReminderMail => new TaskDeadlineReminderMail($task, $recipient, $daysUntilDue))
+                ->build();
+
+            $channelsSent = 0;
+
             if ($preferences->database_enabled) {
-                $this->sendDatabaseNotification(
-                    $user,
-                    $daysUntilDue < 0
-                        ? __('tasks.notifications.overdue.title')
-                        : __('tasks.notifications.deadline.title'),
-                    $daysUntilDue < 0
-                        ? __('tasks.notifications.overdue.body', ['title' => $task->title])
-                        : __('tasks.notifications.deadline.body', [
-                            'title' => $task->title,
-                            'date'  => $task->deadline->format('d M Y'),
-                        ]),
-                );
-                $sent++;
+                $channelsSent++;
             }
 
             if ($preferences->email_enabled && filled($user->email)) {
-                Mail::to($user)->queue(new TaskDeadlineReminderMail($task, $user, $daysUntilDue));
-                $sent++;
+                $channelsSent++;
             }
+
+            if ($channelsSent === 0) {
+                continue;
+            }
+
+            $this->notifications->dispatch($definition);
+            $sent += $channelsSent;
         }
 
         return $sent;
@@ -149,12 +174,16 @@ class TaskNotificationService
         );
     }
 
-    protected function sendDatabaseNotification(User $user, string $title, string $body): void
+    protected function dispatchDatabaseOnly(string $key, User $recipient, string $title, string $body): void
     {
-        Notification::make()
-            ->title($title)
-            ->body($body)
-            ->icon('heroicon-o-clipboard-document-check')
-            ->sendToDatabase($user);
+        $this->notifications->dispatch(
+            NotificationDefinition::make($key)
+                ->recipients([$recipient])
+                ->title($title)
+                ->body($body)
+                ->icon('heroicon-o-clipboard-document-check')
+                ->channels([NotificationChannel::Database])
+                ->build(),
+        );
     }
 }

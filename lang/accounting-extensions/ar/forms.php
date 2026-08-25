@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'state' => 'الحالة',
+    'state'        => 'الحالة',
+    'open-product' => 'فتح المنتج',
 ];

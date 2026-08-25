@@ -6,43 +6,65 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Webkul\Support\Models\EmailLog;
+use Webkul\Support\Support\TransactionalMail;
 
 class EmailService
 {
-    public function send(string $view, string $mailClass, array $payload, array $attachments = [])
+    /**
+     * @param  array<int, array<string, mixed>>  $attachments
+     */
+    public function send(string $view, string $mailClass, array $payload, array $attachments = []): bool
     {
+        $payload = TransactionalMail::enrichPayload($payload);
+
         try {
-            $payload['from'] = [
-                'address' => Auth::user()->email,
-                'name'    => Auth::user()->name,
-            ];
-
-            if (Auth::user()->defaultCompany) {
-                $payload['from']['company'] = Auth::user()->defaultCompany->toArray();
-            }
-
             Mail::to($payload['to']['address'], '"'.addslashes($payload['to']['name']).'"')
-                ->send((new $mailClass($view, $payload))->withAttachments($attachments));
+                ->queue((new $mailClass($view, $payload))->withAttachments($attachments));
 
-            $this->logEmail($payload['to']['address'], $payload['to']['name'], $payload['subject'], 'sent');
+            $this->logEmail(
+                recipientEmail: $payload['to']['address'],
+                recipientName: $payload['to']['name'],
+                subject: $payload['subject'],
+                status: 'queued',
+                mailClass: $mailClass,
+            );
 
             return true;
-        } catch (Exception $e) {
-            $this->logEmail($payload['to']['address'], $payload['to']['name'], $payload['subject'], 'failed', $e->getMessage());
+        } catch (Exception $exception) {
+            $this->logEmail(
+                recipientEmail: $payload['to']['address'],
+                recipientName: $payload['to']['name'],
+                subject: $payload['subject'],
+                status: 'failed',
+                errorMessage: $exception->getMessage(),
+                mailClass: $mailClass,
+            );
 
-            throw $e;
+            throw $exception;
         }
     }
 
-    protected function logEmail(string $recipientEmail, string $recipientName, string $subject, string $status, ?string $errorMessage = null)
-    {
+    protected function logEmail(
+        string $recipientEmail,
+        string $recipientName,
+        string $subject,
+        string $status,
+        ?string $errorMessage = null,
+        ?string $mailClass = null,
+        ?int $emailTemplateId = null,
+        ?array $variables = null,
+    ): void {
         EmailLog::create([
-            'recipient_email' => $recipientEmail,
-            'recipient_name'  => $recipientName,
-            'subject'         => $subject,
-            'status'          => $status,
-            'error_message'   => $errorMessage,
-            'sent_at'         => now(),
+            'email_template_id' => $emailTemplateId,
+            'recipient_email'   => $recipientEmail,
+            'recipient_name'    => $recipientName,
+            'subject'           => $subject,
+            'variables'         => $variables,
+            'sender_user_id'    => Auth::id(),
+            'mail_class'        => $mailClass,
+            'status'            => $status,
+            'error_message'     => $errorMessage,
+            'sent_at'           => now(),
         ]);
     }
 }

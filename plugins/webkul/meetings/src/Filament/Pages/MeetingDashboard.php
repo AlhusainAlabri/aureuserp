@@ -51,6 +51,11 @@ class MeetingDashboard extends BaseDashboard
         return __('meetings::meetings.navigation.dashboard');
     }
 
+    public function getSubheading(): ?string
+    {
+        return __('meetings::meetings.dashboard.stats.click_hint');
+    }
+
     public function filtersForm(Schema $schema): Schema
     {
         return $schema->components([

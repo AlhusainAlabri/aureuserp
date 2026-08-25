@@ -50,18 +50,12 @@ class DocumentDashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
-        $widgets = [
+        return [
             TopTagsChartWidget::class,
             StorageByFolderChartWidget::class,
+            ExpiringSoonFilesWidget::class,
+            RecentFilesWidget::class,
         ];
-
-        if (request('filter') === 'expiring') {
-            $widgets[] = ExpiringSoonFilesWidget::class;
-        }
-
-        $widgets[] = RecentFilesWidget::class;
-
-        return $widgets;
     }
 
     public function getColumns(): int|array

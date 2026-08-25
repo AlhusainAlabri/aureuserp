@@ -12,4 +12,8 @@ return [
     'errors' => [
         'not_approved' => 'This record must be fully approved before it can be posted.',
     ],
+
+    'placeholders' => [
+        'not_available' => 'N/A',
+    ],
 ];

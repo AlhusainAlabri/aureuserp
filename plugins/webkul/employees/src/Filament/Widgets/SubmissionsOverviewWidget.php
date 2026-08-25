@@ -8,6 +8,8 @@ use Webkul\Employee\Models\EmployeeSubmission;
 
 class SubmissionsOverviewWidget extends StatsOverviewWidget
 {
+    protected ?string $pollingInterval = null;
+
     protected function getStats(): array
     {
         return [

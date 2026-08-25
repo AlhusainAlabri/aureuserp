@@ -29,7 +29,7 @@
             <th>{{ __('payroll::payroll.fields.employee') }}</th>
             <td>{{ $employee?->name }}</td>
             <th>{{ __('payroll::payroll.fields.period') }}</th>
-            <td>{{ sprintf('%02d/%d', $payslip->period_month, $payslip->period_year) }}</td>
+            <td>{{ \Webkul\Payroll\Support\PayrollCalendar::formatPeriod((int) $payslip->period_month, (int) $payslip->period_year) }}</td>
         </tr>
         <tr>
             <th>{{ __('payroll::payroll.fields.department') }}</th>

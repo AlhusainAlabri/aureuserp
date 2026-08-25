@@ -7,12 +7,16 @@ use Filament\Widgets\Widget;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Enums\PayslipStatus;
 use Webkul\Payroll\Filament\Pages\MyPayslips;
+use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Services\PayslipPdfService;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class MyPayslipWidget extends Widget
 {
     protected static ?int $sort = 9;
+
+    protected ?string $pollingInterval = null;
 
     protected int|string|array $columnSpan = 1;
 
@@ -50,12 +54,22 @@ class MyPayslipWidget extends Widget
 
         return response()->download(
             storage_path('app/private/'.$path),
-            'Payslip_'.$this->latestPayslip->reference_number.'.pdf',
+            __('dashboard.payslip_filename', ['reference' => $this->latestPayslip->reference_number]),
         );
     }
 
     public function getMyPayslipsUrl(): string
     {
         return MyPayslips::getUrl();
+    }
+
+    public function formatMoney(float $amount): string
+    {
+        return SalaryComponentResource::formatMoney($amount);
+    }
+
+    public function formatPeriod(Payslip $payslip): string
+    {
+        return PayrollCalendar::formatPeriod((int) $payslip->period_month, (int) $payslip->period_year);
     }
 }

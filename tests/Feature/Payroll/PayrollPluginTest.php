@@ -217,8 +217,9 @@ it('PayrollPluginTest: payslip reference auto-generates', function (): void {
 
 it('PayrollPluginTest: batch reference auto-generates', function (): void {
     $batch = PayrollBatch::factory()->create([
-        'period_year'  => 2026,
-        'period_month' => 5,
+        'period_year'        => 2026,
+        'period_month'       => 5,
+        'reference_number'   => null,
     ]);
 
     expect($batch->reference_number)->toBe('PAY-2026-05');

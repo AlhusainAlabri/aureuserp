@@ -21,6 +21,8 @@ class ExpiringCertificatesWidget extends BaseWidget
 
     protected static bool $isLazy = true;
 
+    protected ?string $pollingInterval = null;
+
     protected function getHeading(): ?string
     {
         return __('hr-extensions::widgets.expiring_certificates');

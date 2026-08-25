@@ -28,7 +28,14 @@ class SetLocale
         $user = $request->user();
 
         if ($user !== null) {
+            $sessionLocale = $this->pick(Session::get('locale'), $supported);
+
+            if ($sessionLocale !== null && $this->pick($user->language ?? null, $supported) !== $sessionLocale) {
+                $user->forceFill(['language' => $sessionLocale])->save();
+            }
+
             $locale = $queryLang
+                ?? $sessionLocale
                 ?? $this->pick($user->language ?? null, $supported)
                 ?? $fallback;
 

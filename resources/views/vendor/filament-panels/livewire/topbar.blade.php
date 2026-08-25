@@ -2,8 +2,10 @@
     @php
         use App\Support\AdminNavigationMenu;
         use App\Support\DashboardNavigationOrder;
+        use App\Support\Navigation\NavigationMode;
 
         $navigation = filament()->getNavigation();
+        $navigationMode = NavigationMode::resolve();
         $isRtl = __('filament-panels::layout.direction') === 'rtl';
         $isSidebarCollapsibleOnDesktop = filament()->isSidebarCollapsibleOnDesktop();
         $isSidebarFullyCollapsibleOnDesktop = filament()->isSidebarFullyCollapsibleOnDesktop();
@@ -11,7 +13,7 @@
         $hasNavigation = filament()->hasNavigation();
         $hasTenancy = filament()->hasTenancy();
         $isAdminPanel = filament()->getCurrentPanel()->getId() === 'admin';
-        $primaryMenuItems = $isAdminPanel
+        $primaryMenuItems = $isAdminPanel && $navigationMode->usesAppGrid()
             ? AdminNavigationMenu::primaryMenuItems(
                 $navigation,
                 filament()->getCurrentPanel()->getNavigationGroups(),
@@ -49,7 +51,7 @@
                 class="fi-topbar-close-sidebar-btn"
             />
 
-            @if ($isAdminPanel)
+            @if ($isAdminPanel && $navigationMode->usesAppGrid())
                 <x-filament::dropdown placement="bottom-start" teleport width="sm">
                     <x-slot name="trigger">
                         <x-filament::icon-button icon="icon-menu" />
@@ -85,7 +87,7 @@
         @endif
 
         <div class="fi-topbar-start" style="margin-right: 0">
-            @if ($isSidebarCollapsibleOnDesktop)
+            @if ($hasTopNavigation && $isSidebarCollapsibleOnDesktop)
                 <x-filament::icon-button
                     color="gray"
                     :icon="$isRtl ? \Filament\Support\Icons\Heroicon::OutlinedChevronLeft : \Filament\Support\Icons\Heroicon::OutlinedChevronRight"
@@ -107,7 +109,7 @@
                 />
             @endif
 
-            @if ($isSidebarCollapsibleOnDesktop || $isSidebarFullyCollapsibleOnDesktop)
+            @if ($hasTopNavigation && ($isSidebarCollapsibleOnDesktop || $isSidebarFullyCollapsibleOnDesktop))
                 <x-filament::icon-button
                     color="gray"
                     :icon="$isRtl ? \Filament\Support\Icons\Heroicon::OutlinedChevronRight : \Filament\Support\Icons\Heroicon::OutlinedChevronLeft"

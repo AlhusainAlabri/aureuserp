@@ -253,7 +253,7 @@
                                 <td>{{ $item->product->uom->name }}</td>
                             @endif
 
-                            <td>{{ number_format($item->price_unit, 2) }}</td>
+                            <td>{{ number_format($item->price_unit, 3) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

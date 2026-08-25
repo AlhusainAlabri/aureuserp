@@ -2,7 +2,7 @@
     <div class="space-y-6">
         {{ $this->form }}
 
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <x-filament::section>
                 <p class="text-sm text-gray-500">{{ __('payroll::payroll.reports.payslip_count') }}</p>
                 <p class="text-2xl font-semibold">{{ $this->summary['payslip_count'] }}</p>
@@ -14,6 +14,10 @@
             <x-filament::section>
                 <p class="text-sm text-gray-500">{{ __('payroll::payroll.reports.total_gross') }}</p>
                 <p class="text-2xl font-semibold">{{ $this->formatMoney($this->summary['total_gross']) }}</p>
+            </x-filament::section>
+            <x-filament::section>
+                <p class="text-sm text-gray-500">{{ __('payroll::payroll.reports.total_deductions') }}</p>
+                <p class="text-2xl font-semibold">{{ $this->formatMoney($this->summary['total_deductions']) }}</p>
             </x-filament::section>
             <x-filament::section>
                 <p class="text-sm text-gray-500">{{ __('payroll::payroll.reports.total_net') }}</p>

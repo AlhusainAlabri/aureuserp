@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Hr\EmployeeTraining;
+use App\Services\Hr\HrNotificationService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Security\Models\User;
@@ -15,7 +15,7 @@ class NotifyExpiringTrainingCertificates extends Command
 
     protected $description = 'Send notifications for training certificates expiring within 60 days';
 
-    public function handle(): int
+    public function handle(HrNotificationService $notifications): int
     {
         if (! Schema::hasTable('employee_trainings')) {
             $this->warn('employee_trainings table not found.');
@@ -37,18 +37,21 @@ class NotifyExpiringTrainingCertificates extends Command
             ->get();
 
         foreach ($trainings as $training) {
-            $recipients = $this->resolveRecipients($training);
+            $title = __('hr-extensions::training.notifications.expiring.title');
+            $body = __('hr-extensions::training.notifications.expiring.body', [
+                'employee' => $training->employee?->name ?? '—',
+                'course'   => $training->course_name,
+                'date'     => $training->certificate_expiry_date?->format('Y-m-d') ?? '—',
+            ]);
 
-            foreach ($recipients as $user) {
-                Notification::make()
-                    ->title(__('hr-extensions::training.notifications.expiring.title'))
-                    ->body(__('hr-extensions::training.notifications.expiring.body', [
-                        'employee' => $training->employee?->name ?? '—',
-                        'course'   => $training->course_name,
-                        'date'     => $training->certificate_expiry_date?->format('Y-m-d') ?? '—',
-                    ]))
-                    ->warning()
-                    ->sendToDatabase($user);
+            foreach ($this->resolveRecipients($training) as $user) {
+                $notifications->dispatchAlert(
+                    recipient: $user,
+                    notificationKey: 'hr.expiring_training',
+                    title: $title,
+                    body: $body,
+                    dedupKey: "hr.expiring_training:{$training->id}:user:{$user->id}:{$today->toDateString()}",
+                );
             }
 
             $training->update(['certificate_notified_at' => $today]);

@@ -7,10 +7,10 @@
         @if ($latestPayslip)
             <div class="space-y-2">
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ sprintf('%02d/%d', $latestPayslip->period_month, $latestPayslip->period_year) }}
+                    {{ $this->formatPeriod($latestPayslip) }}
                 </p>
                 <p class="text-2xl font-bold text-primary-600">
-                    ر.ع. {{ number_format((float) $latestPayslip->net_amount, 3) }}
+                    {{ $this->formatMoney((float) $latestPayslip->net_amount) }}
                 </p>
                 <div class="flex gap-2 pt-2">
                     <x-filament::button tag="a" :href="$this->getMyPayslipsUrl()" size="sm" color="gray" icon="heroicon-o-eye">

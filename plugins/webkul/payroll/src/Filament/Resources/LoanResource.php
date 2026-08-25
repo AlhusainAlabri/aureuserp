@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Filament\Resources;
 
+use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -32,7 +33,6 @@ use Webkul\Payroll\Filament\Resources\LoanResource\Pages\ViewLoan;
 use Webkul\Payroll\Filament\Resources\LoanResource\RelationManagers\InstallmentsRelationManager;
 use Webkul\Payroll\Models\Loan;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class LoanResource extends Resource

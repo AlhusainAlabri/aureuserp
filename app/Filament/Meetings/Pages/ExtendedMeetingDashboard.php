@@ -31,7 +31,7 @@ class ExtendedMeetingDashboard extends BaseMeetingDashboard
 
     public function getSubheading(): ?string
     {
-        return __('dashboard.hub.meetings_description');
+        return __('dashboard.hub.meetings_description').' '.__('meetings::meetings.dashboard.stats.click_hint');
     }
 
     public function filtersForm(Schema $schema): Schema

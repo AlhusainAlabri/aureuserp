@@ -39,6 +39,7 @@ use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\ViewDocFile;
 use Webkul\DocumentArchive\Filament\Tables\DocumentTagTable;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Models\DocFolder;
+use Webkul\DocumentArchive\Services\DocumentAccessService;
 use Webkul\DocumentArchive\Services\DocumentStorageService;
 use Webkul\Meetings\Models\Meeting;
 use Webkul\Project\Models\Project;
@@ -340,6 +341,20 @@ class DocFileResource extends Resource
             'view'   => ViewDocFile::route('/{record}'),
             'edit'   => EditDocFile::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        app(DocumentAccessService::class)->applyAccessibleFilesScope($query);
+
+        return $query;
+    }
+
+    public static function accessibleFilesQuery(): Builder
+    {
+        return app(DocumentAccessService::class)->applyAccessibleFilesScope(DocFile::query());
     }
 
     protected static function projectOptions(): array

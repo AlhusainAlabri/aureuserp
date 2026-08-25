@@ -2,8 +2,6 @@
 
 namespace App\Filament\Assets\Concerns;
 
-use App\Filament\Assets\Actions\ApproveBorrowingAction;
-use App\Filament\Assets\Actions\RejectBorrowingAction;
 use App\Filament\Assets\Resources\AssetBorrowingResource;
 use App\Support\FilamentUrl;
 use Filament\Actions\ViewAction;
@@ -14,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Webkul\Assets\Enums\BorrowingStatus;
 use Webkul\Assets\Models\AssetBorrowing;
+use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
 
 trait ConfiguresAssetBorrowingTable
 {
@@ -35,6 +34,8 @@ trait ConfiguresAssetBorrowingTable
                 TextColumn::make('status')
                     ->label(__('assets::assets.fields.borrowing_status'))
                     ->badge(),
+                ApprovalStatusColumn::make()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('due_at')
                     ->label(__('assets::assets.fields.due_at'))
                     ->formatStateUsing(fn ($state): ?string => static::formatBorrowingDateTime($state))
@@ -61,8 +62,6 @@ trait ConfiguresAssetBorrowingTable
                     ->url(fn (AssetBorrowing $record): string => FilamentUrl::appendLocaleToUrl(
                         AssetBorrowingResource::getUrl('view', ['record' => $record->id]),
                     )),
-                ApproveBorrowingAction::makeTableAction(),
-                RejectBorrowingAction::makeTableAction(),
             ])
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading(__('assets-extensions::requests.empty.heading'))

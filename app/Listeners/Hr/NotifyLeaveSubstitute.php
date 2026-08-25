@@ -3,15 +3,21 @@
 namespace App\Listeners\Hr;
 
 use App\Mail\LeaveSubstituteRequestMail;
+use App\Services\Notifications\NotificationChannel;
+use App\Services\Notifications\NotificationDefinition;
+use App\Services\Notifications\NotificationDispatcher;
 use Filament\Actions\Action;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Webkul\Security\Models\User;
 use Webkul\TimeOff\Filament\Clusters\MyTime\Resources\MyTimeOffResource;
 use Webkul\TimeOff\Models\Leave;
 
 class NotifyLeaveSubstitute
 {
+    public function __construct(
+        private readonly NotificationDispatcher $notifications,
+    ) {}
+
     public function handleCreated(Leave $leave): void
     {
         if (! $this->hasSubstituteColumns()) {
@@ -30,24 +36,28 @@ class NotifyLeaveSubstitute
             return;
         }
 
-        Mail::to($substituteUser)->queue(new LeaveSubstituteRequestMail($leave));
-
         $viewUrl = MyTimeOffResource::getUrl('view', ['record' => $leave->id]);
 
-        Notification::make()
-            ->title(__('hr-extensions::leave.notifications.substitute_request.title'))
-            ->body(__('hr-extensions::leave.notifications.substitute_request.body', [
-                'employee' => $leave->employee?->name ?? '—',
-                'start'    => $leave->date_from?->format('Y-m-d') ?? '—',
-                'end'      => $leave->date_to?->format('Y-m-d') ?? '—',
-            ]))
-            ->warning()
-            ->actions([
-                Action::make('view')
-                    ->label(__('hr-extensions::leave.actions.view_leave'))
-                    ->url($viewUrl),
-            ])
-            ->sendToDatabase($substituteUser);
+        $this->notifications->dispatch(
+            NotificationDefinition::make('hr.leave.substitute_request')
+                ->recipients([$substituteUser])
+                ->title(__('hr-extensions::leave.notifications.substitute_request.title'))
+                ->body(__('hr-extensions::leave.notifications.substitute_request.body', [
+                    'employee' => $leave->employee?->name ?? '—',
+                    'start'    => $leave->date_from?->format('Y-m-d') ?? '—',
+                    'end'      => $leave->date_to?->format('Y-m-d') ?? '—',
+                ]))
+                ->color('warning')
+                ->required()
+                ->actions([
+                    Action::make('view')
+                        ->label(__('hr-extensions::leave.actions.view_leave'))
+                        ->url($viewUrl),
+                ])
+                ->channels([NotificationChannel::Database, NotificationChannel::Mail])
+                ->mail(fn (User $recipient) => new LeaveSubstituteRequestMail($leave))
+                ->build(),
+        );
     }
 
     protected function hasSubstituteColumns(): bool

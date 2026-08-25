@@ -7,6 +7,7 @@ use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Webkul\Employee\Models\EmployeeSubmission;
 
 class OpenSubmissionsWidget extends BaseWidget
 {
@@ -14,6 +15,8 @@ class OpenSubmissionsWidget extends BaseWidget
     use InteractsWithPageFilters;
 
     protected static ?int $sort = 16;
+
+    protected ?string $pollingInterval = null;
 
     protected function getHeading(): ?string
     {
@@ -38,21 +41,26 @@ class OpenSubmissionsWidget extends BaseWidget
     protected function getStats(): array
     {
         try {
-            if (! SchemaMemo::hasTable('employee_submissions')) {
+            if (! SchemaMemo::hasTable('employees_employee_submissions')
+                || ! class_exists(EmployeeSubmission::class)) {
                 return [
                     Stat::make(__('dashboard.widgets.open_submissions'), __('dashboard.plugin_not_installed'))
                         ->color('gray'),
                 ];
             }
 
+            $open = EmployeeSubmission::query()->open()->count();
+            $underReview = EmployeeSubmission::query()->underReview()->count();
+            $thisMonth = EmployeeSubmission::query()->thisMonth()->count();
+
             return [
-                Stat::make(__('dashboard.stats.open_submissions'), 0)
-                    ->color('success')
+                Stat::make(__('dashboard.stats.open_submissions'), $open)
+                    ->color($open > 0 ? 'warning' : 'success')
                     ->icon('heroicon-o-inbox'),
-                Stat::make(__('dashboard.stats.under_review'), 0)
-                    ->color('success')
+                Stat::make(__('dashboard.stats.under_review'), $underReview)
+                    ->color($underReview > 0 ? 'warning' : 'success')
                     ->icon('heroicon-o-eye'),
-                Stat::make(__('dashboard.stats.this_month_total'), 0)
+                Stat::make(__('dashboard.stats.this_month_total'), $thisMonth)
                     ->color('info')
                     ->icon('heroicon-o-chart-bar'),
             ];

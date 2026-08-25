@@ -15,6 +15,8 @@ use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\QuotationResource\P
 
 class QuotationResource extends CoreQuotationResource
 {
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
+
     public static function getPluralModelLabel(): string
     {
         return __('purchases-extensions::request.navigation.quotations');

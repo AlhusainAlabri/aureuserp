@@ -19,9 +19,14 @@ class PurchaseOrder extends Order
         parent::boot();
 
         static::updating(function (self $order) {
+            $state = $order->state instanceof OrderState
+                ? $order->state->value
+                : $order->state;
+
             if (
                 $order->isDirty('state')
-                && in_array($order->state, [OrderState::PURCHASE->value, OrderState::DONE->value])
+                && in_array($state, [OrderState::PURCHASE->value, OrderState::DONE->value], true)
+                && $order->hasActiveApprovalFlow()
                 && ! $order->isApproved()
             ) {
                 throw new \RuntimeException(

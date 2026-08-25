@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets\Dashboard;
 
 use App\Models\Hr\EmployeeSalaryRaise;
+use App\Support\OmrFormatter;
 use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -17,6 +18,8 @@ class RecentRaisesWidget extends BaseWidget
     protected static ?int $sort = 6;
 
     protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
 
     public function getColumnSpan(): int|string|array
     {
@@ -57,7 +60,7 @@ class RecentRaisesWidget extends BaseWidget
                     ->date(),
                 TextColumn::make('raise_amount')
                     ->label(__('hr-extensions::salary_raise.fields.raise_amount'))
-                    ->formatStateUsing(fn (?string $state): string => 'OMR '.number_format((float) $state, 3))
+                    ->formatStateUsing(fn (?string $state): string => OmrFormatter::format($state))
                     ->color(fn (?string $state): string => (float) $state >= 0 ? 'success' : 'danger'),
                 TextColumn::make('raise_percent')
                     ->label(__('hr-extensions::salary_raise.fields.raise_percent'))

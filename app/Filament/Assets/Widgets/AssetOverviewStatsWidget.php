@@ -24,7 +24,8 @@ class AssetOverviewStatsWidget extends BaseWidget
     {
         return [
             'default' => 1,
-            'md'      => 3,
+            'sm'      => 2,
+            'lg'      => 4,
         ];
     }
 
@@ -38,11 +39,18 @@ class AssetOverviewStatsWidget extends BaseWidget
             ];
         }
 
+        $pending = $this->countPendingRequests();
         $available = $this->countAvailableAssets();
         $borrowed = $this->countBorrowedAssets();
         $overdue = $this->countOverdueBorrowings();
 
         return [
+            Stat::make(__('assets-extensions::dashboard.pending_requests'), $pending)
+                ->description(__('assets-extensions::dashboard.view_pending'))
+                ->descriptionIcon('heroicon-m-clock', IconPosition::Before)
+                ->color($pending > 0 ? 'warning' : 'success')
+                ->url($this->pendingRequestsUrl())
+                ->extraAttributes(['class' => 'cursor-pointer']),
             Stat::make(__('assets::assets.widgets.stats.available'), $available)
                 ->description(__('assets::assets.widgets.stats.available_hint'))
                 ->descriptionIcon('heroicon-m-check-circle', IconPosition::Before)
@@ -59,7 +67,7 @@ class AssetOverviewStatsWidget extends BaseWidget
                 ->description(__('assets::assets.widgets.stats.overdue_hint'))
                 ->descriptionIcon('heroicon-m-exclamation-triangle', IconPosition::Before)
                 ->color($overdue > 0 ? 'danger' : 'gray')
-                ->url($this->allAssetsUrl())
+                ->url($this->borrowedAssetsUrl())
                 ->extraAttributes(['class' => 'cursor-pointer']),
         ];
     }

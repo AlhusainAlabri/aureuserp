@@ -167,7 +167,7 @@ trait EmployeeWarningsRelation
                     )
                     ->after(function ($record) {
                         if ($record->employee?->work_email) {
-                            Mail::to($record->employee->work_email)->send(new EmployeeWarningMail($record));
+                            Mail::to($record->employee->work_email)->queue(new EmployeeWarningMail($record));
                         }
                     }),
             ])
@@ -192,7 +192,7 @@ trait EmployeeWarningsRelation
                     ->color('primary')
                     ->visible(fn ($record) => filled($record->employee?->work_email))
                     ->action(function ($record) {
-                        Mail::to($record->employee->work_email)->send(new EmployeeWarningMail($record));
+                        Mail::to($record->employee->work_email)->queue(new EmployeeWarningMail($record));
 
                         Notification::make()
                             ->success()

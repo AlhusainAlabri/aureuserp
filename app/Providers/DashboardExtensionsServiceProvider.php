@@ -7,7 +7,9 @@ use App\Filament\DocumentArchive\Pages\ExtendedDocumentDashboard;
 use App\Filament\Meetings\Pages\ExtendedMeetingDashboard;
 use App\Filament\Projects\Pages\ExtendedProjectDashboard;
 use App\Filament\Recruitment\Pages\ExtendedRecruitmentDashboard;
+use App\Filament\TimeOff\Pages\ExtendedByTypeReport;
 use App\Filament\TimeOff\Pages\ExtendedTimeOffDashboard;
+use App\Filament\TimeOff\Widgets\LeaveTypeReportWidget;
 use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -16,7 +18,9 @@ use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard as BaseDocumentDashb
 use Webkul\Meetings\Filament\Pages\MeetingDashboard as BaseMeetingDashboard;
 use Webkul\Project\Filament\Pages\Dashboard as BaseProjectDashboard;
 use Webkul\Recruitment\Filament\Pages\Recruitments as BaseRecruitmentDashboard;
+use Webkul\TimeOff\Filament\Pages\ByType as BaseByTypeReport;
 use Webkul\TimeOff\Filament\Pages\Dashboard as BaseTimeOffDashboard;
+use Webkul\TimeOff\Filament\Widgets\LeaveTypeWidget as BaseLeaveTypeWidget;
 
 class DashboardExtensionsServiceProvider extends ServiceProvider
 {
@@ -39,6 +43,8 @@ class DashboardExtensionsServiceProvider extends ServiceProvider
         $this->override(BaseDocumentDashboard::class, ExtendedDocumentDashboard::class);
         $this->override(BaseRecruitmentDashboard::class, ExtendedRecruitmentDashboard::class);
         $this->override(BaseTimeOffDashboard::class, ExtendedTimeOffDashboard::class);
+        $this->override(BaseByTypeReport::class, ExtendedByTypeReport::class);
+        $this->override(BaseLeaveTypeWidget::class, LeaveTypeReportWidget::class);
     }
 
     /**

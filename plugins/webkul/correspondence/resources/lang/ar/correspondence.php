@@ -203,18 +203,32 @@ return [
     ],
 
     'dashboard' => [
+        'actions' => [
+            'view_all'           => 'عرض الكل',
+            'view_all_incoming'  => 'عرض كل الوارد',
+            'view_all_pending'   => 'عرض الصادر المعلق',
+            'view_all_urgent'    => 'عرض العاجل',
+            'view_all_tasks'     => 'عرض كل المهام',
+        ],
         'stats' => [
-            'outgoing_month'   => 'إجمالي الصادر هذا الشهر',
-            'incoming_month'   => 'إجمالي الوارد هذا الشهر',
-            'pending_approval' => 'بانتظار الموافقة',
-            'overdue'          => 'مراسلات متأخرة',
-            'my_approvals'     => 'موافقاتي المعلقة',
+            'outgoing_month'     => 'إجمالي الصادر هذا الشهر',
+            'incoming_month'     => 'إجمالي الوارد هذا الشهر',
+            'pending_approval'   => 'بانتظار الموافقة',
+            'overdue'            => 'مراسلات متأخرة',
+            'my_approvals'       => 'موافقاتي المعلقة',
+            'outgoing_hint'      => 'عرض المراسلات الصادرة',
+            'incoming_hint'      => 'عرض المراسلات الواردة',
+            'pending_hint'       => 'عرض الصادر بانتظار الموافقة',
+            'overdue_hint'       => 'عرض المراسلات المتأخرة',
+            'approvals_hint'     => 'عرض البنود بانتظار موافقتك',
+            'click_hint'         => 'انقر على البطاقة لعرض القائمة المفلترة.',
         ],
         'sections' => [
             'incoming'         => 'آخر الوارد',
             'pending_outgoing' => 'الصادر المعلق',
             'my_approvals'     => 'موافقاتي المعلقة',
             'urgent'           => 'المراسلات العاجلة',
+            'tasks'            => 'مهام المتابعة',
         ],
     ],
 

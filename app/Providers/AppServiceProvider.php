@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\LocaleAwareLoginResponse;
 use App\Livewire\ModuleLauncherGlobalSearch;
+use App\Support\Console\DestructiveCommandGuard;
 use App\Support\ExtensionSchema;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -13,8 +16,10 @@ use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -27,10 +32,15 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(Authenticatable::class, User::class);
+        $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
     }
 
     public function boot(): void
     {
+        Event::listen(CommandStarting::class, function (CommandStarting $event): void {
+            app(DestructiveCommandGuard::class)->handleCommandStarting($event);
+        });
+
         if (! app()->isProduction()) {
             ExtensionSchema::ensureAttachmentTables();
         }

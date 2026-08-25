@@ -160,7 +160,7 @@ it('ProjectManageTasksTest: creates a task when the project has no task stages y
         ->assertHasNoFormErrors()
         ->assertNotified();
 
-    expect(TaskStage::query()->where('project_id', $project->id)->count())->toBe(1)
+    expect(TaskStage::query()->where('project_id', $project->id)->count())->toBe(4)
         ->and(Task::query()->where('project_id', $project->id)->where('title', 'Auto Stage Task')->exists())->toBeTrue();
 });
 

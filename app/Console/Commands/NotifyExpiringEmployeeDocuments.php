@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Hr\HrNotificationService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Webkul\Employee\Models\EmployeeDocument;
 use Webkul\Security\Models\User;
@@ -14,7 +14,7 @@ class NotifyExpiringEmployeeDocuments extends Command
 
     protected $description = 'Send notifications for employee documents expiring within 30 days';
 
-    public function handle(): int
+    public function handle(HrNotificationService $notifications): int
     {
         $today = Carbon::today();
         $threshold = $today->copy()->addDays(30);
@@ -30,18 +30,21 @@ class NotifyExpiringEmployeeDocuments extends Command
             ->get();
 
         foreach ($documents as $document) {
-            $recipients = $this->resolveRecipients($document);
+            $title = __('employees::filament/resources/employee/relation-manager/document.notifications.expiring-soon.title');
+            $body = __('employees::filament/resources/employee/relation-manager/document.notifications.expiring-soon.body', [
+                'document_name' => $document->document_name,
+                'employee_name' => $document->employee->name,
+                'expiry_date'   => $document->expiry_date->format('Y-m-d'),
+            ]);
 
-            foreach ($recipients as $user) {
-                Notification::make()
-                    ->title(__('employees::filament/resources/employee/relation-manager/document.notifications.expiring-soon.title'))
-                    ->body(__('employees::filament/resources/employee/relation-manager/document.notifications.expiring-soon.body', [
-                        'document_name'  => $document->document_name,
-                        'employee_name'  => $document->employee->name,
-                        'expiry_date'    => $document->expiry_date->format('Y-m-d'),
-                    ]))
-                    ->warning()
-                    ->sendToDatabase($user);
+            foreach ($this->resolveRecipients($document) as $user) {
+                $notifications->dispatchAlert(
+                    recipient: $user,
+                    notificationKey: 'hr.expiring_document',
+                    title: $title,
+                    body: $body,
+                    dedupKey: "hr.expiring_document:{$document->id}:user:{$user->id}:{$today->toDateString()}",
+                );
             }
 
             $document->update(['notified_at' => $today]);

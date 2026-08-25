@@ -66,7 +66,7 @@ class ListUsers extends ListRecords
                     $invitation = Invitation::create(['email' => $data['email']]);
 
                     try {
-                        Mail::to($invitation->email)->send(new UserInvitationMail($invitation));
+                        Mail::to($invitation->email)->queue(new UserInvitationMail($invitation));
 
                         Notification::make('invitedSuccess')
                             ->title(__('security::filament/resources/user/pages/list-user.header-actions.invite.notification.success.title'))

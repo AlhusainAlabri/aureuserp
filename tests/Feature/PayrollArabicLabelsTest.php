@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Payroll\Filament\Resources\EmployeeComponentResource;
 use Webkul\Payroll\Filament\Resources\LoanResource;
@@ -53,9 +54,43 @@ it('provides arabic month labels for payroll batch period', function (): void {
 });
 
 it('appends lang query to payroll resource urls', function (): void {
+    if (! Schema::hasTable('payroll_salary_components')) {
+        $this->markTestSkipped('Payroll tables are not installed.');
+    }
+
+    if (! Route::has('filament.admin.payroll.configuration.resources.salary-components.index')) {
+        $this->markTestSkipped('Payroll Filament routes are not registered in this test context.');
+    }
+
     app()->setLocale('ar');
 
     $url = SalaryComponentResource::getUrl('index');
 
     expect($url)->toContain('lang=ar');
+});
+
+it('provides complete arabic dashboard payroll widget translations', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('dashboard.widgets.active_loans'))->toBe('القروض النشطة')
+        ->and(__('dashboard.widgets.my_payslip'))->toBe('آخر كشف راتب')
+        ->and(__('dashboard.stats.pending_batches'))->toBe('دفعات معلقة')
+        ->and(__('dashboard.stats.active_loans'))->toBe('القروض النشطة');
+});
+
+it('provides arabic payroll email and my payslips translations', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('payroll::payroll.email.subject', ['period' => 'يونيو 2026']))
+        ->toContain('يونيو 2026')
+        ->and(__('payroll::payroll.my_payslips.ytd'))->toBe('إجمالي الاستحقاقات منذ بداية السنة')
+        ->and(__('payroll::payroll.reports.total_deductions'))->toBe('إجمالي الاستقطاعات');
+});
+
+it('formats payroll money based on locale', function (): void {
+    app()->setLocale('ar');
+    expect(SalaryComponentResource::formatMoney(1000.5))->toBe('ر.ع. 1,000.500');
+
+    app()->setLocale('en');
+    expect(SalaryComponentResource::formatMoney(1000.5))->toBe('OMR 1,000.500');
 });

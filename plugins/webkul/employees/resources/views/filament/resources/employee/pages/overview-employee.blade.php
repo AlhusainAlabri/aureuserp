@@ -29,7 +29,7 @@
                     </p>
                     @if ($employee->departure_date)
                         <p class="mt-0.5 text-xs text-danger-600 dark:text-danger-400">
-                            {{ __('employees::filament/resources/employee/pages/overview-employee.banner.departed-on', ['date' => $employee->departure_date->format('d M Y')]) }}
+                            {{ __('employees::filament/resources/employee/pages/overview-employee.banner.departed-on', ['date' => \App\Support\OmrFormatter::localizedDate($employee->departure_date)]) }}
                         </p>
                     @endif
                 </div>
@@ -243,7 +243,7 @@
                                 {{ $employee->civil_id }}
                                 @if ($employee->civil_id_expiry)
                                     <span class="text-xs font-normal text-gray-500 dark:text-gray-400">
-                                        ({{ __('employees::filament/resources/employee/pages/overview-employee.info.civil-id-expires') }} {{ $employee->civil_id_expiry->format('d M Y') }})
+                                        ({{ __('employees::filament/resources/employee/pages/overview-employee.info.civil-id-expires') }} {{ \App\Support\OmrFormatter::localizedDate($employee->civil_id_expiry) }})
                                     </span>
                                 @endif
                             </p>
@@ -296,7 +296,7 @@
                                         {{ $doc->document_name }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                        {{ $doc->expiry_date?->format('d M Y') ?? '—' }}
+                                        {{ $doc->expiry_date ? \App\Support\OmrFormatter::localizedDate($doc->expiry_date) : '—' }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3">
                                         @if ($doc->isExpired())
@@ -358,7 +358,7 @@
                                         : ($item['color'] === 'warning'
                                             ? 'text-warning-800 dark:text-warning-200'
                                             : 'text-success-800 dark:text-success-200') }}">
-                                    {{ $item['date']->format('d M Y') }}
+                                    {{ \App\Support\OmrFormatter::localizedDate($item['date']) }}
                                 </p>
                             </div>
                             <x-filament::badge :color="$item['color']" size="sm">
@@ -403,7 +403,7 @@
                                     </p>
                                 @endif
                                 <p class="mt-1.5 text-xs text-danger-500 dark:text-danger-500">
-                                    {{ __('employees::filament/resources/employee/pages/overview-employee.warnings.issued-on', ['date' => $warning->issued_at?->format('d M Y') ?? '—']) }}
+                                    {{ __('employees::filament/resources/employee/pages/overview-employee.warnings.issued-on', ['date' => $warning->issued_at ? \App\Support\OmrFormatter::localizedDate($warning->issued_at) : '—']) }}
                                 </p>
                             </div>
                         </div>

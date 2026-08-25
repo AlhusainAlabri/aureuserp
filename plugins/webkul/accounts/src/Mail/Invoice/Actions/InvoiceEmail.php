@@ -3,52 +3,40 @@
 namespace Webkul\Account\Mail\Invoice\Actions;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Webkul\Support\Mail\Concerns\BuildsTransactionalEnvelope;
 
-class InvoiceEmail extends Mailable
+class InvoiceEmail extends Mailable implements ShouldQueue
 {
+    use BuildsTransactionalEnvelope;
     use Queueable, SerializesModels;
 
     /**
-     * Array to store attachments
+     * @var array<int, array<string, mixed>>
      */
     protected array $attachmentData = [];
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(
         public string $viewTemplate,
-        public array $payload
+        public array $payload,
     ) {}
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: $this->payload['subject'],
-            from: new Address($this->payload['from']['address'], '"'.addslashes($this->payload['from']['name']).'"'),
-        );
+        return $this->transactionalEnvelope($this->payload);
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(view: $this->viewTemplate);
     }
 
     /**
-     * Get the attachments for the message.
-     *
      * @return array<int, Attachment>
      */
     public function attachments(): array
@@ -63,7 +51,7 @@ class InvoiceEmail extends Mailable
             } elseif (isset($attachment['data'])) {
                 $attachments[] = Attachment::fromData(
                     fn () => $attachment['data'],
-                    $attachment['name']
+                    $attachment['name'],
                 )->withMime($attachment['mime'] ?? null);
             }
         }
@@ -72,7 +60,7 @@ class InvoiceEmail extends Mailable
     }
 
     /**
-     * Add attachments to the email
+     * @param  array<int, array<string, mixed>>  $attachments
      */
     public function withAttachments(array $attachments): static
     {

@@ -6,6 +6,7 @@ use App\Filament\Widgets\Dashboard\MonthlyExpenseTrendWidget;
 use App\Filament\Widgets\Dashboard\MyLeaveBalanceWidget;
 use App\Filament\Widgets\Dashboard\MyNotesBoardWidget;
 use App\Filament\Widgets\Dashboard\MyPayslipWidget;
+use App\Filament\Widgets\Dashboard\MyPendingApprovalsTableWidget;
 use App\Filament\Widgets\Dashboard\MyTasksTodayWidget;
 use App\Filament\Widgets\Dashboard\MyUpcomingMeetingsWidget;
 use App\Filament\Widgets\Dashboard\OpenSubmissionsWidget;
@@ -110,14 +111,16 @@ it('super_admin gets the general manager widget set with smart alerts first', fu
         ->and($widgets)->toContain(HeadcountWidget::class)
         ->and($widgets)->toContain(MyNotesBoardWidget::class)
         ->and($widgets)->not()->toContain(PendingApprovalsWidget::class)
-        ->and(count($widgets))->toBe(25);
+        ->and($widgets)->toContain(MyPendingApprovalsTableWidget::class)
+        ->and(count($widgets))->toBe(26);
 });
 
 it('finance manager widget set includes alerts and finance charts', function (): void {
     $widgets = Dashboard::getFinanceManagerWidgets();
 
     expect($widgets[0])->toBe(OrgDashboardCommandCenterWidget::class)
-        ->and(count($widgets))->toBe(9)
+        ->and(count($widgets))->toBe(10)
+        ->and($widgets)->toContain(MyPendingApprovalsTableWidget::class)
         ->and($widgets)->toContain(RevenueExpensesChartWidget::class)
         ->and($widgets)->toContain(MonthlyExpenseTrendWidget::class)
         ->and($widgets)->not()->toContain(HeadcountWidget::class);
@@ -138,7 +141,8 @@ it('department manager widget set includes alerts and task chart', function (): 
     $widgets = Dashboard::getDepartmentManagerWidgets();
 
     expect($widgets[0])->toBe(OrgDashboardCommandCenterWidget::class)
-        ->and(count($widgets))->toBe(8)
+        ->and(count($widgets))->toBe(9)
+        ->and($widgets)->toContain(MyPendingApprovalsTableWidget::class)
         ->and($widgets)->toContain(TasksCompletionChartWidget::class)
         ->and($widgets)->not()->toContain(PayrollSummaryWidget::class);
 });

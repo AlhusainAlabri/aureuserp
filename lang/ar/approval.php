@@ -12,4 +12,8 @@ return [
     'errors' => [
         'not_approved' => 'يجب اعتماد هذا السجل بالكامل قبل ترحيله.',
     ],
+
+    'placeholders' => [
+        'not_available' => 'غير متاح',
+    ],
 ];

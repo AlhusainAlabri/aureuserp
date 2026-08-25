@@ -8,6 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Webkul\Payroll\Enums\LoanStatus;
+use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\Loan;
 
 class ActiveLoansWidget extends BaseWidget
@@ -17,6 +18,8 @@ class ActiveLoansWidget extends BaseWidget
     protected static ?int $sort = 8;
 
     protected static ?string $heading = null;
+
+    protected ?string $pollingInterval = null;
 
     public static function canView(): bool
     {
@@ -56,18 +59,18 @@ class ActiveLoansWidget extends BaseWidget
             )
             ->columns([
                 TextColumn::make('reference_number')
-                    ->label(__('payroll::payroll.loan.fields.reference'))
+                    ->label(__('payroll::payroll.fields.reference_number'))
                     ->searchable(),
                 TextColumn::make('employee.name')
-                    ->label(__('payroll::payroll.loan.fields.employee')),
+                    ->label(__('payroll::payroll.fields.employee')),
                 TextColumn::make('total_amount')
-                    ->label(__('payroll::payroll.loan.fields.total'))
-                    ->formatStateUsing(fn ($state): string => 'ر.ع. '.number_format((float) $state, 3)),
+                    ->label(__('payroll::payroll.fields.total_amount'))
+                    ->formatStateUsing(fn ($state): string => SalaryComponentResource::formatMoney((float) $state)),
                 TextColumn::make('amount_remaining')
-                    ->label(__('payroll::payroll.loan.fields.remaining'))
-                    ->formatStateUsing(fn ($state): string => 'ر.ع. '.number_format((float) $state, 3)),
+                    ->label(__('payroll::payroll.fields.amount_remaining'))
+                    ->formatStateUsing(fn ($state): string => SalaryComponentResource::formatMoney((float) $state)),
                 TextColumn::make('progress')
-                    ->label(__('payroll::payroll.loan.fields.progress'))
+                    ->label(__('payroll::payroll.fields.progress'))
                     ->state(fn (Loan $record): string => $record->getProgressPercent().'%'),
             ])
             ->paginated(false);

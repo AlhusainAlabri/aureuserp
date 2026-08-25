@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Webkul\Payroll\Models\Payslip;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class PayslipMail extends Mailable implements ShouldQueue
 {
@@ -22,7 +23,10 @@ class PayslipMail extends Mailable implements ShouldQueue
 
     public function envelope(): Envelope
     {
-        $period = sprintf('%02d/%d', $this->payslip->period_month, $this->payslip->period_year);
+        $period = PayrollCalendar::formatPeriod(
+            (int) $this->payslip->period_month,
+            (int) $this->payslip->period_year,
+        );
 
         return new Envelope(
             subject: __('payroll::payroll.email.subject', ['period' => $period]),
@@ -31,7 +35,10 @@ class PayslipMail extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
-        $period = sprintf('%02d/%d', $this->payslip->period_month, $this->payslip->period_year);
+        $period = PayrollCalendar::formatPeriod(
+            (int) $this->payslip->period_month,
+            (int) $this->payslip->period_year,
+        );
 
         return new Content(
             view: 'emails.payroll.payslip-notification',

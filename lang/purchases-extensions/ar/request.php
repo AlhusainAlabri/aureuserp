@@ -69,6 +69,43 @@ return [
     'currency' => [
         'format' => 'ر.ع. :amount',
     ],
+    'vendor_email' => [
+        'rfq' => [
+            'subject' => 'طلب عرض أسعار #:reference',
+            'body'    => <<<'MD'
+عزيزي **:vendor**
+
+مرفق طلب عرض أسعار **:reference**.
+
+إذا كان لديك أي استفسار، لا تتردد في التواصل معنا.
+
+[قبول](:accept_url) | [رفض](:decline_url)
+
+مع التحية،
+
+--
+:sender
+MD,
+        ],
+        'po' => [
+            'subject'          => 'أمر شراء #:reference',
+            'no_planned_date'  => 'يُحدد لاحقاً',
+            'body'             => <<<'MD'
+عزيزي **:vendor**
+
+مرفق أمر الشراء **:reference** بمبلغ **:amount**.
+
+تاريخ الاستلام المتوقع: **:planned_at**.
+
+نرجو تأكيد استلام هذا الأمر.
+
+مع التحية،
+
+--
+:sender
+MD,
+        ],
+    ],
     'email' => [
         'receipt_reminder' => [
             'subject'  => 'الفاتورة مطلوبة للطلب :reference',

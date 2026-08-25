@@ -5,6 +5,7 @@ namespace Webkul\DocumentArchive\Filament\Widgets;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Webkul\DocumentArchive\Filament\Widgets\Concerns\RendersEmptyDocumentChart;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Services\DocumentAccessService;
 use Webkul\DocumentArchive\Services\DocumentTagService;
@@ -12,6 +13,8 @@ use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 
 class TopTagsChartWidget extends ChartWidget
 {
+    use RendersEmptyDocumentChart;
+
     protected static ?int $sort = 1;
 
     protected static bool $isLazy = true;
@@ -37,7 +40,7 @@ class TopTagsChartWidget extends ChartWidget
 
     protected function getOptions(): array
     {
-        return [
+        $options = [
             'indexAxis' => 'y',
             'plugins'   => [
                 'legend' => [
@@ -53,6 +56,12 @@ class TopTagsChartWidget extends ChartWidget
                 ],
             ],
         ];
+
+        if (! $this->hasChartData()) {
+            return $this->applyEmptyChartOptions($options);
+        }
+
+        return $options;
     }
 
     protected function getData(): array
@@ -60,10 +69,7 @@ class TopTagsChartWidget extends ChartWidget
         $tagCounts = $this->getTagCounts();
 
         if ($tagCounts === []) {
-            return [
-                'datasets' => [],
-                'labels'   => [],
-            ];
+            return $this->emptyChartData();
         }
 
         $labels = array_keys($tagCounts);
@@ -82,13 +88,9 @@ class TopTagsChartWidget extends ChartWidget
         ];
     }
 
-    public function getDescription(): string|Htmlable|null
+    protected function hasChartData(): bool
     {
-        if ($this->getTagCounts() === []) {
-            return __('document-archive::document-archive.dashboard.charts.empty');
-        }
-
-        return null;
+        return $this->getTagCounts() !== [];
     }
 
     /**

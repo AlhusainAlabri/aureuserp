@@ -41,6 +41,8 @@ class ProjectPerformanceReportService
             ->limit(5)
             ->get(['name', 'deadline']);
 
+        $locale = app()->getLocale();
+
         return [
             'project'            => $project,
             'completion'         => $completion,
@@ -54,10 +56,30 @@ class ProjectPerformanceReportService
             'open_tasks'         => $openTasks,
             'overdue_tasks'      => $overdueTasks,
             'upcoming_milestones'=> $upcomingMilestones,
-            'generated_at'       => now()->format('d M Y · h:i A'),
-            'period'             => now()->startOfWeek()->format('d M Y').' - '.now()->endOfWeek()->format('d M Y'),
-            'is_rtl'             => app()->getLocale() === 'ar',
+            'generated_at'       => now()->locale($locale)->translatedFormat('d M Y · h:i A'),
+            'period'             => now()->startOfWeek()->locale($locale)->translatedFormat('d M Y')
+                .' - '
+                .now()->endOfWeek()->locale($locale)->translatedFormat('d M Y'),
+            'is_rtl'             => $locale === 'ar',
+            'logo_src'           => $this->resolveLogoSrc(),
         ];
+    }
+
+    protected function resolveLogoSrc(): ?string
+    {
+        foreach (['images/logo.png', 'images/logo.svg'] as $relativePath) {
+            $path = public_path($relativePath);
+
+            if (! is_file($path)) {
+                continue;
+            }
+
+            $mime = str_ends_with($relativePath, '.svg') ? 'image/svg+xml' : 'image/png';
+
+            return 'data:'.$mime.';base64,'.base64_encode((string) file_get_contents($path));
+        }
+
+        return null;
     }
 
     public function storePdf(Project $project): string

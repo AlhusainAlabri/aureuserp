@@ -2,8 +2,6 @@
 
 namespace App\Filament\Assets\Resources\AssetBorrowingResource\Pages;
 
-use App\Filament\Assets\Actions\ApproveBorrowingAction;
-use App\Filament\Assets\Actions\RejectBorrowingAction;
 use App\Filament\Assets\Resources\AssetBorrowingResource;
 use App\Filament\Traits\HasApprovalActions;
 use App\Models\Assets\AssetBorrowingEvent;
@@ -29,8 +27,6 @@ class ViewAssetBorrowing extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            ApproveBorrowingAction::make(),
-            RejectBorrowingAction::make(),
             ...$this->getApprovalActions(),
             Action::make('exportAuditPdf')
                 ->label(__('assets-extensions::audit.export_pdf'))

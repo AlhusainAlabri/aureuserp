@@ -5,12 +5,15 @@ namespace Webkul\DocumentArchive\Filament\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Number;
+use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard;
 use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Support\DocumentDashboardMetrics;
 use Webkul\DocumentArchive\Support\FilamentUrl;
 
 class DocumentStatsWidget extends BaseWidget
 {
+    public const EXPIRING_SECTION_ANCHOR = 'expiring-soon-files';
+
     protected static bool $isLazy = true;
 
     protected ?string $pollingInterval = null;
@@ -81,11 +84,11 @@ class DocumentStatsWidget extends BaseWidget
             return $this->expiringUrl;
         }
 
-        $url = DocumentManager::getUrl(FilamentUrl::withLocale(['filter' => 'expiring']));
+        $url = FilamentUrl::appendLocaleToUrl(
+            DocumentDashboard::getUrl(FilamentUrl::withLocale()),
+        );
 
-        return $this->expiringUrl = class_exists(FilamentUrl::class)
-            ? FilamentUrl::appendLocaleToUrl($url)
-            : $url;
+        return $this->expiringUrl = $url.'#'.self::EXPIRING_SECTION_ANCHOR;
     }
 
     protected function formatBytes(int $bytes): string

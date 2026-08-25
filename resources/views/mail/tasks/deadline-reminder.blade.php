@@ -8,7 +8,7 @@
 - **{{ __('tasks.mail.status') }}:** {{ $statusLabel }}
 - **{{ __('tasks.mail.deadline_label') }}:** {{ $deadline ?? '—' }}
 
-<x-mail::button :url="url('/admin/project/tasks/' . $task->id)">
+<x-mail::button :url="$taskUrl">
 {{ __('tasks.hub.view_all_tasks') }}
 </x-mail::button>
 

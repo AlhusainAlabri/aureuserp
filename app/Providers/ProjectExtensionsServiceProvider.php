@@ -22,6 +22,9 @@ use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\Employee\Models\Department;
 use Webkul\PluginManager\Package;
 use Webkul\Project\Filament\Clusters\Configurations;
+use Webkul\Project\Filament\Clusters\Configurations\Resources\ActivityPlanResource\RelationManagers\ActivityTemplateRelationManager;
+use Webkul\Project\Filament\Clusters\Configurations\Resources\TagResource\Pages\ManageTags;
+use Webkul\Project\Filament\Clusters\Configurations\Resources\TaskStageResource\Pages\ManageTaskStages;
 use Webkul\Project\Filament\Clusters\Settings\Pages\ManageTasks as ProjectManageTasksSettings;
 use Webkul\Project\Filament\Resources\ProjectResource\Pages\ListProjects as BaseListProjects;
 use Webkul\Project\Models\Project;
@@ -37,7 +40,7 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
 
         $this->restoreGlobalPageNavigationRegistration();
 
-        $this->registerConfigurationsClusterOverride();
+        $this->registerProjectPluginOverrides();
 
         $this->app->singleton(ProjectCompletionService::class);
         $this->app->singleton(ProjectFinancialSummaryService::class);
@@ -55,6 +58,7 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
 
         Filament::serving(function (): void {
             $this->registerLivewireOverrides();
+            $this->localizeProjectSettingsNavigationGroup();
             $this->hideProjectManageTasksSettingsFromMainNavigation();
         });
 
@@ -134,6 +138,74 @@ class ProjectExtensionsServiceProvider extends ServiceProvider
             },
             prepend: true,
         );
+    }
+
+    protected function registerProjectPluginOverrides(): void
+    {
+        $this->registerConfigurationsClusterOverride();
+
+        $overrides = [
+            ManageTags::class                      => 'Overrides/Webkul/Project/Filament/Clusters/Configurations/Resources/TagResource/Pages/ManageTags.php',
+            ManageTaskStages::class                => 'Overrides/Webkul/Project/Filament/Clusters/Configurations/Resources/TaskStageResource/Pages/ManageTaskStages.php',
+            ActivityTemplateRelationManager::class => 'Overrides/Webkul/Project/Filament/Clusters/Configurations/Resources/ActivityPlanResource/RelationManagers/ActivityTemplateRelationManager.php',
+        ];
+
+        spl_autoload_register(
+            function (string $class) use ($overrides): bool {
+                if (! isset($overrides[$class])) {
+                    return false;
+                }
+
+                require app_path($overrides[$class]);
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function localizeProjectSettingsNavigationGroup(): void
+    {
+        if (! class_exists(ProjectManageTasksSettings::class) || ! Package::isPluginInstalled('projects')) {
+            return;
+        }
+
+        $panel = Filament::getCurrentPanel();
+
+        if (! $panel || $panel->getId() !== 'admin') {
+            return;
+        }
+
+        if (! Route::has(ProjectManageTasksSettings::getRouteName($panel))) {
+            return;
+        }
+
+        $settingsUrl = ProjectManageTasksSettings::getUrl();
+
+        $reflection = new ReflectionClass($panel);
+        $property = $reflection->getProperty('navigationItems');
+        $property->setAccessible(true);
+
+        /** @var array<int, NavigationItem> $items */
+        $items = $property->getValue($panel);
+
+        $localizedItems = array_map(
+            function (NavigationItem $item) use ($settingsUrl): NavigationItem {
+                if ($item->getUrl() !== $settingsUrl) {
+                    return $item;
+                }
+
+                return NavigationItem::make('project-settings')
+                    ->label(fn (): string => __('projects::app.navigation.settings.label'))
+                    ->url($settingsUrl)
+                    ->group(fn (): string => __('projects::app.navigation.settings.group'))
+                    ->sort($item->getSort())
+                    ->visible($item->isVisible());
+            },
+            $items,
+        );
+
+        $property->setValue($panel, array_values($localizedItems));
     }
 
     protected function hideProjectManageTasksSettingsFromMainNavigation(): void

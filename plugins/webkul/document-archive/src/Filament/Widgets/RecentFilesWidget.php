@@ -14,6 +14,8 @@ class RecentFilesWidget extends BaseWidget
 
     protected static bool $isLazy = true;
 
+    protected ?string $pollingInterval = null;
+
     protected ?string $placeholderHeight = '320px';
 
     protected int|string|array $columnSpan = 'full';

@@ -3,10 +3,8 @@
 namespace App\Filament\Inventory\Pages;
 
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
-use App\Filament\Inventory\Widgets\LowStockOverviewWidget;
-use App\Filament\Inventory\Widgets\PendingReceiptsWidget;
+use App\Filament\Inventory\Widgets\InventoryOverviewWidget;
 use App\Filament\Inventory\Widgets\RecentMovementsWidget;
-use App\Filament\Inventory\Widgets\StockAlertsWidget;
 use App\Support\FilamentUrl;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
@@ -81,9 +79,7 @@ class InventoryDashboard extends BaseDashboard
     public function getHeaderWidgets(): array
     {
         return [
-            LowStockOverviewWidget::class,
-            PendingReceiptsWidget::class,
-            StockAlertsWidget::class,
+            InventoryOverviewWidget::class,
         ];
     }
 

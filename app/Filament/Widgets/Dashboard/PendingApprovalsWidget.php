@@ -10,6 +10,13 @@ use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Database\Eloquent\Builder;
+use Webkul\Assets\Models\AssetBorrowing;
+use Webkul\Correspondence\Models\Correspondence;
+use Webkul\Invoice\Models\Invoice;
+use Webkul\Meetings\Models\Meeting;
+use Webkul\Payroll\Models\PayrollBatch;
+use Webkul\Purchase\Models\PurchaseOrder;
 use Wezlo\FilamentApproval\Enums\ApprovalStatus;
 use Wezlo\FilamentApproval\Models\Approval;
 
@@ -43,26 +50,28 @@ class PendingApprovalsWidget extends BaseWidget
             $counts = DashboardMetricCache::remember('pending_approvals', function (): array {
                 $query = Approval::query()->where('status', ApprovalStatus::Pending);
 
-                $meetingApprovals = (clone $query)
-                    ->where('approvable_type', 'Webkul\Meetings\Models\Meeting')
-                    ->count();
+                $meetingApprovals = self::countForModel($query, Meeting::class);
+                $correspondenceApprovals = self::countForModel($query, Correspondence::class);
+                $purchaseApprovals = self::countForModel($query, PurchaseOrder::class);
+                $invoiceApprovals = self::countForModel($query, Invoice::class);
+                $payrollApprovals = self::countForModel($query, PayrollBatch::class);
+                $assetApprovals = self::countForModel($query, AssetBorrowing::class);
 
-                $correspondenceApprovals = (clone $query)
-                    ->where('approvable_type', 'Webkul\Correspondence\Models\Correspondence')
-                    ->count();
-
-                $otherApprovals = (clone $query)
-                    ->whereNotIn('approvable_type', [
-                        'Webkul\Meetings\Models\Meeting',
-                        'Webkul\Correspondence\Models\Correspondence',
-                    ])
-                    ->count();
+                $total = $meetingApprovals
+                    + $correspondenceApprovals
+                    + $purchaseApprovals
+                    + $invoiceApprovals
+                    + $payrollApprovals
+                    + $assetApprovals;
 
                 return [
-                    'meeting'         => $meetingApprovals,
-                    'correspondence'  => $correspondenceApprovals,
-                    'other'           => $otherApprovals,
-                    'total'           => $meetingApprovals + $correspondenceApprovals + $otherApprovals,
+                    'meeting'        => $meetingApprovals,
+                    'correspondence' => $correspondenceApprovals,
+                    'purchase'       => $purchaseApprovals,
+                    'invoice'        => $invoiceApprovals,
+                    'payroll'        => $payrollApprovals,
+                    'asset'          => $assetApprovals,
+                    'total'          => $total,
                 ];
             });
 
@@ -89,11 +98,29 @@ class PendingApprovalsWidget extends BaseWidget
                 ),
 
                 $this->clickableStat(
-                    label: __('dashboard.widgets.pending_approvals'),
-                    value: $total,
-                    url: DashboardNavigation::meetingApprovalsUrl() ?? DashboardNavigation::correspondenceApprovalsUrl(),
-                    color: $color,
-                    icon: 'heroicon-o-check-badge',
+                    label: __('dashboard.stats.purchase_approvals'),
+                    value: $counts['purchase'],
+                    url: DashboardNavigation::purchaseOrderApprovalsUrl(),
+                    color: $counts['purchase'] > 0 ? 'warning' : 'success',
+                    icon: 'heroicon-o-shopping-cart',
+                ),
+
+                $this->clickableStat(
+                    label: __('dashboard.stats.invoice_approvals'),
+                    value: $counts['invoice'],
+                    url: DashboardNavigation::invoiceApprovalsUrl(),
+                    color: $counts['invoice'] > 0 ? 'warning' : 'success',
+                    icon: 'heroicon-o-document-text',
+                ),
+
+                $this->clickableStat(
+                    label: __('dashboard.stats.payroll_approvals'),
+                    value: $counts['payroll'] + $counts['asset'],
+                    url: DashboardNavigation::payrollBatchApprovalsUrl()
+                        ?? DashboardNavigation::assetBorrowingApprovalsUrl()
+                        ?? DashboardNavigation::approvalFlowsUrl(),
+                    color: ($counts['payroll'] + $counts['asset']) > 0 ? 'warning' : 'success',
+                    icon: 'heroicon-o-banknotes',
                 ),
             ];
         } catch (\Exception) {
@@ -102,5 +129,19 @@ class PendingApprovalsWidget extends BaseWidget
                     ->color('gray'),
             ];
         }
+    }
+
+    /**
+     * @param  class-string|null  $modelClass
+     */
+    protected static function countForModel(Builder $query, ?string $modelClass): int
+    {
+        if ($modelClass === null || ! class_exists($modelClass)) {
+            return 0;
+        }
+
+        return (clone $query)
+            ->where('approvable_type', (new $modelClass)->getMorphClass())
+            ->count();
     }
 }

@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Webkul\Employee\Models\Department;
+use Webkul\Payroll\Enums\PayslipStatus;
 use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\Payslip;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class PayrollReports extends Page implements HasForms, HasTable
 {
@@ -73,7 +75,7 @@ class PayrollReports extends Page implements HasForms, HasTable
                             ->live(),
                         Select::make('month')
                             ->label(__('payroll::payroll.filters.month'))
-                            ->options(__('payroll::payroll.months'))
+                            ->options(fn (): array => PayrollCalendar::monthOptions())
                             ->default(now()->month)
                             ->live(),
                         Select::make('department')
@@ -117,7 +119,11 @@ class PayrollReports extends Page implements HasForms, HasTable
                 ->leftJoin('payroll_payslips', function ($join): void {
                     $join->on('payroll_payslips.employee_id', '=', 'employees_employees.id')
                         ->where('payroll_payslips.period_year', '=', $this->data['year'] ?? now()->year)
-                        ->where('payroll_payslips.period_month', '=', $this->data['month'] ?? now()->month);
+                        ->where('payroll_payslips.period_month', '=', $this->data['month'] ?? now()->month)
+                        ->whereIn('payroll_payslips.status', [
+                            PayslipStatus::Validated->value,
+                            PayslipStatus::Paid->value,
+                        ]);
                 })
                 ->when($this->data['department'] ?? null, fn ($query, $departmentId) => $query->where('employees_departments.id', $departmentId))
                 ->groupBy('employees_departments.id', 'employees_departments.name'))
@@ -144,6 +150,7 @@ class PayrollReports extends Page implements HasForms, HasTable
     protected function basePayslipQuery(): Builder
     {
         return Payslip::query()
+            ->whereIn('status', [PayslipStatus::Validated, PayslipStatus::Paid])
             ->when($this->data['year'] ?? null, fn ($query, $year) => $query->where('period_year', $year))
             ->when($this->data['month'] ?? null, fn ($query, $month) => $query->where('period_month', $month))
             ->when($this->data['department'] ?? null, fn ($query, $departmentId) => $query->whereHas(

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Assets\Widgets;
 
+use App\Filament\Assets\Concerns\ConfiguresAssetBorrowingTable;
 use App\Filament\Assets\Concerns\InteractsWithAssetStats;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -45,7 +46,7 @@ class RecentBorrowingsWidget extends BaseWidget
             ->columns([
                 TextColumn::make('updated_at')
                     ->label(__('assets-extensions::dashboard.activity_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($state))
                     ->sortable(),
                 TextColumn::make('asset.name')
                     ->label(__('assets::assets.fields.name'))
@@ -58,11 +59,11 @@ class RecentBorrowingsWidget extends BaseWidget
                     ->badge(),
                 TextColumn::make('borrowed_at')
                     ->label(__('assets::assets.fields.borrowed_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($state))
                     ->toggleable(),
                 TextColumn::make('returned_at')
                     ->label(__('assets::assets.fields.returned_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($state))
                     ->placeholder('—')
                     ->toggleable(),
             ])

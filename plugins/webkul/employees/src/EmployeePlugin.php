@@ -39,7 +39,7 @@ class EmployeePlugin implements Plugin
                         in: __DIR__.'/Filament/Clusters',
                         for: 'Webkul\\Employee\\Filament\\Clusters'
                     )
-                    ->discoverClusters(
+                    ->discoverWidgets(
                         in: __DIR__.'/Filament/Widgets',
                         for: 'Webkul\\Employee\\Filament\\Widgets'
                     );

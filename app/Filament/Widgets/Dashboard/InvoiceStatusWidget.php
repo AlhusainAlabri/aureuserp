@@ -41,8 +41,8 @@ class InvoiceStatusWidget extends ChartWidget
                 ->where('move_type', 'out_invoice')
                 ->selectRaw("
                     SUM(CASE WHEN payment_state = 'paid' THEN 1 ELSE 0 END) as paid,
-                    SUM(CASE WHEN payment_state = 'not_paid' AND due_date >= CURDATE() THEN 1 ELSE 0 END) as unpaid,
-                    SUM(CASE WHEN payment_state = 'not_paid' AND due_date < CURDATE() THEN 1 ELSE 0 END) as overdue,
+                    SUM(CASE WHEN payment_state = 'not_paid' AND invoice_date_due >= CURDATE() THEN 1 ELSE 0 END) as unpaid,
+                    SUM(CASE WHEN payment_state = 'not_paid' AND invoice_date_due < CURDATE() THEN 1 ELSE 0 END) as overdue,
                     SUM(CASE WHEN state = 'draft' THEN 1 ELSE 0 END) as draft
                 ")
                 ->first();

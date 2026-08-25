@@ -99,7 +99,6 @@ class TimeOffResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('duration_display')
-                    ->label(__('Duration'))
                     ->label(__('time-off::filament/clusters/management/resources/time-off.table.columns.duration'))
                     ->sortable()
                     ->searchable(),
@@ -206,7 +205,9 @@ class TimeOffResource extends Resource
 
                                 TextEntry::make('request_unit_half')
                                     ->label(__('time-off::filament/clusters/my-time/resources/my-time-off.infolist.entries.half-day'))
-                                    ->formatStateUsing(fn ($record) => $record->request_unit_half ? 'Yes' : 'No')
+                                    ->formatStateUsing(fn ($record) => $record->request_unit_half
+                                        ? __('time-off::filament/clusters/management/resources/time-off.infolist.entries.yes')
+                                        : __('time-off::filament/clusters/management/resources/time-off.infolist.entries.no'))
                                     ->icon('heroicon-o-clock'),
 
                                 TextEntry::make('request_date_from')

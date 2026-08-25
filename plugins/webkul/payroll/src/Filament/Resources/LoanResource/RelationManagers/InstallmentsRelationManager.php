@@ -6,6 +6,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class InstallmentsRelationManager extends RelationManager
 {
@@ -22,7 +23,10 @@ class InstallmentsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('period')
                     ->label(__('payroll::payroll.fields.period'))
-                    ->state(fn ($record): string => sprintf('%02d/%d', $record->period_month, $record->period_year)),
+                    ->state(fn ($record): string => PayrollCalendar::formatPeriod(
+                        (int) $record->period_month,
+                        (int) $record->period_year,
+                    )),
                 TextColumn::make('amount')
                     ->label(__('payroll::payroll.fields.amount'))
                     ->formatStateUsing(fn (?string $state): string => SalaryComponentResource::formatMoney((float) ($state ?? 0))),

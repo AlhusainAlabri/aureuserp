@@ -81,6 +81,7 @@ return [
             'description-helper'        => 'قدم وصفاً موجزاً لطلب الإجازة الخاص بك.',
             'duration'                  => 'المدة',
             'please-select-dates'       => 'يرجى تحديد تاريخ بداية ونهاية الطلب.',
+            'half-day-duration'         => ':days يوم',
         ],
     ],
 
@@ -99,6 +100,9 @@ return [
     ],
 
     'events' => [
-        'title' => ':name في حالة :status: :days يوم/أيام',
+        'title'        => ':type — :name (:duration)',
+        'half-day'     => '0.5 يوم',
+        'days'         => ':count ي',
+        'weekend-days' => '+:count',
     ],
 ];

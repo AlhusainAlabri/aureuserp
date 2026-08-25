@@ -19,6 +19,8 @@ class ExtensionPermissionsSync
         $this->syncAssets();
         $this->syncInventory();
         $this->syncPurchase();
+        $this->syncNavigation();
+        $this->syncOperations();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
@@ -179,5 +181,66 @@ class ExtensionPermissionsSync
                 $role->givePermissionTo($permissions);
             }
         }
+    }
+
+    /**
+     * @param  list<string>  $permissions
+     * @param  list<string>  $roleNames
+     */
+    private function grantPermissionsToRoles(array $permissions, array $roleNames): void
+    {
+        $permissionIds = collect($permissions)
+            ->map(fn (string $name): int => Permission::query()->firstOrCreate([
+                'name'       => $name,
+                'guard_name' => 'web',
+            ])->getKey())
+            ->all();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        foreach ($roleNames as $roleName) {
+            $role = Role::query()->where('name', $roleName)->where('guard_name', 'web')->first();
+
+            if (! $role) {
+                continue;
+            }
+
+            $role->permissions()->syncWithoutDetaching($permissionIds);
+        }
+    }
+
+    public function syncNavigation(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles(
+            ['page_filament_manage_navigation'],
+            ['Admin', 'admin_manager', 'super_admin', 'general_manager'],
+        );
+    }
+
+    public function syncOperations(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles(
+            [
+                'page_system_health_dashboard',
+                'page_manage_operations',
+                'run_system_health_check',
+                'manage_operations_settings',
+                'view_any_system_backup',
+                'view_system_backup',
+                'create_system_backup',
+                'download_system_backup',
+                'delete_system_backup',
+                'restore_system_backup',
+            ],
+            ['Admin', 'super_admin', 'general_manager'],
+        );
     }
 }

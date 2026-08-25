@@ -20,6 +20,7 @@ use Webkul\Payroll\Filament\Concerns\AppendsLocaleToResourceUrls;
 use Webkul\Payroll\Filament\Resources\PayslipResource\Pages\ListPayslips;
 use Webkul\Payroll\Filament\Resources\PayslipResource\Pages\ViewPayslip;
 use Webkul\Payroll\Models\Payslip;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class PayslipResource extends Resource
 {
@@ -76,7 +77,10 @@ class PayslipResource extends Resource
                     ->sortable(),
                 TextColumn::make('period')
                     ->label(__('payroll::payroll.fields.period'))
-                    ->state(fn (Payslip $record): string => sprintf('%02d/%d', $record->period_month, $record->period_year)),
+                    ->state(fn (Payslip $record): string => PayrollCalendar::formatPeriod(
+                        (int) $record->period_month,
+                        (int) $record->period_year,
+                    )),
                 TextColumn::make('basic_salary')
                     ->label(__('payroll::payroll.fields.basic_salary'))
                     ->formatStateUsing(fn (?string $state): string => SalaryComponentResource::formatMoney((float) ($state ?? 0))),
@@ -127,7 +131,10 @@ class PayslipResource extends Resource
                     TextEntry::make('batch.reference_number')->label(__('payroll::payroll.fields.batch')),
                     TextEntry::make('period')
                         ->label(__('payroll::payroll.fields.period'))
-                        ->state(fn (Payslip $record): string => sprintf('%02d/%d', $record->period_month, $record->period_year)),
+                        ->state(fn (Payslip $record): string => PayrollCalendar::formatPeriod(
+                            (int) $record->period_month,
+                            (int) $record->period_year,
+                        )),
                     TextEntry::make('status')->label(__('payroll::payroll.fields.status'))->badge(),
                     TextEntry::make('working_days')->label(__('payroll::payroll.fields.working_days')),
                     TextEntry::make('worked_days')->label(__('payroll::payroll.fields.worked_days')),

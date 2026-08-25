@@ -144,11 +144,13 @@ it('CorrespondenceFilamentTest: correspondence dashboard page renders with trans
 
     Livewire::test(ExtendedCorrespondenceDashboard::class)
         ->assertOk()
-        ->assertSee(__('correspondence::correspondence.navigation.dashboard', locale: 'ar'));
+        ->assertSee(__('dashboard.hub.correspondence', locale: 'ar'))
+        ->assertSee(__('correspondence::correspondence.dashboard.stats.click_hint', locale: 'ar'));
 
     Livewire::test(IncomingCorrespondencesTable::class)
         ->assertSee(__('correspondence::correspondence.dashboard.sections.incoming', locale: 'ar'))
-        ->assertSee(__('correspondence::correspondence.empty.no_records', locale: 'ar'));
+        ->assertSee(__('correspondence::correspondence.empty.no_records', locale: 'ar'))
+        ->assertSee(__('correspondence::correspondence.dashboard.actions.view_all_incoming', locale: 'ar'));
 });
 
 it('CorrespondenceFilamentTest: plural label is used on list page heading', function (): void {

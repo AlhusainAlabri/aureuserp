@@ -5,9 +5,14 @@ namespace App\Providers;
 use App\Filament\Sales\Pages\ListOrders as ExtendedListOrders;
 use App\Filament\Sales\Pages\ListQuotations as ExtendedListQuotations;
 use App\Models\Sales\SalesOrderAttachment;
+use App\Services\Sales\SaleManager as ExtendedSaleManager;
 use Filament\Facades\Filament;
+use Filament\Navigation\NavigationItem;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use ReflectionClass;
 use Webkul\Sale\Filament\Clusters\Orders;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\CoreQuotationResource;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\OrderResource;
@@ -15,10 +20,12 @@ use Webkul\Sale\Filament\Clusters\Orders\Resources\OrderResource\Pages\EditOrder
 use Webkul\Sale\Filament\Clusters\Orders\Resources\OrderResource\Pages\ListOrders as BaseListOrders;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\OrderResource\Pages\ViewOrder;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource;
+use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Actions\SendByEmailAction;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\EditQuotation;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\ListQuotations as BaseListQuotations;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\ManageInvoices;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\ViewQuotation;
+use Webkul\Sale\Filament\Clusters\Settings\Pages\ManageProducts;
 use Webkul\Sale\Models\Order;
 
 class SalesExtensionsServiceProvider extends ServiceProvider
@@ -29,6 +36,7 @@ class SalesExtensionsServiceProvider extends ServiceProvider
         $this->registerOrderResourceOverride();
         $this->registerOrdersClusterOverride();
         $this->registerManageInvoicesOverride();
+        $this->registerSendByEmailActionOverride();
         $this->registerSalesPageOverrides();
     }
 
@@ -36,14 +44,20 @@ class SalesExtensionsServiceProvider extends ServiceProvider
     {
         $this->loadTranslationsFrom(lang_path('sales-extensions'), 'sales-extensions');
 
+        View::prependNamespace('sales', resource_path('views/vendor/sales'));
+
+        $this->app->singleton('sale', ExtendedSaleManager::class);
+
         $this->registerOrderDocumentRelation();
 
         $this->app->booted(function (): void {
             $this->registerLivewireOverrides();
+            $this->localizeSalesSettingsNavigationGroup();
         });
 
         Filament::serving(function (): void {
             $this->registerLivewireOverrides();
+            $this->localizeSalesSettingsNavigationGroup();
         });
     }
 
@@ -237,6 +251,66 @@ class SalesExtensionsServiceProvider extends ServiceProvider
             },
             prepend: true,
         );
+    }
+
+    protected function registerSendByEmailActionOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== SendByEmailAction::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Sale/Filament/Clusters/Orders/Resources/QuotationResource/Actions/SendByEmailAction.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function localizeSalesSettingsNavigationGroup(): void
+    {
+        if (! class_exists(ManageProducts::class)) {
+            return;
+        }
+
+        $panel = Filament::getCurrentPanel();
+
+        if (! $panel || $panel->getId() !== 'admin') {
+            return;
+        }
+
+        if (! Route::has('filament.admin.settings.pages.sale.manage-products')) {
+            return;
+        }
+
+        $settingsUrl = ManageProducts::getUrl();
+
+        $reflection = new ReflectionClass($panel);
+        $property = $reflection->getProperty('navigationItems');
+        $property->setAccessible(true);
+
+        /** @var array<int, NavigationItem> $items */
+        $items = $property->getValue($panel);
+
+        $localizedItems = array_map(
+            function (NavigationItem $item) use ($settingsUrl): NavigationItem {
+                if ($item->getUrl() !== $settingsUrl) {
+                    return $item;
+                }
+
+                return NavigationItem::make('sales-settings')
+                    ->label(fn (): string => __('sales-extensions::navigation.sales-settings'))
+                    ->url($settingsUrl)
+                    ->group(fn (): string => __('sales::filament/clusters/orders.navigation.group'))
+                    ->sort($item->getSort())
+                    ->visible($item->isVisible());
+            },
+            $items,
+        );
+
+        $property->setValue($panel, array_values($localizedItems));
     }
 
     protected function registerLivewireOverrides(): void

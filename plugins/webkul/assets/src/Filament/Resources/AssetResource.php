@@ -84,7 +84,16 @@ class AssetResource extends Resource
             return $category === AssetCategory::Vehicle;
         }
 
-        return AssetCategory::tryFrom((string) $category) === AssetCategory::Vehicle;
+        if (! is_string($category) || $category === '') {
+            return false;
+        }
+
+        if (AssetCategory::tryFrom($category) === AssetCategory::Vehicle) {
+            return true;
+        }
+
+        return $category === AssetCategory::Vehicle->getLabel()
+            || $category === __('assets-extensions::categories.vehicle');
     }
 
     public static function form(Schema $schema): Schema
@@ -103,7 +112,9 @@ class AssetResource extends Resource
                             ->columnSpanFull(),
                         Select::make('category')
                             ->label(__('assets::assets.fields.category'))
-                            ->options(AssetCategory::class)
+                            ->options(collect(AssetCategory::cases())->mapWithKeys(
+                                fn (AssetCategory $category): array => [$category->value => $category->getLabel()],
+                            )->all())
                             ->searchable()
                             ->searchPrompt(__('filament-forms::components.select.search_prompt'))
                             ->live()
@@ -237,6 +248,19 @@ class AssetResource extends Resource
                             ->label(__('assets::assets.fields.category'))
                             ->formatStateUsing(fn (?AssetCategory $state): string => $state?->getLabel() ?? '—')
                             ->placeholder('—'),
+                        TextEntry::make('plate_number')
+                            ->label(__('assets-extensions::fields.plate_number'))
+                            ->placeholder('—')
+                            ->visible(fn (?Asset $record): bool => static::isVehicleCategory($record?->category)),
+                        TextEntry::make('registration_number')
+                            ->label(__('assets-extensions::fields.registration_number'))
+                            ->placeholder('—')
+                            ->visible(fn (?Asset $record): bool => static::isVehicleCategory($record?->category)),
+                        TextEntry::make('mileage')
+                            ->label(__('assets-extensions::fields.mileage'))
+                            ->formatStateUsing(fn (?int $state): string => $state !== null ? number_format($state).' km' : '—')
+                            ->placeholder('—')
+                            ->visible(fn (?Asset $record): bool => static::isVehicleCategory($record?->category)),
                         TextEntry::make('status')
                             ->label(__('assets::assets.fields.status'))
                             ->badge(),

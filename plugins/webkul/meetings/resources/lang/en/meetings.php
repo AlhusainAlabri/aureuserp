@@ -7,6 +7,11 @@ return [
     'yes'        => 'Yes',
     'no'         => 'No',
     'all'        => 'All',
+    'common'     => [
+        'not_available' => '—',
+        'no_change'     => '—',
+        'none'          => 'None scheduled',
+    ],
     'navigation' => [
         'group'     => 'Meeting Minutes',
         'dashboard' => 'Minutes Dashboard',
@@ -286,7 +291,10 @@ return [
             'pending_approval' => 'Pending approval',
             'draft'            => 'Draft',
         ],
-        'task_title'    => 'Task: :title',
+        'task_title'              => 'Task: :title',
+        'event_title'             => ':number — :title',
+        'event_title_with_status' => '[:status] :number — :title',
+        'time_off_title'          => ':status :name',
     ],
     'pdf' => [
         'title'    => 'Meeting Minutes',

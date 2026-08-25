@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Hr\HrNotificationService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Webkul\Security\Models\User;
 use Webkul\TimeOff\Models\Leave;
@@ -14,11 +14,13 @@ class NotifyPendingLeaveApprovals extends Command
 
     protected $description = 'Remind leave managers about pending leave approval requests';
 
-    public function handle(): int
+    public function handle(HrNotificationService $notifications): int
     {
         if (! class_exists(Leave::class)) {
             return self::SUCCESS;
         }
+
+        $today = Carbon::today()->toDateString();
 
         $pendingLeaves = Leave::query()
             ->whereIn('state', ['confirm', 'validate_one'])
@@ -40,15 +42,22 @@ class NotifyPendingLeaveApprovals extends Command
                 continue;
             }
 
-            Notification::make()
-                ->title(__('hr-extensions::leave.notifications.pending_approvals_title'))
-                ->body(__('hr-extensions::leave.notifications.pending_approvals_body', [
-                    'count' => $leaves->count(),
-                ]))
-                ->warning()
-                ->sendToDatabase($manager);
+            $title = __('hr-extensions::leave.notifications.pending_approvals_title');
+            $body = __('hr-extensions::leave.notifications.pending_approvals_body', [
+                'count' => $leaves->count(),
+            ]);
 
-            $notified++;
+            $sent = $notifications->dispatchAlert(
+                recipient: $manager,
+                notificationKey: 'hr.pending_leave_approvals',
+                title: $title,
+                body: $body,
+                dedupKey: "hr.pending_leave_approvals:manager:{$manager->id}:{$today}",
+            );
+
+            if ($sent) {
+                $notified++;
+            }
         }
 
         $this->info("Notified {$notified} leave managers.");

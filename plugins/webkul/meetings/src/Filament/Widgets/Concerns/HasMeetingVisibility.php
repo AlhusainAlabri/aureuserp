@@ -3,6 +3,7 @@
 namespace Webkul\Meetings\Filament\Widgets\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Schema;
 use Webkul\Meetings\Models\Meeting;
 use Webkul\Meetings\Models\MeetingTask;
 use Webkul\Security\Models\User;
@@ -16,6 +17,10 @@ trait HasMeetingVisibility
 
     protected function visibleMeetingsQuery(): Builder
     {
+        if (! Schema::hasTable('meetings')) {
+            return Meeting::query()->whereRaw('1 = 0');
+        }
+
         $user = auth()->user();
 
         return Meeting::query()
@@ -25,6 +30,10 @@ trait HasMeetingVisibility
 
     protected function visibleTasksQuery(): Builder
     {
+        if (! Schema::hasTable('meeting_tasks')) {
+            return MeetingTask::query()->whereRaw('1 = 0');
+        }
+
         $user = auth()->user();
 
         return MeetingTask::query()

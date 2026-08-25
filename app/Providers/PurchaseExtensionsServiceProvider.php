@@ -7,6 +7,7 @@ use App\Filament\Purchases\Pages\EditPurchaseOrder as ExtendedEditPurchaseOrder;
 use App\Filament\Purchases\Pages\ViewPurchaseOrder as AppViewPurchaseOrder;
 use App\Listeners\Purchases\ConvertApprovedPurchaseToExpense;
 use App\Models\Purchases\PurchaseOrderAttachment;
+use App\Services\Purchases\ExtendedPurchaseOrderService;
 use App\Services\Purchases\InternalRequestLineService;
 use App\Services\Purchases\PurchaseExpenseConversionService;
 use App\Services\Purchases\PurchasePaymentService;
@@ -44,6 +45,8 @@ class PurchaseExtensionsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app->singleton('purchase_order', ExtendedPurchaseOrderService::class);
+
         $this->loadTranslationsFrom(lang_path('purchases-extensions'), 'purchases-extensions');
         $this->loadTranslationsFrom(lang_path('purchases'), 'purchases');
 

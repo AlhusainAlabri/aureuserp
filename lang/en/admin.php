@@ -4,6 +4,7 @@ return [
     'quick_create' => [
         'button'  => 'New',
         'heading' => 'Quick Create',
+        'close'   => 'Close',
 
         'groups' => [
             'contacts'        => 'Contacts',

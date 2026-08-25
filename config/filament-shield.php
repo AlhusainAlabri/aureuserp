@@ -26,7 +26,7 @@ return [
             'pages'              => true,
             'widgets'            => true,
             'resources'          => true,
-            'custom_permissions' => false,
+            'custom_permissions' => true,
         ],
     ],
 
@@ -159,7 +159,7 @@ return [
     */
 
     'localization' => [
-        'enabled' => false,
+        'enabled' => true,
         'key'     => 'filament-shield::filament-shield',
     ],
 
@@ -232,7 +232,42 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        'close_employee_file',
+        'reopen_employee_file',
+        'review_self_assessment',
+        'view_any_self_assessment',
+        'page_assets_dashboard',
+        'page_my_borrowing_requests',
+        'page_pending_borrowing_requests',
+        'page_my_borrowed_assets',
+        'request_borrow_assets_asset',
+        'approve_borrowing_assets_asset',
+        'reject_borrowing_assets_asset',
+        'view_assets_asset_borrowing',
+        'view_any_assets_asset_borrowing',
+        'widget_assets_summary_widget',
+        'page_inventory_dashboard',
+        'page_inventory_movement_report',
+        'page_inventory_record_consumption',
+        'page_inventory_product_purchase_history',
+        'reorder_inventory_replenishment',
+        'widget_filament_low_stock_widget',
+        'page_purchases_department_report',
+        'page_MyRequests',
+        'page_InternalRequests',
+        'page_filament_manage_navigation',
+        'page_system_health_dashboard',
+        'page_manage_operations',
+        'run_system_health_check',
+        'manage_operations_settings',
+        'view_any_system_backup',
+        'view_system_backup',
+        'create_system_backup',
+        'download_system_backup',
+        'delete_system_backup',
+        'restore_system_backup',
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
 use App\Filament\Clusters\PurchaseOrdersCluster;
+use App\Filament\Extensions\PurchaseOrderResourceExtensions;
 use App\Filament\Infolists\ApprovalStatusSection;
 use App\Filament\Purchases\Pages\CreatePurchaseOrder;
 use App\Filament\Purchases\Pages\EditPurchaseOrder;
@@ -88,10 +89,10 @@ class PurchaseOrderResource extends OrderResource
                     ->schema([
                         TextEntry::make('amount_paid')
                             ->label(__('purchases-extensions::request.payment.amount_paid'))
-                            ->formatStateUsing(fn (?string $state): string => 'ر.ع. '.number_format((float) ($state ?? 0), 3)),
+                            ->formatStateUsing(fn (?string $state): string => PurchaseOrderResourceExtensions::formatOmrAmount($state)),
                         TextEntry::make('amount_remaining')
                             ->label(__('purchases-extensions::request.payment.amount_remaining'))
-                            ->formatStateUsing(fn (?string $state): string => 'ر.ع. '.number_format((float) ($state ?? 0), 3))
+                            ->formatStateUsing(fn (?string $state): string => PurchaseOrderResourceExtensions::formatOmrAmount($state))
                             ->color(fn (?string $state): string => (float) ($state ?? 0) > 0 ? 'warning' : 'success'),
                         TextEntry::make('payment_voucher_path')
                             ->label(__('purchases-extensions::request.fields.payment_voucher'))

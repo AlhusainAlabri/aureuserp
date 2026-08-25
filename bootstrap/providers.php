@@ -2,6 +2,7 @@
 
 use App\Providers\AccountExtensionsServiceProvider;
 use App\Providers\AccountingExtensionsServiceProvider;
+use App\Providers\ApprovalNotificationsServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AssetsExtensionsServiceProvider;
 use App\Providers\ChatterExtensionsServiceProvider;
@@ -12,10 +13,13 @@ use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CustomerPanelProvider;
 use App\Providers\HrExtensionsServiceProvider;
 use App\Providers\InventoryExtensionsServiceProvider;
+use App\Providers\OperationsServiceProvider;
 use App\Providers\PerformanceServiceProvider;
 use App\Providers\ProjectExtensionsServiceProvider;
 use App\Providers\PurchaseExtensionsServiceProvider;
 use App\Providers\SalesExtensionsServiceProvider;
+use App\Providers\SecurityExtensionsServiceProvider;
+use App\Providers\SeederSafetyServiceProvider;
 use Webkul\Account\AccountServiceProvider;
 use Webkul\Accounting\AccountingServiceProvider;
 use Webkul\Analytic\AnalyticServiceProvider;
@@ -52,7 +56,9 @@ use Webkul\Website\WebsiteServiceProvider;
 return [
     AccountExtensionsServiceProvider::class,
     AccountingExtensionsServiceProvider::class,
+    ApprovalNotificationsServiceProvider::class,
     AppServiceProvider::class,
+    SeederSafetyServiceProvider::class,
     AssetsExtensionsServiceProvider::class,
     ChatterExtensionsServiceProvider::class,
     ContactExtensionsServiceProvider::class,
@@ -62,10 +68,13 @@ return [
     CustomerPanelProvider::class,
     HrExtensionsServiceProvider::class,
     InventoryExtensionsServiceProvider::class,
+    NavigationExtensionsServiceProvider::class,
+    OperationsServiceProvider::class,
     PerformanceServiceProvider::class,
     ProjectExtensionsServiceProvider::class,
     PurchaseExtensionsServiceProvider::class,
     SalesExtensionsServiceProvider::class,
+    SecurityExtensionsServiceProvider::class,
     AccountServiceProvider::class,
     AccountingServiceProvider::class,
     AnalyticServiceProvider::class,

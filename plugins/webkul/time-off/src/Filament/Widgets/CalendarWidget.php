@@ -234,23 +234,16 @@ class CalendarWidget extends FullCalendarWidget
                         ->label(__('time-off::filament/widgets/calendar-widget.infolist.entries.duration'))
                         ->formatStateUsing(function ($state, $record) {
                             if ($record->request_unit_half) {
-                                return '0.5 day';
+                                return $this->formatHalfDayDuration();
                             }
 
                             $startDate = Carbon::parse($record->request_date_from);
                             $endDate = $record->request_date_to ? Carbon::parse($record->request_date_to) : $startDate;
 
                             $businessDays = $this->calculateBusinessDays($startDate, $endDate);
-                            $totalDays = $this->calculateTotalDays($startDate, $endDate);
-                            $weekendDays = $totalDays - $businessDays;
+                            $weekendDays = $this->calculateTotalDays($startDate, $endDate) - $businessDays;
 
-                            $duration = $businessDays.' working day'.($businessDays !== 1 ? 's' : '');
-
-                            if ($weekendDays > 0) {
-                                $duration .= ' (+ '.$weekendDays.' weekend day'.($weekendDays !== 1 ? 's' : '').')';
-                            }
-
-                            return $duration;
+                            return $this->formatDurationDisplay($businessDays, $weekendDays);
                         })
                         ->icon('heroicon-o-clock')
                         ->badge()
@@ -273,10 +266,19 @@ class CalendarWidget extends FullCalendarWidget
         $user = Auth::user();
 
         return Leave::query()
-            ->where('user_id', $user->id)
-            ->orWhere('employee_id', $user?->employee?->id)
-            ->where('request_date_from', '>=', $fetchInfo['start'])
-            ->where('request_date_to', '<=', $fetchInfo['end'])
+            ->where(function ($query) use ($user): void {
+                $query->where('user_id', $user->id)
+                    ->orWhere('employee_id', $user?->employee?->id);
+            })
+            ->where('request_date_from', '<=', $fetchInfo['end'])
+            ->where(function ($query) use ($fetchInfo): void {
+                $query->where('request_date_to', '>=', $fetchInfo['start'])
+                    ->orWhereNull('request_date_to')
+                    ->orWhere(function ($inner) use ($fetchInfo): void {
+                        $inner->whereNull('request_date_to')
+                            ->where('request_date_from', '>=', $fetchInfo['start']);
+                    });
+            })
             ->with('holidayStatus', 'user')
             ->get()
             ->map(function (Leave $leave) {
@@ -284,19 +286,18 @@ class CalendarWidget extends FullCalendarWidget
                 $endDate = $leave->request_date_to ? Carbon::parse($leave->request_date_to) : $startDate;
 
                 $businessDays = $this->calculateBusinessDays($startDate, $endDate);
-                $totalDays = $this->calculateTotalDays($startDate, $endDate);
-                $weekendDays = $totalDays - $businessDays;
+                $weekendDays = $this->calculateTotalDays($startDate, $endDate) - $businessDays;
 
-                $title = "{$leave->holidayStatus->name} {$leave->user->name}";
+                $duration = $leave->request_unit_half
+                    ? __('time-off::filament/widgets/calendar-widget.events.half-day')
+                    : __('time-off::filament/widgets/calendar-widget.events.days', ['count' => $businessDays])
+                        .($weekendDays > 0 ? ' '.__('time-off::filament/widgets/calendar-widget.events.weekend-days', ['count' => $weekendDays]) : '');
 
-                if ($leave->request_unit_half) {
-                    $title .= ' (0.5 day)';
-                } else {
-                    $title .= ' ('.$businessDays.'d)';
-                    if ($weekendDays > 0) {
-                        $title .= ' +'.$weekendDays;
-                    }
-                }
+                $title = __('time-off::filament/widgets/calendar-widget.events.title', [
+                    'type'     => $leave->holidayStatus->name,
+                    'name'     => $leave->user->name,
+                    'duration' => $duration,
+                ]);
 
                 return [
                     'id'              => $leave->id,

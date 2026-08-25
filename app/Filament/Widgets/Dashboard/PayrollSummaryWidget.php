@@ -11,6 +11,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Webkul\Payroll\Enums\BatchStatus;
 use Webkul\Payroll\Enums\LoanStatus;
 use Webkul\Payroll\Enums\PayslipStatus;
+use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Models\Payslip;
@@ -23,6 +24,8 @@ class PayrollSummaryWidget extends BaseWidget
     protected static ?int $sort = 7;
 
     protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
 
     public static function canView(): bool
     {
@@ -79,10 +82,8 @@ class PayrollSummaryWidget extends BaseWidget
                 ];
             });
 
-            $totalPayroll = number_format($metrics['total_payroll'], 3);
-
             return [
-                Stat::make(__('dashboard.stats.total_payroll'), 'ر.ع. '.$totalPayroll)
+                Stat::make(__('dashboard.stats.total_payroll'), SalaryComponentResource::formatMoney($metrics['total_payroll']))
                     ->color('primary')
                     ->icon('heroicon-o-banknotes'),
                 Stat::make(__('dashboard.stats.employees_paid'), $metrics['employees_paid'])
@@ -91,7 +92,10 @@ class PayrollSummaryWidget extends BaseWidget
                 Stat::make(__('dashboard.stats.pending_batches'), $metrics['pending_batches'])
                     ->color('warning')
                     ->icon('heroicon-o-calendar-days'),
-                Stat::make(__('dashboard.stats.active_loans'), $metrics['active_loans'].' / ر.ع. '.number_format($metrics['loan_outstanding'], 3))
+                Stat::make(
+                    __('dashboard.stats.active_loans'),
+                    $metrics['active_loans'].' / '.SalaryComponentResource::formatMoney($metrics['loan_outstanding']),
+                )
                     ->color('info')
                     ->icon('heroicon-o-credit-card'),
             ];

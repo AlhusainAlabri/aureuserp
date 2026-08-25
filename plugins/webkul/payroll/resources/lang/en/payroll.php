@@ -277,7 +277,7 @@ return [
         'subject'  => 'Your payslip for :period / كشف راتبك لشهر :period',
         'greeting' => 'Dear :name,',
         'body'     => 'Please find attached your payslip for :period.',
-        'net'      => 'Net pay: ر.ع. :amount',
+        'net'      => 'Net pay: :amount',
         'footer'   => 'This is an automated message from the payroll system.',
     ],
 

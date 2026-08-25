@@ -199,7 +199,7 @@ class RecordConsumption extends Page implements HasForms
                 ]))
                 ->actions([
                     Action::make('viewOperation')
-                        ->label(__('inventory-extensions::dashboard.view_all_movements'))
+                        ->label(__('inventory-extensions::consumption.notifications.view_operation'))
                         ->url(fn (): string => FilamentUrl::appendLocaleToUrl(
                             OperationResource::getUrl('view', ['record' => $result['operation']->id]),
                         ))

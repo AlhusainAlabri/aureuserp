@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets\Employee;
 
 use App\Models\Hr\EmployeeSalaryRaise;
+use App\Support\OmrFormatter;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Schema;
 
@@ -83,6 +84,8 @@ class EmployeeSalaryHistoryChartWidget extends ChartWidget
 
     protected function getOptions(): array
     {
+        $symbol = OmrFormatter::symbol();
+
         return [
             'plugins' => [
                 'tooltip' => [
@@ -91,7 +94,7 @@ class EmployeeSalaryHistoryChartWidget extends ChartWidget
                             const dataset = context.dataset;
                             const percent = dataset.raisePercents?.[context.dataIndex];
                             const value = context.parsed.y;
-                            let label = 'OMR ' + value.toFixed(3);
+                            let label = '{$symbol} ' + value.toFixed(3);
                             if (percent !== null && percent !== undefined) {
                                 label += ' (+' + percent.toFixed(2) + '%)';
                             }
@@ -103,7 +106,7 @@ class EmployeeSalaryHistoryChartWidget extends ChartWidget
             'scales' => [
                 'y' => [
                     'ticks' => [
-                        'callback' => "function(value) { return 'OMR ' + value.toFixed(3); }",
+                        'callback' => "function(value) { return '{$symbol} ' + value.toFixed(3); }",
                     ],
                 ],
             ],

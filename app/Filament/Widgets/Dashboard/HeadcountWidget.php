@@ -17,6 +17,8 @@ class HeadcountWidget extends ChartWidget
 
     protected static ?int $sort = 12;
 
+    protected ?string $pollingInterval = null;
+
     protected ?string $maxHeight = '300px';
 
     public function getHeading(): ?string

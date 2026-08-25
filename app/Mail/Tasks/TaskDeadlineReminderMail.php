@@ -3,12 +3,15 @@
 namespace App\Mail\Tasks;
 
 use App\Services\Projects\TaskStatePresenter;
+use App\Support\FilamentUrl;
+use Filament\Facades\Filament;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Webkul\Project\Filament\Resources\TaskResource;
 use Webkul\Project\Models\Task;
 use Webkul\Security\Models\User;
 
@@ -33,6 +36,8 @@ class TaskDeadlineReminderMail extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
         return new Content(
             markdown: 'mail.tasks.deadline-reminder',
             with: [
@@ -40,7 +45,10 @@ class TaskDeadlineReminderMail extends Mailable implements ShouldQueue
                 'recipient'    => $this->recipient,
                 'daysUntilDue' => $this->daysUntilDue,
                 'statusLabel'  => TaskStatePresenter::label($this->task->state),
-                'deadline'     => $this->task->deadline?->format('d M Y'),
+                'deadline'     => $this->task->deadline?->locale(app()->getLocale())->translatedFormat('d M Y'),
+                'taskUrl'      => FilamentUrl::appendLocaleToUrl(
+                    TaskResource::getUrl('view', ['record' => $this->task]),
+                ),
             ],
         );
     }

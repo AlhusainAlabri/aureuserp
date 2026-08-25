@@ -2,8 +2,10 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Schema;
 use Wezlo\FilamentApproval\Concerns\HasApprovals;
 use Wezlo\FilamentApproval\Enums\ApprovalStatus;
+use Wezlo\FilamentApproval\Models\ApprovalFlow;
 
 trait HasApprovalWorkflow
 {
@@ -25,6 +27,18 @@ trait HasApprovalWorkflow
         };
     }
 
+    public function hasActiveApprovalFlow(): bool
+    {
+        if (! Schema::hasTable('approval_flows')) {
+            return false;
+        }
+
+        return ApprovalFlow::query()
+            ->where('approvable_type', $this->getMorphClass())
+            ->where('is_active', true)
+            ->exists();
+    }
+
     public function canBePosted(): bool
     {
         return $this->isApproved();
@@ -32,6 +46,10 @@ trait HasApprovalWorkflow
 
     protected function guardApprovalBeforePosting(): void
     {
+        if (! $this->hasActiveApprovalFlow()) {
+            return;
+        }
+
         if (! $this->canBePosted()) {
             throw new \RuntimeException(__('approval.errors.not_approved'));
         }

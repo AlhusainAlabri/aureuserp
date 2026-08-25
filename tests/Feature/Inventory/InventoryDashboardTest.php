@@ -3,6 +3,7 @@
 use App\Filament\Inventory\Pages\InventoryDashboard;
 use App\Filament\Inventory\Pages\MovementReportPage;
 use App\Filament\Inventory\Pages\RecordConsumption;
+use App\Filament\Inventory\Widgets\InventoryOverviewWidget;
 use App\Filament\Inventory\Widgets\RecentMovementsWidget;
 use App\Services\Inventory\InventoryMovementReportService;
 use Illuminate\Support\Carbon;
@@ -28,6 +29,20 @@ it('renders the inventory dashboard for authorized users', function (): void {
 
     Livewire::test(InventoryDashboard::class)
         ->assertSuccessful();
+});
+
+it('renders all inventory overview stats in arabic', function (): void {
+    if (! Schema::hasTable('inventories_order_points')) {
+        $this->markTestSkipped('Inventory not installed.');
+    }
+
+    app()->setLocale('ar');
+
+    Livewire::test(InventoryOverviewWidget::class)
+        ->assertSuccessful()
+        ->assertSee(__('inventory-extensions::dashboard.low_stock'))
+        ->assertSee(__('inventory-extensions::dashboard.pending_receipts'))
+        ->assertSee(__('inventory-extensions::dashboard.out_of_stock'));
 });
 
 it('renders the recent movements widget without url generation errors', function (): void {

@@ -236,7 +236,7 @@ it('registers the task hub under the project navigation group', function (): voi
 it('uses arabic task resource labels', function (): void {
     app()->setLocale('ar');
 
-    expect(TaskResource::getModelLabel())->toBe('المهام')
+    expect(TaskResource::getModelLabel())->toBe('المهمة')
         ->and(TaskResource::getPluralModelLabel())->toBe('المهام');
 });
 

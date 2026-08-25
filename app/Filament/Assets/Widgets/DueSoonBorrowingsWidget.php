@@ -2,6 +2,7 @@
 
 namespace App\Filament\Assets\Widgets;
 
+use App\Filament\Assets\Concerns\ConfiguresAssetBorrowingTable;
 use App\Filament\Assets\Concerns\InteractsWithAssetStats;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
@@ -55,12 +56,12 @@ class DueSoonBorrowingsWidget extends BaseWidget
                     ->placeholder('—'),
                 TextColumn::make('due_at')
                     ->label(__('assets::assets.fields.due_at'))
-                    ->dateTime('d M Y H:i')
+                    ->formatStateUsing(fn ($state): ?string => ConfiguresAssetBorrowingTable::formatBorrowingDateTime($state))
                     ->sortable(),
             ])
             ->headerActions([
                 Action::make('viewAll')
-                    ->label(__('assets-extensions::dashboard.view_all_assets'))
+                    ->label(__('assets-extensions::dashboard.view_borrowed_assets'))
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->url(fn (): string => $this->borrowedAssetsUrl())
                     ->color('gray'),

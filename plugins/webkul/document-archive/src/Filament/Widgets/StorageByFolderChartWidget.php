@@ -7,12 +7,15 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
+use Webkul\DocumentArchive\Filament\Widgets\Concerns\RendersEmptyDocumentChart;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Services\DocumentAccessService;
 use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 
 class StorageByFolderChartWidget extends ChartWidget
 {
+    use RendersEmptyDocumentChart;
+
     protected static ?int $sort = 2;
 
     protected static bool $isLazy = true;
@@ -35,7 +38,7 @@ class StorageByFolderChartWidget extends ChartWidget
 
     protected function getOptions(): array
     {
-        return [
+        $options = [
             'plugins' => [
                 'legend' => [
                     'display' => false,
@@ -47,6 +50,12 @@ class StorageByFolderChartWidget extends ChartWidget
                 ],
             ],
         ];
+
+        if (! $this->hasChartData()) {
+            return $this->applyEmptyChartOptions($options);
+        }
+
+        return $options;
     }
 
     protected function getData(): array
@@ -54,10 +63,7 @@ class StorageByFolderChartWidget extends ChartWidget
         $folders = $this->getTopFoldersByStorage(limit: 8);
 
         if ($folders->isEmpty()) {
-            return [
-                'datasets' => [],
-                'labels'   => [],
-            ];
+            return $this->emptyChartData();
         }
 
         $labels = $folders->map(function ($row): string {
@@ -82,12 +88,17 @@ class StorageByFolderChartWidget extends ChartWidget
         ];
     }
 
-    public function getDescription(): string|Htmlable|null
+    protected function hasChartData(): bool
+    {
+        return $this->getTopFoldersByStorage(limit: 1)->isNotEmpty();
+    }
+
+    protected function getChartDescription(): ?string
     {
         $folders = $this->getTopFoldersByStorage(limit: 1);
 
         if ($folders->isEmpty()) {
-            return __('document-archive::document-archive.dashboard.charts.empty');
+            return null;
         }
 
         $largest = (int) $folders->first()->total_bytes;

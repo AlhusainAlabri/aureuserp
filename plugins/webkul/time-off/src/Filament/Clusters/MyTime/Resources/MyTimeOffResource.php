@@ -86,7 +86,9 @@ class MyTimeOffResource extends Resource
                                     ->icon('heroicon-o-calendar'),
                                 TextEntry::make('request_unit_half')
                                     ->label(__('time-off::filament/clusters/management/resources/time-off.infolist.entries.half-day'))
-                                    ->formatStateUsing(fn ($record) => $record->request_unit_half ? 'Yes' : 'No')
+                                    ->formatStateUsing(fn ($record) => $record->request_unit_half
+                                        ? __('time-off::filament/clusters/management/resources/time-off.infolist.entries.yes')
+                                        : __('time-off::filament/clusters/management/resources/time-off.infolist.entries.no'))
                                     ->icon('heroicon-o-clock'),
                                 TextEntry::make('request_date_from')
                                     ->label(__('time-off::filament/clusters/management/resources/time-off.infolist.entries.request-date-from'))

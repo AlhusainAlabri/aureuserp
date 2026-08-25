@@ -8,7 +8,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget;
-use Illuminate\Database\Eloquent\Builder;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
 use Webkul\Meetings\Filament\Widgets\Concerns\InteractsWithMeetingDashboardFilters;
@@ -36,12 +35,7 @@ class MeetingApprovalsTable extends TableWidget
     {
         return $table
             ->query(
-                $this->applyMeetingDashboardFilters(
-                    Meeting::query()
-                        ->whereHas('approvals.stepInstances', fn (Builder $query): Builder => $query
-                            ->where('status', 'waiting')
-                            ->whereJsonContains('assigned_approver_ids', auth()->id()))
-                )
+                $this->applyMeetingDashboardFilters($this->pendingApprovalsForUserQuery())
                     ->latest()
                     ->limit(8)
             )

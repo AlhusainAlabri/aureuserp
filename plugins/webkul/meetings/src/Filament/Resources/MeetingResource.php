@@ -3,6 +3,7 @@
 namespace Webkul\Meetings\Filament\Resources;
 
 use App\Filament\Actions\ExportMeetingPdfAction;
+use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -48,7 +49,6 @@ use Webkul\Project\Models\Project;
 use Webkul\Purchases\Models\PurchaseOrder;
 use Webkul\Security\Models\User;
 use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
-use Wezlo\FilamentApproval\Infolists\ApprovalStatusSection;
 
 class MeetingResource extends Resource
 {

@@ -3,7 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Invoices\InvoiceAttachment;
+use App\Services\Accounts\ExtendedAccountManager;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Account\Filament\Resources\InvoiceResource\Actions\ConfirmAction;
+use Webkul\Account\Filament\Resources\InvoiceResource\Actions\PreviewAction;
+use Webkul\Account\Filament\Resources\InvoiceResource\Actions\PrintAndSendAction;
+use Webkul\Account\Livewire\InvoiceSummary;
 use Webkul\Account\Models\Move;
 use Webkul\Account\Models\PaymentTerm;
 use Webkul\Invoice\Filament\Clusters\Customers as CustomersCluster;
@@ -23,12 +29,20 @@ class AccountExtensionsServiceProvider extends ServiceProvider
         $this->registerBillResourceOverride();
         $this->registerCustomersClusterOverride();
         $this->registerVendorsClusterOverride();
+        $this->registerPrintAndSendActionOverride();
+        $this->registerPreviewActionOverride();
+        $this->registerConfirmActionOverride();
+        $this->registerInvoiceSummaryOverride();
     }
 
     public function boot(): void
     {
         $this->loadTranslationsFrom(lang_path('payment-terms'), 'payment-terms');
         $this->loadTranslationsFrom(lang_path('invoices-extensions'), 'invoices-extensions');
+
+        View::prependNamespace('accounts', resource_path('views/vendor/accounts'));
+
+        $this->app->singleton('account', ExtendedAccountManager::class);
 
         if (! class_exists(PaymentTerm::class)) {
             return;
@@ -66,6 +80,95 @@ class AccountExtensionsServiceProvider extends ServiceProvider
         if (class_exists(Bill::class)) {
             Bill::resolveRelationUsing('documents', $relation);
         }
+    }
+
+    protected function registerPrintAndSendActionOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== PrintAndSendAction::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/InvoiceResource/Actions/PrintAndSendAction.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerPreviewActionOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== PreviewAction::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/InvoiceResource/Actions/PreviewAction.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerConfirmActionOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== ConfirmAction::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/InvoiceResource/Actions/ConfirmAction.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerInvoiceSummaryOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== InvoiceSummary::class) {
+                    return false;
+                }
+
+                $this->ensureCoreInvoiceSummaryIsLoaded();
+
+                require app_path('Overrides/Webkul/Account/Livewire/InvoiceSummary.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function ensureCoreInvoiceSummaryIsLoaded(): void
+    {
+        if (class_exists('Webkul\Account\Livewire\CoreInvoiceSummary', false)) {
+            return;
+        }
+
+        $source = base_path('plugins/webkul/accounts/src/Livewire/InvoiceSummary.php');
+        $cachePath = storage_path('framework/cache/core_invoice_summary.php');
+
+        if (! file_exists($cachePath) || filemtime($cachePath) < filemtime($source)) {
+            $code = file_get_contents($source);
+            $code = preg_replace('/\bclass InvoiceSummary\b/', 'class CoreInvoiceSummary', $code, 1);
+
+            if (! is_dir(dirname($cachePath))) {
+                mkdir(dirname($cachePath), 0755, true);
+            }
+
+            file_put_contents($cachePath, $code);
+        }
+
+        require $cachePath;
     }
 
     protected function registerInvoiceResourceOverride(): void

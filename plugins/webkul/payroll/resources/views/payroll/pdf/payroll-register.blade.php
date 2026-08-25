@@ -29,9 +29,9 @@
     <table>
         <tr>
             <th>{{ __('payroll::payroll.pdf.register.period') }}</th>
-            <td>{{ sprintf('%02d/%d', $batch->period_month, $batch->period_year) }}</td>
+            <td>{{ \Webkul\Payroll\Support\PayrollCalendar::formatPeriod((int) $batch->period_month, (int) $batch->period_year) }}</td>
             <th>{{ __('payroll::payroll.fields.pay_date') }}</th>
-            <td>{{ $batch->pay_date?->format('Y-m-d') }}</td>
+            <td>{{ \Webkul\Payroll\Support\PayrollCalendar::formatDate($batch->pay_date) }}</td>
         </tr>
         <tr>
             <th>{{ __('payroll::payroll.fields.employee_count') }}</th>

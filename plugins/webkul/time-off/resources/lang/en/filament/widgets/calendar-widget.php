@@ -81,6 +81,7 @@ return [
             'description-helper'        => 'Provide a brief description of your time off request.',
             'duration'                  => 'Duration',
             'please-select-dates'       => 'Please select the request date from and to.',
+            'half-day-duration'         => ':days day',
         ],
     ],
 
@@ -99,6 +100,9 @@ return [
     ],
 
     'events' => [
-        'title' => ':name On :status: :days day(s)',
+        'title'        => ':type — :name (:duration)',
+        'half-day'     => '0.5 day',
+        'days'         => ':count d',
+        'weekend-days' => '+:count',
     ],
 ];

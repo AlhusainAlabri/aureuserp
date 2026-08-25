@@ -23,6 +23,7 @@ use Webkul\Payroll\Services\PayrollAccountingService;
 use Webkul\Payroll\Services\PayrollCalculator;
 use Webkul\Payroll\Services\PayslipPdfService;
 use Webkul\Payroll\Services\WpsExportService;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class ViewPayrollBatch extends ViewRecord
 {
@@ -50,7 +51,10 @@ class ViewPayrollBatch extends ViewRecord
                         ->title(__('payroll::payroll.batch.notifications.generated.title'))
                         ->body(__('payroll::payroll.batch.notifications.generated.body', [
                             'count'  => $batch->employee_count,
-                            'period' => sprintf('%02d/%d', $batch->period_month, $batch->period_year),
+                            'period' => PayrollCalendar::formatPeriod(
+                                (int) $batch->period_month,
+                                (int) $batch->period_year,
+                            ),
                         ]))
                         ->send();
                 }),

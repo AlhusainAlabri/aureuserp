@@ -4,6 +4,7 @@ return [
     'quick_create' => [
         'button'  => 'جديد',
         'heading' => 'إنشاء سريع',
+        'close'   => 'إغلاق',
 
         'groups' => [
             'contacts'        => 'جهات الاتصال',

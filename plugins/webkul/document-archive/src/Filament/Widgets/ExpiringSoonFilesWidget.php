@@ -15,7 +15,13 @@ class ExpiringSoonFilesWidget extends BaseWidget
 
     protected static ?int $sort = 1;
 
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
     protected int|string|array $columnSpan = 'full';
+
+    protected string $view = 'document-archive::widgets.expiring-soon-files-widget';
 
     public function getTableHeading(): ?string
     {

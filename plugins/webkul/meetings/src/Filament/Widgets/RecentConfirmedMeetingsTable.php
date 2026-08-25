@@ -13,6 +13,7 @@ use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
 use Webkul\Meetings\Filament\Widgets\Concerns\InteractsWithMeetingDashboardFilters;
 use Webkul\Meetings\Models\Meeting;
+use Webkul\Meetings\Support\MeetingDateFormatter;
 
 class RecentConfirmedMeetingsTable extends TableWidget
 {
@@ -46,7 +47,7 @@ class RecentConfirmedMeetingsTable extends TableWidget
                 TextColumn::make('title')->label(__('meetings::meetings.fields.title'))->wrap(),
                 TextColumn::make('meeting_date')
                     ->label(__('meetings::meetings.fields.meeting_date'))
-                    ->formatStateUsing(fn ($state, Meeting $record): string => $record->meeting_date?->translatedFormat('d M Y') ?? '-'),
+                    ->formatStateUsing(fn ($state, Meeting $record): string => MeetingDateFormatter::formatDate($record->meeting_date)),
                 TextColumn::make('chairPerson.name')->label(__('meetings::meetings.fields.chair_person')),
             ])
             ->headerActions([

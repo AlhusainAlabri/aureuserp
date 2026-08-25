@@ -12,6 +12,7 @@ use Webkul\Payroll\Enums\PayslipStatus;
 use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Services\PayslipPdfService;
+use Webkul\Payroll\Support\PayrollCalendar;
 
 class MyPayslips extends Page
 {
@@ -80,6 +81,11 @@ class MyPayslips extends Page
     public function formatMoney(float $amount): string
     {
         return SalaryComponentResource::formatMoney($amount);
+    }
+
+    public function formatPeriod(Payslip $payslip): string
+    {
+        return PayrollCalendar::formatPeriod((int) $payslip->period_month, (int) $payslip->period_year);
     }
 
     protected function getAuthEmployee(): ?Employee

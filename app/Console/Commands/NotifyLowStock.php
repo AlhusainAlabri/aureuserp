@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Mail\InventoryLowStockMail;
+use App\Services\Notifications\NotificationChannel;
+use App\Services\Notifications\NotificationDedupService;
+use App\Services\Notifications\NotificationDefinition;
+use App\Services\Notifications\NotificationDispatcher;
 use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\ReplenishmentResource;
 use Webkul\Inventory\Models\OrderPoint;
@@ -18,8 +20,10 @@ class NotifyLowStock extends Command
 
     protected $description = 'Notify inventory managers about products below minimum stock levels';
 
-    public function handle(): int
-    {
+    public function handle(
+        NotificationDispatcher $notifications,
+        NotificationDedupService $dedup,
+    ): int {
         if (! Schema::hasTable('inventories_order_points')) {
             $this->warn('Inventory order points table not found.');
 
@@ -61,25 +65,46 @@ class NotifyLowStock extends Command
             ->map(fn (OrderPoint $point): string => $point->product?->name ?? $point->name)
             ->implode(', ');
 
-        foreach ($managers as $manager) {
-            Notification::make()
-                ->title(__('inventory-extensions::notifications.low_stock_title', ['count' => $count]))
-                ->body(__('inventory-extensions::notifications.low_stock_body', [
-                    'products' => $productNames,
-                ]))
-                ->warning()
-                ->icon('heroicon-o-exclamation-triangle')
-                ->actions([
-                    Action::make('view')
-                        ->label(__('inventory-extensions::mail.low_stock_action'))
-                        ->url($replenishmentUrl),
-                ])
-                ->sendToDatabase($manager);
+        $todayKey = today()->toDateString();
+        $notified = 0;
 
-            Mail::to($manager)->queue(new InventoryLowStockMail($lowStockPoints, $replenishmentUrl));
+        foreach ($managers as $manager) {
+            $dedupKey = "inventory.low_stock:{$todayKey}:user:{$manager->id}";
+
+            $sent = $dedup->rememberIfNotSent($dedupKey, function () use (
+                $notifications,
+                $manager,
+                $count,
+                $productNames,
+                $replenishmentUrl,
+                $lowStockPoints,
+            ): void {
+                $notifications->dispatch(
+                    NotificationDefinition::make('inventory.low_stock')
+                        ->recipients([$manager])
+                        ->title(__('inventory-extensions::notifications.low_stock_title', ['count' => $count]))
+                        ->body(__('inventory-extensions::notifications.low_stock_body', [
+                            'products' => $productNames,
+                        ]))
+                        ->color('warning')
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->actions([
+                            Action::make('view')
+                                ->label(__('inventory-extensions::mail.low_stock_action'))
+                                ->url($replenishmentUrl),
+                        ])
+                        ->channels([NotificationChannel::Database, NotificationChannel::Mail])
+                        ->mail(fn () => new InventoryLowStockMail($lowStockPoints, $replenishmentUrl))
+                        ->build(),
+                );
+            });
+
+            if ($sent) {
+                $notified++;
+            }
         }
 
-        $this->info("Notified {$managers->count()} user(s) about {$count} low-stock item(s).");
+        $this->info("Notified {$notified} user(s) about {$count} low-stock item(s).");
 
         return self::SUCCESS;
     }

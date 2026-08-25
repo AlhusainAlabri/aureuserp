@@ -143,6 +143,98 @@
     @apply text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40;
 }
 
+/* ERP module sidebar navigation */
+.erp-nav-sidebar--module-mode {
+    @apply border-e border-gray-200/80 bg-white transition-[width,transform] duration-200 ease-out dark:border-gray-800 dark:bg-gray-900;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-sidebar__header {
+    @apply relative flex items-center gap-2 border-b border-gray-200/80 px-3 py-3 dark:border-gray-800;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-sidebar__brand {
+    @apply min-w-0 flex-1 overflow-hidden;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-sidebar__nav {
+    @apply overflow-y-auto overscroll-contain;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-sidebar__groups {
+    @apply gap-1 px-2 py-3;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-group-btn {
+    @apply rounded-md px-2.5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-emerald-50 hover:text-emerald-800 dark:text-gray-200 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-100;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-group.fi-active > .fi-sidebar-group-btn {
+    @apply bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-100;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-item-btn {
+    @apply rounded-md transition-colors duration-150;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    @apply bg-emerald-50 font-medium text-emerald-800 ring-1 ring-emerald-200/80 dark:bg-emerald-950/50 dark:text-emerald-100 dark:ring-emerald-800/80;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-item-btn:hover {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-800 dark:text-gray-100;
+}
+
+.erp-nav-sidebar--light {
+    @apply !bg-white !text-gray-900;
+}
+
+.erp-nav-sidebar--light .fi-sidebar-group-btn,
+.erp-nav-sidebar--light .fi-sidebar-item-btn {
+    @apply text-gray-700;
+}
+
+.erp-nav-sidebar--dark {
+    @apply !border-gray-800 !bg-gray-950 !text-gray-100;
+}
+
+.erp-nav-sidebar--dark .fi-sidebar-group-btn,
+.erp-nav-sidebar--dark .fi-sidebar-item-btn {
+    @apply text-gray-200;
+}
+
+.erp-nav-sidebar-toggle {
+    @apply absolute top-2 z-10;
+    inset-inline-end: 0.5rem;
+}
+
+.erp-nav-sidebar-toggle-btn {
+    @apply shrink-0;
+}
+
+@media (max-width: 1023px) {
+    .erp-nav-sidebar--module-mode.fi-sidebar {
+        @apply max-w-[min(17rem,85vw)];
+    }
+
+    .erp-nav-sidebar--module-mode.fi-sidebar-open {
+        @apply shadow-xl;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .erp-nav-sidebar--module-mode[data-sidebar-default='auto']:not(.fi-sidebar-open) {
+        /* auto mode respects Filament collapsed width on laptop */
+    }
+}
+
+[data-nav-mode='sidebar'] .fi-topbar-nav-groups {
+    @apply hidden;
+}
+
+[data-nav-mode='sidebar'] .fi-main-ctn {
+    @apply min-w-0;
+}
+
 /* Document Manager — sidebar + content (avoids missing Tailwind responsive width utilities) */
 .document-manager {
     display: grid;

@@ -22,6 +22,7 @@ use App\Filament\Widgets\Dashboard\MonthlyExpenseTrendWidget;
 use App\Filament\Widgets\Dashboard\MyLeaveBalanceWidget;
 use App\Filament\Widgets\Dashboard\MyNotesBoardWidget;
 use App\Filament\Widgets\Dashboard\MyPayslipWidget;
+use App\Filament\Widgets\Dashboard\MyPendingApprovalsTableWidget;
 use App\Filament\Widgets\Dashboard\MyTasksTodayWidget;
 use App\Filament\Widgets\Dashboard\MyUpcomingMeetingsWidget;
 use App\Filament\Widgets\Dashboard\OpenSubmissionsWidget;
@@ -293,6 +294,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             OrgDashboardCommandCenterWidget::class,
+            MyPendingApprovalsTableWidget::class,
             ExpiringDocumentsWidget::class,
             MissingReceiptsWidget::class,
             AssetsSummaryWidget::class,
@@ -324,6 +326,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             OrgDashboardCommandCenterWidget::class,
+            MyPendingApprovalsTableWidget::class,
             RevenueExpensesChartWidget::class,
             InvoiceStatusWidget::class,
             PurchasesSpendChartWidget::class,
@@ -339,6 +342,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             OrgDashboardCommandCenterWidget::class,
+            MyPendingApprovalsTableWidget::class,
             TasksCompletionChartWidget::class,
             MeetingsActivityChartWidget::class,
             CorrespondenceVolumeChartWidget::class,
@@ -369,6 +373,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             OrgDashboardCommandCenterWidget::class,
+            MyPendingApprovalsTableWidget::class,
             UpcomingMeetingsWidget::class,
             TasksCompletionChartWidget::class,
             MeetingsActivityChartWidget::class,

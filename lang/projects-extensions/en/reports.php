@@ -14,4 +14,5 @@ return [
     'open_tasks'          => 'Open Tasks',
     'email_subject'       => 'Weekly Project Performance Report — :project',
     'email_body'          => 'Please find attached the performance report for project :project.',
+    'page_footer'         => 'Page :page of :total',
 ];

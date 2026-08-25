@@ -129,3 +129,39 @@ it('stays pending after rejection and allows resubmission', function () {
     expect($invoice->isPendingApproval())->toBeTrue()
         ->and($invoice->isApproved())->toBeFalse();
 });
+
+// ──────────────────────────────────────────────
+// Flow C: guard before posting respects active flows
+// ──────────────────────────────────────────────
+
+it('requires approval before posting when an active flow exists', function () {
+    $invoice = makeInvoice();
+    makeFlow([User::factory()->create()->id], 1);
+
+    $invoice->refresh();
+
+    expect($invoice->hasActiveApprovalFlow())->toBeTrue()
+        ->and($invoice->canBePosted())->toBeFalse();
+
+    $guard = new ReflectionMethod($invoice, 'guardApprovalBeforePosting');
+    $guard->setAccessible(true);
+
+    expect(fn () => $guard->invoke($invoice))
+        ->toThrow(RuntimeException::class, __('approval.errors.not_approved'));
+});
+
+it('skips posting guard when no active approval flow is configured', function () {
+    ApprovalFlow::query()
+        ->where('approvable_type', (new Invoice)->getMorphClass())
+        ->delete();
+
+    $invoice = makeInvoice();
+
+    expect($invoice->hasActiveApprovalFlow())->toBeFalse()
+        ->and($invoice->canBePosted())->toBeFalse();
+
+    $guard = new ReflectionMethod($invoice, 'guardApprovalBeforePosting');
+    $guard->setAccessible(true);
+
+    expect(fn () => $guard->invoke($invoice))->not->toThrow(RuntimeException::class);
+});

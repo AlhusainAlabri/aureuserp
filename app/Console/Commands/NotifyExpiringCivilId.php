@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Hr\HrNotificationService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Employee;
@@ -15,7 +15,7 @@ class NotifyExpiringCivilId extends Command
 
     protected $description = 'Send notifications for civil ID cards expiring within 30 days';
 
-    public function handle(): int
+    public function handle(HrNotificationService $notifications): int
     {
         if (! Schema::hasColumn('employees_employees', 'civil_id_expiry')) {
             $this->info('Civil ID expiry column not found.');
@@ -34,15 +34,20 @@ class NotifyExpiringCivilId extends Command
             ->get();
 
         foreach ($employees as $employee) {
+            $title = __('hr-extensions::compliance.notifications.civil_id_title');
+            $body = __('hr-extensions::compliance.notifications.civil_id_body', [
+                'employee'    => $employee->name,
+                'expiry_date' => $employee->civil_id_expiry->format('Y-m-d'),
+            ]);
+
             foreach ($this->resolveRecipients($employee) as $user) {
-                Notification::make()
-                    ->title(__('hr-extensions::compliance.notifications.civil_id_title'))
-                    ->body(__('hr-extensions::compliance.notifications.civil_id_body', [
-                        'employee'    => $employee->name,
-                        'expiry_date' => $employee->civil_id_expiry->format('Y-m-d'),
-                    ]))
-                    ->warning()
-                    ->sendToDatabase($user);
+                $notifications->dispatchAlert(
+                    recipient: $user,
+                    notificationKey: 'hr.expiring_civil_id',
+                    title: $title,
+                    body: $body,
+                    dedupKey: "hr.expiring_civil_id:{$employee->id}:user:{$user->id}:{$today->toDateString()}",
+                );
             }
         }
 
