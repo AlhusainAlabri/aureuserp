@@ -46,4 +46,11 @@ return [
         'dark'   => 'Dark',
         'system' => 'Follow system / app theme',
     ],
+
+    'sidebar' => [
+        'personal'           => 'My workspace',
+        'filter_label'       => 'Filter navigation menu',
+        'filter_placeholder' => 'Filter menu…',
+        'clear_filter'       => 'Clear menu filter',
+    ],
 ];

@@ -68,6 +68,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -127,6 +128,9 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop(fn (): bool => NavigationMode::resolve()->usesModuleSidebar())
             ->sidebarWidth('17rem')
             ->collapsedSidebarWidth('4.5rem')
+            ->subNavigationPosition(fn (): SubNavigationPosition => NavigationMode::resolve()->usesModuleSidebar()
+                ? SubNavigationPosition::Top
+                : SubNavigationPosition::Start)
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->userMenuItems([

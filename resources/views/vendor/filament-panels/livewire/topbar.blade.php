@@ -13,6 +13,7 @@
         $hasNavigation = filament()->hasNavigation();
         $hasTenancy = filament()->hasTenancy();
         $isAdminPanel = filament()->getCurrentPanel()->getId() === 'admin';
+        $usesModuleSidebar = $isAdminPanel && $navigationMode->usesModuleSidebar();
         $primaryMenuItems = $isAdminPanel && $navigationMode->usesAppGrid()
             ? AdminNavigationMenu::primaryMenuItems(
                 $navigation,
@@ -23,6 +24,37 @@
 
     <nav class="fi-topbar">
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_START) }}
+
+        @if ($usesModuleSidebar)
+            <div
+                x-data="{}"
+                x-bind:class="{ 'erp-nav-topbar-brand--open': $store.sidebar.isOpen }"
+                class="erp-nav-topbar-brand"
+            >
+                @if ($homeUrl = filament()->getHomeUrl())
+                    <a
+                        {{ \Filament\Support\generate_href_html($homeUrl) }}
+                        class="erp-nav-topbar-brand__link"
+                    >
+                        <img
+                            src="{{ asset('images/logo_2.png') }}"
+                            alt="{{ brand_name() }}"
+                            class="erp-nav-topbar-brand__logo"
+                            decoding="async"
+                        />
+                    </a>
+                @else
+                    <div class="erp-nav-topbar-brand__link">
+                        <img
+                            src="{{ asset('images/logo_2.png') }}"
+                            alt="{{ brand_name() }}"
+                            class="erp-nav-topbar-brand__logo"
+                            decoding="async"
+                        />
+                    </div>
+                @endif
+            </div>
+        @endif
 
         @if ($hasNavigation)
             <x-filament::icon-button

@@ -206,8 +206,30 @@
 }
 
 /* ERP module sidebar navigation */
+.erp-nav-topbar-brand {
+    @apply -ms-4 me-4 hidden h-16 shrink-0 items-center justify-center border-e border-gray-200/80 transition-[width] duration-200 ease-out lg:flex dark:border-gray-800;
+    width: var(--collapsed-sidebar-width);
+}
+
+.erp-nav-topbar-brand--open {
+    width: var(--sidebar-width);
+}
+
+.erp-nav-topbar-brand__link {
+    @apply flex h-12 w-full items-center justify-center overflow-hidden px-2;
+}
+
+.erp-nav-topbar-brand__logo {
+    @apply block max-h-11 max-w-full object-contain;
+    width: auto;
+}
+
 .erp-nav-sidebar--module-mode {
     @apply border-e border-gray-200/80 bg-white transition-[width,transform] duration-200 ease-out dark:border-gray-800 dark:bg-gray-900;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-header-ctn {
+    @apply lg:hidden;
 }
 
 .erp-nav-sidebar--module-mode .erp-nav-sidebar__header {
@@ -216,6 +238,45 @@
 
 .erp-nav-sidebar--module-mode .erp-nav-sidebar__brand {
     @apply min-w-0 flex-1 overflow-hidden;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-sidebar__tools {
+    @apply flex min-h-14 shrink-0 items-center gap-2 border-b border-gray-200/80 px-2 dark:border-gray-800;
+}
+
+.erp-nav-sidebar-filter {
+    @apply flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-gray-200 bg-gray-50/80 px-2.5 py-1.5 transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/15 dark:border-gray-700 dark:bg-gray-800 dark:focus-within:border-emerald-500 dark:focus-within:bg-gray-900;
+}
+
+.erp-nav-sidebar-filter__icon {
+    @apply size-4 shrink-0 text-gray-400;
+}
+
+.erp-nav-sidebar-filter__input {
+    @apply min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-gray-800 outline-none placeholder:text-gray-400 focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-500;
+}
+
+.erp-nav-sidebar-filter__input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.erp-nav-sidebar-filter__clear {
+    @apply flex size-5 shrink-0 items-center justify-center rounded text-gray-400 transition hover:bg-gray-200 hover:text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:hover:bg-gray-700 dark:hover:text-gray-200;
+}
+
+.erp-nav-sidebar-filter__clear .fi-icon {
+    @apply size-3.5;
+}
+
+.erp-nav-sidebar__tools .erp-nav-sidebar-toggle {
+    @apply static ms-auto;
+    inset-inline-end: auto;
+}
+
+.erp-nav-sidebar--module-mode:not(.fi-sidebar-open)
+    .erp-nav-sidebar__tools
+    .erp-nav-sidebar-toggle {
+    margin-inline: auto;
 }
 
 .erp-nav-sidebar--module-mode .erp-nav-sidebar__nav {
@@ -255,6 +316,18 @@
     @apply text-gray-700;
 }
 
+.erp-nav-sidebar--light .erp-nav-sidebar__tools {
+    @apply !border-gray-200;
+}
+
+.erp-nav-sidebar--light .erp-nav-sidebar-filter {
+    @apply !border-gray-200 !bg-gray-50;
+}
+
+.erp-nav-sidebar--light .erp-nav-sidebar-filter__input {
+    @apply !text-gray-800 placeholder:!text-gray-400;
+}
+
 .erp-nav-sidebar--dark {
     @apply !border-gray-800 !bg-gray-950 !text-gray-100;
 }
@@ -262,6 +335,18 @@
 .erp-nav-sidebar--dark .fi-sidebar-group-btn,
 .erp-nav-sidebar--dark .fi-sidebar-item-btn {
     @apply text-gray-200;
+}
+
+.erp-nav-sidebar--dark .erp-nav-sidebar__tools {
+    @apply !border-gray-800;
+}
+
+.erp-nav-sidebar--dark .erp-nav-sidebar-filter {
+    @apply !border-gray-700 !bg-gray-900;
+}
+
+.erp-nav-sidebar--dark .erp-nav-sidebar-filter__input {
+    @apply !text-gray-100 placeholder:!text-gray-500;
 }
 
 .erp-nav-sidebar-toggle {
@@ -289,12 +374,36 @@
     }
 }
 
+.erp-nav-sidebar--module-mode .fi-sidebar-item.fi-sidebar-item-has-active-child-items > .fi-sidebar-item-btn {
+    @apply text-emerald-800 dark:text-emerald-100;
+}
+
+.erp-nav-sidebar--module-mode .fi-sidebar-group-items .fi-sidebar-group-items {
+    @apply ms-2 border-s border-gray-200/80 ps-1 dark:border-gray-700;
+}
+
+.erp-nav-sidebar--module-mode .erp-nav-filter-hidden {
+    display: none !important;
+}
+
+.erp-nav-sidebar--module-mode
+    .fi-sidebar-group.erp-nav-filter-match
+    > .fi-sidebar-group-items {
+    display: flex !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
 [data-nav-mode='sidebar'] .fi-topbar-nav-groups {
     @apply hidden;
 }
 
 [data-nav-mode='sidebar'] .fi-main-ctn {
     @apply min-w-0;
+}
+
+[data-nav-mode='sidebar'] .fi-page-sub-navigation-sidebar-ctn {
+    @apply hidden;
 }
 
 /* Document Manager — sidebar + content (avoids missing Tailwind responsive width utilities) */

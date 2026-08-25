@@ -12,6 +12,8 @@ use Filament\Events\ServingFilament;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationManager;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Artisan;
 use Livewire\Livewire;
 use Spatie\LaravelSettings\Exceptions\MissingSettings;
@@ -121,6 +123,26 @@ it('persists navigation settings updates', function (): void {
 
 it('registers the manage navigation settings page', function (): void {
     expect(ManageNavigation::getNavigationLabel())->toBe(__('navigation-settings.navigation.label'));
+});
+
+it('registers the sidebar initialization scripts', function (): void {
+    $settings = app(NavigationSettings::class);
+    $settings->menu_type = NavigationMenuType::Sidebar;
+    $settings->save();
+
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    ServingFilament::dispatch();
+
+    expect((string) FilamentView::renderHook(PanelsRenderHook::SCRIPTS_BEFORE))
+        ->toContain('collapsedGroupsKey')
+        ->toContain('erpModuleSidebarDefaultsVersion')
+        ->toContain('defaultsState')
+        ->and((string) FilamentView::renderHook(PanelsRenderHook::SCRIPTS_AFTER))
+        ->toContain('patchFilamentSidebarStore')
+        ->toContain('registerErpNavigationFilterStore')
+        ->toContain('applyErpNavigationFilter')
+        ->toContain("document.addEventListener('alpine:initialized', initializeErpNavigation)")
+        ->toContain("const defaultState = 'auto';");
 });
 
 it('allows access for users with the shield page permission', function (): void {

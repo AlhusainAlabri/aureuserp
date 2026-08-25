@@ -46,4 +46,11 @@ return [
         'dark'   => 'داكن',
         'system' => 'اتباع النظام / سمة التطبيق',
     ],
+
+    'sidebar' => [
+        'personal'           => 'مساحتي',
+        'filter_label'       => 'تصفية قائمة التنقل',
+        'filter_placeholder' => 'تصفية القائمة…',
+        'clear_filter'       => 'مسح تصفية القائمة',
+    ],
 ];

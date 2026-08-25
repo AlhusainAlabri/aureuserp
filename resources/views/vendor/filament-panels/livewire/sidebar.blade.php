@@ -1,17 +1,18 @@
 <div>
     @php
-        use App\Support\DashboardNavigationOrder;
+        use App\Support\Navigation\ModuleSidebarMenuBuilder;
         use App\Support\Navigation\NavigationMode;
         use App\Support\Navigation\SidebarNavigationGroups;
 
-        $navigation = filament()->getNavigation();
         $navigationMode = NavigationMode::resolve();
         $isRtl = __('filament-panels::layout.direction') === 'rtl';
         $isSidebarCollapsibleOnDesktop = filament()->isSidebarCollapsibleOnDesktop();
         $isSidebarFullyCollapsibleOnDesktop = filament()->isSidebarFullyCollapsibleOnDesktop();
         $isAdminPanel = filament()->getCurrentPanel()->getId() === 'admin';
         $usesModuleSidebar = $isAdminPanel && $navigationMode->usesModuleSidebar();
-        $sidebarGroups = SidebarNavigationGroups::visibleGroups($navigation, $usesModuleSidebar);
+        $sidebarGroups = $usesModuleSidebar
+            ? ModuleSidebarMenuBuilder::build()
+            : SidebarNavigationGroups::visibleGroups(filament()->getNavigation(), false)->all();
         $appearanceClass = match ($navigationMode->appearance->value) {
             'light' => 'erp-nav-sidebar--light',
             'dark' => 'erp-nav-sidebar--dark',
@@ -36,6 +37,14 @@
         @foreach ($navigationMode->sidebarDataAttributes() as $attribute => $value)
             {{ $attribute }}="{{ $value }}"
         @endforeach
+        @if ($usesModuleSidebar)
+            data-erp-default-collapsed-groups="{{ json_encode(
+                collect($sidebarGroups)
+                    ->map(fn (\Filament\Navigation\NavigationGroup $group): string => $group->getLabel())
+                    ->values()
+                    ->all(),
+            ) }}"
+        @endif
     >
         <div class="fi-sidebar-header-ctn">
             <header class="fi-sidebar-header erp-nav-sidebar__header">
@@ -57,6 +66,46 @@
             </header>
         </div>
 
+        @if ($usesModuleSidebar)
+            <div class="erp-nav-sidebar__tools">
+                <div
+                    x-cloak
+                    x-show="$store.sidebar.isOpen"
+                    class="erp-nav-sidebar-filter"
+                >
+                    <x-filament::icon
+                        icon="heroicon-o-magnifying-glass"
+                        class="erp-nav-sidebar-filter__icon"
+                    />
+
+                    <input
+                        x-ref="menuFilter"
+                        x-bind:value="$store.erpNavigationFilter.query"
+                        x-on:input.debounce.150ms="$store.erpNavigationFilter.setQuery($event.target.value)"
+                        x-on:keydown.escape.prevent="$store.erpNavigationFilter.clear(); $refs.menuFilter.blur()"
+                        type="search"
+                        autocomplete="off"
+                        aria-label="{{ __('navigation-settings.sidebar.filter_label') }}"
+                        placeholder="{{ __('navigation-settings.sidebar.filter_placeholder') }}"
+                        class="erp-nav-sidebar-filter__input"
+                    />
+
+                    <button
+                        x-cloak
+                        x-show="$store.erpNavigationFilter.query.length > 0"
+                        x-on:click="$store.erpNavigationFilter.clear(); $refs.menuFilter.focus()"
+                        type="button"
+                        aria-label="{{ __('navigation-settings.sidebar.clear_filter') }}"
+                        class="erp-nav-sidebar-filter__clear"
+                    >
+                        <x-filament::icon icon="heroicon-o-x-mark" />
+                    </button>
+                </div>
+
+                @include('filament.components.navigation.sidebar-toggle')
+            </div>
+        @endif
+
         <nav class="fi-sidebar-nav erp-nav-sidebar__nav">
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_NAV_START) }}
 
@@ -70,13 +119,9 @@
                 @foreach ($sidebarGroups as $group)
                     @php
                         $isGroupActive = $group->isActive();
-                        $isGroupCollapsible = $group->isCollapsible();
+                        $isGroupCollapsible = $usesModuleSidebar ? true : $group->isCollapsible();
                         $groupIcon = $group->getIcon();
                         $groupItems = $group->getItems();
-
-                        if ($usesModuleSidebar && $groupIcon === 'icon-dashboard') {
-                            $groupItems = DashboardNavigationOrder::sort($groupItems)->all();
-                        }
                         $groupLabel = $group->getLabel();
                         $groupExtraSidebarAttributeBag = $group->getExtraSidebarAttributeBag();
                     @endphp
@@ -141,46 +186,6 @@
                     @endif
                 @endforeach
             </ul>
-
-            @if ($usesModuleSidebar)
-                <script>
-                    var collapsedGroups = JSON.parse(
-                        localStorage.getItem('collapsedGroups'),
-                    )
-
-                    if (collapsedGroups === null || collapsedGroups === 'null') {
-                        localStorage.setItem(
-                            'collapsedGroups',
-                            JSON.stringify(@js(
-                            $sidebarGroups
-                                ->filter(fn (\Filament\Navigation\NavigationGroup $group): bool => $group->isCollapsed())
-                                ->map(fn (\Filament\Navigation\NavigationGroup $group): string => $group->getLabel())
-                                ->values()
-                                ->all()
-                        )),
-                        )
-                    }
-
-                    collapsedGroups = JSON.parse(
-                        localStorage.getItem('collapsedGroups'),
-                    )
-
-                    document
-                        .querySelectorAll('.fi-sidebar-group')
-                        .forEach((group) => {
-                            if (
-                                ! collapsedGroups.includes(group.dataset.groupLabel)
-                            ) {
-                                return
-                            }
-
-                            group.querySelector(
-                                '.fi-sidebar-group-items',
-                            ).style.display = 'none'
-                            group.classList.add('fi-collapsed')
-                        })
-                </script>
-            @endif
 
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_NAV_END) }}
         </nav>

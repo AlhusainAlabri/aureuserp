@@ -14,7 +14,12 @@ class NavigationExtensionsServiceProvider extends ServiceProvider
     {
         Filament::serving(function (): void {
             FilamentView::registerRenderHook(
-                PanelsRenderHook::BODY_END,
+                PanelsRenderHook::SCRIPTS_BEFORE,
+                fn (): string => view('filament.components.navigation.sidebar-init-storage')->render(),
+            );
+
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::SCRIPTS_AFTER,
                 fn (): string => view('filament.components.navigation.sidebar-init')->render(),
             );
         });

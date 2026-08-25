@@ -13,6 +13,7 @@ use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\CustomerPanelProvider;
 use App\Providers\HrExtensionsServiceProvider;
 use App\Providers\InventoryExtensionsServiceProvider;
+use App\Providers\NavigationExtensionsServiceProvider;
 use App\Providers\OperationsServiceProvider;
 use App\Providers\PerformanceServiceProvider;
 use App\Providers\ProjectExtensionsServiceProvider;

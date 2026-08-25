@@ -24,12 +24,7 @@ class ManageNavigation extends SettingsPage
 
     protected static string $settings = NavigationSettings::class;
 
-    protected static ?int $navigationSort = 5;
-
-    public static function getNavigationGroup(): string
-    {
-        return __('navigation-settings.navigation.group');
-    }
+    protected static ?int $navigationSort = 3;
 
     public function getBreadcrumbs(): array
     {
