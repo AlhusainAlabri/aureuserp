@@ -440,6 +440,8 @@ RSYNC_EXCLUDES=(
   --exclude 'Homestead.json'
   --exclude 'Homestead.yaml'
   --exclude 'auth.json'
+  --exclude 'auth.md'
+  --exclude 'public/adminer.php'
   --exclude '.DS_Store'
   --exclude '*.log'
   --exclude '*.sql'
@@ -451,7 +453,7 @@ is_safe_rel_path() {
   [[ "$p" != /* ]] || return 1
   [[ "$p" != *".."* ]] || return 1
   case "$p" in
-    .env|.env.*|vendor|vendor/*|node_modules|node_modules/*|storage/logs|storage/logs/*|storage/app|storage/app/*|tests|tests/*|phpunit.xml|.env.testing.example|database/factories|database/factories/*)
+    .env|.env.*|vendor|vendor/*|node_modules|node_modules/*|storage/logs|storage/logs/*|storage/app|storage/app/*|tests|tests/*|phpunit.xml|.env.testing.example|database/factories|database/factories/*|auth.md|public/adminer.php|.git|.git/*)
       return 1
       ;;
   esac
@@ -663,6 +665,10 @@ REMOTE_CMDS+=" && if [ ! -L public/storage ]; then ${ARTISAN} storage:link || tr
 # Remove test artifacts if they exist from older deploys (never needed in production).
 REMOTE_CMDS+=" && rm -rf tests phpunit.xml .phpunit.cache .phpunit.result.cache .env.testing.example database/factories"
 REMOTE_CMDS+=" && find plugins/webkul -type d -name tests 2>/dev/null | while read -r test_dir; do rm -rf \"\$test_dir\"; done || true"
+
+# Remove sensitive artifacts that must never exist on production.
+REMOTE_CMDS+=" && rm -rf .git auth.md public/adminer.php"
+REMOTE_CMDS+=" && if [ -f .env ]; then chmod 600 .env; fi"
 
 if [[ $DO_DOWN -eq 1 && -n "${DEPLOY_DOWN_SECRET:-}" ]]; then
   REMOTE_CMDS+=" && ${ARTISAN} up"

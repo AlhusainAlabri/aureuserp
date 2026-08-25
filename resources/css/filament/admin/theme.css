@@ -143,6 +143,68 @@
     @apply text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-emerald-950/40;
 }
 
+.fi-quick-create-dropdown .fi-dropdown-panel {
+    width: min(calc(100vw - 1.5rem), 56rem) !important;
+    max-width: min(calc(100vw - 1.5rem), 56rem) !important;
+    min-width: min(calc(100vw - 1.5rem), 18rem) !important;
+}
+
+.fi-quick-create-panel {
+    @apply overflow-hidden;
+}
+
+.fi-quick-create-panel__header {
+    @apply border-b border-gray-100 px-4 py-2.5 dark:border-white/10;
+}
+
+.fi-quick-create-panel__title {
+    @apply text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500;
+}
+
+.fi-quick-create-panel__body {
+    @apply overflow-y-auto p-3 sm:p-4;
+    max-height: min(32rem, calc(100vh - 7.5rem));
+}
+
+.fi-quick-create-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+}
+
+.fi-quick-create-group {
+    min-width: 9.5rem;
+}
+
+.fi-quick-create-group__header {
+    @apply mb-1.5 flex items-start gap-1.5 rounded-md px-2 py-1;
+}
+
+.fi-quick-create-group__icon {
+    @apply mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-500 dark:text-primary-400;
+}
+
+.fi-quick-create-group__label {
+    @apply text-xs font-semibold leading-snug text-gray-500 dark:text-gray-400;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.fi-quick-create-link {
+    @apply flex items-start gap-2 rounded-lg px-2 py-1.5 text-sm text-gray-700 transition hover:bg-primary-50 hover:text-primary-700 dark:text-gray-300 dark:hover:bg-primary-900/40 dark:hover:text-primary-300;
+}
+
+.fi-quick-create-link__icon {
+    @apply mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400 transition group-hover:text-primary-600 dark:text-gray-500 dark:group-hover:text-primary-400;
+}
+
+.fi-quick-create-link__label {
+    @apply min-w-0 flex-1 leading-snug;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
 /* ERP module sidebar navigation */
 .erp-nav-sidebar--module-mode {
     @apply border-e border-gray-200/80 bg-white transition-[width,transform] duration-200 ease-out dark:border-gray-800 dark:bg-gray-900;
