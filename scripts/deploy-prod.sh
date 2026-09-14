@@ -422,6 +422,7 @@ RSYNC_EXCLUDES=(
   --exclude '.vscode/'
   --exclude '.fleet/'
   --exclude '.cursor/'
+  --exclude '.claude/'
   --exclude 'storage/logs/'
   --exclude 'storage/debugbar/'
   --exclude 'storage/framework/cache/'
