@@ -16,6 +16,7 @@ use App\Providers\InventoryExtensionsServiceProvider;
 use App\Providers\NavigationExtensionsServiceProvider;
 use App\Providers\OperationsServiceProvider;
 use App\Providers\PerformanceServiceProvider;
+use App\Providers\PluginManagerExtensionsServiceProvider;
 use App\Providers\ProjectExtensionsServiceProvider;
 use App\Providers\PurchaseExtensionsServiceProvider;
 use App\Providers\SalesExtensionsServiceProvider;
@@ -72,6 +73,7 @@ return [
     NavigationExtensionsServiceProvider::class,
     OperationsServiceProvider::class,
     PerformanceServiceProvider::class,
+    PluginManagerExtensionsServiceProvider::class,
     ProjectExtensionsServiceProvider::class,
     PurchaseExtensionsServiceProvider::class,
     SalesExtensionsServiceProvider::class,

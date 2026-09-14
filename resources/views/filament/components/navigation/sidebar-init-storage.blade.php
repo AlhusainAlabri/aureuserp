@@ -2,7 +2,7 @@
     ;(() => {
         const collapsedGroupsKey = 'collapsedGroups'
         const defaultsVersionKey = 'erpModuleSidebarDefaultsVersion'
-        const defaultsVersion = '1'
+        const defaultsVersion = '2'
         const defaultsState = `${defaultsVersion}:${document.documentElement.lang || 'default'}`
         const raw = localStorage.getItem(collapsedGroupsKey)
         const moduleSidebar = document.querySelector(

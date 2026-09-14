@@ -144,7 +144,8 @@
 
                 if (normalizedQuery === '') {
                     applyErpNavigationFilter('')
-                    this.restoreCollapsedGroups()
+                    syncErpModuleSidebarCollapsedGroups()
+                    this.collapsedGroupsBeforeFilter = null
 
                     return
                 }
@@ -180,28 +181,46 @@
             apply() {
                 this.setQuery(this.query)
             },
-
-            restoreCollapsedGroups() {
-                if (! Array.isArray(this.collapsedGroupsBeforeFilter)) {
-                    return
-                }
-
-                const collapsedGroups = [
-                    ...this.collapsedGroupsBeforeFilter,
-                ]
-                const sidebarStore = window.Alpine?.store('sidebar')
-
-                if (sidebarStore) {
-                    sidebarStore.collapsedGroups = collapsedGroups
-                }
-
-                localStorage.setItem(
-                    'collapsedGroups',
-                    JSON.stringify(collapsedGroups),
-                )
-                this.collapsedGroupsBeforeFilter = null
-            },
         })
+    }
+
+    const syncErpModuleSidebarCollapsedGroups = () => {
+        const sidebar = document.querySelector('.erp-nav-sidebar--module-mode')
+
+        if (! sidebar) {
+            return
+        }
+
+        const sidebarStore = patchFilamentSidebarStore()
+
+        if (! sidebarStore) {
+            return
+        }
+
+        const activeFilterQuery =
+            window.Alpine?.store('erpNavigationFilter')?.query?.trim() ?? ''
+
+        if (activeFilterQuery !== '') {
+            return
+        }
+
+        const collapsedGroups = []
+
+        sidebar.querySelectorAll('.fi-sidebar-group').forEach((group) => {
+            const label = group.dataset.groupLabel
+
+            if (! label || group.classList.contains('fi-active')) {
+                return
+            }
+
+            collapsedGroups.push(label)
+        })
+
+        sidebarStore.collapsedGroups = collapsedGroups
+        localStorage.setItem(
+            'collapsedGroups',
+            JSON.stringify(collapsedGroups),
+        )
     }
 
     const initializeErpModuleSidebarGroups = () => {
@@ -213,11 +232,7 @@
 
         clearStaleModuleSidebarStyles()
 
-        const sidebarStore = patchFilamentSidebarStore()
-
-        if (! sidebarStore) {
-            return
-        }
+        syncErpModuleSidebarCollapsedGroups()
     }
 
     const bootErpSidebar = () => {
@@ -278,8 +293,10 @@
         clearStaleModuleSidebarStyles()
 
         @if ($navigationMode->usesModuleSidebar())
-            initializeErpModuleSidebarGroups()
-            window.Alpine?.store('erpNavigationFilter')?.apply()
+            requestAnimationFrame(() => {
+                initializeErpModuleSidebarGroups()
+                window.Alpine?.store('erpNavigationFilter')?.apply()
+            })
 
             if (window.innerWidth >= 1024) {
                 return
@@ -291,12 +308,6 @@
                 sidebarStore.close()
             }
         @endif
-    })
-
-    window.addEventListener('beforeunload', () => {
-        window.Alpine
-            ?.store('erpNavigationFilter')
-            ?.restoreCollapsedGroups()
     })
     })()
 </script>

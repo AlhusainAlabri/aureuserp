@@ -2,7 +2,7 @@
 
 return [
     'navigation' => [
-        'title' => 'My Voice',
+        'title' => 'My Submissions',
     ],
 
     'form' => [

@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerFilamentApprovalBladeComponents();
 
-        if (app()->environment('production')) {
+        if (str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');
         }
 

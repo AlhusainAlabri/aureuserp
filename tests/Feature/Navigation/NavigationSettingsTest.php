@@ -141,6 +141,7 @@ it('registers the sidebar initialization scripts', function (): void {
         ->toContain('patchFilamentSidebarStore')
         ->toContain('registerErpNavigationFilterStore')
         ->toContain('applyErpNavigationFilter')
+        ->toContain('syncErpModuleSidebarCollapsedGroups')
         ->toContain("document.addEventListener('alpine:initialized', initializeErpNavigation)")
         ->toContain("const defaultState = 'auto';");
 });

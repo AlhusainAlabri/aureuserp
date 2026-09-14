@@ -2,7 +2,7 @@
 
 return [
     'navigation' => [
-        'title' => 'صوتي',
+        'title' => 'طلباتي',
     ],
 
     'form' => [

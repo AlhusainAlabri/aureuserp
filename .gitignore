@@ -11,6 +11,8 @@
 .env.backup
 .env.production
 .env.deploy
+.env.deploy.*
+!.env.deploy.example
 .phpactor.json
 .phpunit.result.cache
 Homestead.json

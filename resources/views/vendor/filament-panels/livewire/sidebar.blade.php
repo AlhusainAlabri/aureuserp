@@ -40,6 +40,7 @@
         @if ($usesModuleSidebar)
             data-erp-default-collapsed-groups="{{ json_encode(
                 collect($sidebarGroups)
+                    ->filter(fn (\Filament\Navigation\NavigationGroup $group): bool => ! $group->isActive())
                     ->map(fn (\Filament\Navigation\NavigationGroup $group): string => $group->getLabel())
                     ->values()
                     ->all(),

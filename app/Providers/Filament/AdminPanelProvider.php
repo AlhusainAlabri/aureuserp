@@ -60,6 +60,7 @@ use App\Filament\Widgets\Dashboard\WarningsIssuedWidget;
 use App\Http\Middleware\CheckEmployeeFileClosure;
 use App\Http\Middleware\SetLocale;
 use App\Support\Navigation\NavigationMode;
+use App\Support\PluginManager\PluginManagerUi;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Devonab\FilamentEasyFooter\EasyFooterPlugin;
 use Filament\Actions\Action;
@@ -89,6 +90,87 @@ use Wezlo\FilamentApproval\FilamentApprovalPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
+    /**
+     * @return array<NavigationGroup>
+     */
+    protected function adminNavigationGroups(): array
+    {
+        $groups = [
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.dashboard'))
+                ->icon('icon-dashboard'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.contact'))
+                ->icon('icon-contacts'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.sale'))
+                ->icon('icon-sales'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.purchase'))
+                ->icon('icon-purchases'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.manufacturing'))
+                ->icon('icon-manufacturing'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.inventory'))
+                ->icon('icon-inventories'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.invoice'))
+                ->icon('icon-invoices'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.accounting'))
+                ->icon('icon-accounting'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.project'))
+                ->icon('icon-projects'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.meetings'))
+                ->icon('icon-meetings'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.my-notes'))
+                ->icon('icon-my-notes'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.correspondence'))
+                ->icon('icon-correspondence'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.document-archive'))
+                ->icon('icon-document-archive'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('assets::assets.navigation.group'))
+                ->icon('icon-assets'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.employee'))
+                ->icon('icon-employees'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('payroll::payroll.navigation.group'))
+                ->icon('icon-payroll'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.time-off'))
+                ->icon('icon-time-offs'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.recruitment'))
+                ->icon('icon-recruitments'),
+            NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.website'))
+                ->icon('icon-website'),
+            NavigationGroup::make('Approvals')
+                ->label(fn (): string => __('admin.navigation.approvals'))
+                ->icon('icon-approvals'),
+        ];
+
+        if (! PluginManagerUi::isHidden()) {
+            $groups[] = NavigationGroup::make()
+                ->label(fn (): string => __('admin.navigation.plugin'))
+                ->icon('icon-plugin');
+        }
+
+        $groups[] = NavigationGroup::make()
+            ->label(fn (): string => __('admin.navigation.setting'))
+            ->icon('icon-settings');
+
+        return $groups;
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -138,74 +220,7 @@ class AdminPanelProvider extends PanelProvider
                     ->label(fn () => Auth::user()?->name)
                     ->url(fn (): string => Profile::getUrl()),
             ])
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.dashboard'))
-                    ->icon('icon-dashboard'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.contact'))
-                    ->icon('icon-contacts'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.sale'))
-                    ->icon('icon-sales'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.purchase'))
-                    ->icon('icon-purchases'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.manufacturing'))
-                    ->icon('icon-manufacturing'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.inventory'))
-                    ->icon('icon-inventories'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.invoice'))
-                    ->icon('icon-invoices'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.accounting'))
-                    ->icon('icon-accounting'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.project'))
-                    ->icon('icon-projects'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.meetings'))
-                    ->icon('icon-meetings'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.my-notes'))
-                    ->icon('icon-my-notes'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.correspondence'))
-                    ->icon('icon-correspondence'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.document-archive'))
-                    ->icon('icon-document-archive'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('assets::assets.navigation.group'))
-                    ->icon('icon-assets'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.employee'))
-                    ->icon('icon-employees'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('payroll::payroll.navigation.group'))
-                    ->icon('icon-payroll'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.time-off'))
-                    ->icon('icon-time-offs'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.recruitment'))
-                    ->icon('icon-recruitments'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.website'))
-                    ->icon('icon-website'),
-                NavigationGroup::make('Approvals')
-                    ->label(fn (): string => __('admin.navigation.approvals'))
-                    ->icon('icon-approvals'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.plugin'))
-                    ->icon('icon-plugin'),
-                NavigationGroup::make()
-                    ->label(fn (): string => __('admin.navigation.setting'))
-                    ->icon('icon-settings'),
-            ])
+            ->navigationGroups($this->adminNavigationGroups())
             ->plugins([
                 FilamentApprovalPlugin::make()
                     ->navigationGroup('Approvals'),

@@ -11,6 +11,14 @@ Database:
 Admin panel login: use the credentials above (email + password in this file).
 
 
+Site: http://erp.zseeb.om
+Admin: http://erp.zseeb.om/admin/login
+Temporary by IP: http://192.168.100.16/admin/login
+
+
+
+Production (192.168.100.16): set `HIDE_PLUGINS_UI=true` in server `.env` to hide `/admin/plugins` from all users. Manage plugins via SSH:
+
 php artisan plugins:install
 php artisan plugins:install --all
 php artisan plugins:install --only=products --only=accounts

@@ -103,10 +103,14 @@ if [[ "$MODE" == "folders" && ${#FOLDER_ARGS[@]} -eq 0 ]]; then
   exit 1
 fi
 
-ENV_FILE="$APP_ROOT/.env.deploy"
+ENV_FILE="${DEPLOY_ENV_FILE:-$APP_ROOT/.env.deploy}"
+if [[ "$ENV_FILE" != /* ]]; then
+  ENV_FILE="$APP_ROOT/$ENV_FILE"
+fi
 if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing .env.deploy"
+  echo "Missing $ENV_FILE"
   echo "Copy: cp .env.deploy.example .env.deploy"
+  echo "Or: DEPLOY_ENV_FILE=.env.deploy.zseeb bash scripts/deploy-prod.sh"
   exit 1
 fi
 
@@ -432,7 +436,7 @@ RSYNC_EXCLUDES=(
   --exclude 'public/hot'
   --exclude 'tests/'
   --exclude 'plugins/webkul/*/tests/'
-  --exclude 'database/factories/'
+  --exclude '/database/factories/'
   --exclude '.phpunit.result.cache'
   --exclude '.phpunit.cache/'
   --exclude 'phpunit.xml'
