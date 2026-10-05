@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Services;
 
+use App\Support\Exports\Utf8Csv;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -91,6 +92,6 @@ class WpsExportService
         $csv = stream_get_contents($handle) ?: '';
         fclose($handle);
 
-        return $csv;
+        return Utf8Csv::withBom($csv);
     }
 }

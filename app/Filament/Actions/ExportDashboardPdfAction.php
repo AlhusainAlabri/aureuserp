@@ -2,6 +2,7 @@
 
 namespace App\Filament\Actions;
 
+use App\Support\Pdf\ArabicText;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 
@@ -40,7 +41,7 @@ class ExportDashboardPdfAction extends Action
                 $pdf = Pdf::loadView('dashboard.pdf.dashboard-report', $data)
                     ->setPaper('a4')
                     ->setOption('isRemoteEnabled', true)
-                    ->setOption('defaultFont', 'Cairo');
+                    ->setOption('defaultFont', ArabicText::pdfFontFamily());
 
                 return response()->streamDownload(
                     fn () => print ($pdf->output()),

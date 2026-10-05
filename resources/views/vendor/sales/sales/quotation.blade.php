@@ -6,7 +6,7 @@
     $direction = $isArabic ? 'rtl' : 'ltr';
     $textAlign = $isArabic ? 'right' : 'left';
     $reverseAlign = $isArabic ? 'left' : 'right';
-    $fontFamily = $isArabic ? "'Cairo', 'Amiri', sans-serif" : "'DejaVu Sans', sans-serif";
+    $fontFamily = "'DejaVu Sans', sans-serif";
     $typeLabel = $record->state === OrderState::SALE
         ? __('sales-extensions::pdf.order')
         : __('sales-extensions::pdf.quotation');

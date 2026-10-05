@@ -27,7 +27,7 @@ trait OptimizesRepeaterSelects
     {
         static::walkComponentsForSelectOptimization(
             $schema->getComponents(withHidden: true),
-            function (Component $component, bool $insideRepeater): void {
+            function (mixed $component, bool $insideRepeater): void {
                 if (! $component instanceof Select) {
                     return;
                 }

@@ -2,8 +2,8 @@
 
 namespace Webkul\Correspondence\Services;
 
+use App\Support\Media\PrivateUploadMetadata;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Webkul\Correspondence\Models\Correspondence;
 
 class CorrespondenceAttachmentService
@@ -36,15 +36,7 @@ class CorrespondenceAttachmentService
      */
     public static function enrichFileMetadata(array $data): array
     {
-        if (empty($data['file_path'])) {
-            return $data;
-        }
-
-        $data['file_name'] ??= basename((string) $data['file_path']);
-        $data['file_size'] = Storage::disk('private')->size($data['file_path']);
-        $data['mime_type'] = Storage::disk('private')->mimeType($data['file_path']);
-
-        return $data;
+        return PrivateUploadMetadata::enrich($data);
     }
 
     /**
@@ -52,11 +44,18 @@ class CorrespondenceAttachmentService
      */
     protected static function buildAttachmentAttributes(string $path): array
     {
+        $metadata = PrivateUploadMetadata::enrich([
+            'file_path' => $path,
+            'file_name' => basename($path),
+            'file_size' => 0,
+            'mime_type' => 'application/octet-stream',
+        ]);
+
         return [
-            'file_path'  => $path,
-            'file_name'  => basename($path),
-            'file_size'  => Storage::disk('private')->size($path),
-            'mime_type'  => Storage::disk('private')->mimeType($path),
+            'file_path'  => $metadata['file_path'],
+            'file_name'  => $metadata['file_name'],
+            'file_size'  => (int) ($metadata['file_size'] ?? 0),
+            'mime_type'  => (string) ($metadata['mime_type'] ?? 'application/octet-stream'),
             'creator_id' => Auth::id(),
         ];
     }

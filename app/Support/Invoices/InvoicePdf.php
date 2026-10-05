@@ -2,6 +2,7 @@
 
 namespace App\Support\Invoices;
 
+use App\Support\Pdf\ArabicText;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Account\Models\Move;
@@ -10,7 +11,7 @@ class InvoicePdf
 {
     public static function defaultFont(): string
     {
-        return app()->getLocale() === 'ar' ? 'Cairo' : 'DejaVu Sans';
+        return ArabicText::pdfFontFamily();
     }
 
     public static function viewName(): string

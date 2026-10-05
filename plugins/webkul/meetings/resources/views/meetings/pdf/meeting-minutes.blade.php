@@ -2,7 +2,7 @@
     $isArabic = app()->getLocale() === 'ar';
     $direction = $isArabic ? 'rtl' : 'ltr';
     $textAlign = $isArabic ? 'right' : 'left';
-    $fontFamily = $isArabic ? "'Cairo', 'Amiri', sans-serif" : "'DejaVu Sans', sans-serif";
+    $fontFamily = "'DejaVu Sans', sans-serif";
 @endphp
 <!doctype html>
 <html lang="{{ app()->getLocale() }}" dir="{{ $direction }}">

@@ -51,6 +51,15 @@ class SalaryComponentResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'display_name';
 
+    /**
+     * @return array<int, string>
+     */
+    public static function getGloballySearchableAttributes(): array
+    {
+        // display_name is a localized accessor, not a database column.
+        return ['name', 'name_ar', 'code'];
+    }
+
     public static function getNavigationLabel(): string
     {
         return static::getPluralModelLabel();

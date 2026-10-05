@@ -59,6 +59,7 @@ use App\Filament\Widgets\Dashboard\UpcomingRemindersWidget;
 use App\Filament\Widgets\Dashboard\WarningsIssuedWidget;
 use App\Http\Middleware\CheckEmployeeFileClosure;
 use App\Http\Middleware\SetLocale;
+use App\Support\GlobalSearchProvider;
 use App\Support\Navigation\NavigationMode;
 use App\Support\PluginManager\PluginManagerUi;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -85,7 +86,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Webkul\Manufacturing\ManufacturingPlugin;
 use Webkul\Support\Filament\Pages\Profile;
-use Webkul\Support\GlobalSearchProvider;
 use Wezlo\FilamentApproval\FilamentApprovalPlugin;
 
 class AdminPanelProvider extends PanelProvider

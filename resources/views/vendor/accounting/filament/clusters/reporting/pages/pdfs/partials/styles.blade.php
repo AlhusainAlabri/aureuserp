@@ -4,7 +4,7 @@
 <style>
     @page { margin: 1.5cm; size: A4 {{ $landscape ?? false ? 'landscape' : 'portrait' }}; }
     body {
-        font-family: {{ $isRtl ? "'Amiri', 'Cairo', 'DejaVu Sans', sans-serif" : "Arial, Helvetica, sans-serif" }};
+        font-family: {{ $isRtl ? "'DejaVu Sans', sans-serif" : "Arial, Helvetica, sans-serif" }};
         font-size: 11pt;
         color: #1f2937;
         line-height: 1.4;

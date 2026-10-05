@@ -9,6 +9,7 @@ use Webkul\Accounting\Filament\Clusters\Accounting;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResource;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResource\Pages\CreateJournalEntry;
 use Webkul\Accounting\Filament\Clusters\Customers;
+use Webkul\Accounting\Filament\Clusters\Customers\Resources\CreditNoteResource;
 use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource;
 use Webkul\Accounting\Filament\Clusters\Vendors;
 use Webkul\Accounting\Filament\Clusters\Vendors\Resources\BillResource;
@@ -32,6 +33,23 @@ it('uses arabic plural labels for accounting bills and invoices', function (): v
 
     expect(BillResource::getPluralModelLabel())->toBe('الفواتير')
         ->and(InvoiceResource::getPluralModelLabel())->toBe('الفواتير');
+});
+
+it('uses arabic plural labels for accounting credit notes', function (): void {
+    app()->setLocale('ar');
+
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    ServingFilament::dispatch();
+
+    expect(CreditNoteResource::getPluralModelLabel())->toBe('إشعارات دائنة')
+        ->and(CreditNoteResource::getPluralModelLabel())->not->toContain('s')
+        ->and(CreditNoteResource::getModelLabel())->toBe('إشعار دائن')
+        ->and(CreditNoteResource::getNavigationLabel())->toBe('إشعارات دائنة');
+});
+
+it('loads credit note resource override from the app layer', function (): void {
+    expect((new ReflectionClass(CreditNoteResource::class))->getFileName())
+        ->toContain('app/Overrides/Webkul/Accounting/Filament/Clusters/Customers/Resources/CreditNoteResource.php');
 });
 
 it('uses arabic cluster breadcrumbs for accounting navigation', function (): void {

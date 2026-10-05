@@ -267,6 +267,23 @@ it('CorrespondencePluginTest: plural model label uses translation key', function
     expect(CorrespondenceResource::getPluralModelLabel())->toBe(__('correspondence::correspondence.correspondences'));
 });
 
+it('CorrespondencePluginTest: attachment empty state strings are fully Arabic', function (): void {
+    app()->setLocale('ar');
+
+    expect(__('correspondence::correspondence.attachment'))
+        ->toBe('مرفق مراسلات')
+        ->and(__('correspondence::correspondence.attachment_plural'))
+        ->toBe('مرفقات مراسلات')
+        ->and(__('correspondence::correspondence.actions.add_attachment'))
+        ->toBe('إضافة مرفق مراسلات')
+        ->and(__('correspondence::correspondence.empty.no_attachments'))
+        ->toBe('لا توجد مرفقات مراسلات')
+        ->not->toContain('correspondence')
+        ->and(__('correspondence::correspondence.empty.no_attachments_description'))
+        ->toBe('قم بإضافة مرفق مراسلات للبدء.')
+        ->not->toContain('correspondence');
+});
+
 it('CorrespondencePluginTest: attachment service stores files on private disk', function (): void {
     Storage::fake('private');
     correspondenceUser();
@@ -279,6 +296,35 @@ it('CorrespondencePluginTest: attachment service stores files on private disk', 
 
     expect(CorrespondenceAttachment::query()->where('correspondence_id', $correspondence->id)->count())->toBe(1)
         ->and(CorrespondenceAttachment::query()->first()->file_path)->toBe($path);
+});
+
+it('CorrespondencePluginTest: attachment metadata enrichment ignores livewire temp paths', function (): void {
+    Storage::fake('private');
+
+    $result = CorrespondenceAttachmentService::enrichFileMetadata([
+        'file_path' => '/var/folders/bj/67hvwp7s52s3t2fzq647_y280000gn/T/phpmprp6leapck07nO8sWr',
+        'file_name' => 'file',
+        'file_size' => 0,
+        'mime_type' => 'application/octet-stream',
+    ]);
+
+    expect($result['file_size'])->toBe(0)
+        ->and($result['mime_type'])->toBe('application/octet-stream');
+});
+
+it('CorrespondencePluginTest: attachment metadata enrichment reads from private disk after store', function (): void {
+    Storage::fake('private');
+
+    $path = 'correspondence/'.now()->year.'/letter.pdf';
+    Storage::disk('private')->put($path, 'pdf-content');
+
+    $result = CorrespondenceAttachmentService::enrichFileMetadata([
+        'file_path' => $path,
+    ]);
+
+    expect($result['file_name'])->toBe('letter.pdf')
+        ->and($result['file_size'])->toBe(11)
+        ->and($result['mime_type'])->toBe('application/pdf');
 });
 
 it('CorrespondencePluginTest: department seeder is idempotent', function (): void {

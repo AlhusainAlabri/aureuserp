@@ -3,6 +3,8 @@
 namespace App\Services\Inventory;
 
 use App\Models\Inventory\InventoryReportArchive;
+use App\Support\Exports\Utf8Csv;
+use App\Support\Pdf\ArabicText;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
@@ -60,7 +62,9 @@ class InventoryMovementReportService
             'moves' => $moves,
             'from'  => $from,
             'to'    => $to,
-        ])->setPaper('a4', 'landscape');
+        ])
+            ->setPaper('a4', 'landscape')
+            ->setOption('defaultFont', ArabicText::pdfFontFamily());
 
         Storage::disk('private')->put($path, $pdf->output());
 
@@ -77,30 +81,27 @@ class InventoryMovementReportService
         $moves = $this->getMoves($from, $to, $filters);
         $path = $this->buildPath($from, $to, 'csv');
 
-        $handle = fopen('php://temp', 'r+');
-        fputcsv($handle, [
+        $rows = [[
             __('inventory-extensions::pdf.date'),
             __('inventory-extensions::pdf.reference'),
             __('inventory-extensions::pdf.product'),
             __('inventory-extensions::pdf.source'),
             __('inventory-extensions::pdf.destination'),
             __('inventory-extensions::pdf.quantity'),
-        ]);
+        ]];
 
         foreach ($moves as $move) {
-            fputcsv($handle, [
+            $rows[] = [
                 $move->updated_at?->format('Y-m-d H:i'),
                 $move->reference ?? $move->operation?->name ?? '—',
                 $move->product?->name ?? '—',
                 $move->sourceLocation?->full_name ?? '—',
                 $move->destinationLocation?->full_name ?? '—',
                 (string) $move->product_qty,
-            ]);
+            ];
         }
 
-        rewind($handle);
-        Storage::disk('private')->put($path, stream_get_contents($handle) ?: '');
-        fclose($handle);
+        Storage::disk('private')->put($path, Utf8Csv::fromRows($rows));
 
         $this->archiveReport($from, $to, $path, 'csv', $filters);
 

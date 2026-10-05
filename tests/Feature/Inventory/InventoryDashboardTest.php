@@ -6,6 +6,7 @@ use App\Filament\Inventory\Pages\RecordConsumption;
 use App\Filament\Inventory\Widgets\InventoryOverviewWidget;
 use App\Filament\Inventory\Widgets\RecentMovementsWidget;
 use App\Services\Inventory\InventoryMovementReportService;
+use App\Support\Pdf\ArabicText;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -97,7 +98,7 @@ it('builds a signed download url for local private disk exports', function (): v
     $this->get($url)->assertSuccessful();
 });
 
-it('generates rtl arabic movement report pdfs with cairo styling', function (): void {
+it('generates rtl arabic movement report pdfs with configured arabic font styling', function (): void {
     if (! Schema::hasTable('inventories_moves')) {
         $this->markTestSkipped('Inventory moves table missing.');
     }
@@ -112,7 +113,7 @@ it('generates rtl arabic movement report pdfs with cairo styling', function (): 
 
     expect($html)
         ->toContain('dir="rtl"')
-        ->and($html)->toContain('Cairo');
+        ->and($html)->toContain(ArabicText::pdfFontFamily());
 });
 
 it('renders the record consumption page when internal transfers are hidden', function (): void {

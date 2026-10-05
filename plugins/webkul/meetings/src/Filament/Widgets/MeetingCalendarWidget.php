@@ -86,9 +86,15 @@ class MeetingCalendarWidget extends FullCalendarWidget
                     DateTimePicker::make('meeting_date')->label(__('meetings::meetings.fields.meeting_date'))->required(),
                     Select::make('chair_person_id')->label(__('meetings::meetings.fields.chair_person'))->options(fn () => User::query()->pluck('name', 'id'))->searchable()->required(),
                 ])
-                ->action(fn (array $data): Meeting => Meeting::query()->create($data + [
-                    'company_id' => auth()->user()?->default_company_id,
-                ])),
+                ->action(function (array $data): Meeting {
+                    $meeting = Meeting::query()->create($data + [
+                        'company_id' => auth()->user()?->default_company_id,
+                    ]);
+
+                    $meeting->ensureChairIsAttendee();
+
+                    return $meeting;
+                }),
             Action::make('filters')
                 ->label(__('meetings::meetings.calendar.filters'))
                 ->icon('heroicon-o-funnel')

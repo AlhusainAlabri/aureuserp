@@ -15,7 +15,7 @@ class CorrespondenceApprovalsTable extends TableWidget
 {
     use HasCorrespondenceVisibility;
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 3;
 
     protected int|string|array $columnSpan = 5;
 

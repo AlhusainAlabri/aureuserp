@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('dashboard.pdf.title') }}</title>
     <style>
-        @font-face {
-            font-family: 'Cairo';
-            src: local('Cairo');
-        }
+        @php($pdfFont = \App\Support\Pdf\ArabicText::pdfFontFamily())
+        {!! \App\Support\Pdf\PdfArabicFont::fontFaceCss($pdfFont) !!}
 
         * {
             margin: 0;
@@ -17,7 +15,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'DejaVu Sans', Arial, sans-serif;
+            font-family: '{{ $pdfFont }}', 'DejaVu Sans', sans-serif;
             font-size: 12px;
             color: #1F2937;
             direction: rtl;

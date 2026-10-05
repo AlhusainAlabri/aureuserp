@@ -35,16 +35,7 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
                     ->directory(fn (): string => 'correspondence/'.now()->year)
                     ->visibility('private')
                     ->acceptedFileTypes(CorrespondenceAttachmentService::acceptedMimeTypes())
-                    ->required()
-                    ->afterStateUpdated(function (?string $state, callable $set): void {
-                        if (! $state) {
-                            return;
-                        }
-
-                        $set('file_name', basename($state));
-                        $set('file_size', Storage::disk('private')->size($state));
-                        $set('mime_type', Storage::disk('private')->mimeType($state));
-                    }),
+                    ->required(),
                 Hidden::make('file_name')->default('file'),
                 Hidden::make('file_size')->default(0),
                 Hidden::make('mime_type')->default('application/octet-stream'),
@@ -54,6 +45,8 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('correspondence::correspondence.attachment'))
+            ->pluralModelLabel(__('correspondence::correspondence.attachment_plural'))
             ->columns([
                 TextColumn::make('file_name')
                     ->label(__('correspondence::correspondence.file_name'))
@@ -68,6 +61,7 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
+                    ->label(__('correspondence::correspondence.actions.add_attachment'))
                     ->mutateFormDataUsing(fn (array $data): array => CorrespondenceAttachmentService::enrichFileMetadata($data)),
             ])
             ->recordActions([
@@ -80,6 +74,8 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
                     ))
                     ->openUrlInNewTab(),
                 DeleteAction::make(),
-            ]);
+            ])
+            ->emptyStateHeading(__('correspondence::correspondence.empty.no_attachments'))
+            ->emptyStateDescription(__('correspondence::correspondence.empty.no_attachments_description'));
     }
 }

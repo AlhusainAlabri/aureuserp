@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <title>{{ __('projects-extensions::reports.title') }}</title>
     <style>
-        @font-face {
-            font-family: 'Cairo';
-            src: local('Cairo');
-        }
+        @php($pdfFont = \App\Support\Pdf\ArabicText::pdfFontFamily())
+        {!! \App\Support\Pdf\PdfArabicFont::fontFaceCss($pdfFont) !!}
 
         body {
-            font-family: {{ $is_rtl ? "'Cairo', 'Amiri', sans-serif" : "'DejaVu Sans', sans-serif" }};
+            font-family: '{{ $pdfFont }}', 'DejaVu Sans', sans-serif;
             font-size: 12px;
             color: #1F2937;
             direction: {{ $is_rtl ? 'rtl' : 'ltr' }};

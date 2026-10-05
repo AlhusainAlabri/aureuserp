@@ -8,8 +8,10 @@ use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
+use Webkul\Partner\Models\Partner;
 use Webkul\Support\Models\Currency;
 
 class AccountingResourceExtensions
@@ -20,7 +22,11 @@ class AccountingResourceExtensions
     {
         static::walkComponents(
             $schema->getComponents(withHidden: true),
-            function (Component $component): void {
+            function (mixed $component): void {
+                if (! $component instanceof Component) {
+                    return;
+                }
+
                 if ($component instanceof FormProgressStepper && $component->getName() === 'state') {
                     $component->label(__('accounting-extensions::forms.state'));
                 }
@@ -28,10 +34,38 @@ class AccountingResourceExtensions
                 if ($component instanceof Select && $component->getName() === 'currency_id') {
                     $component->default(fn (): ?int => static::defaultOmrCurrencyId());
                 }
+
+                if ($component instanceof Select && $component->getName() === 'partner_id') {
+                    static::excludeTrashedPartnersFromSelect($component);
+                }
             },
         );
 
         return static::optimizeFormSelects($schema);
+    }
+
+    /**
+     * Core invoice/bill forms use withTrashed() so deleted partners still appear in the list.
+     * Keep labels for an already-selected deleted partner on edit, but do not offer them as options.
+     */
+    public static function excludeTrashedPartnersFromSelect(Select $component): Select
+    {
+        return $component
+            ->relationship(
+                'partner',
+                'name',
+                fn (Builder $query) => $query->orderBy('id'),
+            )
+            ->getOptionLabelUsing(function ($value): ?string {
+                $partner = Partner::query()->withTrashed()->find($value);
+
+                if (! $partner) {
+                    return null;
+                }
+
+                return $partner->name.($partner->trashed() ? ' (Deleted)' : '');
+            })
+            ->disableOptionWhen(fn ($label): bool => str_contains((string) $label, ' (Deleted)'));
     }
 
     /**
@@ -98,13 +132,17 @@ class AccountingResourceExtensions
         foreach ($components as $component) {
             $callback($component);
 
-            if (! method_exists($component, 'getChildComponents')) {
+            if (! method_exists($component, 'getDefaultChildComponents')) {
                 continue;
             }
 
-            $children = $component->getChildComponents();
+            $children = $component->getDefaultChildComponents();
 
-            if ($children === []) {
+            if ($children instanceof Schema) {
+                $children = $children->getComponents(withHidden: true);
+            }
+
+            if (! is_array($children) || $children === []) {
                 continue;
             }
 

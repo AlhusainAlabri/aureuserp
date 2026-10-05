@@ -276,6 +276,18 @@ class Meeting extends Model
         return MeetingFactory::new();
     }
 
+    public function ensureChairIsAttendee(): void
+    {
+        if (! $this->chair_person_id) {
+            return;
+        }
+
+        $this->attendees()->firstOrCreate(
+            ['user_id' => $this->chair_person_id],
+            ['role' => 'chair', 'attended' => false],
+        );
+    }
+
     protected static function boot(): void
     {
         parent::boot();
@@ -284,13 +296,6 @@ class Meeting extends Model
             $meeting->creator_id ??= Auth::id();
             $meeting->company_id ??= Auth::user()?->default_company_id;
             $meeting->meeting_number ??= static::nextMeetingNumber($meeting->meeting_date?->year ?? now()->year);
-        });
-
-        static::created(function (Meeting $meeting): void {
-            $meeting->attendees()->firstOrCreate(
-                ['user_id' => $meeting->chair_person_id],
-                ['role' => 'chair', 'attended' => false],
-            );
         });
     }
 

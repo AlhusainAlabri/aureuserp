@@ -980,6 +980,38 @@ it('includes chart widgets on the document dashboard', function (): void {
         ->and($dashboard->instance()->getWidgets())->toContain(RecentFilesWidget::class);
 });
 
+it('uses a 12-column dashboard grid with half-width charts and full-width tables', function (): void {
+    documentArchiveFilamentUser();
+
+    $dashboard = Livewire::test(ExtendedDocumentDashboard::class)->assertSuccessful();
+
+    expect($dashboard->instance()->getColumns())->toBe([
+        'default' => 1,
+        'md'      => 2,
+        'lg'      => 12,
+    ]);
+
+    expect(invade(app(TopTagsChartWidget::class))->getColumnSpan())->toBe([
+        'default' => 'full',
+        'lg'      => 6,
+    ])
+        ->and(invade(app(StorageByFolderChartWidget::class))->getColumnSpan())->toBe([
+            'default' => 'full',
+            'lg'      => 6,
+        ])
+        ->and(invade(app(ExpiringSoonFilesWidget::class))->getColumnSpan())->toBe('full')
+        ->and(invade(app(RecentFilesWidget::class))->getColumnSpan())->toBe('full')
+        ->and(invade(app(DocumentStatsWidget::class))->getColumnSpan())->toBe('full');
+});
+
+it('keeps the expiring soon section anchor on the widget root for layout', function (): void {
+    documentArchiveFilamentUser();
+
+    Livewire::test(ExpiringSoonFilesWidget::class)
+        ->assertSuccessful()
+        ->assertSeeHtml('id="'.DocumentStatsWidget::EXPIRING_SECTION_ANCHOR.'"');
+});
+
 it('does not increment view count when previewing with embed flag', function (): void {
     documentArchiveFilamentUser();
 

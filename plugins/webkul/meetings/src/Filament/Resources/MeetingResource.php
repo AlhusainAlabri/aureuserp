@@ -268,7 +268,12 @@ class MeetingResource extends Resource
                             ])
                             ->compact()
                             ->schema([
-                                static::userSelect('user_id')->hiddenLabel(),
+                                static::userSelect('user_id')
+                                    ->hiddenLabel()
+                                    ->distinct()
+                                    ->validationMessages([
+                                        'distinct' => __('meetings::meetings.validation.duplicate_attendee'),
+                                    ]),
                                 Select::make('role')
                                     ->label(__('meetings::meetings.fields.role'))
                                     ->options(static::roleOptions())

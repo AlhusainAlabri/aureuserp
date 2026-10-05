@@ -32,6 +32,8 @@ return [
     'email_failed'        => 'Email sending failed. Please try again later.',
     'overdue'             => 'Overdue',
     'attachments'         => 'Attachments',
+    'attachment'          => 'Attachment',
+    'attachment_plural'   => 'Attachments',
     'details'             => 'Details',
     'date'                => 'Date',
     'creator'             => 'Creator',
@@ -117,12 +119,13 @@ return [
     ],
 
     'actions' => [
-        'view'       => 'View',
-        'archive'    => 'Archive',
-        'unarchive'  => 'Unarchive',
-        'download'   => 'Download',
-        'export_pdf' => 'Export PDF',
-        'create_task'=> 'Create Follow-up Task',
+        'view'           => 'View',
+        'archive'        => 'Archive',
+        'unarchive'      => 'Unarchive',
+        'download'       => 'Download',
+        'export_pdf'     => 'Export PDF',
+        'create_task'    => 'Create Follow-up Task',
+        'add_attachment' => 'Add Attachment',
     ],
 
     'departments' => [
@@ -198,8 +201,10 @@ return [
     ],
 
     'empty' => [
-        'no_records'             => 'No correspondence',
-        'no_records_description' => 'Correspondence will appear here when available.',
+        'no_records'                 => 'No correspondence',
+        'no_records_description'     => 'Correspondence will appear here when available.',
+        'no_attachments'             => 'No attachments',
+        'no_attachments_description' => 'Add an attachment to get started.',
     ],
 
     'dashboard' => [

@@ -2,6 +2,7 @@
 
 namespace App\Support\Sales;
 
+use App\Support\Pdf\ArabicText;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Sale\Models\Order;
 
@@ -9,7 +10,7 @@ class SalesOrderPdf
 {
     public static function defaultFont(): string
     {
-        return app()->getLocale() === 'ar' ? 'Cairo' : 'DejaVu Sans';
+        return ArabicText::pdfFontFamily();
     }
 
     public static function store(Order $record, string $contents): string

@@ -23,7 +23,10 @@ class TopTagsChartWidget extends ChartWidget
 
     protected ?string $maxHeight = '280px';
 
-    protected int|string|array $columnSpan = 1;
+    protected int|string|array $columnSpan = [
+        'default' => 'full',
+        'lg'      => 6,
+    ];
 
     /** @var array<string, array{count: int, color: string}>|null */
     protected ?array $cachedTagCounts = null;

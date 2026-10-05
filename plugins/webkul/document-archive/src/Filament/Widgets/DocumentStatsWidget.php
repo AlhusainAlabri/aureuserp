@@ -18,6 +18,8 @@ class DocumentStatsWidget extends BaseWidget
 
     protected ?string $pollingInterval = null;
 
+    protected int|string|array $columnSpan = 'full';
+
     protected ?string $managerUrl = null;
 
     protected ?string $expiringUrl = null;

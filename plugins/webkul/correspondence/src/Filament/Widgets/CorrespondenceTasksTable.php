@@ -21,7 +21,7 @@ class CorrespondenceTasksTable extends TableWidget
 
     protected static ?int $sort = 6;
 
-    protected int|string|array $columnSpan = 7;
+    protected int|string|array $columnSpan = 'full';
 
     protected ?string $pollingInterval = null;
 

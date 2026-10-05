@@ -1,9 +1,10 @@
-<div id="{{ \Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget::EXPIRING_SECTION_ANCHOR }}">
-    <x-filament-widgets::widget class="fi-wi-table">
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Widgets\View\WidgetsRenderHook::TABLE_WIDGET_START, scopes: static::class) }}
+<x-filament-widgets::widget
+    id="{{ \Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget::EXPIRING_SECTION_ANCHOR }}"
+    class="fi-wi-table"
+>
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Widgets\View\WidgetsRenderHook::TABLE_WIDGET_START, scopes: static::class) }}
 
-        {{ $this->table ?? null }}
+    {{ $this->table ?? null }}
 
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Widgets\View\WidgetsRenderHook::TABLE_WIDGET_END, scopes: static::class) }}
-    </x-filament-widgets::widget>
-</div>
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\Widgets\View\WidgetsRenderHook::TABLE_WIDGET_END, scopes: static::class) }}
+</x-filament-widgets::widget>

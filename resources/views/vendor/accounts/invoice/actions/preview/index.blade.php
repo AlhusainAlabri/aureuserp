@@ -5,7 +5,7 @@
     $direction = $isArabic ? 'rtl' : 'ltr';
     $textAlign = $isArabic ? 'right' : 'left';
     $reverseAlign = $isArabic ? 'left' : 'right';
-    $fontFamily = $isArabic ? "'Cairo', 'Amiri', sans-serif" : "'DejaVu Sans', sans-serif";
+    $fontFamily = "'DejaVu Sans', sans-serif";
     $typeLabel = __('invoices-extensions::pdf.invoice');
     $decimals = InvoicePdf::decimalPlaces($record);
     $formatMoney = fn (float $amount): string => InvoicePdf::formatMoney($record, $amount);

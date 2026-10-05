@@ -21,4 +21,9 @@ class EditMeeting extends EditRecord
             ViewAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $this->getRecord()->ensureChairIsAttendee();
+    }
 }

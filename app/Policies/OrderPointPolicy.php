@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Webkul\Inventory\Models\OrderPoint;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrderPointPolicy
 {
     use HandlesAuthorization;
-    
-    public function viewAny(AuthUser $authUser, OrderPoint $orderPoint): bool
+
+    public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('view_any_inventory_replenishment');
     }
@@ -37,7 +37,7 @@ class OrderPointPolicy
         return $authUser->can('delete_inventory_replenishment');
     }
 
-    public function deleteAny(AuthUser $authUser, OrderPoint $orderPoint): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
         return $authUser->can('delete_any_inventory_replenishment');
     }
@@ -47,7 +47,7 @@ class OrderPointPolicy
         return $authUser->can('restore_inventory_replenishment');
     }
 
-    public function restoreAny(AuthUser $authUser, OrderPoint $orderPoint): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
         return $authUser->can('restore_any_inventory_replenishment');
     }
@@ -57,9 +57,13 @@ class OrderPointPolicy
         return $authUser->can('force_delete_inventory_replenishment');
     }
 
-    public function forceDeleteAny(AuthUser $authUser, OrderPoint $orderPoint): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
         return $authUser->can('force_delete_any_inventory_replenishment');
     }
 
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('reorder_inventory_replenishment');
+    }
 }

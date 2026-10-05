@@ -13,7 +13,7 @@ class ExpiringSoonFilesWidget extends BaseWidget
 {
     use ConfiguresDocumentFileTable;
 
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 3;
 
     protected static bool $isLazy = true;
 

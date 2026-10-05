@@ -13,4 +13,9 @@ class CreateMeeting extends CreateRecord
     {
         return __('meetings::meetings.pages.create_title');
     }
+
+    protected function afterCreate(): void
+    {
+        $this->getRecord()->ensureChairIsAttendee();
+    }
 }

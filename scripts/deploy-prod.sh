@@ -667,6 +667,12 @@ fi
 REMOTE_CMDS+=" && ${ARTISAN} queue:restart"
 REMOTE_CMDS+=" && if [ ! -L public/storage ]; then ${ARTISAN} storage:link || true; fi"
 
+# Dompdf writes Amiri .ufm metrics into storage/fonts on first Arabic PDF export.
+REMOTE_CMDS+=" && mkdir -p storage/fonts storage/app/private"
+REMOTE_CMDS+=" && if id www-data >/dev/null 2>&1; then chgrp -R www-data storage/fonts storage/framework storage/logs storage/app 2>/dev/null || true; fi"
+REMOTE_CMDS+=" && chmod -R ug+rwX storage/fonts storage/framework storage/logs storage/app 2>/dev/null || true"
+REMOTE_CMDS+=" && chmod 2775 storage/fonts 2>/dev/null || chmod 775 storage/fonts || true"
+
 # Remove test artifacts if they exist from older deploys (never needed in production).
 REMOTE_CMDS+=" && rm -rf tests phpunit.xml .phpunit.cache .phpunit.result.cache .env.testing.example database/factories"
 REMOTE_CMDS+=" && find plugins/webkul -type d -name tests 2>/dev/null | while read -r test_dir; do rm -rf \"\$test_dir\"; done || true"

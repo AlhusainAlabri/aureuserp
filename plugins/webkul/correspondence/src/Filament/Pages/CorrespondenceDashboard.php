@@ -62,8 +62,8 @@ class CorrespondenceDashboard extends BaseDashboard
     {
         return [
             IncomingCorrespondencesTable::class,
-            PendingOutgoingCorrespondencesTable::class,
             CorrespondenceApprovalsTable::class,
+            PendingOutgoingCorrespondencesTable::class,
             UrgentCorrespondencesTable::class,
             CorrespondenceTasksTable::class,
         ];

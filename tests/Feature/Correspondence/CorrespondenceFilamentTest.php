@@ -10,7 +10,12 @@ use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\CreateCorrespondence;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\ListCorrespondences;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\ViewCorrespondence;
+use Webkul\Correspondence\Filament\Widgets\CorrespondenceApprovalsTable;
+use Webkul\Correspondence\Filament\Widgets\CorrespondenceDashboardStats;
+use Webkul\Correspondence\Filament\Widgets\CorrespondenceTasksTable;
 use Webkul\Correspondence\Filament\Widgets\IncomingCorrespondencesTable;
+use Webkul\Correspondence\Filament\Widgets\PendingOutgoingCorrespondencesTable;
+use Webkul\Correspondence\Filament\Widgets\UrgentCorrespondencesTable;
 use Webkul\Correspondence\Models\Correspondence;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -151,6 +156,30 @@ it('CorrespondenceFilamentTest: correspondence dashboard page renders with trans
         ->assertSee(__('correspondence::correspondence.dashboard.sections.incoming', locale: 'ar'))
         ->assertSee(__('correspondence::correspondence.empty.no_records', locale: 'ar'))
         ->assertSee(__('correspondence::correspondence.dashboard.actions.view_all_incoming', locale: 'ar'));
+});
+
+it('CorrespondenceFilamentTest: correspondence dashboard widgets fill the grid without gaps', function (): void {
+    correspondenceFilamentUser();
+
+    $dashboard = app(ExtendedCorrespondenceDashboard::class);
+    $widgets = $dashboard->getWidgets();
+
+    expect($widgets)->toBe([
+        IncomingCorrespondencesTable::class,
+        CorrespondenceApprovalsTable::class,
+        PendingOutgoingCorrespondencesTable::class,
+        UrgentCorrespondencesTable::class,
+        CorrespondenceTasksTable::class,
+    ]);
+
+    $statsColumns = invade(app(CorrespondenceDashboardStats::class))->getColumns();
+    expect($statsColumns['lg'] ?? null)->toBe(4);
+
+    expect(invade(app(IncomingCorrespondencesTable::class))->columnSpan)->toBe(7)
+        ->and(invade(app(CorrespondenceApprovalsTable::class))->columnSpan)->toBe(5)
+        ->and(invade(app(PendingOutgoingCorrespondencesTable::class))->columnSpan)->toBe(7)
+        ->and(invade(app(UrgentCorrespondencesTable::class))->columnSpan)->toBe(5)
+        ->and(invade(app(CorrespondenceTasksTable::class))->columnSpan)->toBe('full');
 });
 
 it('CorrespondenceFilamentTest: plural label is used on list page heading', function (): void {

@@ -18,6 +18,7 @@ use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResourc
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResource\Pages\EditJournalEntry;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalItemResource;
 use Webkul\Accounting\Filament\Clusters\Customers;
+use Webkul\Accounting\Filament\Clusters\Customers\Resources\CreditNoteResource as AccountingCreditNoteResource;
 use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource as AccountingInvoiceResource;
 use Webkul\Accounting\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\ViewInvoice;
 use Webkul\Accounting\Filament\Clusters\Reporting\Pages\BalanceSheet;
@@ -110,8 +111,9 @@ class AccountingExtensionsServiceProvider extends ServiceProvider
         );
 
         $directOverrides = [
-            BillResource::class              => 'Overrides/Webkul/Accounting/Filament/Clusters/Vendors/Resources/BillResource.php',
-            AccountingInvoiceResource::class => 'Overrides/Webkul/Accounting/Filament/Clusters/Customers/Resources/InvoiceResource.php',
+            BillResource::class                  => 'Overrides/Webkul/Accounting/Filament/Clusters/Vendors/Resources/BillResource.php',
+            AccountingInvoiceResource::class     => 'Overrides/Webkul/Accounting/Filament/Clusters/Customers/Resources/InvoiceResource.php',
+            AccountingCreditNoteResource::class  => 'Overrides/Webkul/Accounting/Filament/Clusters/Customers/Resources/CreditNoteResource.php',
         ];
 
         foreach ($directOverrides as $class => $path) {

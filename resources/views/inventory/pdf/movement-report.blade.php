@@ -4,13 +4,8 @@
     <meta charset="UTF-8">
     <title>{{ __('inventory-extensions::pdf.movement_report_title') }}</title>
     <style>
-        @font-face {
-            font-family: 'Cairo';
-            src: local('Cairo');
-        }
-
         body {
-            font-family: 'Cairo', 'DejaVu Sans', sans-serif;
+            font-family: '{{ \App\Support\Pdf\ArabicText::pdfFontFamily() }}', sans-serif;
             font-size: 11px;
             color: #1F2937;
             direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};

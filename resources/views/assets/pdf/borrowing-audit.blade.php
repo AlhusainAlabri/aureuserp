@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>{{ __('assets-extensions::audit.export_pdf') }}</title>
     <style>
-        body { font-family: 'Cairo', 'Amiri', sans-serif; font-size: 12px; color: #111; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #111; }
         h1 { font-size: 18px; margin-bottom: 8px; }
         table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; }

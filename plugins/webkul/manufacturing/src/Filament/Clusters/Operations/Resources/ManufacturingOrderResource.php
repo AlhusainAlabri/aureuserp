@@ -154,23 +154,26 @@ class ManufacturingOrderResource extends Resource
                                         'product',
                                         'name',
                                         fn (Builder $query) => $query
-                                            ->withTrashed()
                                             ->where('type', ProductType::GOODS)
                                             ->whereNull('is_configurable')
                                     )
-                                    ->getOptionLabelFromRecordUsing(fn (Product $record): string => $record->name)
                                     ->searchable()
                                     ->preload()
                                     ->native(false)
                                     ->wrapOptionLabels(false)
                                     ->live()
                                     ->disabled(fn (?Order $record) => $record && $record->state !== ManufacturingOrderState::DRAFT)
-                                    ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                    ->getOptionLabelUsing(function ($value): ?string {
+                                        $product = Product::query()->withTrashed()->find($value);
+
+                                        if (! $product) {
+                                            return null;
+                                        }
+
+                                        return $product->name.($product->trashed() ? ' (Deleted)' : '');
                                     })
-                                    ->wrapOptionLabels(false)
                                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                                        $isDeleted = str_contains($label, ' (Deleted)');
+                                        $isDeleted = str_contains((string) $label, ' (Deleted)');
 
                                         $isDuplicate = false;
 
@@ -1030,7 +1033,6 @@ class ManufacturingOrderResource extends Resource
                         'product',
                         'name',
                         fn (Builder $query) => $query
-                            ->withTrashed()
                             ->where('type', ProductType::GOODS)
                             ->whereNull('is_configurable'),
                     )
@@ -1039,12 +1041,17 @@ class ManufacturingOrderResource extends Resource
                     ->native(false)
                     ->wrapOptionLabels(false)
                     ->live()
-                    ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                    ->getOptionLabelUsing(function ($value): ?string {
+                        $product = Product::query()->withTrashed()->find($value);
+
+                        if (! $product) {
+                            return null;
+                        }
+
+                        return $product->name.($product->trashed() ? ' (Deleted)' : '');
                     })
-                    ->wrapOptionLabels(false)
                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                        $isDeleted = str_contains($label, ' (Deleted)');
+                        $isDeleted = str_contains((string) $label, ' (Deleted)');
 
                         $isDuplicate = false;
 

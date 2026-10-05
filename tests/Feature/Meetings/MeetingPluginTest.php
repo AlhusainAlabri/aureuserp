@@ -1,14 +1,17 @@
 <?php
 
 use App\Filament\Actions\ExportMeetingPdfAction;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Webkul\Meetings\Filament\Pages\MeetingCalendar;
 use Webkul\Meetings\Filament\Pages\MeetingDashboard;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
+use Webkul\Meetings\Filament\Resources\MeetingResource\Pages\CreateMeeting;
 use Webkul\Meetings\Filament\Widgets\MeetingApprovalsTable;
 use Webkul\Meetings\Filament\Widgets\MeetingCalendarWidget;
 use Webkul\Meetings\Filament\Widgets\MeetingDashboardStats;
@@ -126,6 +129,40 @@ it('MeetingPluginTest: auto-adds chair person to attendees on save', function ()
     ]);
 
     expect($meeting->attendees()->where('user_id', $user->id)->where('role', 'chair')->exists())->toBeTrue();
+});
+
+it('MeetingPluginTest: can create meeting when chair is also listed in attendees repeater', function (): void {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+    $user = meetingsUser(['create_meetings_meeting', 'view_any_meetings_meeting']);
+    $company = meetingsCompany();
+    $user->forceFill(['default_company_id' => $company->id])->save();
+
+    Livewire::test(CreateMeeting::class)
+        ->assertSuccessful()
+        ->fillForm([
+            'title'           => 'Chair Attendee Create Test',
+            'type'            => 'internal',
+            'meeting_date'    => now()->addDay()->format('Y-m-d H:i'),
+            'chair_person_id' => $user->id,
+            'attendees'       => [
+                [
+                    'user_id'  => $user->id,
+                    'role'     => 'chair',
+                    'attended' => false,
+                ],
+            ],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertNotified()
+        ->assertRedirect();
+
+    $meeting = Meeting::query()->where('title', 'Chair Attendee Create Test')->first();
+
+    expect($meeting)->not->toBeNull()
+        ->and($meeting->attendees()->where('user_id', $user->id)->count())->toBe(1)
+        ->and($meeting->attendees()->where('user_id', $user->id)->where('role', 'chair')->exists())->toBeTrue();
 });
 
 it('MeetingPluginTest: cannot confirm meeting without full approval', function (): void {

@@ -3,8 +3,8 @@
 namespace App\Filament\TimeOff\Pages;
 
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
+use App\Filament\TimeOff\Widgets\LocalizedCalendarWidget;
 use Webkul\TimeOff\Filament\Pages\Dashboard as BaseTimeOffDashboard;
-use Webkul\TimeOff\Filament\Widgets\CalendarWidget;
 use Webkul\TimeOff\Filament\Widgets\MyTimeOffWidget;
 
 class ExtendedTimeOffDashboard extends BaseTimeOffDashboard
@@ -21,7 +21,7 @@ class ExtendedTimeOffDashboard extends BaseTimeOffDashboard
     public function getWidgets(): array
     {
         return [
-            CalendarWidget::class,
+            LocalizedCalendarWidget::class,
         ];
     }
 

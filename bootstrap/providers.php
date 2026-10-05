@@ -19,9 +19,11 @@ use App\Providers\PerformanceServiceProvider;
 use App\Providers\PluginManagerExtensionsServiceProvider;
 use App\Providers\ProjectExtensionsServiceProvider;
 use App\Providers\PurchaseExtensionsServiceProvider;
+use App\Providers\RecruitmentExtensionsServiceProvider;
 use App\Providers\SalesExtensionsServiceProvider;
 use App\Providers\SecurityExtensionsServiceProvider;
 use App\Providers\SeederSafetyServiceProvider;
+use App\Providers\TimeOffExtensionsServiceProvider;
 use Webkul\Account\AccountServiceProvider;
 use Webkul\Accounting\AccountingServiceProvider;
 use Webkul\Analytic\AnalyticServiceProvider;
@@ -58,9 +60,8 @@ use Webkul\Website\WebsiteServiceProvider;
 return [
     AccountExtensionsServiceProvider::class,
     AccountingExtensionsServiceProvider::class,
-    ApprovalNotificationsServiceProvider::class,
     AppServiceProvider::class,
-    SeederSafetyServiceProvider::class,
+    ApprovalNotificationsServiceProvider::class,
     AssetsExtensionsServiceProvider::class,
     ChatterExtensionsServiceProvider::class,
     ContactExtensionsServiceProvider::class,
@@ -76,8 +77,11 @@ return [
     PluginManagerExtensionsServiceProvider::class,
     ProjectExtensionsServiceProvider::class,
     PurchaseExtensionsServiceProvider::class,
+    RecruitmentExtensionsServiceProvider::class,
     SalesExtensionsServiceProvider::class,
     SecurityExtensionsServiceProvider::class,
+    SeederSafetyServiceProvider::class,
+    TimeOffExtensionsServiceProvider::class,
     AccountServiceProvider::class,
     AccountingServiceProvider::class,
     AnalyticServiceProvider::class,

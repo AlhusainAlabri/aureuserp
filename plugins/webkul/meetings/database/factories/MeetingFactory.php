@@ -34,6 +34,13 @@ class MeetingFactory extends Factory
         ];
     }
 
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Meeting $meeting): void {
+            $meeting->ensureChairIsAttendee();
+        });
+    }
+
     public function approved(): static
     {
         return $this->state(fn (array $attributes) => ['status' => 'approved']);

@@ -8,10 +8,14 @@ use App\Filament\Meetings\Pages\ExtendedMeetingDashboard;
 use App\Filament\Projects\Pages\ExtendedProjectDashboard;
 use App\Filament\Recruitment\Pages\ExtendedRecruitmentDashboard;
 use App\Filament\TimeOff\Pages\ExtendedByTypeReport;
+use App\Filament\TimeOff\Pages\ExtendedOverview;
 use App\Filament\TimeOff\Pages\ExtendedTimeOffDashboard;
 use App\Filament\TimeOff\Widgets\LeaveTypeReportWidget;
+use App\Filament\TimeOff\Widgets\LocalizedCalendarWidget;
+use App\Filament\TimeOff\Widgets\LocalizedOverviewCalendarWidget;
 use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Webkul\Correspondence\Filament\Pages\CorrespondenceDashboard as BaseCorrespondenceDashboard;
 use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard as BaseDocumentDashboard;
@@ -20,7 +24,10 @@ use Webkul\Project\Filament\Pages\Dashboard as BaseProjectDashboard;
 use Webkul\Recruitment\Filament\Pages\Recruitments as BaseRecruitmentDashboard;
 use Webkul\TimeOff\Filament\Pages\ByType as BaseByTypeReport;
 use Webkul\TimeOff\Filament\Pages\Dashboard as BaseTimeOffDashboard;
+use Webkul\TimeOff\Filament\Pages\Overview as BaseOverview;
+use Webkul\TimeOff\Filament\Widgets\CalendarWidget as BaseCalendarWidget;
 use Webkul\TimeOff\Filament\Widgets\LeaveTypeWidget as BaseLeaveTypeWidget;
+use Webkul\TimeOff\Filament\Widgets\OverviewCalendarWidget as BaseOverviewCalendarWidget;
 
 class DashboardExtensionsServiceProvider extends ServiceProvider
 {
@@ -43,8 +50,11 @@ class DashboardExtensionsServiceProvider extends ServiceProvider
         $this->override(BaseDocumentDashboard::class, ExtendedDocumentDashboard::class);
         $this->override(BaseRecruitmentDashboard::class, ExtendedRecruitmentDashboard::class);
         $this->override(BaseTimeOffDashboard::class, ExtendedTimeOffDashboard::class);
+        $this->override(BaseOverview::class, ExtendedOverview::class);
         $this->override(BaseByTypeReport::class, ExtendedByTypeReport::class);
         $this->override(BaseLeaveTypeWidget::class, LeaveTypeReportWidget::class);
+        $this->override(BaseCalendarWidget::class, LocalizedCalendarWidget::class);
+        $this->override(BaseOverviewCalendarWidget::class, LocalizedOverviewCalendarWidget::class);
     }
 
     /**
@@ -57,6 +67,30 @@ class DashboardExtensionsServiceProvider extends ServiceProvider
             return;
         }
 
-        Livewire::component($base, $extended);
+        $finder = app('livewire.finder');
+
+        // Prefer the kebab wire:name first so Livewire does not adopt the FQCN
+        // (backslashes break lazy widget hydration in the browser).
+        $names = array_values(array_unique(array_filter([
+            $this->kebabLivewireName($base),
+            $finder->normalizeName($base),
+            $base,
+        ])));
+
+        foreach ($names as $name) {
+            Livewire::component($name, $extended);
+        }
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    protected function kebabLivewireName(string $class): string
+    {
+        return (string) Str::of($class)
+            ->replace(['/', '\\'], '.')
+            ->explode('.')
+            ->map(fn (string $segment): string => Str::kebab($segment))
+            ->implode('.');
     }
 }

@@ -3,6 +3,7 @@
 namespace Webkul\Purchase\Filament\Admin\Pages;
 
 use App\Filament\Extensions\PurchaseOrderResourceExtensions;
+use App\Support\Exports\Utf8Csv;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -199,6 +200,7 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
 
         $callback = function () use ($data) {
             $file = fopen('php://output', 'w');
+            fwrite($file, Utf8Csv::BOM);
             fputcsv($file, ['Department', 'Purchases Count', 'Total Amount', 'Receipts Uploaded', 'Receipts Missing']);
             foreach ($data as $row) {
                 fputcsv($file, $row);

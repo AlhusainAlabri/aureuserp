@@ -32,6 +32,8 @@ return [
     'email_failed'        => 'فشل إرسال البريد الإلكتروني — يرجى المحاولة لاحقاً',
     'overdue'             => 'متأخرة',
     'attachments'         => 'المرفقات',
+    'attachment'          => 'مرفق مراسلات',
+    'attachment_plural'   => 'مرفقات مراسلات',
     'details'             => 'التفاصيل',
     'date'                => 'التاريخ',
     'creator'             => 'المنشئ',
@@ -117,12 +119,13 @@ return [
     ],
 
     'actions' => [
-        'view'        => 'عرض',
-        'archive'     => 'أرشفة',
-        'unarchive'   => 'إلغاء الأرشفة',
-        'download'    => 'تنزيل',
-        'export_pdf'  => 'تصدير PDF',
-        'create_task' => 'إنشاء مهمة متابعة',
+        'view'            => 'عرض',
+        'archive'         => 'أرشفة',
+        'unarchive'       => 'إلغاء الأرشفة',
+        'download'        => 'تنزيل',
+        'export_pdf'      => 'تصدير PDF',
+        'create_task'     => 'إنشاء مهمة متابعة',
+        'add_attachment'  => 'إضافة مرفق مراسلات',
     ],
 
     'departments' => [
@@ -198,8 +201,10 @@ return [
     ],
 
     'empty' => [
-        'no_records'             => 'لا توجد مراسلات',
-        'no_records_description' => 'ستظهر المراسلات هنا عند توفرها.',
+        'no_records'                     => 'لا توجد مراسلات',
+        'no_records_description'         => 'ستظهر المراسلات هنا عند توفرها.',
+        'no_attachments'                 => 'لا توجد مرفقات مراسلات',
+        'no_attachments_description'     => 'قم بإضافة مرفق مراسلات للبدء.',
     ],
 
     'dashboard' => [

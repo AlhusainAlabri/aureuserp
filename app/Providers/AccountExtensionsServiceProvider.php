@@ -6,9 +6,15 @@ use App\Models\Invoices\InvoiceAttachment;
 use App\Services\Accounts\ExtendedAccountManager;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Account\Filament\Resources\CoreProductResource;
+use Webkul\Account\Filament\Resources\CustomerResource;
+use Webkul\Account\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use Webkul\Account\Filament\Resources\InvoiceResource\Actions\ConfirmAction;
 use Webkul\Account\Filament\Resources\InvoiceResource\Actions\PreviewAction;
 use Webkul\Account\Filament\Resources\InvoiceResource\Actions\PrintAndSendAction;
+use Webkul\Account\Filament\Resources\ProductResource;
+use Webkul\Account\Filament\Resources\VendorResource;
+use Webkul\Account\Filament\Resources\VendorResource\Pages\ListVendors;
 use Webkul\Account\Livewire\InvoiceSummary;
 use Webkul\Account\Models\Move;
 use Webkul\Account\Models\PaymentTerm;
@@ -27,6 +33,11 @@ class AccountExtensionsServiceProvider extends ServiceProvider
     {
         $this->registerInvoiceResourceOverride();
         $this->registerBillResourceOverride();
+        $this->registerCustomerResourceOverride();
+        $this->registerListCustomersOverride();
+        $this->registerVendorResourceOverride();
+        $this->registerListVendorsOverride();
+        $this->registerProductResourceOverride();
         $this->registerCustomersClusterOverride();
         $this->registerVendorsClusterOverride();
         $this->registerPrintAndSendActionOverride();
@@ -242,6 +253,111 @@ class AccountExtensionsServiceProvider extends ServiceProvider
         if (! file_exists($cachePath) || filemtime($cachePath) < filemtime($source)) {
             $code = file_get_contents($source);
             $code = preg_replace('/\bclass BillResource\b/', 'class CoreBillResource', $code, 1);
+
+            if (! is_dir(dirname($cachePath))) {
+                mkdir(dirname($cachePath), 0755, true);
+            }
+
+            file_put_contents($cachePath, $code);
+        }
+
+        require $cachePath;
+    }
+
+    protected function registerCustomerResourceOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== CustomerResource::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/CustomerResource.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerListCustomersOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== ListCustomers::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/CustomerResource/Pages/ListCustomers.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerVendorResourceOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== VendorResource::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/VendorResource.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerListVendorsOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== ListVendors::class) {
+                    return false;
+                }
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/VendorResource/Pages/ListVendors.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function registerProductResourceOverride(): void
+    {
+        spl_autoload_register(
+            function (string $class): bool {
+                if ($class !== ProductResource::class) {
+                    return false;
+                }
+
+                $this->ensureCoreProductResourceIsLoaded();
+
+                require app_path('Overrides/Webkul/Account/Filament/Resources/ProductResource.php');
+
+                return true;
+            },
+            prepend: true,
+        );
+    }
+
+    protected function ensureCoreProductResourceIsLoaded(): void
+    {
+        if (class_exists(CoreProductResource::class, false)) {
+            return;
+        }
+
+        $source = base_path('plugins/webkul/accounts/src/Filament/Resources/ProductResource.php');
+        $cachePath = storage_path('framework/cache/core_account_product_resource.php');
+
+        if (! file_exists($cachePath) || filemtime($cachePath) < filemtime($source)) {
+            $code = file_get_contents($source);
+            $code = preg_replace('/\bclass ProductResource\b/', 'class CoreProductResource', $code, 1);
 
             if (! is_dir(dirname($cachePath))) {
                 mkdir(dirname($cachePath), 0755, true);

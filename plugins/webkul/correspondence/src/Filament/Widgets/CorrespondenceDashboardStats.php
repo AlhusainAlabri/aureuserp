@@ -23,7 +23,7 @@ class CorrespondenceDashboardStats extends BaseWidget
         return [
             'default' => 1,
             'md'      => 2,
-            'lg'      => 5,
+            'lg'      => 4,
         ];
     }
 

@@ -62,7 +62,8 @@ class DocumentDashboard extends BaseDashboard
     {
         return [
             'default' => 1,
-            'lg'      => 2,
+            'md'      => 2,
+            'lg'      => 12,
         ];
     }
 }

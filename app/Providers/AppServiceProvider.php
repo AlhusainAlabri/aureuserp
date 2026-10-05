@@ -6,6 +6,7 @@ use App\Http\Responses\LocaleAwareLoginResponse;
 use App\Livewire\ModuleLauncherGlobalSearch;
 use App\Support\Console\DestructiveCommandGuard;
 use App\Support\ExtensionSchema;
+use App\Support\Pdf\ArabicAwarePdf;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
@@ -33,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(Authenticatable::class, User::class);
         $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
+
+        // Dompdf has no Arabic shaping/bidi — shape glyphs for every PDF export app-wide.
+        $this->app->bind('dompdf.wrapper', function ($app): ArabicAwarePdf {
+            return new ArabicAwarePdf($app['dompdf'], $app['config'], $app['files'], $app['view']);
+        });
     }
 
     public function boot(): void

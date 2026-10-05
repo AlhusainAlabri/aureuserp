@@ -2,8 +2,10 @@
 
 namespace Webkul\Invoice\Filament\Clusters\Customers\Resources;
 
+use App\Filament\Extensions\AccountingResourceExtensions;
 use App\Filament\Invoices\Pages\ManageInvoiceDocuments;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Schema;
 use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\CreateInvoice;
 use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\EditInvoice;
 use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\ListInvoices;
@@ -12,6 +14,11 @@ use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\V
 
 class InvoiceResource extends CoreInvoiceResource
 {
+    public static function form(Schema $schema): Schema
+    {
+        return AccountingResourceExtensions::localizeForm(parent::form($schema));
+    }
+
     public static function getPluralModelLabel(): string
     {
         return __('invoices::filament/clusters/customers/resources/invoice.navigation.title');
