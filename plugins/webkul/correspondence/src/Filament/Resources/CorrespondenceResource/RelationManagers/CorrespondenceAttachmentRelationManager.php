@@ -2,6 +2,7 @@
 
 namespace Webkul\Correspondence\Filament\Resources\CorrespondenceResource\RelationManagers;
 
+use App\Support\Media\PrivateMediaUrl;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -25,6 +26,11 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
         return __('correspondence::correspondence.attachments');
     }
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -35,7 +41,16 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
                     ->directory(fn (): string => 'correspondence/'.now()->year)
                     ->visibility('private')
                     ->acceptedFileTypes(CorrespondenceAttachmentService::acceptedMimeTypes())
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(function (?string $state, callable $set): void {
+                        if (! $state) {
+                            return;
+                        }
+
+                        $set('file_name', basename($state));
+                        $set('file_size', Storage::disk('private')->size($state));
+                        $set('mime_type', Storage::disk('private')->mimeType($state));
+                    }),
                 Hidden::make('file_name')->default('file'),
                 Hidden::make('file_size')->default(0),
                 Hidden::make('mime_type')->default('application/octet-stream'),
@@ -62,18 +77,18 @@ class CorrespondenceAttachmentRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->label(__('correspondence::correspondence.actions.add_attachment'))
+                    ->authorize(fn (): bool => auth()->user()?->can('view', $this->getOwnerRecord()) ?? false)
                     ->mutateFormDataUsing(fn (array $data): array => CorrespondenceAttachmentService::enrichFileMetadata($data)),
             ])
             ->recordActions([
                 Action::make('download')
                     ->label(__('correspondence::correspondence.actions.download'))
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->url(fn (CorrespondenceAttachment $record): string => Storage::disk('private')->temporaryUrl(
-                        $record->file_path,
-                        now()->addMinutes(60),
-                    ))
-                    ->openUrlInNewTab(),
-                DeleteAction::make(),
+                    ->url(fn (CorrespondenceAttachment $record): ?string => PrivateMediaUrl::downloadUrl($record->file_path))
+                    ->openUrlInNewTab()
+                    ->visible(fn (CorrespondenceAttachment $record): bool => filled(PrivateMediaUrl::downloadUrl($record->file_path))),
+                DeleteAction::make()
+                    ->authorize(fn (): bool => auth()->user()?->can('view', $this->getOwnerRecord()) ?? false),
             ])
             ->emptyStateHeading(__('correspondence::correspondence.empty.no_attachments'))
             ->emptyStateDescription(__('correspondence::correspondence.empty.no_attachments_description'));

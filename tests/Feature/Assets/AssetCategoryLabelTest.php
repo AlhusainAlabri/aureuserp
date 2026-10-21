@@ -1,11 +1,11 @@
 <?php
 
-use App\Filament\Extensions\AssetResourceExtensions\ListAssets;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Webkul\Assets\Enums\AssetCategory;
+use Webkul\Assets\Filament\Resources\AssetResource\Pages\ListAssets;
 use Webkul\Assets\Models\Asset;
 use Webkul\Security\Models\User;
 

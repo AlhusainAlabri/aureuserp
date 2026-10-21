@@ -92,14 +92,10 @@ class DocFileResource extends Resource
                 Section::make(__('document-archive::document-archive.form.sections.file'))
                     ->description(__('document-archive::document-archive.form.file.create_help'))
                     ->schema([
-                        FileUpload::make('upload')
-                            ->label(__('document-archive::document-archive.fields.file'))
-                            ->disk($storage->disk())
-                            ->directory(fn (): string => $storage->temporaryDirectory())
-                            ->acceptedFileTypes($storage->acceptedMimeTypes())
-                            ->maxSize($storage->maxUploadSizeKilobytes())
-                            ->required()
-                            ->dehydrated(false)
+                        $storage->configureUploadField(
+                            FileUpload::make('upload')
+                                ->label(__('document-archive::document-archive.fields.file'))
+                        )->dehydrated(false)
                             ->columnSpanFull(),
                     ])
                     ->visible(fn (string $operation): bool => $operation === 'create')
@@ -114,14 +110,12 @@ class DocFileResource extends Resource
                                 'record' => $record,
                             ]))
                             ->columnSpanFull(),
-                        FileUpload::make('upload')
-                            ->label(__('document-archive::document-archive.form.file.replace_label'))
-                            ->helperText(__('document-archive::document-archive.form.file.replace_upload_help'))
-                            ->disk($storage->disk())
-                            ->directory(fn (): string => $storage->temporaryDirectory())
-                            ->acceptedFileTypes($storage->acceptedMimeTypes())
-                            ->maxSize($storage->maxUploadSizeKilobytes())
-                            ->dehydrated(false)
+                        $storage->configureUploadField(
+                            FileUpload::make('upload')
+                                ->label(__('document-archive::document-archive.form.file.replace_label'))
+                                ->helperText(__('document-archive::document-archive.form.file.replace_upload_help')),
+                            required: false,
+                        )->dehydrated(false)
                             ->columnSpanFull(),
                     ])
                     ->visible(fn (string $operation): bool => $operation === 'edit')

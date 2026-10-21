@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\DocumentArchive\Pages\ExtendedDocumentDashboard;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +15,7 @@ use Webkul\DocumentArchive\Filament\Actions\PreviewDocumentAction;
 use Webkul\DocumentArchive\Filament\Pages\DocumentDashboard;
 use Webkul\DocumentArchive\Filament\Pages\DocumentManager;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
+use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\CreateDocFile;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\EditDocFile;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages\ListDocFiles;
 use Webkul\DocumentArchive\Filament\Resources\DocFolderResource;
@@ -62,6 +64,19 @@ it('increments the reference number sequence for the same year', function (): vo
     $secondSeq = (int) substr($second->reference_number, -4);
 
     expect($secondSeq)->toBe($firstSeq + 1);
+});
+
+it('keeps document numbers unique after a file is soft-deleted', function (): void {
+    $folder = DocFolder::factory()->create();
+    $deleted = DocFile::factory()->create(['folder_id' => $folder->id]);
+    $deleted->delete();
+
+    $next = DocFile::factory()->create(['folder_id' => $folder->id]);
+
+    $deletedSequence = (int) substr($deleted->reference_number, -4);
+    $nextSequence = (int) substr($next->reference_number, -4);
+
+    expect($nextSequence)->toBe($deletedSequence + 1);
 });
 
 // ─── Soft Deletes ────────────────────────────────────────────────────────────
@@ -432,6 +447,61 @@ it('renders the document manager page', function (): void {
         ->assertSuccessful()
         ->assertSee(__('document-archive::document-archive.manager.title'))
         ->assertSee(__('document-archive::document-archive.actions.upload'));
+});
+
+it('uploads a livewire file from the document manager and stores it on the private disk', function (): void {
+    documentArchiveFilamentUser();
+
+    Storage::fake('private');
+
+    $folder = DocFolder::factory()->create();
+    $upload = UploadedFile::fake()->create('board-minutes.pdf', 32, 'application/pdf');
+
+    Livewire::test(DocumentManager::class)
+        ->callAction('upload', data: [
+            'upload'    => [$upload],
+            'name'      => null,
+            'folder_id' => $folder->id,
+        ])
+        ->assertHasNoFormErrors()
+        ->assertNotified();
+
+    $file = DocFile::query()->latest('id')->first();
+
+    expect($file)->not->toBeNull()
+        ->and($file->folder_id)->toBe($folder->id)
+        ->and($file->name)->toBe('board-minutes')
+        ->and($file->original_filename)->toBe('board-minutes.pdf')
+        ->and($file->extension)->toBe('pdf')
+        ->and(Storage::disk('private')->exists($file->file_path))->toBeTrue();
+});
+
+it('creates a document from the files form and persists the uploaded file', function (): void {
+    $user = documentArchiveFilamentUser();
+
+    Storage::fake('private');
+
+    $folder = DocFolder::factory()->create();
+    $upload = UploadedFile::fake()->create('policy.pdf', 24, 'application/pdf');
+
+    Livewire::test(CreateDocFile::class)
+        ->fillForm([
+            'upload'    => [$upload],
+            'name'      => 'Archive Policy',
+            'folder_id' => $folder->id,
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertNotified();
+
+    $file = DocFile::query()->where('name', 'Archive Policy')->latest('id')->first();
+
+    expect($file)->not->toBeNull()
+        ->and($file->creator_id)->toBe($user->id)
+        ->and($file->original_filename)->toBe('policy.pdf')
+        ->and($file->extension)->toBe('pdf')
+        ->and(filled($file->file_path))->toBeTrue()
+        ->and(Storage::disk('private')->exists($file->file_path))->toBeTrue();
 });
 
 it('uploads a document from the manager without a custom name', function (): void {

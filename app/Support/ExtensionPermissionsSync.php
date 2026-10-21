@@ -20,6 +20,7 @@ class ExtensionPermissionsSync
         $this->syncInventory();
         $this->syncPurchase();
         $this->syncNavigation();
+        $this->syncBranding();
         $this->syncOperations();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
@@ -78,6 +79,14 @@ class ExtensionPermissionsSync
             'reject_borrowing_assets_asset',
             'view_assets_asset_borrowing',
             'view_any_assets_asset_borrowing',
+            'view_any_assets_asset',
+            'view_assets_asset',
+            'create_assets_asset',
+            'update_assets_asset',
+            'delete_assets_asset',
+            'delete_any_assets_asset',
+            'borrow_assets_asset',
+            'return_asset_assets_asset',
             'widget_assets_summary_widget',
         ];
 
@@ -217,6 +226,18 @@ class ExtensionPermissionsSync
 
         $this->grantPermissionsToRoles(
             ['page_filament_manage_navigation'],
+            ['Admin', 'admin_manager', 'super_admin', 'general_manager'],
+        );
+    }
+
+    public function syncBranding(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles(
+            ['page_filament_manage_branding'],
             ['Admin', 'admin_manager', 'super_admin', 'general_manager'],
         );
     }

@@ -5,6 +5,7 @@ namespace Webkul\DocumentArchive\Filament\Resources\DocFileResource\Pages;
 use Filament\Resources\Pages\CreateRecord;
 use Webkul\DocumentArchive\Filament\Concerns\ManagesDocumentRecords;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
+use Webkul\DocumentArchive\Services\DocumentStorageService;
 
 class CreateDocFile extends CreateRecord
 {
@@ -14,7 +15,13 @@ class CreateDocFile extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return $this->mutateDocumentFormData($data);
+        $data = $this->mutateDocumentFormData($data);
+
+        return [
+            ...$data,
+            ...app(DocumentStorageService::class)->pendingFileAttributes(),
+            'company_id' => $data['company_id'] ?? $this->defaultCompanyId(),
+        ];
     }
 
     protected function afterCreate(): void

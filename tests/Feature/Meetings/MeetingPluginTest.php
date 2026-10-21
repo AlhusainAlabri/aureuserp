@@ -120,6 +120,30 @@ it('MeetingPluginTest: auto-generates meeting number in yearly sequence format',
     expect($meeting->meeting_number)->toMatch('/^MTG-2026-\d{4}$/');
 });
 
+it('MeetingPluginTest: continues meeting numbers after a soft-deleted meeting', function (): void {
+    $user = meetingsUser();
+    $company = meetingsCompany();
+
+    $deleted = Meeting::factory()->create([
+        'company_id'      => $company->id,
+        'chair_person_id' => $user->id,
+        'meeting_date'    => now()->toDateTimeString(),
+    ]);
+    $deleted->delete();
+
+    $next = Meeting::factory()->create([
+        'company_id'      => $company->id,
+        'chair_person_id' => $user->id,
+        'meeting_date'    => now()->toDateTimeString(),
+    ]);
+
+    $deletedSequence = (int) substr($deleted->meeting_number, -4);
+    $nextSequence = (int) substr($next->meeting_number, -4);
+
+    expect($next->meeting_number)->toStartWith('MTG-'.now()->year.'-')
+        ->and($nextSequence)->toBe($deletedSequence + 1);
+});
+
 it('MeetingPluginTest: auto-adds chair person to attendees on save', function (): void {
     $user = meetingsUser();
 
@@ -129,6 +153,37 @@ it('MeetingPluginTest: auto-adds chair person to attendees on save', function ()
     ]);
 
     expect($meeting->attendees()->where('user_id', $user->id)->where('role', 'chair')->exists())->toBeTrue();
+});
+
+it('MeetingPluginTest: can create meeting from create page with empty attendees', function (): void {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+    $user = meetingsUser(['create_meetings_meeting', 'view_any_meetings_meeting']);
+    $company = meetingsCompany();
+    $user->forceFill(['default_company_id' => $company->id])->save();
+
+    Livewire::test(CreateMeeting::class)
+        ->assertSuccessful()
+        ->fillForm([
+            'title'           => 'Empty Attendees Create Test',
+            'type'            => 'board',
+            'meeting_date'    => now()->addDay()->format('Y-m-d H:i'),
+            'location'        => 'قاعة الاجتماعات',
+            'chair_person_id' => $user->id,
+            'agenda'          => '<p>بنود الاجتماع</p>',
+            'notes'           => '<p>ملاحظات المحضر</p>',
+            'attendees'       => [],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertNotified()
+        ->assertRedirect();
+
+    $meeting = Meeting::query()->where('title', 'Empty Attendees Create Test')->first();
+
+    expect($meeting)->not->toBeNull()
+        ->and($meeting->company_id)->toBe($company->id)
+        ->and($meeting->attendees()->where('user_id', $user->id)->where('role', 'chair')->exists())->toBeTrue();
 });
 
 it('MeetingPluginTest: can create meeting when chair is also listed in attendees repeater', function (): void {

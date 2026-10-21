@@ -2,6 +2,7 @@
 
 use App\Filament\Actions\ExportCorrespondencePdfAction;
 use App\Mail\OutgoingCorrespondenceMail;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -105,6 +106,30 @@ it('CorrespondencePluginTest: reference number auto-generates in OUT/DEPT/YEAR/S
     ]);
 
     expect($correspondence->reference_number)->toMatch('/^OUT\/IT\/'.now()->year.'\/\d{4}$/');
+});
+
+it('CorrespondencePluginTest: continues reference numbers after a soft-deleted letter', function (): void {
+    correspondenceUser();
+    $department = correspondenceDepartment(strtoupper(fake()->unique()->lexify('????')));
+
+    $attributes = [
+        'company_id'          => correspondenceCompany()->id,
+        'from_department_id'  => $department->id,
+        'to_department_id'    => $department->id,
+        'to_external_email'   => 'recipient@example.com',
+        'purchase_request_id' => null,
+    ];
+
+    $deleted = Correspondence::factory()->outgoing()->create($attributes);
+    $deleted->delete();
+
+    $next = Correspondence::factory()->outgoing()->create($attributes);
+
+    $deletedSequence = (int) substr((string) $deleted->reference_number, -4);
+    $nextSequence = (int) substr((string) $next->reference_number, -4);
+
+    expect($next->reference_number)->toStartWith('OUT/'.$department->code.'/'.now()->year.'/')
+        ->and($nextSequence)->toBe($deletedSequence + 1);
 });
 
 it('CorrespondencePluginTest: incoming correspondence sets status received immediately', function (): void {
@@ -296,6 +321,39 @@ it('CorrespondencePluginTest: attachment service stores files on private disk', 
 
     expect(CorrespondenceAttachment::query()->where('correspondence_id', $correspondence->id)->count())->toBe(1)
         ->and(CorrespondenceAttachment::query()->first()->file_path)->toBe($path);
+});
+
+it('CorrespondencePluginTest: attachment service stores uploaded files on private disk', function (): void {
+    Storage::fake('private');
+    correspondenceUser();
+
+    $correspondence = Correspondence::factory()->incoming()->create(['company_id' => correspondenceCompany()->id]);
+    $file = UploadedFile::fake()->create('scan.pdf', 15, 'application/pdf');
+
+    CorrespondenceAttachmentService::storeFromPaths($correspondence, [$file]);
+
+    $attachment = CorrespondenceAttachment::query()->where('correspondence_id', $correspondence->id)->first();
+
+    expect($attachment)->not->toBeNull()
+        ->and($attachment->file_path)->toStartWith('correspondence/')
+        ->and(Storage::disk('private')->exists($attachment->file_path))->toBeTrue();
+});
+
+it('CorrespondencePluginTest: pdf export lists saved attachments', function (): void {
+    Storage::fake('private');
+    correspondenceUser();
+
+    $correspondence = Correspondence::factory()->incoming()->create(['company_id' => correspondenceCompany()->id]);
+    $path = 'correspondence/'.now()->year.'/official-scan.pdf';
+    Storage::disk('private')->put($path, 'pdf-content');
+    CorrespondenceAttachmentService::storeFromPaths($correspondence, [$path]);
+
+    $html = view('correspondence::correspondence.pdf.letter', [
+        'correspondence' => $correspondence->load('attachments'),
+    ])->render();
+
+    expect($html)->toContain('official-scan.pdf')
+        ->and($html)->toContain(__('correspondence::correspondence.attachments'));
 });
 
 it('CorrespondencePluginTest: attachment metadata enrichment ignores livewire temp paths', function (): void {

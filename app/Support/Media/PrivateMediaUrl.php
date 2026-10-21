@@ -15,6 +15,7 @@ class PrivateMediaUrl
         'sales/',
         'invoices/documents/',
         'invoices/vendor-documents/',
+        'correspondence/',
     ];
 
     public static function downloadUrl(?string $path, int $minutes = 60): ?string

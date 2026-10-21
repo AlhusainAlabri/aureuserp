@@ -36,21 +36,11 @@
                         {{ \Filament\Support\generate_href_html($homeUrl) }}
                         class="erp-nav-topbar-brand__link"
                     >
-                        <img
-                            src="{{ asset('images/logo_2.png') }}"
-                            alt="{{ brand_name() }}"
-                            class="erp-nav-topbar-brand__logo"
-                            decoding="async"
-                        />
+                        <x-brand-logo class="erp-nav-topbar-brand__logo" />
                     </a>
                 @else
                     <div class="erp-nav-topbar-brand__link">
-                        <img
-                            src="{{ asset('images/logo_2.png') }}"
-                            alt="{{ brand_name() }}"
-                            class="erp-nav-topbar-brand__logo"
-                            decoding="async"
-                        />
+                        <x-brand-logo class="erp-nav-topbar-brand__logo" />
                     </div>
                 @endif
             </div>

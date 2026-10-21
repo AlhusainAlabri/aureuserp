@@ -276,7 +276,7 @@ it('stores uploaded files on the private disk via the storage service', function
         'folder_id'  => $folder->id,
         'company_id' => $folder->company_id,
         'creator_id' => $folder->creator_id,
-        'file_path'  => null,
+        'file_path'  => '',
     ]);
 
     $tempPath = 'documents/temp/sample.pdf';

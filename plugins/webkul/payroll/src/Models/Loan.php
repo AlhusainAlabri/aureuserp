@@ -241,7 +241,7 @@ class Loan extends Model
         return DB::transaction(function (): string {
             $year = now()->year;
 
-            $latestNumber = static::query()
+            $latestNumber = static::withTrashed()
                 ->where('reference_number', 'like', "LOAN-{$year}-%")
                 ->lockForUpdate()
                 ->max('reference_number');

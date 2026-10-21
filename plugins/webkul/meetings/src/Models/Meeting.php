@@ -302,8 +302,7 @@ class Meeting extends Model
     protected static function nextMeetingNumber(int $year): string
     {
         return DB::transaction(function () use ($year): string {
-            $latestNumber = static::query()
-                ->whereYear('meeting_date', $year)
+            $latestNumber = static::withTrashed()
                 ->where('meeting_number', 'like', "MTG-{$year}-%")
                 ->lockForUpdate()
                 ->max('meeting_number');

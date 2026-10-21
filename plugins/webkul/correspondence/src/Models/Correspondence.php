@@ -543,13 +543,21 @@ class Correspondence extends Model
             $dirCode = $correspondence->direction === 'outgoing' ? 'OUT' : 'IN';
             $deptCode = Department::query()->find($correspondence->from_department_id)?->code ?? 'GEN';
             $year = now()->year;
-            $sequence = static::query()
-                ->whereYear('created_at', $year)
-                ->where('direction', $correspondence->direction)
-                ->lockForUpdate()
-                ->count() + 1;
+            $prefix = sprintf('%s/%s/%d/', $dirCode, $deptCode, $year);
 
-            return sprintf('%s/%s/%d/%04d', $dirCode, $deptCode, $year, $sequence);
+            $latest = static::withTrashed()
+                ->where('reference_number', 'like', $prefix.'%')
+                ->lockForUpdate()
+                ->orderByDesc('reference_number')
+                ->value('reference_number');
+
+            $sequence = 1;
+
+            if (is_string($latest) && preg_match('/(\d+)$/', $latest, $matches) === 1) {
+                $sequence = ((int) $matches[1]) + 1;
+            }
+
+            return sprintf('%s%04d', $prefix, $sequence);
         });
     }
 

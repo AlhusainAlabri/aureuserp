@@ -414,7 +414,9 @@ RSYNC_EXCLUDES=(
   --exclude '.env.production'
   --exclude '.env.testing'
   --exclude '.env.deploy'
+  --exclude '.env.deploy.*'
   --exclude '.env.deploy.example'
+  --exclude '.env.example'
   --exclude 'vendor/'
   --exclude 'node_modules/'
   --exclude '.git/'
@@ -423,6 +425,35 @@ RSYNC_EXCLUDES=(
   --exclude '.fleet/'
   --exclude '.cursor/'
   --exclude '.claude/'
+  --exclude '.agents/'
+  --exclude '.codex/'
+  --exclude '.gemini/'
+  --exclude '.github/'
+  --exclude '.scribe/'
+  --exclude 'docs/'
+  --exclude 'dogfood-output/'
+  --exclude 'scripts/'
+  --exclude 'AGENTS.md'
+  --exclude 'CHANGELOG.md'
+  --exclude 'CLAUDE.md'
+  --exclude 'CODE_OF_CONDUCT.md'
+  --exclude 'GEMINI.md'
+  --exclude 'GitHub-Setup.md'
+  --exclude 'README.md'
+  --exclude 'LICENSE'
+  --exclude '.editorconfig'
+  --exclude '.gitattributes'
+  --exclude '.gitignore'
+  --exclude '.mcp.json'
+  --exclude 'boost.json'
+  --exclude 'opencode.json'
+  --exclude 'skills-lock.json'
+  --exclude 'package.json'
+  --exclude 'package-lock.json'
+  --exclude 'pint.json'
+  --exclude 'postcss.config.js'
+  --exclude 'tailwind.config.js'
+  --exclude 'vite.config.js'
   --exclude 'storage/logs/'
   --exclude 'storage/debugbar/'
   --exclude 'storage/framework/cache/'
@@ -673,8 +704,12 @@ REMOTE_CMDS+=" && if id www-data >/dev/null 2>&1; then chgrp -R www-data storage
 REMOTE_CMDS+=" && chmod -R ug+rwX storage/fonts storage/framework storage/logs storage/app 2>/dev/null || true"
 REMOTE_CMDS+=" && chmod 2775 storage/fonts 2>/dev/null || chmod 775 storage/fonts || true"
 
-# Remove test artifacts if they exist from older deploys (never needed in production).
-REMOTE_CMDS+=" && rm -rf tests phpunit.xml .phpunit.cache .phpunit.result.cache .env.testing.example database/factories"
+# Remove test and developer artifacts (never needed to run the app).
+REMOTE_CMDS+=" && rm -rf tests phpunit.xml .phpunit.cache .phpunit.result.cache .env.testing.example .env.example .env.deploy .env.deploy.zseeb database/factories"
+REMOTE_CMDS+=" && rm -rf .agents .claude .codex .cursor .fleet .gemini .github .idea .scribe .vscode docs dogfood-output scripts"
+REMOTE_CMDS+=" && rm -f AGENTS.md CHANGELOG.md CLAUDE.md CODE_OF_CONDUCT.md GEMINI.md GitHub-Setup.md README.md LICENSE"
+REMOTE_CMDS+=" && rm -f .editorconfig .gitattributes .gitignore .mcp.json boost.json opencode.json skills-lock.json build"
+REMOTE_CMDS+=" && rm -f package.json package-lock.json pint.json postcss.config.js tailwind.config.js vite.config.js"
 REMOTE_CMDS+=" && find plugins/webkul -type d -name tests 2>/dev/null | while read -r test_dir; do rm -rf \"\$test_dir\"; done || true"
 
 # Remove sensitive artifacts that must never exist on production.

@@ -79,7 +79,7 @@ it('excludes soft-deleted products from manufacturing order product selection', 
 
         expect($modifier)->toBeInstanceOf(Closure::class);
 
-        $query = Product::query();
+        $query = Product::query()->withTrashed();
         $modifier($query);
 
         expect($query->pluck('id')->all())

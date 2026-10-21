@@ -154,6 +154,7 @@ class ManufacturingOrderResource extends Resource
                                         'product',
                                         'name',
                                         fn (Builder $query) => $query
+                                            ->withoutTrashed()
                                             ->where('type', ProductType::GOODS)
                                             ->whereNull('is_configurable')
                                     )
@@ -1033,6 +1034,7 @@ class ManufacturingOrderResource extends Resource
                         'product',
                         'name',
                         fn (Builder $query) => $query
+                            ->withoutTrashed()
                             ->where('type', ProductType::GOODS)
                             ->whereNull('is_configurable'),
                     )

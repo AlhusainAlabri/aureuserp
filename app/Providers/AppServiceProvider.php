@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Http\Responses\LocaleAwareLoginResponse;
 use App\Livewire\ModuleLauncherGlobalSearch;
+use App\Services\Deploy\CommandRunner;
+use App\Services\Deploy\SymfonyCommandRunner;
 use App\Support\Console\DestructiveCommandGuard;
 use App\Support\ExtensionSchema;
 use App\Support\Pdf\ArabicAwarePdf;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(Authenticatable::class, User::class);
+        $this->app->singleton(CommandRunner::class, SymfonyCommandRunner::class);
         $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
 
         // Dompdf has no Arabic shaping/bidi — shape glyphs for every PDF export app-wide.

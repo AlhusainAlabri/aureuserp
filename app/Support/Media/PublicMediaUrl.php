@@ -12,6 +12,7 @@ class PublicMediaUrl
     public static function publicDirectories(): array
     {
         return [
+            'branding',
             'company-logos',
             'partners/avatar',
             'employees/avatar',

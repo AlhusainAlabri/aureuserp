@@ -8,6 +8,7 @@ use App\Filament\Assets\Pages\MyBorrowedAssets;
 use App\Filament\Assets\Pages\MyBorrowingRequests;
 use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Filament\Assets\Resources\AssetBorrowingResource;
+use App\Filament\Clusters\Settings\Pages\ManageBranding;
 use App\Filament\Clusters\Settings\Pages\ManageNavigation;
 use App\Filament\Clusters\Settings\Pages\ManageOperations;
 use App\Filament\Clusters\System\Pages\SystemHealthDashboard;
@@ -17,6 +18,7 @@ use App\Filament\Inventory\Pages\MovementReportPage;
 use App\Filament\Inventory\Pages\ProductPurchaseHistoryPage;
 use App\Filament\Inventory\Pages\RecordConsumption;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\GitHubDeploy;
 use App\Filament\Pages\InternalRequests;
 use App\Filament\Pages\ModuleLauncher;
 use App\Filament\Pages\MyEmployeeProfile;
@@ -58,7 +60,9 @@ use App\Filament\Widgets\Dashboard\UpcomingMeetingsWidget;
 use App\Filament\Widgets\Dashboard\UpcomingRemindersWidget;
 use App\Filament\Widgets\Dashboard\WarningsIssuedWidget;
 use App\Http\Middleware\CheckEmployeeFileClosure;
+use App\Http\Middleware\DenyPluginsUiAccess;
 use App\Http\Middleware\SetLocale;
+use App\Support\Branding;
 use App\Support\GlobalSearchProvider;
 use App\Support\Navigation\NavigationMode;
 use App\Support\PluginManager\PluginManagerUi;
@@ -184,13 +188,13 @@ class AdminPanelProvider extends PanelProvider
                 };
             })
             ->login()
-            ->favicon(asset('images/favicon.ico'))
+            ->favicon(fn (): string => Branding::faviconUrl())
             ->brandLogo(fn (): string => filament()->auth()->check()
-                ? asset('images/logo.png')
-                : asset('images/logo_2.png'))
+                ? Branding::compactLogoUrl()
+                : Branding::fullLogoUrl())
             ->darkModeBrandLogo(fn (): string => filament()->auth()->check()
-                ? asset('images/logo.png')
-                : asset('images/logo_2.png'))
+                ? Branding::compactLogoUrl(dark: true)
+                : Branding::fullLogoUrl(dark: true))
             ->brandLogoHeight(fn (): string => filament()->auth()->check() ? '2rem' : '4rem')
             ->passwordReset()
             ->emailVerification()
@@ -253,8 +257,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->pages([
                 ManageNavigation::class,
+                ManageBranding::class,
                 ManageOperations::class,
                 SystemHealthDashboard::class,
+                GitHubDeploy::class,
                 ModuleLauncher::class,
                 Dashboard::class,
                 MyRequests::class,
@@ -335,6 +341,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 CheckEmployeeFileClosure::class,
+                DenyPluginsUiAccess::class,
             ])
             ->multiFactorAuthentication([
                 AppAuthentication::make()

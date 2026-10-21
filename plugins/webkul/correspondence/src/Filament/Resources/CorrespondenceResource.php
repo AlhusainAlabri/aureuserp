@@ -198,8 +198,7 @@ class CorrespondenceResource extends Resource
                             ->disk('private')
                             ->directory(fn (): string => 'correspondence/'.now()->year)
                             ->visibility('private')
-                            ->acceptedFileTypes(CorrespondenceAttachmentService::acceptedMimeTypes())
-                            ->dehydrated(false),
+                            ->acceptedFileTypes(CorrespondenceAttachmentService::acceptedMimeTypes()),
                     ]),
             ]);
     }

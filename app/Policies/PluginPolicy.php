@@ -78,6 +78,6 @@ class PluginPolicy
 
     protected function deniesWhenUiHidden(): bool
     {
-        return PluginManagerUi::isHidden();
+        return PluginManagerUi::blocksPluginPermission();
     }
 }

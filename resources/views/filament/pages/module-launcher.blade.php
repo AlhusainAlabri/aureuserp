@@ -20,13 +20,7 @@
         x-on:module-launcher-filter.window="filter = $event.detail.query"
     >
         <header class="module-launcher__header mb-8 flex flex-col items-center gap-4 text-center">
-            <img
-                src="{{ asset('images/logo_2.png') }}"
-                alt="{{ brand_name() }}"
-                class="module-launcher__logo"
-                decoding="async"
-                fetchpriority="high"
-            />
+            <x-brand-logo class="module-launcher__logo" fetchpriority="high" />
 
             <div class="module-launcher__intro max-w-2xl">
                 <h1 class="text-lg font-semibold tracking-tight text-gray-700 sm:text-xl dark:text-gray-300">

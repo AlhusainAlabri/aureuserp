@@ -4,18 +4,27 @@ namespace Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
 use Webkul\Correspondence\Filament\Resources\CorrespondenceResource;
+use Webkul\Correspondence\Filament\Resources\CorrespondenceResource\Pages\Concerns\PersistsCorrespondenceUploads;
 use Webkul\Correspondence\Models\Correspondence;
-use Webkul\Correspondence\Services\CorrespondenceAttachmentService;
 
 class CreateCorrespondence extends CreateRecord
 {
+    use PersistsCorrespondenceUploads;
+
     protected static string $resource = CorrespondenceResource::class;
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->extractPendingUploads($data);
+    }
 
     protected function afterCreate(): void
     {
-        $uploads = $this->form->getRawState()['uploads'] ?? [];
-
-        CorrespondenceAttachmentService::storeFromPaths($this->record, $uploads);
+        $this->persistPendingUploads();
     }
 
     protected function mutateFormDataBeforeFill(array $data): array

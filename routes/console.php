@@ -10,6 +10,7 @@ Artisan::command('inspire', function () {
 
 Schedule::command('system:scheduler-heartbeat')->everyMinute();
 Schedule::command('system:health-check')->everyFifteenMinutes();
+Schedule::command('github:check-updates')->dailyAt('07:15')->withoutOverlapping();
 Schedule::command('approval:notify-sla-emails')->hourly();
 Schedule::command('notifications:health')->hourly();
 Schedule::command('performance:clear')->dailyAt('05:00');

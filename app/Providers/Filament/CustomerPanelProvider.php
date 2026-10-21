@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\SetLocale;
+use App\Support\Branding;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
@@ -27,8 +28,8 @@ class CustomerPanelProvider extends PanelProvider
             ->homeUrl(url('/'))
             ->authPasswordBroker('customers')
             ->profile(isSimple: false)
-            ->favicon(asset('images/favicon.ico'))
-            ->brandLogo(asset('images/logo.svg'))
+            ->favicon(fn (): string => Branding::faviconUrl())
+            ->brandLogo(fn (): string => Branding::fullLogoUrl())
             ->darkMode(false)
             ->brandLogoHeight('2rem')
             ->colors([

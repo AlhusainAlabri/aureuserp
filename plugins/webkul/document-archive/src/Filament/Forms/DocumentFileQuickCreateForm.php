@@ -48,14 +48,10 @@ class DocumentFileQuickCreateForm
         $storage = app(DocumentStorageService::class);
 
         return [
-            FileUpload::make('upload')
-                ->label(__('document-archive::document-archive.fields.file'))
-                ->disk($storage->disk())
-                ->directory(fn (): string => $storage->temporaryDirectory())
-                ->acceptedFileTypes($storage->acceptedMimeTypes())
-                ->maxSize($storage->maxUploadSizeKilobytes())
-                ->required()
-                ->columnSpanFull(),
+            $storage->configureUploadField(
+                FileUpload::make('upload')
+                    ->label(__('document-archive::document-archive.fields.file'))
+            )->columnSpanFull(),
             TextInput::make('name')
                 ->label(__('document-archive::document-archive.fields.name'))
                 ->maxLength(255),

@@ -2,6 +2,7 @@
 
 namespace App\Services\Projects;
 
+use App\Support\Branding;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Project\Enums\TaskState;
@@ -61,25 +62,8 @@ class ProjectPerformanceReportService
                 .' - '
                 .now()->endOfWeek()->locale($locale)->translatedFormat('d M Y'),
             'is_rtl'             => $locale === 'ar',
-            'logo_src'           => $this->resolveLogoSrc(),
+            'logo_src'           => Branding::fullLogoDataUri(),
         ];
-    }
-
-    protected function resolveLogoSrc(): ?string
-    {
-        foreach (['images/logo.png', 'images/logo.svg'] as $relativePath) {
-            $path = public_path($relativePath);
-
-            if (! is_file($path)) {
-                continue;
-            }
-
-            $mime = str_ends_with($relativePath, '.svg') ? 'image/svg+xml' : 'image/png';
-
-            return 'data:'.$mime.';base64,'.base64_encode((string) file_get_contents($path));
-        }
-
-        return null;
     }
 
     public function storePdf(Project $project): string

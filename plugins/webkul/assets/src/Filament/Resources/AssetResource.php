@@ -4,6 +4,7 @@ namespace Webkul\Assets\Filament\Resources;
 
 use App\Support\FilamentUrl;
 use BackedEnum;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -21,6 +22,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Webkul\Assets\Enums\AssetCategory;
 use Webkul\Assets\Enums\AssetStatus;
 use Webkul\Assets\Filament\Resources\AssetResource\Pages\CreateAsset;
@@ -170,6 +172,7 @@ class AssetResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['activeBorrowing.employee']))
             ->columns([
                 TextColumn::make('asset_number')
                     ->label(__('assets::assets.fields.asset_number'))
@@ -182,12 +185,14 @@ class AssetResource extends Resource
                     ->sortable(),
                 TextColumn::make('category')
                     ->label(__('assets::assets.fields.category'))
-                    ->formatStateUsing(function (?AssetCategory $state, Asset $record): string {
+                    ->formatStateUsing(function (mixed $state, Asset $record): string {
                         if ($state instanceof AssetCategory) {
                             return $state->getLabel();
                         }
 
-                        return AssetCategory::tryFrom((string) $record->getRawOriginal('category'))?->getLabel() ?? '—';
+                        $rawCategory = $record->getRawOriginal('category') ?? $state;
+
+                        return AssetCategory::tryFrom((string) $rawCategory)?->getLabel() ?? '—';
                     })
                     ->placeholder('—')
                     ->toggleable(),
@@ -196,7 +201,9 @@ class AssetResource extends Resource
                     ->badge(),
                 TextColumn::make('value')
                     ->label(__('assets::assets.fields.value'))
-                    ->formatStateUsing(fn (?string $state): string => static::formatOmr($state !== null ? (float) $state : null))
+                    ->formatStateUsing(fn (mixed $state): string => static::formatOmr(
+                        $state !== null && $state !== '' ? (float) $state : null,
+                    ))
                     ->sortable(),
                 TextColumn::make('location')
                     ->label(__('assets::assets.fields.location'))
@@ -231,7 +238,12 @@ class AssetResource extends Resource
                 static::getUrl('view', ['record' => $record]),
             ))
             ->emptyStateHeading(__('assets::assets.empty.no_assets'))
-            ->emptyStateDescription(__('assets::assets.empty.no_assets_description'));
+            ->emptyStateDescription(__('assets::assets.empty.no_assets_description'))
+            ->emptyStateActions([
+                CreateAction::make()
+                    ->label(__('assets::assets.actions.create'))
+                    ->icon('heroicon-o-plus-circle'),
+            ]);
     }
 
     public static function infolist(Schema $schema): Schema
@@ -266,7 +278,9 @@ class AssetResource extends Resource
                             ->badge(),
                         TextEntry::make('value')
                             ->label(__('assets::assets.fields.value'))
-                            ->formatStateUsing(fn (?Asset $record): string => static::formatOmr($record->value !== null ? (float) $record->value : null))
+                            ->formatStateUsing(fn (mixed $state, Asset $record): string => static::formatOmr(
+                                $record->value !== null ? (float) $record->value : null,
+                            ))
                             ->placeholder('—'),
                         TextEntry::make('serial_number')
                             ->label(__('assets::assets.fields.serial_number'))

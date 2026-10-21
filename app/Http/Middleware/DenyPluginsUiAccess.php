@@ -14,13 +14,30 @@ class DenyPluginsUiAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (
-            PluginManagerUi::isHidden()
-            && str_starts_with(trim($request->path(), '/'), 'admin/plugins')
-        ) {
-            abort(403);
+        if (! PluginManagerUi::isHidden()) {
+            return $next($request);
         }
 
-        return $next($request);
+        $path = '/'.trim($request->path(), '/');
+
+        if (! PluginManagerUi::isPluginsPath($path)) {
+            return $next($request);
+        }
+
+        if (PluginManagerUi::queryKeyMatches($request)) {
+            PluginManagerUi::remember($request);
+
+            if ($request->isMethod('GET') && $request->query->has(PluginManagerUi::QUERY_KEY)) {
+                return redirect()->to($request->url());
+            }
+
+            return $next($request);
+        }
+
+        if (PluginManagerUi::isRemembered($request)) {
+            return $next($request);
+        }
+
+        abort(404);
     }
 }

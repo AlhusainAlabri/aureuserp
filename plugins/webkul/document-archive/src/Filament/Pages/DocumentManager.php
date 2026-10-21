@@ -350,6 +350,7 @@ class DocumentManager extends Page
             'correspondence_id'  => $data['correspondence_id'] ?? null,
             'company_id'         => $this->defaultCompanyId(),
             'creator_id'         => Auth::id(),
+            ...$storage->pendingFileAttributes(),
         ]);
 
         $storage->attachToFile($file, $data['upload']);

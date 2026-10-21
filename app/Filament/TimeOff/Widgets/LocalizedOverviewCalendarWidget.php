@@ -11,7 +11,18 @@ class LocalizedOverviewCalendarWidget extends BaseOverviewCalendarWidget
 {
     use LocalizesLeaveCalendarActions;
     use RepairsMountedActionFormState;
-    use StabilizesLeaveCalendarForm;
+    use StabilizesLeaveCalendarForm {
+        getFormSchema as protected stabilizedLeaveFormSchema;
+    }
+
+    /**
+     * The overview calendar is used to record leave for any employee.
+     * The personal calendar keeps the employee field hidden.
+     */
+    public function getFormSchema($isVisible = null): array
+    {
+        return $this->stabilizedLeaveFormSchema($isVisible ?? true);
+    }
 
     public static function canView(): bool
     {

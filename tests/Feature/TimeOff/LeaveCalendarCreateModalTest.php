@@ -72,7 +72,8 @@ it('keeps the overview leave create modal mounted after selecting dates', functi
     $component = Livewire::test(BaseOverviewCalendarWidget::class)
         ->assertSuccessful()
         ->call('mountAction', 'create')
-        ->assertActionMounted('create');
+        ->assertActionMounted('create')
+        ->assertMountedActionModalSee(__('time-off::filament/clusters/management/resources/time-off.form.fields.employee-name'));
 
     expect(get_class($component->instance()))->toBe(LocalizedOverviewCalendarWidget::class);
 

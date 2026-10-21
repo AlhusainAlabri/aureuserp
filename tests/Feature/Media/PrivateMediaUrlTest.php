@@ -73,6 +73,23 @@ it('builds a signed download url for vendor bill documents on the local private 
         ->assertSuccessful();
 });
 
+it('builds a signed download url for correspondence attachments on the local private disk', function (): void {
+    Storage::fake('private');
+
+    $path = 'correspondence/'.now()->year.'/letter.pdf';
+    Storage::disk('private')->put($path, 'pdf-content');
+
+    $url = PrivateMediaUrl::downloadUrl($path);
+
+    expect($url)->not->toBeNull()
+        ->and($url)->toContain('private-files/serve')
+        ->and($url)->toContain('signature=');
+
+    $this->actingAs(User::factory()->create())
+        ->get($url)
+        ->assertSuccessful();
+});
+
 it('rejects paths outside allowed private prefixes', function (): void {
     expect(PrivateMediaUrl::isAllowedPath('../../../etc/passwd'))->toBeFalse()
         ->and(PrivateMediaUrl::isAllowedPath('meetings/secret.pdf'))->toBeFalse()

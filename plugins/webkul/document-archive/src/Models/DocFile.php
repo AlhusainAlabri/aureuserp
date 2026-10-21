@@ -328,7 +328,7 @@ class DocFile extends Model
     public static function nextReferenceNumber(int $year): string
     {
         return DB::transaction(function () use ($year): string {
-            $latest = static::query()
+            $latest = static::withTrashed()
                 ->where('reference_number', 'like', "DOC-{$year}-%")
                 ->lockForUpdate()
                 ->orderByDesc('reference_number')

@@ -2,10 +2,12 @@
 
 namespace Webkul\DocumentArchive\Services;
 
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Models\DocFileVersion;
@@ -36,15 +38,47 @@ class DocumentStorageService
         return pathinfo($originalFilename, PATHINFO_FILENAME);
     }
 
+    public function configureUploadField(FileUpload $field, bool $required = true): FileUpload
+    {
+        $field
+            ->disk($this->disk())
+            ->directory(fn (): string => $this->temporaryDirectory())
+            ->visibility('private')
+            ->acceptedFileTypes($this->acceptedMimeTypes())
+            ->maxSize($this->maxUploadSizeKilobytes())
+            ->storeFiles(false)
+            ->fetchFileInformation(false);
+
+        if ($required) {
+            $field->required();
+        }
+
+        return $field;
+    }
+
+    /**
+     * @return array{original_filename: string, file_path: string, mime_type: string, extension: string}
+     */
+    public function pendingFileAttributes(?string $originalFilename = null): array
+    {
+        return [
+            'original_filename' => filled($originalFilename) ? $originalFilename : 'document',
+            'file_path'         => '',
+            'mime_type'         => 'application/octet-stream',
+            'extension'         => '',
+        ];
+    }
+
     /**
      * @param  TemporaryUploadedFile|UploadedFile|array<int, string>|string|null  $upload
      */
     public function attachToFile(DocFile $file, mixed $upload): void
     {
+        $originalFilename = $this->resolveOriginalFilename($upload);
         $path = $this->resolveUploadPath($upload);
 
         if ($path === null) {
-            return;
+            throw new \RuntimeException(__('document-archive::document-archive.validation.upload_missing'));
         }
 
         $disk = Storage::disk($this->disk());
@@ -53,8 +87,8 @@ class DocumentStorageService
             throw new \RuntimeException(__('document-archive::document-archive.validation.upload_missing'));
         }
 
-        $originalFilename = basename($path);
-        $extension = strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION));
+        $originalFilename ??= basename($path);
+        $extension = strtolower(pathinfo($originalFilename, PATHINFO_EXTENSION) ?: pathinfo($path, PATHINFO_EXTENSION));
 
         $this->validateExtension($extension);
 
@@ -140,13 +174,34 @@ class DocumentStorageService
     public function acceptedMimeTypes(): array
     {
         $map = [
-            'pdf'  => 'application/pdf',
-            'doc'  => 'application/msword',
-            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'xls'  => 'application/vnd.ms-excel',
-            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'ppt'  => 'application/vnd.ms-powerpoint',
-            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'pdf'  => [
+                'application/pdf',
+                'application/x-pdf',
+            ],
+            'doc'  => [
+                'application/msword',
+                'application/x-msword',
+            ],
+            'docx' => [
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/zip',
+            ],
+            'xls'  => [
+                'application/vnd.ms-excel',
+                'application/msexcel',
+            ],
+            'xlsx' => [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/zip',
+            ],
+            'ppt'  => [
+                'application/vnd.ms-powerpoint',
+                'application/mspowerpoint',
+            ],
+            'pptx' => [
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'application/zip',
+            ],
             'jpg'  => 'image/jpeg',
             'jpeg' => 'image/jpeg',
             'png'  => 'image/png',
@@ -154,13 +209,28 @@ class DocumentStorageService
             'webp' => 'image/webp',
             'svg'  => 'image/svg+xml',
             'mp4'  => 'video/mp4',
-            'zip'  => 'application/zip',
+            'zip'  => [
+                'application/zip',
+                'application/x-zip-compressed',
+            ],
             'txt'  => 'text/plain',
-            'csv'  => 'text/csv',
+            'csv'  => [
+                'text/csv',
+                'text/plain',
+                'application/csv',
+            ],
         ];
 
         return collect(config('document-archive.allowed_extensions', []))
-            ->map(fn (string $extension): ?string => $map[strtolower($extension)] ?? null)
+            ->flatMap(function (string $extension) use ($map): array {
+                $types = $map[strtolower($extension)] ?? null;
+
+                if ($types === null) {
+                    return [];
+                }
+
+                return is_array($types) ? $types : [$types];
+            })
             ->filter()
             ->unique()
             ->values()
@@ -234,11 +304,30 @@ class DocumentStorageService
         }
 
         if ($upload instanceof TemporaryUploadedFile || $upload instanceof UploadedFile) {
+            if ($upload instanceof TemporaryUploadedFile && ! $upload->exists()) {
+                return null;
+            }
+
             return $upload->store($this->temporaryDirectory(), $this->disk());
         }
 
-        if (is_string($upload) && $upload !== '') {
+        if (! is_string($upload) || $upload === '') {
+            return null;
+        }
+
+        $disk = Storage::disk($this->disk());
+
+        if ($disk->exists($upload)) {
             return $upload;
+        }
+
+        $livewireDisk = FileUploadConfiguration::disk();
+
+        if ($livewireDisk !== $this->disk() && Storage::disk($livewireDisk)->exists($upload)) {
+            $destination = $this->temporaryDirectory().'/'.basename($upload);
+            $disk->put($destination, Storage::disk($livewireDisk)->get($upload));
+
+            return $destination;
         }
 
         return null;

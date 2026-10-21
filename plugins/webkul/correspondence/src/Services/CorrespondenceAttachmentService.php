@@ -3,31 +3,47 @@
 namespace Webkul\Correspondence\Services;
 
 use App\Support\Media\PrivateUploadMetadata;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Webkul\Correspondence\Models\Correspondence;
 
 class CorrespondenceAttachmentService
 {
     /**
-     * @param  array<int, string>|string|null  $paths
+     * @param  array<int|string, mixed>|string|TemporaryUploadedFile|UploadedFile|null  $paths
      */
-    public static function storeFromPaths(Correspondence $correspondence, array|string|null $paths): void
+    public static function storeFromPaths(Correspondence $correspondence, mixed $paths): void
     {
-        if ($paths === null || $paths === []) {
-            return;
-        }
-
-        $paths = is_array($paths) ? $paths : [$paths];
-
-        foreach ($paths as $path) {
-            if (! is_string($path) || $path === '') {
-                continue;
-            }
-
+        foreach (self::normalizePaths($paths) as $path) {
             $correspondence->attachments()->create(
                 self::buildAttachmentAttributes($path),
             );
         }
+    }
+
+    /**
+     * @param  array<int|string, mixed>|string|TemporaryUploadedFile|UploadedFile|null  $paths
+     * @return array<int, string>
+     */
+    public static function normalizePaths(mixed $paths): array
+    {
+        if ($paths === null || $paths === [] || $paths === '') {
+            return [];
+        }
+
+        $paths = is_array($paths) ? $paths : [$paths];
+        $stored = [];
+
+        foreach ($paths as $path) {
+            $resolved = self::storeIfNeeded($path);
+
+            if ($resolved !== null) {
+                $stored[] = $resolved;
+            }
+        }
+
+        return $stored;
     }
 
     /**
@@ -58,6 +74,19 @@ class CorrespondenceAttachmentService
             'mime_type'  => (string) ($metadata['mime_type'] ?? 'application/octet-stream'),
             'creator_id' => Auth::id(),
         ];
+    }
+
+    protected static function storeIfNeeded(mixed $path): ?string
+    {
+        if ($path instanceof TemporaryUploadedFile || $path instanceof UploadedFile) {
+            return $path->store('correspondence/'.now()->year, 'private');
+        }
+
+        if (is_string($path) && $path !== '') {
+            return $path;
+        }
+
+        return null;
     }
 
     /**

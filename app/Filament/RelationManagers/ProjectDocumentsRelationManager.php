@@ -15,6 +15,7 @@ use Webkul\DocumentArchive\Filament\Concerns\ManagesDocumentRecords;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
 use Webkul\DocumentArchive\Models\DocFile;
 use Webkul\DocumentArchive\Models\DocFolder;
+use Webkul\DocumentArchive\Services\DocumentStorageService;
 
 class ProjectDocumentsRelationManager extends RelationManager
 {
@@ -86,7 +87,10 @@ class ProjectDocumentsRelationManager extends RelationManager
                             $data['company_id'] = $this->getOwnerRecord()->company_id ?? $this->defaultCompanyId();
                         }
 
-                        return $this->mutateDocumentFormData($data);
+                        return [
+                            ...$this->mutateDocumentFormData($data),
+                            ...app(DocumentStorageService::class)->pendingFileAttributes(),
+                        ];
                     })
                     ->after(fn (DocFile $record): mixed => $this->finalizeDocumentCreate($record))
                     ->successNotification(

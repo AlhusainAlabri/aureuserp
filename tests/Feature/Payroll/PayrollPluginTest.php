@@ -314,6 +314,29 @@ it('PayrollPluginTest: loan calculates installment amount', function (): void {
     expect((float) $loan->fresh()->installment_amount)->toEqual(100.0);
 });
 
+it('PayrollPluginTest: continues loan numbers after a soft-deleted loan', function (): void {
+    $employee = payrollEmployee();
+
+    $deleted = Loan::factory()->create([
+        'employee_id'      => $employee->id,
+        'company_id'       => $employee->company_id,
+        'reference_number' => null,
+    ]);
+    $deleted->delete();
+
+    $next = Loan::factory()->create([
+        'employee_id'      => $employee->id,
+        'company_id'       => $employee->company_id,
+        'reference_number' => null,
+    ]);
+
+    $deletedSequence = (int) substr((string) $deleted->reference_number, -4);
+    $nextSequence = (int) substr((string) $next->reference_number, -4);
+
+    expect($next->reference_number)->toStartWith('LOAN-'.now()->year.'-')
+        ->and($nextSequence)->toBe($deletedSequence + 1);
+});
+
 it('PayrollPluginTest: activated loan generates installments', function (): void {
     $employee = payrollEmployee();
 

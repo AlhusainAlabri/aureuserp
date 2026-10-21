@@ -50,9 +50,13 @@ trait ManagesDocumentRecords
 
     protected function handleDocumentUpload(mixed $record, array $rawState, bool $isCreate): void
     {
-        $upload = $rawState['upload'] ?? null;
+        $upload = $rawState['upload'] ?? data_get($rawState, 'upload_tabs.upload');
 
         if ($upload === null || $upload === []) {
+            if ($isCreate) {
+                throw new \RuntimeException(__('document-archive::document-archive.validation.upload_missing'));
+            }
+
             return;
         }
 

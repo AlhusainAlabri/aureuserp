@@ -1,8 +1,11 @@
 <?php
 
+use App\Settings\BrandingSettings;
 use App\Support\Branding;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
@@ -10,6 +13,18 @@ uses(DatabaseTransactions::class);
 
 beforeEach(function (): void {
     config(['branding.fallback' => 'Fallback ERP']);
+    Cache::flush();
+
+    try {
+        $settings = app(BrandingSettings::class);
+
+        if (filled($settings->display_name)) {
+            $settings->display_name = null;
+            $settings->save();
+        }
+    } catch (MissingSettings) {
+        // Branding settings are optional until the settings migration has run.
+    }
 });
 
 it('returns company name when company id is provided', function (): void {

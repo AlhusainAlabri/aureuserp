@@ -73,9 +73,12 @@ class Asset extends Model
 
     public function activeBorrowing(): HasOne
     {
-        return $this->hasOne(AssetBorrowing::class)
-            ->whereIn('status', ['active', 'overdue'])
-            ->latestOfMany('borrowed_at');
+        return $this->hasOne(AssetBorrowing::class)->ofMany(
+            ['borrowed_at' => 'max'],
+            function (Builder $query): void {
+                $query->whereIn('status', ['active', 'overdue']);
+            },
+        );
     }
 
     public function company(): BelongsTo
@@ -128,7 +131,7 @@ class Asset extends Model
     protected static function nextAssetNumber(int $year): string
     {
         return DB::transaction(function () use ($year): string {
-            $latestNumber = static::query()
+            $latestNumber = static::withTrashed()
                 ->where('asset_number', 'like', "AST-{$year}-%")
                 ->lockForUpdate()
                 ->max('asset_number');

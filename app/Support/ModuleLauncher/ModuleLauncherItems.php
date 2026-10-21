@@ -4,6 +4,7 @@ namespace App\Support\ModuleLauncher;
 
 use App\Models\DashboardShortcut;
 use App\Support\AdminNavigationMenu;
+use App\Support\PluginManager\PluginManagerUi;
 use Filament\Facades\Filament;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -114,7 +115,7 @@ class ModuleLauncherItems
         ]);
 
         if (! Schema::hasTable('dashboard_shortcuts')) {
-            return $modules->values();
+            return self::withoutHiddenPluginLinks($modules);
         }
 
         $shortcuts = DashboardShortcut::query()
@@ -132,7 +133,22 @@ class ModuleLauncherItems
                 'opensInNewTab'  => $shortcut->opens_in_new_tab,
             ]);
 
-        return $modules->concat($shortcuts)->values();
+        return self::withoutHiddenPluginLinks($modules->concat($shortcuts));
+    }
+
+    /**
+     * @param  Collection<int, array{key: string, label: string, icon: string, url: string, color: string, type: string, opensInNewTab: bool}>  $items
+     * @return Collection<int, array{key: string, label: string, icon: string, url: string, color: string, type: string, opensInNewTab: bool}>
+     */
+    protected static function withoutHiddenPluginLinks(Collection $items): Collection
+    {
+        if (! PluginManagerUi::isHidden()) {
+            return $items->values();
+        }
+
+        return $items
+            ->reject(fn (array $item): bool => PluginManagerUi::isPluginsPath($item['url']))
+            ->values();
     }
 
     public static function moduleKey(string $icon): string

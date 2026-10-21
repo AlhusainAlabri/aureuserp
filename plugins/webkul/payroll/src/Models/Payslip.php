@@ -189,7 +189,7 @@ class Payslip extends Model
         return DB::transaction(function () use ($year, $month): string {
             $prefix = sprintf('PSL-%d-%02d-', $year, $month);
 
-            $latestNumber = static::query()
+            $latestNumber = static::withTrashed()
                 ->where('period_year', $year)
                 ->where('period_month', $month)
                 ->where('reference_number', 'like', $prefix.'%')

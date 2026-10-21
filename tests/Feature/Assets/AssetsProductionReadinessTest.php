@@ -4,12 +4,15 @@ use App\Filament\Assets\Actions\RequestAssetAction;
 use App\Filament\Assets\Pages\MyBorrowingRequests;
 use App\Http\Middleware\SetLocale;
 use App\Http\Responses\LocaleAwareLoginResponse;
+use App\Support\ExtensionPermissionsSync;
+use App\Support\SchemaMemo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Webkul\Assets\Enums\AssetCategory;
 use Webkul\Assets\Filament\Resources\AssetResource;
 use Webkul\Assets\Filament\Resources\AssetResource\Pages\ViewAsset;
@@ -22,6 +25,26 @@ beforeEach(function (): void {
     if (! Schema::hasTable('assets')) {
         Artisan::call('assets:install', ['--no-interaction' => true]);
     }
+});
+
+it('grants asset record permissions to manager roles', function (): void {
+    SchemaMemo::resetForTesting();
+
+    $admin = Role::query()->firstOrCreate([
+        'name'       => 'Admin',
+        'guard_name' => 'web',
+    ]);
+    $employee = Role::query()->firstOrCreate([
+        'name'       => 'employee',
+        'guard_name' => 'web',
+    ]);
+
+    app(ExtensionPermissionsSync::class)->syncAssets();
+
+    expect($admin->fresh()->hasPermissionTo('view_any_assets_asset'))->toBeTrue()
+        ->and($admin->fresh()->hasPermissionTo('create_assets_asset'))->toBeTrue()
+        ->and($admin->fresh()->hasPermissionTo('borrow_assets_asset'))->toBeTrue()
+        ->and($employee->fresh()->hasPermissionTo('create_assets_asset'))->toBeFalse();
 });
 
 it('detects vehicle category from translated arabic labels', function (): void {

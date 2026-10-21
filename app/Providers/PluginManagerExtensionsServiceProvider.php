@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\DenyPluginsUiAccess;
 use App\Policies\PluginPolicy;
 use App\Support\PluginManager\PluginManagerUi;
-use Filament\Facades\Filament;
+use App\Support\PluginManager\PluginsNavigationManager;
+use Filament\Navigation\NavigationManager;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -16,7 +16,9 @@ class PluginManagerExtensionsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->scoped(NavigationManager::class, function (): NavigationManager {
+            return new PluginsNavigationManager;
+        });
     }
 
     public function boot(): void
@@ -25,22 +27,6 @@ class PluginManagerExtensionsServiceProvider extends ServiceProvider
 
         $this->app->booted(function (): void {
             $this->prependPluginsUiGateBeforeCallback();
-        });
-
-        Filament::serving(function (): void {
-            if (! PluginManagerUi::isHidden()) {
-                return;
-            }
-
-            $panel = Filament::getCurrentPanel();
-
-            if ($panel?->getId() !== 'admin') {
-                return;
-            }
-
-            $panel->authMiddleware([
-                DenyPluginsUiAccess::class,
-            ], isPersistent: true);
         });
     }
 
@@ -59,12 +45,12 @@ class PluginManagerExtensionsServiceProvider extends ServiceProvider
         /** @var array<int, callable> $callbacks */
         $callbacks = $property->getValue($gate);
 
-        array_unshift($callbacks, function (?object $user, string $ability): ?bool {
-            if (! PluginManagerUi::isHidden()) {
+        array_unshift($callbacks, function (?object $user, string $ability, mixed ...$arguments): ?bool {
+            if (! PluginManagerUi::blocksPluginPermission()) {
                 return null;
             }
 
-            if (str_contains($ability, 'plugin_manager_plugin')) {
+            if (str_contains($ability, 'plugin_manager_plugin') || self::argumentIsPlugin($arguments)) {
                 return false;
             }
 
@@ -72,5 +58,19 @@ class PluginManagerExtensionsServiceProvider extends ServiceProvider
         });
 
         $property->setValue($gate, $callbacks);
+    }
+
+    /**
+     * @param  array<int, mixed>  $arguments
+     */
+    protected static function argumentIsPlugin(array $arguments): bool
+    {
+        $target = $arguments[0] ?? null;
+
+        if (is_object($target)) {
+            return $target instanceof Plugin;
+        }
+
+        return $target === Plugin::class;
     }
 }

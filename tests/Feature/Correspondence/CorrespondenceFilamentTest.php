@@ -1,8 +1,10 @@
 <?php
 
 use App\Filament\Correspondence\Pages\ExtendedCorrespondenceDashboard;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
@@ -109,6 +111,38 @@ it('CorrespondenceFilamentTest: can create incoming correspondence from form', f
         ->assertRedirect();
 
     expect(Correspondence::query()->where('subject', 'Test Incoming Letter')->exists())->toBeTrue();
+});
+
+it('CorrespondenceFilamentTest: create form persists uploaded attachments to the private disk', function (): void {
+    Storage::fake('private');
+    correspondenceFilamentUser();
+
+    $file = UploadedFile::fake()->create('letter.pdf', 20, 'application/pdf');
+
+    Livewire::test(CreateCorrespondence::class)
+        ->fillForm([
+            'direction'   => 'incoming',
+            'type'        => 'official',
+            'priority'    => 'normal',
+            'subject'     => 'Incoming With Attachment',
+            'sender_name' => 'External Sender',
+            'received_at' => now()->toDateString(),
+            'uploads'     => [$file],
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors()
+        ->assertNotified()
+        ->assertRedirect();
+
+    $correspondence = Correspondence::query()->where('subject', 'Incoming With Attachment')->first();
+
+    expect($correspondence)->not->toBeNull()
+        ->and($correspondence->attachments()->count())->toBe(1);
+
+    $attachment = $correspondence->attachments()->first();
+
+    expect($attachment->file_name)->toEndWith('.pdf')
+        ->and(Storage::disk('private')->exists($attachment->file_path))->toBeTrue();
 });
 
 it('CorrespondenceFilamentTest: viewing incoming correspondence marks it as read', function (): void {

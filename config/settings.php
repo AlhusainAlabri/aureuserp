@@ -1,5 +1,6 @@
 <?php
 
+use App\Settings\BrandingSettings;
 use App\Settings\NavigationSettings;
 use App\Settings\OperationsSettings;
 use Spatie\LaravelData\Data;
@@ -59,6 +60,7 @@ return [
         QuotationAndOrderSettings::class,
         ContactSettings::class,
         NavigationSettings::class,
+        BrandingSettings::class,
         OperationsSettings::class,
     ],
 

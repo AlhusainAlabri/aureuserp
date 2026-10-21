@@ -89,6 +89,14 @@
     object-fit: contain;
 }
 
+html:not(.dark) .brand-logo--dark {
+    display: none;
+}
+
+html.dark .brand-logo--light {
+    display: none;
+}
+
 .module-launcher-global-search__input {
     @apply min-h-12 text-base;
 }

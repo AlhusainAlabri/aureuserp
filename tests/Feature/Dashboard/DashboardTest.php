@@ -19,6 +19,7 @@ use App\Filament\Widgets\Dashboard\RecruitmentPipelineWidget;
 use App\Filament\Widgets\Dashboard\RevenueExpensesChartWidget;
 use App\Filament\Widgets\Dashboard\TasksCompletionChartWidget;
 use App\Filament\Widgets\Dashboard\UpcomingRemindersWidget;
+use App\Support\Branding;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
@@ -94,7 +95,7 @@ it('shows a personalized greeting with logo in the page heading', function (): v
     Livewire::test(Dashboard::class)
         ->assertSuccessful()
         ->assertSee(__('dashboard.greeting', ['name' => $user->name]))
-        ->assertSeeHtml(asset('images/logo_2.png'))
+        ->assertSeeHtml(Branding::fullLogoUrl())
         ->assertDontSeeHtml(asset('images/logo.png'));
 });
 

@@ -24,7 +24,7 @@
 
     <div class="meta">
         <div>{{ __('correspondence::correspondence.date') }}: {{ $correspondence->created_at?->format('Y-m-d') }}</div>
-        <div>{{ __('correspondence::correspondence.priority') }}: {{ trans('correspondence::correspondence.priorities.'.$correspondence->priority) }}</div>
+        <div>{{ __('correspondence::correspondence.priority.label') }}: {{ __('correspondence::correspondence.priorities.'.($correspondence->priority ?? 'normal')) }}</div>
         <div>{{ __('correspondence::correspondence.from_department') }}: {{ $correspondence->fromDepartment?->name ?? $correspondence->sender_name }}</div>
         <div>{{ __('correspondence::correspondence.to_department') }}: {{ $correspondence->toDepartment?->name ?? $correspondence->toUser?->name ?? $correspondence->sender_entity }}</div>
     </div>
