@@ -74,6 +74,7 @@ class ApplicationUpdateDeployer
             $this->runStep('composer', $this->composerInstall(), 900);
             $this->runStep('config', $this->artisan(['config:clear']), 60);
             $this->runStep('migrate', $this->artisan(['migrate', '--force']), 900);
+            $this->runStep('extension-schema', $this->artisan(['erp:ensure-extension-schema']), 300);
             $this->runStep('permissions', $this->artisan(['permissions:sync-extensions']), 300);
 
             if (config('github-deploy.run_shield')) {

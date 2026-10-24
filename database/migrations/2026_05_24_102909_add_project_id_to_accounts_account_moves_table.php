@@ -19,7 +19,10 @@ return new class extends Migration
             }
         });
 
-        if (Schema::hasTable('projects_projects') && Schema::hasColumn('accounts_account_moves', 'project_id')) {
+        $hasProjectForeignKey = collect(Schema::getForeignKeys('accounts_account_moves'))
+            ->contains(fn (array $foreignKey): bool => $foreignKey['columns'] === ['project_id']);
+
+        if (! $hasProjectForeignKey && Schema::hasTable('projects_projects') && Schema::hasColumn('accounts_account_moves', 'project_id')) {
             Schema::table('accounts_account_moves', function (Blueprint $table): void {
                 $table->foreign('project_id')
                     ->references('id')

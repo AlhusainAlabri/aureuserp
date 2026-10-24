@@ -125,13 +125,16 @@ it('runs the deploy steps in order for a fast-forward update', function (): void
     $ran = deployRunner()->ran;
     $merge = array_search(implode("\n", gitCommand(['merge', '--ff-only', 'origin/master'])), $ran, true);
     $migrate = array_search(implode("\n", artisanCommand(['migrate', '--force'])), $ran, true);
+    $extensionSchema = array_search(implode("\n", artisanCommand(['erp:ensure-extension-schema'])), $ran, true);
     $up = array_search(implode("\n", artisanCommand(['up'])), $ran, true);
 
     expect($merge)->toBeInt()
         ->and($migrate)->toBeInt()
         ->and($up)->toBeInt()
         ->and($merge)->toBeLessThan($migrate)
-        ->and($migrate)->toBeLessThan($up)
+        ->and($extensionSchema)->toBeInt()
+        ->and($migrate)->toBeLessThan($extensionSchema)
+        ->and($extensionSchema)->toBeLessThan($up)
         ->and(app(DeployStatusStore::class)->get()['state'])->toBe('success');
 });
 
@@ -242,6 +245,7 @@ function scriptRepository(
         ['down', '--retry=60'],
         ['config:clear'],
         ['migrate', '--force'],
+        ['erp:ensure-extension-schema'],
         ['permissions:sync-extensions'],
         ['optimize'],
         ['queue:restart'],

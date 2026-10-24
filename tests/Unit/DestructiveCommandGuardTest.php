@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\Console\DestructiveCommandGuard;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -92,4 +93,37 @@ it('registers the guard on command starting events', function (): void {
         new BufferedOutput,
     )))
         ->toThrow(RuntimeException::class);
+});
+
+it('allows db seed while an installer command is running', function (string $installer): void {
+    $guard = app(DestructiveCommandGuard::class);
+
+    $guard->handleCommandStarting(new CommandStarting($installer, new ArrayInput([]), new BufferedOutput));
+
+    $guard->assertAllowed('db:seed', new ArrayInput([]));
+
+    expect(true)->toBeTrue();
+})->with(['erp:install', 'plugins:install', 'products:install']);
+
+it('keeps destructive commands blocked while an installer command is running', function (): void {
+    $guard = app(DestructiveCommandGuard::class);
+
+    $guard->handleCommandStarting(new CommandStarting('erp:install', new ArrayInput([]), new BufferedOutput));
+
+    expect(fn (): mixed => $guard->assertAllowed('migrate:fresh', new ArrayInput([])))
+        ->toThrow(RuntimeException::class);
+});
+
+it('blocks db seed again once the installer command has finished', function (): void {
+    $guard = app(DestructiveCommandGuard::class);
+
+    $guard->handleCommandStarting(new CommandStarting('erp:install', new ArrayInput([]), new BufferedOutput));
+    $guard->handleCommandFinished(new CommandFinished('erp:install', new ArrayInput([]), new BufferedOutput, 0));
+
+    expect(fn (): mixed => $guard->assertAllowed('db:seed', new ArrayInput([])))
+        ->toThrow(RuntimeException::class);
+});
+
+it('shares one guard instance so installer state survives nested commands', function (): void {
+    expect(app(DestructiveCommandGuard::class))->toBe(app(DestructiveCommandGuard::class));
 });

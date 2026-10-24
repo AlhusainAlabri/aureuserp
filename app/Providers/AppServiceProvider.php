@@ -19,6 +19,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\View\PanelsRenderHook;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
@@ -34,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(DestructiveCommandGuard::class);
+
         $this->app->bind(Authenticatable::class, User::class);
         $this->app->singleton(CommandRunner::class, SymfonyCommandRunner::class);
         $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
@@ -48,6 +51,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::listen(CommandStarting::class, function (CommandStarting $event): void {
             app(DestructiveCommandGuard::class)->handleCommandStarting($event);
+        });
+
+        Event::listen(CommandFinished::class, function (CommandFinished $event): void {
+            app(DestructiveCommandGuard::class)->handleCommandFinished($event);
         });
 
         if (! app()->isProduction()) {

@@ -11,9 +11,9 @@ class HrExtensionSchemaService
 
     protected static bool $documentTypesChecked = false;
 
-    public function ensure(): void
+    public function ensure(bool $force = false): void
     {
-        if (static::$ensured) {
+        if (static::$ensured && ! $force) {
             return;
         }
 

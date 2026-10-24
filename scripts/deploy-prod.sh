@@ -29,7 +29,8 @@
 #   QUEUE_CONNECTION=database|redis
 #   MAIL_* configured for real SMTP
 #   NOTIFICATION_OPS_EMAIL=ops@example.com
-#   Supervisor/systemd: php artisan queue:work --queue=default,mail,notifications
+#   Supervisor/systemd: php artisan queue:work --queue=default,mail,notifications --memory=512 --max-time=3600
+#   (the app needs ~125 MB just to boot, so the default 128 MB worker limit exits immediately)
 #   Cron: * * * * * php artisan schedule:run
 #   Verify: php artisan notifications:report-daily --dry-run
 #   Monitor: php artisan notifications:health (exit 1 when thresholds breached)
@@ -681,7 +682,7 @@ if [[ $DO_BUILD -eq 1 && -f "$APP_ROOT/package.json" ]]; then
 fi
 
 if [[ $DO_MIGRATE -eq 1 ]]; then
-  REMOTE_CMDS+=" && ${ARTISAN} migrate --force"
+  REMOTE_CMDS+=" && ${ARTISAN} migrate --force && ${ARTISAN} erp:ensure-extension-schema"
 fi
 
 REMOTE_CMDS+=" && ${ARTISAN} permissions:sync-extensions"

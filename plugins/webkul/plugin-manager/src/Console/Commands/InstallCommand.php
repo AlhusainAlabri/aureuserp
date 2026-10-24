@@ -173,7 +173,19 @@ class InstallCommand extends Command
 
         $this->regenerateAdminPanelPermissions();
 
+        $this->ensureExtensionSchema();
+
         $this->info("🎉 Package <comment>{$this->package->shortName()}</comment> has been installed!");
+    }
+
+    /**
+     * Let the host app add the columns and tables it extends this plugin with.
+     */
+    protected function ensureExtensionSchema(): void
+    {
+        if ($this->getApplication()?->has('erp:ensure-extension-schema')) {
+            $this->callSilently('erp:ensure-extension-schema');
+        }
     }
 
     public function publish(string ...$tag): self
@@ -265,7 +277,8 @@ class InstallCommand extends Command
             $this->info("⚙️ Running <comment>{$this->package->shortName()}</comment> database migrations...");
 
             $this->call('migrate', [
-                '--path' => $migrationsToRun->toArray(),
+                '--path'  => $migrationsToRun->toArray(),
+                '--force' => true,
             ]);
 
             $this->info("✅ Migrations <comment>{$this->package->shortName()}</comment> completed successfully.");
@@ -291,7 +304,8 @@ class InstallCommand extends Command
             $this->info("⚙️ Running <comment>{$this->package->shortName()}</comment> settings database migrations...");
 
             $this->call('migrate', [
-                '--path' => $settingsToRun->toArray(),
+                '--path'  => $settingsToRun->toArray(),
+                '--force' => true,
             ]);
 
             $this->info("✅ Settings migrations <comment>{$this->package->shortName()}</comment> completed successfully.");
@@ -333,6 +347,7 @@ class InstallCommand extends Command
         foreach ($this->package->seederClasses as $seeder) {
             $this->call('db:seed', [
                 '--class' => $seeder,
+                '--force' => true,
             ]);
         }
 

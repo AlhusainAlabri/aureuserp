@@ -2,6 +2,7 @@
 
 namespace App\Support\Console;
 
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Support\Facades\File;
 use RuntimeException;
@@ -9,6 +10,12 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class DestructiveCommandGuard
 {
+    /**
+     * Installer commands seed the database they create, so seeding is allowed
+     * while one of them is running.
+     */
+    protected int $runningInstallers = 0;
+
     public function assertAllowed(?string $command, InputInterface $input): void
     {
         if ($command === null || $command === '') {
@@ -20,6 +27,10 @@ class DestructiveCommandGuard
         }
 
         if ($this->isSafeTestEnvironment()) {
+            return;
+        }
+
+        if ($command === 'db:seed' && $this->runningInstallers > 0) {
             return;
         }
 
@@ -39,6 +50,22 @@ class DestructiveCommandGuard
     public function handleCommandStarting(CommandStarting $event): void
     {
         $this->assertAllowed($event->command, $event->input);
+
+        if ($this->isInstallerCommand($event->command)) {
+            $this->runningInstallers++;
+        }
+    }
+
+    public function handleCommandFinished(CommandFinished $event): void
+    {
+        if ($this->isInstallerCommand($event->command)) {
+            $this->runningInstallers = max(0, $this->runningInstallers - 1);
+        }
+    }
+
+    protected function isInstallerCommand(?string $command): bool
+    {
+        return $command !== null && str_ends_with($command, ':install');
     }
 
     protected function isExplicitlyAllowed(): bool

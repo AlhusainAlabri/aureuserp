@@ -8,10 +8,26 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('employee_salary_raises') || ! Schema::hasTable('employees_employees')) {
+        if (! Schema::hasTable('employees_employees')) {
             return;
         }
 
+        if (! Schema::hasTable('employee_salary_raises')) {
+            $this->createTable();
+        }
+
+        $hasContractForeignKey = collect(Schema::getForeignKeys('employee_salary_raises'))
+            ->contains(fn (array $foreignKey): bool => $foreignKey['columns'] === ['contract_id']);
+
+        if (! $hasContractForeignKey && Schema::hasTable('employee_contracts')) {
+            Schema::table('employee_salary_raises', function (Blueprint $table): void {
+                $table->foreign('contract_id')->references('id')->on('employee_contracts')->nullOnDelete();
+            });
+        }
+    }
+
+    protected function createTable(): void
+    {
         Schema::create('employee_salary_raises', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('employee_id')->constrained('employees_employees')->cascadeOnDelete();
@@ -35,12 +51,6 @@ return new class extends Migration
             $table->timestamps();
             $table->index(['employee_id', 'effective_date']);
         });
-
-        if (Schema::hasTable('employee_contracts')) {
-            Schema::table('employee_salary_raises', function (Blueprint $table): void {
-                $table->foreign('contract_id')->references('id')->on('employee_contracts')->nullOnDelete();
-            });
-        }
     }
 
     public function down(): void

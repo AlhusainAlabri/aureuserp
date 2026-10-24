@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -67,6 +68,44 @@ class ExtensionSchema
             $table->foreignId('creator_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
+    }
+
+    /**
+     * Re-run the app-level migrations that extend plugin tables. On a clean
+     * install they ran before the plugins existed, skipped themselves and were
+     * recorded as ran, so the columns and tables they add are still missing.
+     *
+     * @return list<string> Names of the migrations that were run.
+     */
+    public static function runDeferredMigrations(): array
+    {
+        $ran = [];
+
+        foreach (config('extension-schema.deferred_migrations', []) as $name) {
+            $path = database_path("migrations/{$name}.php");
+
+            if (! is_file($path)) {
+                continue;
+            }
+
+            try {
+                (require $path)->up();
+            } catch (QueryException $exception) {
+                if (! static::isAlreadyAppliedError($exception)) {
+                    throw $exception;
+                }
+            }
+
+            $ran[] = $name;
+        }
+
+        return $ran;
+    }
+
+    protected static function isAlreadyAppliedError(QueryException $exception): bool
+    {
+        // 1050 table exists, 1060 duplicate column, 1061 duplicate key name, 1826 duplicate foreign key.
+        return in_array((int) ($exception->errorInfo[1] ?? 0), [1050, 1060, 1061, 1826], true);
     }
 
     public static function ensureAttachmentTables(): void
