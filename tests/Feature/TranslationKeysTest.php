@@ -56,3 +56,42 @@ it('has an Arabic and English translation for every literal key used in code', f
 
     expect($missing)->toBe([], "Missing {$locale} translations:\n{$report}");
 })->with(['ar', 'en']);
+
+it('has an Arabic entry in ar.json for every English-sentence translation key used in code', function (): void {
+    $arabic = json_decode((string) file_get_contents(lang_path('ar.json')), true, 512, JSON_THROW_ON_ERROR);
+    $missing = [];
+
+    foreach (['app', 'plugins', 'resources/views'] as $root) {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(base_path($root), FilesystemIterator::SKIP_DOTS),
+        );
+
+        foreach ($files as $file) {
+            $path = $file->getPathname();
+
+            if (! str_ends_with($path, '.php') || preg_match('#/(tests|database|node_modules|vendor)/|/resources/lang/#', $path)) {
+                continue;
+            }
+
+            if (! preg_match_all('/(?<![\w>:$])(?:__|trans)\(\s*([\'"])([^\'"\n]{2,400}?)\1\s*[,)]/', (string) file_get_contents($path), $matches)) {
+                continue;
+            }
+
+            foreach ($matches[2] as $key) {
+                $isStructuredKey = str_contains($key, '::') || preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)+$/', $key);
+
+                if ($isStructuredKey || str_contains($key, '{$') || ! preg_match('/[A-Za-z]/', $key) || array_key_exists($key, $arabic)) {
+                    continue;
+                }
+
+                $missing[$key] = str_replace(base_path().'/', '', $path);
+            }
+        }
+    }
+
+    ksort($missing);
+
+    $report = collect($missing)->map(fn (string $path, string $key): string => "{$key} ({$path})")->implode("\n");
+
+    expect($missing)->toBe([], "Add these to lang/ar.json:\n{$report}");
+});

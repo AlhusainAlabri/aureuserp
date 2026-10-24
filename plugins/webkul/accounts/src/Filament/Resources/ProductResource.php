@@ -39,6 +39,7 @@ class ProductResource extends BaseProductResource
 
         $newPriceComponents = [
             Select::make('accounts_product_taxes')
+                ->label(__('accounts::filament/resources/product.form.fields.product-taxes'))
                 ->relationship(
                     'productTaxes',
                     'name',
@@ -90,23 +91,22 @@ class ProductResource extends BaseProductResource
                     $parts = [];
 
                     if ($result['total_included'] != $price) {
-                        $parts[] = sprintf(
-                            '%s Incl. Taxes',
-                            number_format($result['total_included'], 2)
-                        );
+                        $parts[] = __('accounts::filament/resources/product.form.helper.incl-taxes', [
+                            'amount' => number_format($result['total_included'], 2),
+                        ]);
                     }
 
                     if ($result['total_excluded'] != $price) {
-                        $parts[] = sprintf(
-                            '%s Excl. Taxes',
-                            number_format($result['total_excluded'], 2)
-                        );
+                        $parts[] = __('accounts::filament/resources/product.form.helper.excl-taxes', [
+                            'amount' => number_format($result['total_excluded'], 2),
+                        ]);
                     }
 
                     return ! empty($parts) ? '(= '.implode(', ', $parts).')' : ' ';
                 }),
 
             Select::make('accounts_product_supplier_taxes')
+                ->label(__('accounts::filament/resources/product.form.fields.supplier-taxes'))
                 ->relationship(
                     'supplierTaxes',
                     'name',

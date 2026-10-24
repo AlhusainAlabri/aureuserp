@@ -362,21 +362,21 @@ class QuotationResource extends Resource
                 TextColumn::make('amount_untaxed')
                     ->label(__('sales::filament/clusters/orders/resources/quotation.table.columns.untaxed-amount'))
                     ->placeholder('-')
-                    ->summarize(Sum::make()->label('Total'))
+                    ->summarize(Sum::make()->label(__('Total')))
                     ->money(fn ($record) => $record->currency->code)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('amount_tax')
                     ->label(__('sales::filament/clusters/orders/resources/quotation.table.columns.amount-tax'))
                     ->placeholder('-')
-                    ->summarize(Sum::make()->label('Taxes'))
+                    ->summarize(Sum::make()->label(__('Taxes')))
                     ->money(fn ($record) => $record->currency->code)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('amount_total')
                     ->label(__('sales::filament/clusters/orders/resources/quotation.table.columns.amount-total'))
                     ->placeholder('-')
-                    ->summarize(Sum::make()->label('Total Amount'))
+                    ->summarize(Sum::make()->label(__('Total Amount')))
                     ->money(fn ($record) => $record->currency->code)
                     ->toggleable()
                     ->sortable(),
@@ -838,7 +838,7 @@ class QuotationResource extends Resource
                                     ])
                                     ->extraItemActions([
                                         Action::make('viewProduct')
-                                            ->tooltip('Open product')
+                                            ->tooltip(__('Open product'))
                                             ->size(fn () => 'sm') // problematic if not evaluated
                                             ->iconButton()
                                             ->icon('heroicon-m-arrow-top-right-on-square')
@@ -1617,7 +1617,7 @@ class QuotationResource extends Resource
             ->mutateRelationshipDataBeforeSaveUsing(fn (array $data, $record, $livewire) => static::mutateProductRelationship($data, $record, $livewire))
             ->extraItemActions([
                 Action::make('openProduct')
-                    ->tooltip('Open product')
+                    ->tooltip(__('Open product'))
                     ->icon('heroicon-m-arrow-top-right-on-square')
                     ->url(
                         fn (array $arguments, Get $get): ?string => ProductResource::getUrl('edit', [

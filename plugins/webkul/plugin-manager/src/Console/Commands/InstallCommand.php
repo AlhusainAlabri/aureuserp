@@ -186,6 +186,10 @@ class InstallCommand extends Command
         if ($this->getApplication()?->has('erp:ensure-extension-schema')) {
             $this->callSilently('erp:ensure-extension-schema');
         }
+
+        if ($this->getApplication()?->has('erp:localize-data')) {
+            $this->callSilently('erp:localize-data');
+        }
     }
 
     public function publish(string ...$tag): self

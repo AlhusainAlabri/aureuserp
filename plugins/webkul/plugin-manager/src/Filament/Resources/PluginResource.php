@@ -278,7 +278,7 @@ class PluginResource extends Resource
                                 ->falseColor('gray'),
 
                             TextEntry::make('author')
-                                ->label('Author')
+                                ->label(__('Author'))
                                 ->badge(),
                         ]),
 

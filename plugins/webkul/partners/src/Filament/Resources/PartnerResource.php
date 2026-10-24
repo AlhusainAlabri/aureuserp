@@ -201,7 +201,7 @@ class PartnerResource extends Resource
                                             ->unique('partners_titles'),
                                         TextInput::make('short_name')
                                             ->label(__('partners::filament/resources/partner.form.sections.general.fields.short-name'))
-                                            ->label('Short Name')
+                                            ->label(__('Short Name'))
                                             ->required()
                                             ->maxLength(255)
                                             ->unique('partners_titles'),
@@ -355,7 +355,7 @@ class PartnerResource extends Resource
                                 ->icon('heroicon-m-briefcase')
                                 ->searchable()
                                 ->sortable()
-                                ->label('Job Title'),
+                                ->label(__('Job Title')),
                         ])
                             ->visible(fn ($record) => filled($record->job_title)),
                         Stack::make([
@@ -363,7 +363,7 @@ class PartnerResource extends Resource
                                 ->icon('heroicon-o-envelope')
                                 ->searchable()
                                 ->sortable()
-                                ->label('Work Email')
+                                ->label(__('Work Email'))
                                 ->color('gray')
                                 ->limit(20),
                         ])
@@ -372,7 +372,7 @@ class PartnerResource extends Resource
                             TextColumn::make('phone')
                                 ->icon('heroicon-o-phone')
                                 ->searchable()
-                                ->label('Work Phone')
+                                ->label(__('Work Phone'))
                                 ->color('gray')
                                 ->limit(30)
                                 ->sortable(),

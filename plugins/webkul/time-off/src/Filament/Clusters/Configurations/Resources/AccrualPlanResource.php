@@ -85,7 +85,7 @@ class AccrualPlanResource extends Resource
                                     ->live()
                                     ->required(),
                                 Fieldset::make()
-                                    ->label('Carry-Over Date')
+                                    ->label(__('Carry-Over Date'))
                                     ->label(__('time-off::filament/clusters/configurations/resources/accrual-plan.form.fields.carry-over-date'))
                                     ->live()
                                     ->visible(function (Get $get) {

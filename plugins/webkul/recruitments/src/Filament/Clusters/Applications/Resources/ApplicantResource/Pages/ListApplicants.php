@@ -148,7 +148,7 @@ class ListApplicants extends ListRecords
                                 ->required()
                                 ->searchable()
                                 ->preload()
-                                ->label('Candidate')
+                                ->label(__('Candidate'))
                                 ->createOptionForm(fn (Schema $schema) => CandidateResource::form($schema))
                                 ->createOptionAction(function (Action $action) {
                                     return $action

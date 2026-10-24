@@ -151,7 +151,7 @@ class FiscalPositionResource extends Resource
                                     ])
                                     ->schema([
                                         Select::make('account_source_id')
-                                            ->label('Source Account')
+                                            ->label(__('Source Account'))
                                             ->wrapOptionLabels(false)
                                             ->searchable()
                                             ->preload()
@@ -159,7 +159,7 @@ class FiscalPositionResource extends Resource
                                             ->required(),
 
                                         Select::make('account_destination_id')
-                                            ->label('Destination Account')
+                                            ->label(__('Destination Account'))
                                             ->wrapOptionLabels(false)
                                             ->searchable()
                                             ->preload()

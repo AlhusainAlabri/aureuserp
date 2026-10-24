@@ -37,7 +37,7 @@ trait EmployeeResumeRelation
             ->components([
                 Section::make([
                     TextInput::make('name')
-                        ->label('Title')
+                        ->label(__('Title'))
                         ->label(__('employees::filament/resources/employee/relation-manager/resume.form.sections.fields.title'))
                         ->required()
                         ->reactive(),

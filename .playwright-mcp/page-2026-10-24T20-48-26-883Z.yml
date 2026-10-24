@@ -1,0 +1,258 @@
+- generic [active] [ref=f43e1]:
+  - navigation [ref=f43e3]:
+    - button [ref=f43e6] [cursor=pointer]
+    - list [ref=f43e17]:
+      - listitem [ref=f43e18]: المحاسبة
+      - listitem [ref=f43e19]:
+        - link "نظرة عامة" [ref=f43e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/overview
+      - listitem [ref=f43e22]:
+        - link "العملاء" [ref=f43e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/customers
+      - listitem [ref=f43e25]:
+        - link "الموردين" [ref=f43e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/vendors
+      - listitem [ref=f43e28]:
+        - link "المحاسبة" [ref=f43e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/accounting
+      - listitem [ref=f43e31]:
+        - link "التقارير" [ref=f43e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/reporting
+      - listitem [ref=f43e34]:
+        - link "إعدادات المحاسبة" [ref=f43e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/configurations
+      - listitem [ref=f43e37]:
+        - link "الإعدادات" [ref=f43e38] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f43e40]:
+      - button "جديد" [ref=f43e43] [cursor=pointer]
+      - generic [ref=f43e49]:
+        - generic [ref=f43e51]:
+          - generic [ref=f43e52]: بحث عام
+          - searchbox "بحث عام" [ref=f43e58]
+        - button "العربية" [ref=f43e61] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f43e68] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f43e72] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f43e77] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f43e78]
+  - generic [ref=f43e79]:
+    - complementary [ref=f43e80]:
+      - navigation [ref=f43e81]:
+        - list [ref=f43e82]:
+          - list [ref=f43e83]:
+            - listitem [ref=f43e84]:
+              - link "نظرة عامة" [ref=f43e85] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/overview
+            - listitem [ref=f43e87]:
+              - link "العملاء" [ref=f43e88] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/customers
+            - listitem [ref=f43e90]:
+              - link "الموردين" [ref=f43e91] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/vendors
+            - listitem [ref=f43e93]:
+              - link "المحاسبة" [ref=f43e94] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/accounting
+            - listitem [ref=f43e96]:
+              - link "التقارير" [ref=f43e97] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/reporting
+            - listitem [ref=f43e99]:
+              - link "إعدادات المحاسبة" [ref=f43e100] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/configurations
+            - listitem [ref=f43e102]:
+              - link "الإعدادات" [ref=f43e103] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f43e105]:
+      - main [ref=f43e106]:
+        - generic [ref=f43e108]:
+          - generic [ref=f43e109]:
+            - generic [ref=f43e110]:
+              - navigation [ref=f43e111]:
+                - list [ref=f43e112]:
+                  - listitem [ref=f43e113]:
+                    - link "العملاء" [ref=f43e114] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers
+                  - listitem [ref=f43e115]:
+                    - link "العملاء" [ref=f43e118] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/customers
+                  - listitem [ref=f43e119]:
+                    - generic [ref=f43e122]: القائمة
+              - heading "العملاء" [level=1] [ref=f43e123]
+            - link "عميل جديد" [ref=f43e126] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/accounting/customers/customers/create
+          - generic [ref=f43e129]:
+            - list [ref=f43e131]:
+              - listitem [ref=f43e132]:
+                - list [ref=f43e133]:
+                  - listitem [ref=f43e134]:
+                    - link "الفواتير" [ref=f43e135] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/invoices
+                  - listitem [ref=f43e139]:
+                    - link "إشعارات دائنة" [ref=f43e140] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/credit-notes
+                  - listitem [ref=f43e144]:
+                    - link "المدفوعات" [ref=f43e145] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/payments
+                  - listitem [ref=f43e149]:
+                    - link "العملاء" [ref=f43e150] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/customers
+                  - listitem [ref=f43e154]:
+                    - link "المنتجات" [ref=f43e155] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/products
+            - generic [ref=f43e160]:
+              - tablist [ref=f43e161]:
+                - tab "افتراضي" [ref=f43e162] [cursor=pointer]
+                - tab "أفراد" [ref=f43e166] [cursor=pointer]
+                - tab "شركات" [ref=f43e170] [cursor=pointer]
+                - tab "مؤرشف" [ref=f43e174] [cursor=pointer]
+                - button "العروض" [ref=f43e182] [cursor=pointer]
+              - generic [ref=f43e189]:
+                - generic [ref=f43e191]:
+                  - generic [ref=f43e196]:
+                    - generic [ref=f43e197]: تجميع حسب
+                    - combobox "تجميع حسب" [ref=f43e200]:
+                      - option "-" [selected]
+                      - option "نوع الحساب"
+                      - option "الأصل"
+                      - option "اللقب"
+                      - option "المسمى الوظيفي"
+                      - option "الصناعة"
+                  - generic [ref=f43e201]:
+                    - generic [ref=f43e202]:
+                      - generic [ref=f43e203]: بحث
+                      - searchbox "بحث" [ref=f43e209]
+                    - button "تصفية" [ref=f43e212] [cursor=pointer]:
+                      - generic [ref=f43e215]: "0"
+                - generic [ref=f43e217]:
+                  - generic [ref=f43e218]:
+                    - checkbox "تحديد/إلغاء تحديد كافة العناصر للإجراءات الجماعية." [ref=f43e219]
+                    - generic [ref=f43e222]:
+                      - generic [ref=f43e223]: ترتيب حسب
+                      - combobox "ترتيب حسب" [ref=f43e226]:
+                        - option "-" [selected]
+                        - option "Name"
+                        - option "الأصل"
+                        - option "المسمى الوظيفي"
+                        - option "البريد الإلكتروني للعمل"
+                        - option "هاتف العمل"
+                  - generic [ref=f43e227]:
+                    - generic [ref=f43e228]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 19 للإجراءات الجماعية." [ref=f43e229]
+                      - generic [ref=f43e230]:
+                        - link "شركة الخليج للأغذية ش.م.ع.ع orders@gulffood.example.om +96824555005" [ref=f43e232] [cursor=pointer]:
+                          - /url: http://localhost:8000/admin/accounting/customers/customers/19
+                          - generic [ref=f43e236]:
+                            - generic [ref=f43e237]: شركة الخليج للأغذية ش.م.ع.ع
+                            - generic [ref=f43e239]: orders@gulffood.example.om
+                            - generic [ref=f43e245]: "+96824555005"
+                        - generic [ref=f43e251]:
+                          - button "جدولة نشاط" [ref=f43e252] [cursor=pointer]
+                          - link "عرض" [ref=f43e255] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/19
+                          - link "تعديل" [ref=f43e259] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/19/edit
+                          - button "حذف" [ref=f43e263] [cursor=pointer]
+                    - generic [ref=f43e266]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 18 للإجراءات الجماعية." [ref=f43e267]
+                      - generic [ref=f43e268]:
+                        - link "سالم بن حمد البلوشي salem.b@example.om +96899444004" [ref=f43e270] [cursor=pointer]:
+                          - /url: http://localhost:8000/admin/accounting/customers/customers/18
+                          - generic [ref=f43e274]:
+                            - generic [ref=f43e275]: سالم بن حمد البلوشي
+                            - generic [ref=f43e277]: salem.b@example.om
+                            - generic [ref=f43e283]: "+96899444004"
+                        - generic [ref=f43e289]:
+                          - button "جدولة نشاط" [ref=f43e290] [cursor=pointer]
+                          - link "عرض" [ref=f43e293] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/18
+                          - link "تعديل" [ref=f43e297] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/18/edit
+                          - button "حذف" [ref=f43e301] [cursor=pointer]
+                    - generic [ref=f43e304]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 17 للإجراءات الجماعية." [ref=f43e305]
+                      - generic [ref=f43e306]:
+                        - link "مستشفى النور الخاص procurement@alnoor.example.om +96824333003" [ref=f43e308] [cursor=pointer]:
+                          - /url: http://localhost:8000/admin/accounting/customers/customers/17
+                          - generic [ref=f43e312]:
+                            - generic [ref=f43e313]: مستشفى النور الخاص
+                            - generic [ref=f43e315]: procurement@alnoor.example.om
+                            - generic [ref=f43e321]: "+96824333003"
+                        - generic [ref=f43e327]:
+                          - button "جدولة نشاط" [ref=f43e328] [cursor=pointer]
+                          - link "عرض" [ref=f43e331] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/17
+                          - link "تعديل" [ref=f43e335] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/17/edit
+                          - button "حذف" [ref=f43e339] [cursor=pointer]
+                    - generic [ref=f43e342]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 16 للإجراءات الجماعية." [ref=f43e343]
+                      - generic [ref=f43e344]:
+                        - link "مؤسسة الفجر للتجارة sales@alfajr.example.om +96825222002" [ref=f43e346] [cursor=pointer]:
+                          - /url: http://localhost:8000/admin/accounting/customers/customers/16
+                          - generic [ref=f43e350]:
+                            - generic [ref=f43e351]: مؤسسة الفجر للتجارة
+                            - generic [ref=f43e353]: sales@alfajr.example.om
+                            - generic [ref=f43e359]: "+96825222002"
+                        - generic [ref=f43e365]:
+                          - button "جدولة نشاط" [ref=f43e366] [cursor=pointer]
+                          - link "عرض" [ref=f43e369] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/16
+                          - link "تعديل" [ref=f43e373] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/16/edit
+                          - button "حذف" [ref=f43e377] [cursor=pointer]
+                    - generic [ref=f43e380]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 15 للإجراءات الجماعية." [ref=f43e381]
+                      - generic [ref=f43e382]:
+                        - link "شركة الأفق للمقاولات ش.م.م info@horizon.example.om +96824111001" [ref=f43e384] [cursor=pointer]:
+                          - /url: http://localhost:8000/admin/accounting/customers/customers/15
+                          - generic [ref=f43e388]:
+                            - generic [ref=f43e389]: شركة الأفق للمقاولات ش.م.م
+                            - generic [ref=f43e391]: info@horizon.example.om
+                            - generic [ref=f43e397]: "+96824111001"
+                        - generic [ref=f43e403]:
+                          - button "جدولة نشاط" [ref=f43e404] [cursor=pointer]
+                          - link "عرض" [ref=f43e407] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/15
+                          - link "تعديل" [ref=f43e411] [cursor=pointer]:
+                            - /url: http://localhost:8000/admin/accounting/customers/customers/15/edit
+                          - button "حذف" [ref=f43e415] [cursor=pointer]
+                - navigation "التنقل بين الصفحات" [ref=f43e418]:
+                  - generic [ref=f43e421]:
+                    - generic [ref=f43e422]: لكل صفحة
+                    - combobox "لكل صفحة" [ref=f43e425]:
+                      - option "16" [selected]
+                      - option "32"
+                      - option "64"
+                      - option "الكل"
+      - contentinfo [ref=f43e426]:
+        - generic [ref=f43e427]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f43e430]:
+    - generic [ref=f43e431] [cursor=pointer]
+    - generic [ref=f43e432]:
+      - generic [ref=f43e433] [cursor=pointer]: Request
+      - generic [ref=f43e434] [cursor=pointer]: Timeline
+      - generic [ref=f43e435] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f43e436]: "19"
+      - generic [ref=f43e437] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f43e438]: "127"
+      - generic [ref=f43e439] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f43e440]: "33"
+      - generic [ref=f43e441] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f43e442]: "6"
+      - generic [ref=f43e443] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f43e444]: "438"
+    - generic [ref=f43e445]:
+      - generic [ref=f43e446] [cursor=pointer]
+      - generic [ref=f43e447] [cursor=pointer]
+      - generic [ref=f43e448] [cursor=pointer]
+      - generic [ref=f43e450] [cursor=pointer]
+      - generic [ref=f43e451]: GET /admin/accounting/customers/customers
+      - generic [ref=f43e454] [cursor=pointer]: 374ms
+      - generic [ref=f43e456] [cursor=pointer]: 20MB
+      - generic [ref=f43e458] [cursor=pointer]: 13.x

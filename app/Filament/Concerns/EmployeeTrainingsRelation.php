@@ -75,7 +75,7 @@ trait EmployeeTrainingsRelation
                                     ->numeric()
                                     ->minValue(0)
                                     ->step(0.001)
-                                    ->prefix('OMR'),
+                                    ->prefix(__('OMR')),
                             ]),
                         FileUpload::make('certificate_path')
                             ->label(__('hr-extensions::training.fields.certificate'))

@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\DefaultCurrency;
 use Illuminate\Support\Number;
 
 if (! function_exists('money')) {
@@ -7,7 +8,7 @@ if (! function_exists('money')) {
     {
         $amount = $amount instanceof Closure ? $amount() : $amount;
 
-        $currency = $currency instanceof Closure ? $currency() : ($currency ?? config('app.currency'));
+        $currency = $currency instanceof Closure ? $currency() : ($currency ?? (class_exists(DefaultCurrency::class) ? DefaultCurrency::code() : config('app.currency')));
 
         $locale = $locale instanceof Closure ? $locale() : ($locale ?? config('app.locale'));
 

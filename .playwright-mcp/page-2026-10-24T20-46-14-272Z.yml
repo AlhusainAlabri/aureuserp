@@ -1,0 +1,233 @@
+- generic [active] [ref=f39e581]:
+  - navigation [ref=f39e583]:
+    - button [ref=f39e586] [cursor=pointer]
+    - list [ref=f39e597]:
+      - listitem [ref=f39e598]: المخزون
+      - listitem [ref=f39e599]:
+        - link "لوحة المخزون" [ref=f39e600] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/inventory/dashboard
+      - listitem [ref=f39e604]:
+        - link "العمليات" [ref=f39e605] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/inventory/operations
+      - listitem [ref=f39e607]:
+        - link "المنتجات" [ref=f39e608] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/inventory/products
+      - listitem [ref=f39e610]:
+        - link "الإعدادات" [ref=f39e611] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/inventory/configurations
+    - generic [ref=f39e33]:
+      - button "جديد" [ref=f39e36] [cursor=pointer]
+      - generic [ref=f39e42]:
+        - generic [ref=f39e44]:
+          - generic [ref=f39e45]: بحث عام
+          - searchbox "بحث عام" [ref=f39e51]
+        - button "العربية" [ref=f39e54] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f39e61] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f39e615] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f39e67] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f39e68]
+  - generic [ref=f39e618]:
+    - complementary [ref=f39e619]:
+      - navigation [ref=f39e620]:
+        - list [ref=f39e621]:
+          - list [ref=f39e622]:
+            - listitem [ref=f39e623]:
+              - link "لوحة المخزون" [ref=f39e624] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/inventory/dashboard
+            - listitem [ref=f39e628]:
+              - link "العمليات" [ref=f39e629] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/inventory/operations
+            - listitem [ref=f39e631]:
+              - link "المنتجات" [ref=f39e632] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/inventory/products
+            - listitem [ref=f39e634]:
+              - link "الإعدادات" [ref=f39e635] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/inventory/configurations
+    - generic [ref=f39e637]:
+      - main [ref=f39e638]:
+        - generic [ref=f39e640]:
+          - generic [ref=f39e641]:
+            - generic [ref=f39e642]:
+              - navigation [ref=f39e643]:
+                - list [ref=f39e644]:
+                  - listitem [ref=f39e645]:
+                    - link "المنتجات" [ref=f39e646] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/inventory/products/products
+                  - listitem [ref=f39e647]:
+                    - link "ورق طباعة A4 (رزمة 500 ورقة)" [ref=f39e650] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/inventory/products/products/1
+                  - listitem [ref=f39e651]:
+                    - generic [ref=f39e654]: عرض
+              - heading "عرض ورق طباعة A4 (رزمة 500 ورقة)" [level=1] [ref=f39e655]
+            - generic [ref=f39e657]:
+              - button "المحادثات 1" [ref=f39e658] [cursor=pointer]:
+                - text: المحادثات
+                - generic [ref=f39e662]: "1"
+              - button "طباعة الملصقات" [ref=f39e664] [cursor=pointer]
+              - button "حذف" [ref=f39e667] [cursor=pointer]
+          - generic [ref=f39e668]:
+            - list [ref=f39e670]:
+              - listitem [ref=f39e671]:
+                - list [ref=f39e672]:
+                  - listitem [ref=f39e673]:
+                    - link "المنتجات" [ref=f39e674] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/inventory/products/products
+            - generic [ref=f39e678]:
+              - navigation [ref=f39e685]:
+                - link "عرض" [ref=f39e686] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1
+                - link "تعديل" [ref=f39e691] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1/edit
+                - link "السمات" [ref=f39e695] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1/attributes
+                - link "المتغيرات" [ref=f39e699] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1/variants
+                - link "وارد/صادر" [ref=f39e703] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1/moves
+                - link "سجل المشتريات" [ref=f39e707] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/inventory/products/products/1/purchase-history?lang=ar
+              - generic [ref=f39e714]:
+                - generic [ref=f39e718]:
+                  - generic [ref=f39e724]:
+                    - generic [ref=f39e727]:
+                      - term [ref=f39e730]: الاسم
+                      - definition [ref=f39e732]:
+                        - generic [ref=f39e733]: ورق طباعة A4 (رزمة 500 ورقة)
+                    - generic [ref=f39e737]:
+                      - term [ref=f39e740]: الوصف
+                      - generic:
+                        - definition:
+                          - generic:
+                            - generic:
+                              - paragraph
+                    - generic [ref=f39e743]:
+                      - term [ref=f39e746]: الوسوم
+                      - generic:
+                        - definition
+                  - generic [ref=f39e750]:
+                    - heading "المخزون" [level=2] [ref=f39e753]
+                    - generic [ref=f39e755]:
+                      - generic [ref=f39e759]:
+                        - generic [ref=f39e762]:
+                          - term [ref=f39e765]: تتبع المخزون
+                          - definition [ref=f39e767]
+                        - generic [ref=f39e774]:
+                          - term [ref=f39e777]: التتبع بواسطة
+                          - definition [ref=f39e779]:
+                            - generic [ref=f39e780]: بالكمية
+                        - generic [ref=f39e784]:
+                          - term [ref=f39e787]: تاريخ انتهاء الصلاحية
+                          - definition [ref=f39e789]
+                      - generic [ref=f39e797]:
+                        - heading "العمليات" [level=3] [ref=f39e800]
+                        - generic [ref=f39e805]:
+                          - term [ref=f39e808]: المسارات
+                          - definition [ref=f39e810]:
+                            - paragraph [ref=f39e813]: —
+                      - generic [ref=f39e817]:
+                        - heading "اللوجستيات" [level=3] [ref=f39e820]
+                        - generic [ref=f39e826]:
+                          - generic [ref=f39e829]:
+                            - term [ref=f39e832]: المسؤول
+                            - definition [ref=f39e834]:
+                              - paragraph [ref=f39e837]: —
+                          - generic [ref=f39e840]:
+                            - term [ref=f39e843]: الوزن
+                            - definition [ref=f39e845]:
+                              - paragraph [ref=f39e848]: —
+                          - generic [ref=f39e851]:
+                            - term [ref=f39e854]: الحجم
+                            - definition [ref=f39e856]:
+                              - paragraph [ref=f39e859]: —
+                          - generic [ref=f39e862]:
+                            - term [ref=f39e865]: مهلة العميل (أيام)
+                            - definition [ref=f39e867]:
+                              - paragraph [ref=f39e870]: —
+                - generic [ref=f39e874]:
+                  - generic [ref=f39e878]:
+                    - heading "معلومات السجل" [level=2] [ref=f39e881]
+                    - generic [ref=f39e883]:
+                      - generic [ref=f39e886]:
+                        - term [ref=f39e889]: تاريخ الإنشاء
+                        - definition [ref=f39e891]:
+                          - generic [ref=f39e892]: أكتوبر 24, 2026 20:46:13
+                      - generic [ref=f39e898]:
+                        - term [ref=f39e901]: أنشئ بواسطة
+                        - definition [ref=f39e903]:
+                          - generic [ref=f39e904]: Admin
+                      - generic [ref=f39e910]:
+                        - term [ref=f39e913]: تاريخ التحديث
+                        - definition [ref=f39e915]:
+                          - generic [ref=f39e916]: أكتوبر 24, 2026 20:46:13
+                  - generic [ref=f39e923]:
+                    - heading "الإعدادات" [level=2] [ref=f39e926]
+                    - generic [ref=f39e928]:
+                      - generic [ref=f39e931]:
+                        - term [ref=f39e934]: النوع
+                        - definition [ref=f39e936]:
+                          - generic [ref=f39e937]: بضائع
+                      - generic [ref=f39e943]:
+                        - term [ref=f39e946]: المرجع
+                        - definition [ref=f39e948]:
+                          - generic [ref=f39e949]: PAP-A4-500
+                      - generic [ref=f39e955]:
+                        - term [ref=f39e958]: الباركود
+                        - definition [ref=f39e960]:
+                          - paragraph [ref=f39e963]: —
+                      - generic [ref=f39e966]:
+                        - term [ref=f39e969]: الفئة
+                        - definition [ref=f39e971]:
+                          - generic [ref=f39e972]: الكل
+                      - generic [ref=f39e978]:
+                        - term [ref=f39e981]: الشركة
+                        - definition [ref=f39e983]:
+                          - generic [ref=f39e984]: شركة الواحة للتجارة والخدمات ش.م.م
+                  - generic [ref=f39e991]:
+                    - heading "التسعير" [level=2] [ref=f39e994]
+                    - generic [ref=f39e996]:
+                      - generic [ref=f39e999]:
+                        - term [ref=f39e1002]: السعر
+                        - definition [ref=f39e1004]:
+                          - generic [ref=f39e1005]: ‏2.35 US$ / وحدات
+                      - generic [ref=f39e1009]:
+                        - term [ref=f39e1012]: التكلفة
+                        - definition [ref=f39e1014]:
+                          - generic [ref=f39e1015]: ‏1.80 US$ / وحدات
+      - contentinfo [ref=f39e1017]:
+        - generic [ref=f39e1018]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status:
+      - generic [ref=f39e1019]:
+        - generic [ref=f39e1023]:
+          - heading "تم إنشاء المنتج" [level=3] [ref=f39e1024]
+          - generic [ref=f39e1025]: تم إنشاء المنتج بنجاح.
+        - button [ref=f39e1026] [cursor=pointer]
+  - generic [ref=f39e1031]:
+    - generic [ref=f39e1032] [cursor=pointer]
+    - generic [ref=f39e1033]:
+      - generic [ref=f39e1034] [cursor=pointer]: Request
+      - generic [ref=f39e1035] [cursor=pointer]: Timeline
+      - generic [ref=f39e1036] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f39e1037]: "14"
+      - generic [ref=f39e1038] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f39e1039]: "135"
+      - generic [ref=f39e1040] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f39e1041]: "36"
+      - generic [ref=f39e1042] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f39e1043]: "7"
+      - generic [ref=f39e1044] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f39e1045]: "285"
+    - generic [ref=f39e1046]:
+      - generic [ref=f39e1047] [cursor=pointer]
+      - generic [ref=f39e1048] [cursor=pointer]
+      - generic [ref=f39e1049] [cursor=pointer]
+      - generic [ref=f39e1051] [cursor=pointer]
+      - generic [ref=f39e1052]: GET /admin/inventory/products/products/1
+      - generic [ref=f39e1055] [cursor=pointer]: 312ms
+      - generic [ref=f39e1057] [cursor=pointer]: 20MB
+      - generic [ref=f39e1059] [cursor=pointer]: 13.x

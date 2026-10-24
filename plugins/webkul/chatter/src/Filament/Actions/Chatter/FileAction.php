@@ -145,7 +145,7 @@ class FileAction extends Action
             })
             ->modalSubmitAction(
                 fn ($action) => $action
-                    ->label('Upload')
+                    ->label(__('Upload'))
                     ->icon('heroicon-m-paper-airplane')
             )
             ->modalWidth(Width::TwoExtraLarge)

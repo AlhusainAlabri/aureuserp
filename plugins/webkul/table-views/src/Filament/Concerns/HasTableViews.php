@@ -311,7 +311,7 @@ trait HasTableViews
     public function resetTableViewAction(): Action
     {
         return Action::make('resetTableView')
-            ->label('Reset')
+            ->label(__('Reset'))
             ->label(__('table-views::filament/concerns/has-table-views.reset'))
             ->color('danger')
             ->link()

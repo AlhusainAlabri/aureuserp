@@ -165,7 +165,7 @@ class PartnerResource extends BasePartnerResource
                             ->label(__('accounts::filament/resources/partner.form.tabs.invoicing.fieldsets.automation.fields.ignore-abnormal-invoice-amount')),
                         Toggle::make('ignore_abnormal_invoice_date')
                             ->inline(false)
-                            ->label('Ignore abnormal invoice date')
+                            ->label(__('Ignore abnormal invoice date'))
                             ->label(__('accounts::filament/resources/partner.form.tabs.invoicing.fieldsets.automation.fields.ignore-abnormal-invoice-date')),
                     ]),
             ]);

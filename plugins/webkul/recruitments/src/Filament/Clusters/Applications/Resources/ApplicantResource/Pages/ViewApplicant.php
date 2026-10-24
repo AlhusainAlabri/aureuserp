@@ -115,7 +115,7 @@ class ViewApplicant extends ViewRecord
             Action::make('Refuse')
                 ->modalIcon('heroicon-s-bug-ant')
                 ->hidden(fn ($record) => $record->refuse_reason_id || $record->application_status->value === ApplicationStatus::ARCHIVED->value)
-                ->modalHeading('Refuse Reason')
+                ->modalHeading(__('Refuse Reason'))
                 ->schema(function (Schema $schema, $record) {
                     return $schema->components([
                         ToggleButtons::make('refuse_reason_id')
@@ -128,11 +128,11 @@ class ViewApplicant extends ViewRecord
                             ->live()
                             ->default(true)
                             ->visible(fn (Get $get) => $get('refuse_reason_id'))
-                            ->label('Notify'),
+                            ->label(__('Notify')),
                         TextInput::make('email')
                             ->visible(fn (Get $get) => $get('notify') && $get('refuse_reason_id'))
                             ->default($record->candidate->email_from)
-                            ->label('Email To'),
+                            ->label(__('Email To')),
                     ]);
                 })
                 ->action(function (array $data, Applicant $record) {
@@ -162,7 +162,7 @@ class ViewApplicant extends ViewRecord
                 }),
             Action::make('Restore')
                 ->hidden(fn ($record) => ! $record->refuse_reason_id)
-                ->modalHeading('Restore Applicant from refuse')
+                ->modalHeading(__('Restore Applicant from refuse'))
                 ->requiresConfirmation()
                 ->color('gray')
                 ->action(function (Applicant $record) {

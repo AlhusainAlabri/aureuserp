@@ -259,7 +259,7 @@ class VendorPriceResource extends Resource
                                 TextInput::make('price_from')
                                     ->label(__('purchases::filament/admin/clusters/configurations/resources/vendor-price.table.filters.price-from'))
                                     ->numeric()
-                                    ->prefix('From'),
+                                    ->prefix(__('From')),
                                 TextInput::make('price_to')
                                     ->label(__('purchases::filament/admin/clusters/configurations/resources/vendor-price.table.filters.price-to'))
                                     ->numeric()
@@ -286,7 +286,7 @@ class VendorPriceResource extends Resource
                                 TextInput::make('min_qty_from')
                                     ->label(__('purchases::filament/admin/clusters/configurations/resources/vendor-price.table.filters.min-qty-from'))
                                     ->numeric()
-                                    ->prefix('From'),
+                                    ->prefix(__('From')),
                                 TextInput::make('min_qty_to')
                                     ->label(__('purchases::filament/admin/clusters/configurations/resources/vendor-price.table.filters.min-qty-to'))
                                     ->numeric()

@@ -160,11 +160,11 @@ class EditApplicant extends EditRecord
                             ->live()
                             ->default(true)
                             ->visible(fn (Get $get) => $get('refuse_reason_id'))
-                            ->label('Notify'),
+                            ->label(__('Notify')),
                         TextInput::make('email')
                             ->visible(fn (Get $get) => $get('notify') && $get('refuse_reason_id'))
                             ->default($record->candidate->email_from)
-                            ->label('Email To'),
+                            ->label(__('Email To')),
                     ]);
                 })
                 ->action(function (array $data, Applicant $record) {

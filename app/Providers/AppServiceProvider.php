@@ -16,6 +16,7 @@ use App\Services\Deploy\CommandRunner;
 use App\Services\Deploy\SymfonyCommandRunner;
 use App\Support\Branding;
 use App\Support\Console\DestructiveCommandGuard;
+use App\Support\DefaultCurrency;
 use App\Support\ExtensionSchema;
 use App\Support\Pdf\ArabicAwarePdf;
 use App\Support\Rtl\LtrValueFormatter;
@@ -26,10 +27,12 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
@@ -50,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(DestructiveCommandGuard::class);
+        $this->app->scoped(DefaultCurrency::class);
 
         $this->app->bind(Authenticatable::class, User::class);
         $this->app->singleton(CommandRunner::class, SymfonyCommandRunner::class);
@@ -93,6 +97,9 @@ class AppServiceProvider extends ServiceProvider
                 $component->disk('public');
             }
         });
+
+        Table::configureUsing(fn (Table $table) => $table->defaultCurrency(fn (): string => DefaultCurrency::code()));
+        Schema::configureUsing(fn (Schema $schema) => $schema->defaultCurrency(fn (): string => DefaultCurrency::code()));
 
         TextEntry::configureUsing(function (TextEntry $entry): void {
             if (LtrValueFormatter::appliesTo($entry->getName())) {

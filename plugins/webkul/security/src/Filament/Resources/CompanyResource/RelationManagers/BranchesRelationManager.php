@@ -206,7 +206,7 @@ class BranchesRelationManager extends RelationManager
                                                             ->label(__('security::filament/resources/company/relation-managers/manage-branch.form.tabs.address-information.sections.additional-information.fields.currency-rounding'))
                                                             ->required(),
                                                         Toggle::make('active')
-                                                            ->label('Active')
+                                                            ->label(__('Active'))
                                                             ->label(__('security::filament/resources/company/relation-managers/manage-branch.form.tabs.address-information.sections.additional-information.fields.currency-status'))
                                                             ->default(true),
                                                     ])->columns(2),
@@ -429,7 +429,7 @@ class BranchesRelationManager extends RelationManager
                                         TextEntry::make('tax_id')
                                             ->icon('heroicon-o-currency-dollar')
                                             ->placeholder('—')
-                                            ->label('Tax ID'),
+                                            ->label(__('Tax ID')),
                                         TextEntry::make('color')
                                             ->icon('heroicon-o-swatch')
                                             ->placeholder('—')

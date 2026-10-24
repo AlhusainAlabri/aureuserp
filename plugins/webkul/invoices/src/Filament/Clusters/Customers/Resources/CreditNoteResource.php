@@ -62,7 +62,7 @@ class CreditNoteResource extends BaseCreditNoteResource
         return parent::getProductRepeater()
             ->extraItemActions([
                 Action::make('openProduct')
-                    ->tooltip('Open product')
+                    ->tooltip(__('Open product'))
                     ->icon('heroicon-m-arrow-top-right-on-square')
                     ->url(fn (array $arguments, Get $get): ?string => ProductResource::getUrl('edit', [
                         'record' => $get("products.{$arguments['item']}.product_id"),

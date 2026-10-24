@@ -136,7 +136,7 @@ class TaxResource extends Resource
                             ->icon('heroicon-o-banknotes')
                             ->schema([
                                 Section::make('Invoice & Refund Distribution')
-                                    ->description('Define how this tax affects accounts for invoices and refunds.')
+                                    ->description(__('Define how this tax affects accounts for invoices and refunds.'))
                                     ->schema([
                                         Group::make()
                                             ->schema([

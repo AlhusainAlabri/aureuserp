@@ -38,7 +38,7 @@ class ConfirmAction extends Action
                 } catch (Throwable $e) {
                     Notification::make()
                         ->warning()
-                        ->title('Confirmation Error')
+                        ->title(__('Confirmation Error'))
                         ->body($e->getMessage())
                         ->send();
 

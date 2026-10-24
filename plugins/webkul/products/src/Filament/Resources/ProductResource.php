@@ -119,6 +119,8 @@ class ProductResource extends Resource
                         Section::make(__('products::filament/resources/product.form.sections.images.title'))
                             ->schema([
                                 FileUpload::make('images')
+                                    ->label(__('products::filament/resources/product.form.sections.images.title'))
+                                    ->hiddenLabel()
                                     ->image()
                                     ->multiple()
                                     ->storeFileNamesIn('products'),
@@ -187,12 +189,17 @@ class ProductResource extends Resource
                             ->schema([
                                 FusedGroup::make([
                                     TextInput::make('price')
+                                        ->label(__('products::filament/resources/product.form.sections.pricing.fields.price'))
+                                        ->hiddenLabel()
                                         ->numeric()
                                         ->required()
                                         ->default(0.00)
                                         ->minValue(0)
-                                        ->columnSpan(2),
+                                        ->columnSpan(1),
                                     Select::make('uom_id')
+                                        ->label(__('Unit of Measure'))
+                                        ->hiddenLabel()
+                                        ->selectablePlaceholder(false)
                                         ->placeholder('UOM')
                                         ->native(false)
                                         ->required()
@@ -203,14 +210,19 @@ class ProductResource extends Resource
                                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('uom_po_id', $state)),
                                 ])
                                     ->label(__('products::filament/resources/product.form.sections.pricing.fields.price'))
-                                    ->columns(3),
+                                    ->columns(2),
                                 FusedGroup::make([
                                     TextInput::make('cost')
+                                        ->label(__('products::filament/resources/product.form.sections.pricing.fields.cost'))
+                                        ->hiddenLabel()
                                         ->numeric()
                                         ->default(0.00)
                                         ->minValue(0)
-                                        ->columnSpan(2),
+                                        ->columnSpan(1),
                                     Select::make('uom_po_id')
+                                        ->label(__('Unit of Measure'))
+                                        ->hiddenLabel()
+                                        ->selectablePlaceholder(false)
                                         ->placeholder('UOM')
                                         ->native(false)
                                         ->required()
@@ -221,7 +233,7 @@ class ProductResource extends Resource
                                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('uom_id', $state)),
                                 ])
                                     ->label(__('products::filament/resources/product.form.sections.pricing.fields.cost'))
-                                    ->columns(3),
+                                    ->columns(2),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),

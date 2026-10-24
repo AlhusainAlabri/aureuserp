@@ -209,8 +209,8 @@ class ActivityTemplateRelationManager extends RelationManager
                     ->successNotification(
                         Notification::make()
                             ->success()
-                            ->title('Activity plan template created')
-                            ->body('The activity plan template has been created successfully.'),
+                            ->title(__('Activity plan template created'))
+                            ->body(__('The activity plan template has been created successfully.')),
                     ),
             ])
             ->recordActions([

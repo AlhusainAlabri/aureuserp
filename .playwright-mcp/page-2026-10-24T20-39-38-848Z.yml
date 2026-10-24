@@ -1,0 +1,266 @@
+- generic [active] [ref=f35e1]:
+  - navigation [ref=f35e3]:
+    - button [ref=f35e6] [cursor=pointer]
+    - list [ref=f35e17]:
+      - listitem [ref=f35e18]: الإعدادات
+      - listitem [ref=f35e19]:
+        - link "الأدوار" [ref=f35e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f35e22]:
+        - link "الشركات" [ref=f35e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f35e25]:
+        - link "الفرق" [ref=f35e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f35e28]:
+        - link "المستخدمون" [ref=f35e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f35e31]:
+        - link "الحقول المخصصة" [ref=f35e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f35e34]:
+        - link "اختصارات لوحة التحكم" [ref=f35e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f35e39]:
+        - link "الإعدادات" [ref=f35e40] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f35e42]:
+      - button "جديد" [ref=f35e45] [cursor=pointer]
+      - generic [ref=f35e51]:
+        - generic [ref=f35e53]:
+          - generic [ref=f35e54]: بحث عام
+          - searchbox "بحث عام" [ref=f35e60]
+        - button "العربية" [ref=f35e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f35e70] [cursor=pointer]
+      - generic [ref=f35e73]:
+        - button "عرض التنبيهات" [disabled]
+      - button "قائمة المستخدم" [ref=f35e76] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f35e77]
+  - generic [ref=f35e78]:
+    - complementary [ref=f35e79]:
+      - navigation [ref=f35e80]:
+        - list [ref=f35e81]:
+          - list [ref=f35e82]:
+            - listitem [ref=f35e83]:
+              - link "الأدوار" [ref=f35e84] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f35e86]:
+              - link "الشركات" [ref=f35e87] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f35e89]:
+              - link "الفرق" [ref=f35e90] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f35e92]:
+              - link "المستخدمون" [ref=f35e93] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f35e95]:
+              - link "الحقول المخصصة" [ref=f35e96] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f35e98]:
+              - link "اختصارات لوحة التحكم" [ref=f35e99] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f35e103]:
+              - link "الإعدادات" [ref=f35e104] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f35e106]:
+      - main [ref=f35e107]:
+        - generic [ref=f35e109]:
+          - generic [ref=f35e111]:
+            - navigation [ref=f35e112]:
+              - list [ref=f35e113]:
+                - listitem [ref=f35e114]:
+                  - generic [ref=f35e115]: إدارة المستودعات
+            - heading "إدارة المستودعات" [level=1] [ref=f35e116]
+          - generic [ref=f35e117]:
+            - list [ref=f35e119]:
+              - listitem [ref=f35e120]:
+                - list [ref=f35e121]:
+                  - listitem [ref=f35e122]:
+                    - link "التنقل / القائمة" [ref=f35e123] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-navigation
+                  - listitem [ref=f35e127]:
+                    - link "الهوية" [ref=f35e128] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-branding
+                  - listitem [ref=f35e132]:
+                    - link "تفضيلات الإشعارات" [ref=f35e133] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-notification-preferences
+              - listitem [ref=f35e137]:
+                - generic [ref=f35e138] [cursor=pointer]:
+                  - generic [ref=f35e139]: المشاريع
+                  - button "المشاريع" [expanded] [ref=f35e140]
+                - list [ref=f35e143]:
+                  - listitem [ref=f35e144]:
+                    - link "إدارة المهام" [ref=f35e145] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-tasks
+                  - listitem [ref=f35e149]:
+                    - link "إدارة الوقت" [ref=f35e150] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-time
+              - listitem [ref=f35e154]:
+                - generic [ref=f35e155] [cursor=pointer]:
+                  - generic [ref=f35e156]: عام
+                  - button "عام" [expanded] [ref=f35e157]
+                - list [ref=f35e160]:
+                  - listitem [ref=f35e161]:
+                    - link "إدارة الأنشطة" [ref=f35e162] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-activity
+                  - listitem [ref=f35e166]:
+                    - link "إدارة العملة" [ref=f35e167] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-currency
+                  - listitem [ref=f35e171]:
+                    - link "إدارة المستخدمين" [ref=f35e172] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-users
+              - listitem [ref=f35e176]:
+                - generic [ref=f35e177] [cursor=pointer]:
+                  - generic [ref=f35e178]: المخزون
+                  - button "المخزون" [expanded] [ref=f35e179]
+                - list [ref=f35e182]:
+                  - listitem [ref=f35e183]:
+                    - link "إدارة العمليات" [ref=f35e184] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/inventory/manage-operations
+                  - listitem [ref=f35e188]:
+                    - link "إدارة المنتجات" [ref=f35e189] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/inventory/manage-products
+                  - listitem [ref=f35e193]:
+                    - link "إدارة المستودعات" [ref=f35e194] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/inventory/manage-warehouses
+                  - listitem [ref=f35e198]:
+                    - link "إدارة التتبع" [ref=f35e199] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/inventory/manage-traceability
+                  - listitem [ref=f35e203]:
+                    - link "إدارة اللوجستيات" [ref=f35e204] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/inventory/manage-logistics
+              - listitem [ref=f35e208]:
+                - generic [ref=f35e209] [cursor=pointer]:
+                  - generic [ref=f35e210]: الفواتير
+                  - button "الفواتير" [expanded] [ref=f35e211]
+                - list [ref=f35e214]:
+                  - listitem [ref=f35e215]:
+                    - link "إدارة المنتجات" [ref=f35e216] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/products
+              - listitem [ref=f35e220]:
+                - generic [ref=f35e221] [cursor=pointer]:
+                  - generic [ref=f35e222]: التصنيع
+                  - button "التصنيع" [expanded] [ref=f35e223]
+                - list [ref=f35e226]:
+                  - listitem [ref=f35e227]:
+                    - link "إدارة العمليات" [ref=f35e228] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manufacturing/manage-operations
+              - listitem [ref=f35e232]:
+                - generic [ref=f35e233] [cursor=pointer]:
+                  - generic [ref=f35e234]: المشتريات
+                  - button "المشتريات" [expanded] [ref=f35e235]
+                - list [ref=f35e238]:
+                  - listitem [ref=f35e239]:
+                    - link "إدارة الطلبات" [ref=f35e240] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/purchase/manage-orders
+                  - listitem [ref=f35e244]:
+                    - link "إدارة المنتجات" [ref=f35e245] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/purchase/manage-products
+              - listitem [ref=f35e249]:
+                - generic [ref=f35e250] [cursor=pointer]:
+                  - generic [ref=f35e251]: المبيعات
+                  - button "المبيعات" [expanded] [ref=f35e252]
+                - list [ref=f35e255]:
+                  - listitem [ref=f35e256]:
+                    - link "إدارة المنتجات" [ref=f35e257] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/sale/manage-products
+                  - listitem [ref=f35e261]:
+                    - link "إدارة الفواتير" [ref=f35e262] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/sale/manage-invoicing
+                  - listitem [ref=f35e266]:
+                    - link "إدارة الأسعار" [ref=f35e267] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/sale/manage-pricing
+                  - listitem [ref=f35e271]:
+                    - link "إدارة عروض الأسعار والطلبات" [ref=f35e272] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/sale/manage-quotation-and-order
+              - listitem [ref=f35e276]:
+                - generic [ref=f35e277] [cursor=pointer]:
+                  - generic [ref=f35e278]: الموقع الإلكتروني
+                  - button "الموقع الإلكتروني" [expanded] [ref=f35e279]
+                - list [ref=f35e282]:
+                  - listitem [ref=f35e283]:
+                    - link "إدارة جهات الاتصال" [ref=f35e284] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/website/manage-contacts
+              - listitem [ref=f35e288]:
+                - generic [ref=f35e289] [cursor=pointer]:
+                  - generic [ref=f35e290]: المحاسبة
+                  - button "المحاسبة" [expanded] [ref=f35e291]
+                - list [ref=f35e294]:
+                  - listitem [ref=f35e295]:
+                    - link "إدارة المنتجات" [ref=f35e296] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/accounting/manage-products
+                  - listitem [ref=f35e300]:
+                    - link "إدارة الضرائب" [ref=f35e301] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/accounting/manage-taxes
+                  - listitem [ref=f35e305]:
+                    - link "إدارة فواتير العميل" [ref=f35e306] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/accounting/manage-customer-invoice
+                  - listitem [ref=f35e310]:
+                    - link "إدارة الحسابات الافتراضية" [ref=f35e311] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/accounting/manage-default-accounts
+              - listitem [ref=f35e315]:
+                - generic [ref=f35e316] [cursor=pointer]:
+                  - generic [ref=f35e317]: الإعدادات
+                  - button "الإعدادات" [expanded] [ref=f35e318]
+                - list [ref=f35e321]:
+                  - listitem [ref=f35e322]:
+                    - link "المراقبة والنسخ الاحتياطي" [ref=f35e323] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/manage-operations
+                  - listitem [ref=f35e327]:
+                    - link "سجل البريد الإلكتروني" [ref=f35e328] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/email-logs
+                  - listitem [ref=f35e332]:
+                    - link "قوالب البريد الإلكتروني" [ref=f35e333] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/settings/email-templates
+            - generic [ref=f35e341]:
+              - generic [ref=f35e345]:
+                - generic [ref=f35e348]:
+                  - generic [ref=f35e351]:
+                    - switch "المواقع" [ref=f35e352] [cursor=pointer]
+                    - generic [ref=f35e353]: المواقع
+                  - generic [ref=f35e358]:
+                    - text: تتبع موقع المنتج في المستودع
+                    - link "إعداد المواقع" [ref=f35e359] [cursor=pointer]:
+                      - /url: "#"
+                - generic [ref=f35e365]:
+                  - generic [ref=f35e368]:
+                    - switch "مسارات متعددة الخطوات" [ref=f35e369] [cursor=pointer]
+                    - generic [ref=f35e370]: مسارات متعددة الخطوات
+                  - generic [ref=f35e375]:
+                    - text: استخدم مساراتك الخاصة لإدارة نقل المنتجات بين المستودعات
+                    - link "إعداد مسارات المستودع" [ref=f35e376] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/inventory/configurations/warehouses
+              - button "حفظ التغييرات" [ref=f35e385] [cursor=pointer]
+      - contentinfo [ref=f35e387]:
+        - generic [ref=f35e388]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f35e391]:
+    - generic [ref=f35e392] [cursor=pointer]
+    - generic [ref=f35e393]:
+      - generic [ref=f35e394] [cursor=pointer]: Request
+      - generic [ref=f35e395] [cursor=pointer]: Timeline
+      - generic [ref=f35e396] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f35e397]: "13"
+      - generic [ref=f35e398] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f35e399]: "122"
+      - generic [ref=f35e400] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f35e401]: "28"
+      - generic [ref=f35e402] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f35e403]: "6"
+      - generic [ref=f35e404] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f35e405]: "323"
+    - generic [ref=f35e406]:
+      - generic [ref=f35e407] [cursor=pointer]
+      - generic [ref=f35e408] [cursor=pointer]
+      - generic [ref=f35e409] [cursor=pointer]
+      - generic [ref=f35e411] [cursor=pointer]
+      - generic [ref=f35e412]: GET /admin/settings/inventory/manage-warehouses
+      - generic [ref=f35e415] [cursor=pointer]: 314ms
+      - generic [ref=f35e417] [cursor=pointer]: 23MB
+      - generic [ref=f35e419] [cursor=pointer]: 13.x

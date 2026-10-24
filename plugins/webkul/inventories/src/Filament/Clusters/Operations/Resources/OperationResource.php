@@ -898,7 +898,7 @@ class OperationResource extends Resource
             ->columns(4)
             ->extraItemActions([
                 Action::make('openProduct')
-                    ->tooltip('Open product')
+                    ->tooltip(__('Open product'))
                     ->icon('heroicon-m-arrow-top-right-on-square')
                     ->url(
                         fn (array $arguments, Get $get): ?string => ProductResource::getUrl('edit', [
@@ -944,7 +944,7 @@ class OperationResource extends Resource
         return Action::make('manageLines')
             ->icon('heroicon-m-bars-4')
             ->label(__('inventories::filament/clusters/operations/resources/operation.form.tabs.operations.fields.lines.modal-heading'))
-            ->modalSubmitActionLabel('Save')
+            ->modalSubmitActionLabel(__('Save'))
             ->visible(static::getWarehouseSettings()->enable_locations)
             ->schema([
                 Repeater::make('lines')

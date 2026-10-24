@@ -1174,7 +1174,7 @@ class ManufacturingOrderResource extends Resource
             ->compact()
             ->extraItemActions([
                 Action::make('openWorkOrder')
-                    ->tooltip('Open work order')
+                    ->tooltip(__('Open work order'))
                     ->icon('heroicon-m-arrow-top-right-on-square')
                     ->url(fn (array $arguments, Get $get): ?string => filled($get("workOrders.{$arguments['item']}.id"))
                         ? WorkOrderResource::getUrl('view', [
@@ -1385,7 +1385,7 @@ class ManufacturingOrderResource extends Resource
                             }),
                         Action::make('button_done')
                             ->icon('heroicon-m-check-circle')
-                            ->label('Done')
+                            ->label(__('Done'))
                             ->color('primary')
                             ->size(Size::ExtraLarge)
                             ->databaseTransaction()

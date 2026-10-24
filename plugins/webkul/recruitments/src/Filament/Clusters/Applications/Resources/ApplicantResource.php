@@ -824,12 +824,12 @@ class ApplicantResource extends Resource
                                             ->formatStateUsing(fn ($state) => $state['label'])
                                             ->color(fn ($state) => Color::generateV3Palette($state['color']))
                                             ->listWithLineBreaks()
-                                            ->label('Tags'),
+                                            ->label(__('Tags')),
                                         TextEntry::make('interviewer.name')
                                             ->icon('heroicon-o-user')
                                             ->placeholder('—')
                                             ->badge()
-                                            ->label('Interviewers'),
+                                            ->label(__('Interviewers')),
                                     ])
                                     ->columns(2),
                                 Section::make()
