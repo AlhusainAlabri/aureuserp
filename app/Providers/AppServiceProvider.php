@@ -18,6 +18,7 @@ use App\Support\Branding;
 use App\Support\Console\DestructiveCommandGuard;
 use App\Support\DefaultCurrency;
 use App\Support\ExtensionSchema;
+use App\Support\Livewire\KeepUnsavedChangesAlertAccurate;
 use App\Support\Pdf\ArabicAwarePdf;
 use App\Support\Rtl\LtrValueFormatter;
 use App\Support\Translation\SafeTranslator;
@@ -62,6 +63,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Authenticatable::class, User::class);
         $this->app->singleton(CommandRunner::class, SymfonyCommandRunner::class);
         $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
+
+        Livewire::componentHook(KeepUnsavedChangesAlertAccurate::class);
 
         $this->app->extend('translator', function ($translator) {
             $safe = new SafeTranslator($translator->getLoader(), $translator->getLocale());
@@ -130,6 +133,18 @@ class AppServiceProvider extends ServiceProvider
         Entry::configureUsing(fn (Entry $entry) => $entry->translateLabel());
         Column::configureUsing(fn (Column $column) => $column->translateLabel());
 
+        // "uom.name" would be labelled "Name" (the last segment); it is the unit, not a name.
+        Entry::configureUsing(function (Entry $entry): void {
+            if ($label = static::relationNameLabel($entry->getName())) {
+                $entry->label(fn (): string => __($label));
+            }
+        });
+        Column::configureUsing(function (Column $column): void {
+            if ($label = static::relationNameLabel($column->getName())) {
+                $column->label(fn (): string => __($label));
+            }
+        });
+
         TextEntry::configureUsing(function (TextEntry $entry): void {
             if (LtrValueFormatter::appliesTo($entry->getName())) {
                 $entry->formatStateUsing(fn (mixed $state): mixed => LtrValueFormatter::format($state));
@@ -182,6 +197,15 @@ class AppServiceProvider extends ServiceProvider
      * Resources whose models had no policy, which left them open to every
      * signed-in user. They are now guarded by their Shield permissions.
      */
+    protected static function relationNameLabel(?string $name): ?string
+    {
+        if ($name === null || ! str_ends_with($name, '.name') || $name === 'name') {
+            return null;
+        }
+
+        return str($name)->beforeLast('.name')->afterLast('.')->headline()->toString();
+    }
+
     protected function registerShieldPolicies(): void
     {
         $policies = [

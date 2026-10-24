@@ -234,12 +234,12 @@ class StorageCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Capacity By Packages', [
+            RelationGroup::make(__('Capacity By Packages'), [
                 CapacityByPackagesRelationManager::class,
             ])
                 ->icon('heroicon-o-cube'),
 
-            RelationGroup::make('Capacity By Products', [
+            RelationGroup::make(__('Capacity By Products'), [
                 CapacityByProductsRelationManager::class,
             ])
                 ->icon('heroicon-o-clipboard-document-check'),

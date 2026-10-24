@@ -893,12 +893,12 @@ class TaskResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Timesheets', [
+            RelationGroup::make(__('Timesheets'), [
                 TimesheetsRelationManager::class,
             ])
                 ->icon('heroicon-o-clock'),
 
-            RelationGroup::make('Sub Tasks', [
+            RelationGroup::make(__('Sub Tasks'), [
                 SubTasksRelationManager::class,
             ])
                 ->icon('heroicon-o-clipboard-document-list'),

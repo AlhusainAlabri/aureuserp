@@ -52,12 +52,12 @@ class PartnerResource extends BasePartnerResource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Contacts', [
+            RelationGroup::make(__('Contacts'), [
                 ContactsRelationManager::class,
             ])
                 ->icon('heroicon-o-users'),
 
-            RelationGroup::make('Addresses', [
+            RelationGroup::make(__('Addresses'), [
                 AddressesRelationManager::class,
             ])
                 ->icon('heroicon-o-map-pin'),

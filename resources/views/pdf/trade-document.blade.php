@@ -70,7 +70,7 @@
 
         <table>
             <tr>
-                @foreach ($order([1, 2]) as $cell)
+                @foreach ($order($party ? [1, 2] : [2]) as $cell)
                     @if ($cell === 1)
                         <td style="width: 55%;">
                             <div class="party-title">{{ $doc['partyLabel'] }}</div>
@@ -89,7 +89,7 @@
                             @endif
                         </td>
                     @else
-                        <td style="width: 45%;">
+                        <td style="width: {{ $party ? '45%' : '100%' }};">
                             <table class="meta">
                                 @foreach ($doc['meta'] as [$metaLabel, $metaValue])
                                     <tr>
@@ -109,6 +109,7 @@
             </tr>
         </table>
 
+        @if (! empty($doc['columns']))
         <table class="lines">
             <thead>
                 <tr>
@@ -127,6 +128,30 @@
                 @endforeach
             </tbody>
         </table>
+        @endif
+
+        @foreach ($doc['tables'] ?? [] as $extra)
+            @php($extraColumns = $order($extra['columns']))
+            <div class="party-title" style="margin-top: 16px;">{{ $extra['title'] }}</div>
+            <table class="lines" style="margin-top: 4px;">
+                <thead>
+                    <tr>
+                        @foreach ($extraColumns as $column)
+                            <th @isset($column['width']) style="width: {{ $column['width'] }};" @endisset @if ($column['numeric'] ?? false) class="num" @endif>{{ $column['label'] }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($extra['rows'] as $row)
+                        <tr>
+                            @foreach ($extraColumns as $column)
+                                <td @if ($column['numeric'] ?? false) class="num" @endif>{{ $row[$column['key']] ?? '' }}</td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
 
         @if (! empty($doc['totals']))
         <table style="margin-top: 6px;">

@@ -372,5 +372,17 @@
     "Payment Term": "شرط الدفع",
     "Dashboard": "لوحة التحكم",
     "Standard 40 hours/week": "قياسي 40 ساعة أسبوعيًا",
-    "Salesperson": "مسؤول المبيعات"
+    "Salesperson": "مسؤول المبيعات",
+    "Manufacturing Order": "أمر تصنيع",
+    "Sub Tasks": "المهام الفرعية",
+    "Capacity By Products": "السعة حسب المنتج",
+    "Capacity By Packages": "السعة حسب الطرد",
+    "Timesheets": "سجلات الوقت",
+    "Manage Milestones": "إدارة المراحل الرئيسية",
+    "Manage Skills": "إدارة المهارات",
+    "Byproducts": "المنتجات الثانوية",
+    "Work orders": "أوامر العمل",
+    "Move byproducts": "حركات المنتجات الثانوية",
+    "By products process note": "ملاحظة عملية المنتجات الثانوية",
+    "Rendered display from": "العرض من"
 }

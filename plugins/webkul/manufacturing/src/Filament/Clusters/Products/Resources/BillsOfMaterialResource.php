@@ -193,8 +193,9 @@ class BillsOfMaterialResource extends Resource
                                         ->default(1)
                                         ->step('0.0001')
                                         ->required()
-                                        ->columnSpan(2),
+                                        ->columnSpan(3),
                                     Select::make('uom_id')
+                                        ->columnSpan(2)
                                         ->placeholder(__('manufacturing::filament/clusters/products/resources/bill-of-material.form.sections.general.fields.uom'))
                                         ->relationship(
                                             'uom',
@@ -214,7 +215,8 @@ class BillsOfMaterialResource extends Resource
                                         ->required(),
                                 ])
                                     ->label(__('manufacturing::filament/clusters/products/resources/bill-of-material.form.sections.general.fields.quantity'))
-                                    ->columns(3),
+                                    ->columns(5)
+                                    ->columnSpanFull(),
                                 TextInput::make('code')
                                     ->label(__('manufacturing::filament/clusters/products/resources/bill-of-material.form.sections.general.fields.reference'))
                                     ->maxLength(255)

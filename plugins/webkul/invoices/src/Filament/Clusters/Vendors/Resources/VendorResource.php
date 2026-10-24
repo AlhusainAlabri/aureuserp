@@ -36,7 +36,7 @@ class VendorResource extends BaseVendorResource
 
         return [
             ...$table,
-            RelationGroup::make('Bank Accounts', [
+            RelationGroup::make(__('Bank Accounts'), [
                 BankAccountsRelationManager::class,
             ])
                 ->icon('heroicon-o-banknotes'),

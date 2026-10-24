@@ -556,13 +556,13 @@ class ManufacturingOrderResource extends Resource
                                 TextEntry::make('quantity')
                                     ->label(__('manufacturing::filament/clusters/operations/resources/manufacturing-order.infolist.sections.general.entries.quantity'))
                                     ->state(function (Order $record): string {
-                                        $expectedQuantity = number_format((float) $record->quantity, 4, '.', '');
+                                        $expectedQuantity = rtrim(rtrim(number_format((float) $record->quantity, 4, '.', ''), '0'), '.');
 
                                         if ($record->state === ManufacturingOrderState::DRAFT) {
                                             return $expectedQuantity.' '.($record->uom?->name ?? '—');
                                         }
 
-                                        $producingQuantity = number_format((float) ($record->quantity_producing ?: 0), 4, '.', '');
+                                        $producingQuantity = rtrim(rtrim(number_format((float) ($record->quantity_producing ?: 0), 4, '.', ''), '0'), '.');
 
                                         return $producingQuantity.' / '.$expectedQuantity.' '.($record->uom?->name ?? '—');
                                     }),
@@ -619,10 +619,10 @@ class ManufacturingOrderResource extends Resource
                                             ->placeholder('—'),
                                         TextEntry::make('product_uom_qty')
                                             ->hiddenLabel()
-                                            ->numeric(decimalPlaces: 4),
+                                            ->formatStateUsing(fn ($state): string => rtrim(rtrim(number_format((float) $state, 4, '.', ''), '0'), '.')),
                                         TextEntry::make('quantity')
                                             ->hiddenLabel()
-                                            ->numeric(decimalPlaces: 4)
+                                            ->formatStateUsing(fn ($state): string => rtrim(rtrim(number_format((float) $state, 4, '.', ''), '0'), '.'))
                                             ->placeholder('—'),
                                         TextEntry::make('uom.name')
                                             ->hiddenLabel()
@@ -982,11 +982,11 @@ class ManufacturingOrderResource extends Resource
                     },
                 )
                 ->default(fn (Get $get): ?int => Product::query()->withTrashed()->find($get('product_id'))?->uom_id)
-                ->placeholder('UoM')
-                ->columnSpan(1),
+                ->placeholder(__('Unit'))
+                ->columnSpan(2),
         ])
             ->label(__('manufacturing::filament/clusters/operations/resources/manufacturing-order.form.sections.general.fields.quantity'))
-            ->columns(4);
+            ->columns(5);
     }
 
     protected static function getComponentsRepeater(): Repeater

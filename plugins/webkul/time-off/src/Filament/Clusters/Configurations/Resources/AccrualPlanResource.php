@@ -215,7 +215,7 @@ class AccrualPlanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Manage Milestones', [
+            RelationGroup::make(__('Manage Milestones'), [
                 MilestoneRelationManager::class,
             ])
                 ->icon('heroicon-o-clipboard-list'),

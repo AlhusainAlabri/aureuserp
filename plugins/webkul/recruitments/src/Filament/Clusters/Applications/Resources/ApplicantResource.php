@@ -910,7 +910,7 @@ class ApplicantResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make('Manage Skills', [
+            RelationGroup::make(__('Manage Skills'), [
                 SkillsRelationManager::class,
             ])
                 ->icon('heroicon-o-bolt'),

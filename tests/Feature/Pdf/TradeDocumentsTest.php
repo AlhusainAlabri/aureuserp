@@ -2,6 +2,7 @@
 
 use App\Support\Invoices\InvoicePdf;
 use App\Support\Pdf\Documents\AccountMoveDocument;
+use App\Support\Pdf\Documents\ManufacturingOrderDocument;
 use App\Support\Pdf\Documents\PurchaseOrderDocument;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Webkul\Account\Models\Move;
@@ -43,4 +44,20 @@ it('titles a purchase order and a request for quotation differently', function (
 
     expect(PurchaseOrderDocument::make($order, true)['title'])->toContain('Request for Quotation')
         ->and(PurchaseOrderDocument::make($order, false)['title'])->toContain('Purchase Order');
+});
+
+it('builds a manufacturing order document with its components', function (): void {
+    $order = Webkul\Manufacturing\Models\Order::factory()->make(['name' => 'MO/77']);
+    $order->setRelation('rawMaterialMoves', collect());
+    $order->setRelation('workOrders', collect());
+
+    $document = ManufacturingOrderDocument::make($order);
+
+    expect($document)->toHaveKeys(['company', 'title', 'meta', 'tables', 'totals'])
+        ->and($document['title'])->toContain('MO/77')
+        ->and($document['party'])->toBeNull();
+
+    $pdf = Pdf::loadView('pdf.trade-document', ['docs' => [$document]])->output();
+
+    expect($pdf)->toStartWith('%PDF');
 });
