@@ -5,7 +5,6 @@ return [
         'name'      => 'Name',
         'full-name' => 'Full Name',
     ],
-
     'table' => [
         'columns' => [
             'name'       => 'Name',
@@ -13,7 +12,6 @@ return [
             'created-at' => 'Created At',
             'updated-at' => 'Updated At',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -21,21 +19,18 @@ return [
                     'body'  => 'The industry has been updated successfully.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'Industry restored',
                     'body'  => 'The industry has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Industry deleted',
                     'body'  => 'The industry has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Industry force deleted',
@@ -43,7 +38,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -51,14 +45,12 @@ return [
                     'body'  => 'The industries has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Industries deleted',
                     'body'  => 'The industries has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Industries force deleted',
@@ -66,5 +58,8 @@ return [
                 ],
             ],
         ],
+    ],
+    'navigation' => [
+        'title' => 'Industries',
     ],
 ];

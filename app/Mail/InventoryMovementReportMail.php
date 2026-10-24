@@ -25,7 +25,7 @@ class InventoryMovementReportMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('inventory-extensions.mail.movement_report_subject', [
+            subject: __('inventory-extensions::mail.movement_report_subject', [
                 'from' => $this->from->format('d M Y'),
                 'to'   => $this->to->format('d M Y'),
             ]),

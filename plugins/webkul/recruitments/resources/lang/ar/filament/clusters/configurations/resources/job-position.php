@@ -5,7 +5,6 @@ return [
         'title' => 'المناصب الوظيفية',
         'group' => 'المناصب الوظيفية',
     ],
-
     'global-search' => [
         'name'            => 'المنصب الوظيفي',
         'department'      => 'القسم',
@@ -13,12 +12,10 @@ return [
         'company'         => 'الشركة',
         'created-by'      => 'أنشئ بواسطة',
     ],
-
     'form' => [
         'sections' => [
             'employment-information' => [
-                'title' => 'معلومات التوظيف',
-
+                'title'  => 'معلومات التوظيف',
                 'fields' => [
                     'job-position-title'         => 'مسمى المنصب الوظيفي',
                     'job-position-title-tooltip' => 'أدخل المسمى الوظيفي الرسمي',
@@ -31,21 +28,18 @@ return [
                     'interviewers'               => 'المحاورون',
                     'recruiter'                  => 'المسؤول عن التوظيف',
                     'manager'                    => 'المدير',
+                    'company-modal-title'        => 'إنشاء شركة',
                 ],
             ],
-
             'job-description' => [
-                'title' => 'الوصف الوظيفي',
-
+                'title'  => 'الوصف الوظيفي',
                 'fields' => [
                     'job-description'  => 'الوصف الوظيفي',
                     'job-requirements' => 'متطلبات الوظيفة',
                 ],
             ],
-
             'workforce-planning' => [
-                'title' => 'تخطيط القوى العاملة',
-
+                'title'  => 'تخطيط القوى العاملة',
                 'fields' => [
                     'recruitment-target' => 'هدف التوظيف',
                     'date-from'          => 'من تاريخ',
@@ -55,17 +49,14 @@ return [
                     'status'             => 'الحالة',
                 ],
             ],
-
             'position-status' => [
-                'title' => 'حالة المنصب',
-
+                'title'  => 'حالة المنصب',
                 'fields' => [
                     'status' => 'الحالة',
                 ],
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'id'                 => 'المعرف',
@@ -80,7 +71,6 @@ return [
             'created-at'         => 'تاريخ الإنشاء',
             'updated-at'         => 'تاريخ التحديث',
         ],
-
         'filters' => [
             'department'      => 'القسم',
             'employment-type' => 'نوع التوظيف',
@@ -91,7 +81,6 @@ return [
             'updated-at'      => 'تاريخ التحديث',
             'created-at'      => 'تاريخ الإنشاء',
         ],
-
         'groups' => [
             'job-position'    => 'المنصب الوظيفي',
             'company'         => 'الشركة',
@@ -101,7 +90,6 @@ return [
             'created-at'      => 'تاريخ الإنشاء',
             'updated-at'      => 'تاريخ التحديث',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -109,7 +97,6 @@ return [
                     'body'  => 'تم استعادة المنصب الوظيفي بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف المنصب الوظيفي',
@@ -117,7 +104,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -125,14 +111,12 @@ return [
                     'body'  => 'تم استعادة المناصب الوظيفية بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف المناصب الوظيفية',
                     'body'  => 'تم حذف المناصب الوظيفية بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف المناصب الوظيفية نهائياً',
@@ -140,7 +124,6 @@ return [
                 ],
             ],
         ],
-
         'empty-state-actions' => [
             'create' => [
                 'notification' => [
@@ -150,12 +133,10 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'employment-information' => [
-                'title' => 'معلومات التوظيف',
-
+                'title'   => 'معلومات التوظيف',
                 'entries' => [
                     'job-position-title' => 'مسمى المنصب الوظيفي',
                     'department'         => 'القسم',
@@ -169,16 +150,14 @@ return [
                 ],
             ],
             'job-description' => [
-                'title' => 'الوصف الوظيفي',
-
+                'title'   => 'الوصف الوظيفي',
                 'entries' => [
                     'job-description'  => 'الوصف الوظيفي',
                     'job-requirements' => 'متطلبات الوظيفة',
                 ],
             ],
             'work-planning' => [
-                'title' => 'تخطيط القوى العاملة',
-
+                'title'   => 'تخطيط القوى العاملة',
                 'entries' => [
                     'expected-employees' => 'الموظفون المتوقعون',
                     'current-employees'  => 'الموظفون الحاليون',
@@ -188,8 +167,7 @@ return [
                 ],
             ],
             'position-status' => [
-                'title' => 'حالة المنصب',
-
+                'title'   => 'حالة المنصب',
                 'entries' => [
                     'status' => 'الحالة',
                 ],

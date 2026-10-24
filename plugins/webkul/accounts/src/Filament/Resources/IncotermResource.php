@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -25,6 +26,8 @@ use Webkul\Account\Models\Incoterm;
 
 class IncotermResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Incoterm::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-globe-alt';

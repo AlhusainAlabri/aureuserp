@@ -1,0 +1,391 @@
+- generic [ref=f22e1]:
+  - navigation [ref=f22e3]:
+    - button [ref=f22e6] [cursor=pointer]
+    - list [ref=f22e17]:
+      - listitem [ref=f22e18]: لوحة التحكم
+      - listitem [ref=f22e19]:
+        - link "لوحة التحكم الرئيسية" [ref=f22e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin
+      - listitem [ref=f22e24]:
+        - link "نظرة تنفيذية" [ref=f22e25] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/org-overview
+      - listitem [ref=f22e29]:
+        - link "المشاريع" [ref=f22e30] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/project
+      - listitem [ref=f22e32]:
+        - link "التوظيف" [ref=f22e33] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/recruitment
+    - generic [ref=f22e35]:
+      - button "جديد" [ref=f22e38] [cursor=pointer]
+      - generic [ref=f22e44]:
+        - generic [ref=f22e45]:
+          - generic [ref=f22e46]:
+            - generic [ref=f22e47]: بحث عام
+            - searchbox "بحث عام" [active] [ref=f22e53]: الواحة
+          - list [ref=f22e410]:
+            - listitem [ref=f22e411]:
+              - heading "Accounting→العملاء" [level=3] [ref=f22e412]
+              - list [ref=f22e413]:
+                - listitem [ref=f22e414]:
+                  - link [ref=f22e499] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers/customers/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e500]
+                    - generic [ref=f22e417]:
+                      - generic [ref=f22e418]:
+                        - term [ref=f22e419]: "البريد الإلكتروني:"
+                        - definition [ref=f22e420]: info@alwaha.example.om
+                      - generic [ref=f22e421]:
+                        - term [ref=f22e422]: "الهاتف:"
+                        - definition [ref=f22e423]: "+96824123456"
+            - listitem [ref=f22e424]:
+              - heading "Accounting→الموردين" [level=3] [ref=f22e425]
+              - list [ref=f22e426]:
+                - listitem [ref=f22e427]:
+                  - link [ref=f22e501] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/vendors/vendors/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e502]
+                    - generic [ref=f22e430]:
+                      - generic [ref=f22e431]:
+                        - term [ref=f22e432]: "البريد الإلكتروني:"
+                        - definition [ref=f22e433]: info@alwaha.example.om
+                      - generic [ref=f22e434]:
+                        - term [ref=f22e435]: "الهاتف:"
+                        - definition [ref=f22e436]: "+96824123456"
+            - listitem [ref=f22e437]:
+              - heading "Employee→الأقسام" [level=3] [ref=f22e503]
+              - list [ref=f22e439]:
+                - listitem [ref=f22e440]:
+                  - link [ref=f22e504] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/1
+                    - heading "الإدارة" [level=4] [ref=f22e505]
+                    - generic [ref=f22e443]:
+                      - generic [ref=f22e444]:
+                        - term [ref=f22e445]: "المدير:"
+                        - definition [ref=f22e446]: Paul Williams
+                      - generic [ref=f22e447]:
+                        - term [ref=f22e448]: "الشركة:"
+                        - definition [ref=f22e449]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e506]:
+                  - link [ref=f22e507] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/2
+                    - heading "مشاريع طويلة المدى" [level=4] [ref=f22e508]
+                    - generic [ref=f22e509]:
+                      - generic [ref=f22e510]:
+                        - term [ref=f22e511]: "المدير:"
+                        - definition [ref=f22e512]: Paul Williams
+                      - generic [ref=f22e513]:
+                        - term [ref=f22e514]: "الشركة:"
+                        - definition [ref=f22e515]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e516]:
+                  - link [ref=f22e517] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/3
+                    - heading "الإدارة العليا" [level=4] [ref=f22e518]
+                    - generic [ref=f22e519]:
+                      - generic [ref=f22e520]:
+                        - term [ref=f22e521]: "المدير:"
+                        - definition [ref=f22e522]: Paul Williams
+                      - generic [ref=f22e523]:
+                        - term [ref=f22e524]: "الشركة:"
+                        - definition [ref=f22e525]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e526]:
+                  - link [ref=f22e527] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/4
+                    - heading "الخدمات المهنية" [level=4] [ref=f22e528]
+                    - generic [ref=f22e529]:
+                      - generic [ref=f22e530]:
+                        - term [ref=f22e531]: "المدير:"
+                        - definition [ref=f22e532]: Paul Williams
+                      - generic [ref=f22e533]:
+                        - term [ref=f22e534]: "الشركة:"
+                        - definition [ref=f22e535]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e536]:
+                  - link [ref=f22e537] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/5
+                    - heading "البحث والتطوير — أمريكا" [level=4] [ref=f22e538]
+                    - generic [ref=f22e539]:
+                      - generic [ref=f22e540]:
+                        - term [ref=f22e541]: "المدير:"
+                        - definition [ref=f22e542]: Paul Williams
+                      - generic [ref=f22e543]:
+                        - term [ref=f22e544]: "الشركة:"
+                        - definition [ref=f22e545]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e546]:
+                  - link [ref=f22e547] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/6
+                    - heading "البحث والتطوير" [level=4] [ref=f22e548]
+                    - generic [ref=f22e549]:
+                      - generic [ref=f22e550]:
+                        - term [ref=f22e551]: "المدير:"
+                        - definition [ref=f22e552]: Paul Williams
+                      - generic [ref=f22e553]:
+                        - term [ref=f22e554]: "الشركة:"
+                        - definition [ref=f22e555]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e556]:
+                  - link [ref=f22e557] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/departments/7
+                    - heading "المبيعات" [level=4] [ref=f22e558]
+                    - generic [ref=f22e559]:
+                      - generic [ref=f22e560]:
+                        - term [ref=f22e561]: "المدير:"
+                        - definition [ref=f22e562]: Paul Williams
+                      - generic [ref=f22e563]:
+                        - term [ref=f22e564]: "الشركة:"
+                        - definition [ref=f22e565]: شركة الواحة للتجارة والخدمات ش.م.م
+            - listitem [ref=f22e450]:
+              - heading "Invoice→العملاء" [level=3] [ref=f22e566]
+              - list [ref=f22e452]:
+                - listitem [ref=f22e453]:
+                  - link [ref=f22e567] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/invoices/customers/customers/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e568]
+                    - generic [ref=f22e456]:
+                      - generic [ref=f22e457]:
+                        - term [ref=f22e458]: "البريد الإلكتروني:"
+                        - definition [ref=f22e459]: info@alwaha.example.om
+                      - generic [ref=f22e460]:
+                        - term [ref=f22e461]: "الهاتف:"
+                        - definition [ref=f22e462]: "+96824123456"
+            - listitem [ref=f22e463]:
+              - heading "Invoice→الموردين" [level=3] [ref=f22e569]
+              - list [ref=f22e465]:
+                - listitem [ref=f22e466]:
+                  - link [ref=f22e570] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/invoices/vendors/vendors/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e571]
+                    - generic [ref=f22e469]:
+                      - generic [ref=f22e470]:
+                        - term [ref=f22e471]: "البريد الإلكتروني:"
+                        - definition [ref=f22e472]: info@alwaha.example.om
+                      - generic [ref=f22e473]:
+                        - term [ref=f22e474]: "الهاتف:"
+                        - definition [ref=f22e475]: "+96824123456"
+            - listitem [ref=f22e476]:
+              - heading "Purchase→الموردين" [level=3] [ref=f22e572]
+              - list [ref=f22e478]:
+                - listitem [ref=f22e479]:
+                  - link [ref=f22e573] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/purchase/orders/vendors/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e574]
+                    - generic [ref=f22e482]:
+                      - generic [ref=f22e483]:
+                        - term [ref=f22e484]: "البريد الإلكتروني:"
+                        - definition [ref=f22e485]: info@alwaha.example.om
+                      - generic [ref=f22e486]:
+                        - term [ref=f22e487]: "الهاتف:"
+                        - definition [ref=f22e488]: "+96824123456"
+            - listitem [ref=f22e489]:
+              - heading "Recruitment→الأقسام" [level=3] [ref=f22e575]
+              - list [ref=f22e491]:
+                - listitem [ref=f22e492]:
+                  - link [ref=f22e576] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/1
+                    - heading "الإدارة" [level=4] [ref=f22e577]
+                    - generic [ref=f22e495]:
+                      - generic [ref=f22e496]:
+                        - term [ref=f22e497]: "المدير:"
+                        - definition [ref=f22e498]: Paul Williams
+                      - generic [ref=f22e578]:
+                        - term [ref=f22e579]: "الشركة:"
+                        - definition [ref=f22e580]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e581]:
+                  - link [ref=f22e582] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/2
+                    - heading "مشاريع طويلة المدى" [level=4] [ref=f22e583]
+                    - generic [ref=f22e584]:
+                      - generic [ref=f22e585]:
+                        - term [ref=f22e586]: "المدير:"
+                        - definition [ref=f22e587]: Paul Williams
+                      - generic [ref=f22e588]:
+                        - term [ref=f22e589]: "الشركة:"
+                        - definition [ref=f22e590]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e591]:
+                  - link [ref=f22e592] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/3
+                    - heading "الإدارة العليا" [level=4] [ref=f22e593]
+                    - generic [ref=f22e594]:
+                      - generic [ref=f22e595]:
+                        - term [ref=f22e596]: "المدير:"
+                        - definition [ref=f22e597]: Paul Williams
+                      - generic [ref=f22e598]:
+                        - term [ref=f22e599]: "الشركة:"
+                        - definition [ref=f22e600]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e601]:
+                  - link [ref=f22e602] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/4
+                    - heading "الخدمات المهنية" [level=4] [ref=f22e603]
+                    - generic [ref=f22e604]:
+                      - generic [ref=f22e605]:
+                        - term [ref=f22e606]: "المدير:"
+                        - definition [ref=f22e607]: Paul Williams
+                      - generic [ref=f22e608]:
+                        - term [ref=f22e609]: "الشركة:"
+                        - definition [ref=f22e610]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e611]:
+                  - link [ref=f22e612] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/5
+                    - heading "البحث والتطوير — أمريكا" [level=4] [ref=f22e613]
+                    - generic [ref=f22e614]:
+                      - generic [ref=f22e615]:
+                        - term [ref=f22e616]: "المدير:"
+                        - definition [ref=f22e617]: Paul Williams
+                      - generic [ref=f22e618]:
+                        - term [ref=f22e619]: "الشركة:"
+                        - definition [ref=f22e620]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e621]:
+                  - link [ref=f22e622] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/6
+                    - heading "البحث والتطوير" [level=4] [ref=f22e623]
+                    - generic [ref=f22e624]:
+                      - generic [ref=f22e625]:
+                        - term [ref=f22e626]: "المدير:"
+                        - definition [ref=f22e627]: Paul Williams
+                      - generic [ref=f22e628]:
+                        - term [ref=f22e629]: "الشركة:"
+                        - definition [ref=f22e630]: شركة الواحة للتجارة والخدمات ش.م.م
+                - listitem [ref=f22e631]:
+                  - link [ref=f22e632] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/recruitments/configurations/departments/7
+                    - heading "المبيعات" [level=4] [ref=f22e633]
+                    - generic [ref=f22e634]:
+                      - generic [ref=f22e635]:
+                        - term [ref=f22e636]: "المدير:"
+                        - definition [ref=f22e637]: Paul Williams
+                      - generic [ref=f22e638]:
+                        - term [ref=f22e639]: "الشركة:"
+                        - definition [ref=f22e640]: شركة الواحة للتجارة والخدمات ش.م.م
+            - listitem [ref=f22e641]:
+              - heading "Sale→العملاء" [level=3] [ref=f22e642]
+              - list [ref=f22e643]:
+                - listitem [ref=f22e644]:
+                  - link [ref=f22e645] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/sale/orders/customers/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e646]
+                    - generic [ref=f22e647]:
+                      - generic [ref=f22e648]:
+                        - term [ref=f22e649]: "البريد الإلكتروني:"
+                        - definition [ref=f22e650]: info@alwaha.example.om
+                      - generic [ref=f22e651]:
+                        - term [ref=f22e652]: "الهاتف:"
+                        - definition [ref=f22e653]: "+96824123456"
+            - listitem [ref=f22e654]:
+              - heading "Security→companies" [level=3] [ref=f22e655]
+              - list [ref=f22e656]:
+                - listitem [ref=f22e657]:
+                  - link [ref=f22e658] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/companies/1
+                    - heading "شركة الواحة للتجارة والخدمات ش.م.م" [level=4] [ref=f22e659]
+                    - generic [ref=f22e661]:
+                      - term [ref=f22e662]: "البريد الإلكتروني:"
+                      - definition [ref=f22e663]: info@alwaha.example.om
+        - button "العربية" [ref=f22e56] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f22e63] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f22e405] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f22e69] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f22e70]
+  - generic [ref=f22e71]:
+    - complementary [ref=f22e72]:
+      - navigation [ref=f22e73]:
+        - list [ref=f22e74]:
+          - list [ref=f22e75]:
+            - listitem [ref=f22e76]:
+              - link "لوحة التحكم الرئيسية" [ref=f22e77] [cursor=pointer]:
+                - /url: http://localhost:8000/admin
+            - listitem [ref=f22e81]:
+              - link "المشاريع" [ref=f22e82] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/project
+            - listitem [ref=f22e84]:
+              - link "التوظيف" [ref=f22e85] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/recruitment
+            - listitem [ref=f22e87]:
+              - link "نظرة تنفيذية" [ref=f22e88] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/org-overview
+    - generic [ref=f22e93]:
+      - main [ref=f22e94]:
+        - generic [ref=f22e99]:
+          - generic [ref=f22e100]:
+            - img "الواحة ERP" [ref=f22e101]
+            - heading "مرحباً، Admin" [level=1] [ref=f22e103]
+          - generic [ref=f22e104]:
+            - generic [ref=f22e108]:
+              - generic [ref=f22e109]: بحث
+              - searchbox "بحث" [ref=f22e115]
+            - button "تخصيص" [ref=f22e118] [cursor=pointer]
+          - paragraph [ref=f22e121]: جميع الوحدات والاختصارات ظاهرة
+          - generic [ref=f22e122]:
+            - link "لوحة التحكم" [ref=f22e123] [cursor=pointer]:
+              - /url: http://localhost:8000/admin
+            - link "جهات الاتصال" [ref=f22e135] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/contact/contacts
+            - link "المبيعات" [ref=f22e151] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/sale/orders
+            - link "المشتريات" [ref=f22e159] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/purchase/orders
+            - link "التصنيع" [ref=f22e171] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/manufacturing/operations
+            - link "المخزون" [ref=f22e186] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/inventory/dashboard
+            - link "الفواتير" [ref=f22e198] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/invoices/customers
+            - link "المحاسبة" [ref=f22e209] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/accounting/customers
+            - link "المشروع" [ref=f22e226] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/projects/task-hub
+            - link "إدارة المحاضر" [ref=f22e234] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/meetings/dashboard
+            - link "مذكرتي" [ref=f22e247] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/my-notes?lang=ar
+            - link "المراسلات" [ref=f22e260] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/correspondence/dashboard
+            - link "أرشيف المستندات" [ref=f22e272] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/document-archive/dashboard
+            - link "إدارة الأصول" [ref=f22e285] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/assets/dashboard
+            - link "الموظفون" [ref=f22e297] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/employees/employees
+            - link "الرواتب" [ref=f22e309] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/payroll/employee-components?lang=ar
+            - link "الإجازات" [ref=f22e321] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/time-off/dashboard
+            - link "التوظيف" [ref=f22e330] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/recruitments/applications
+            - link "الموقع الإلكتروني" [ref=f22e340] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/website
+            - link "الموافقات" [ref=f22e351] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/approval-flows
+            - link "الإعدادات" [ref=f22e361] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/companies
+      - contentinfo [ref=f22e369]:
+        - generic [ref=f22e370]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f22e373]:
+    - generic [ref=f22e374] [cursor=pointer]
+    - generic [ref=f22e375]:
+      - generic [ref=f22e376] [cursor=pointer]: Request
+      - generic [ref=f22e377] [cursor=pointer]: Timeline
+      - generic [ref=f22e378] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f22e379]: "1"
+      - generic [ref=f22e380] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f22e381]: "171"
+      - generic [ref=f22e382] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f22e383]: "76"
+      - generic [ref=f22e384] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f22e385]: "1"
+      - generic [ref=f22e386] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f22e387]: "177"
+    - generic [ref=f22e388]:
+      - generic [ref=f22e389] [cursor=pointer]
+      - generic [ref=f22e390] [cursor=pointer]
+      - generic [ref=f22e391] [cursor=pointer]
+      - generic [ref=f22e393] [cursor=pointer]
+      - generic [ref=f22e395] [cursor=pointer]:
+        - generic [ref=f22e408]: "4"
+        - generic [ref=f22e396]: POST /livewire-ff82a33d/update
+      - generic [ref=f22e397] [cursor=pointer]: 324ms
+      - generic [ref=f22e399] [cursor=pointer]: 14MB
+      - generic [ref=f22e401] [cursor=pointer]: 13.x

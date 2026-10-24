@@ -2,6 +2,7 @@
 
 namespace Webkul\PluginManager\Console\Commands;
 
+use App\Support\Branding;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Exception;
 use Illuminate\Console\Command;
@@ -30,7 +31,11 @@ class InstallERP extends Command
         {--force : Force reinstallation without confirmation}
         {--admin-name= : Admin user name}
         {--admin-email= : Admin user email}
-        {--admin-password= : Admin user password}';
+        {--admin-password= : Admin user password}
+        {--company-name= : Company name}
+        {--company-country= : Company country (ISO 3166-1 alpha-2 code, e.g. OM)}
+        {--company-currency= : Company default currency code (e.g. OMR)}
+        {--company-email= : Company email address}';
 
     /**
      * The console command description.
@@ -251,9 +256,84 @@ class InstallERP extends Command
 
         $this->backfillMissingCreatorIds($adminUser);
 
+        $this->configureCompany($defaultCompany);
+
         $this->syncDefaultSettings($adminUser);
 
         $this->info("✅ Admin user '{$adminUser->name}' created and assigned the '{$this->getAdminRoleName()}' role successfully.");
+    }
+
+    /**
+     * Apply the company profile given by options or interactive prompts, so a
+     * customer install does not keep the placeholder company.
+     */
+    protected function configureCompany(Company $company): void
+    {
+        $name = $this->option('company-name');
+        $countryCode = $this->option('company-country');
+        $currencyCode = $this->option('company-currency');
+        $email = $this->option('company-email');
+
+        if ($this->input->isInteractive()) {
+            $name = $name ?: text('Company name', default: (string) $company->name, required: true);
+            $countryCode = $countryCode ?: text('Company country code (2 letters, e.g. OM)', default: '');
+            $currencyCode = $currencyCode ?: text(
+                'Default currency code (e.g. OMR, USD)',
+                default: (string) ($company->currency?->name ?? 'USD'),
+                required: true,
+            );
+        }
+
+        $updates = array_filter([
+            'name'  => $name,
+            'email' => $email,
+        ], fn ($value) => filled($value));
+
+        if (filled($countryCode)) {
+            $countryId = DB::table('countries')->where('code', strtoupper($countryCode))->value('id');
+
+            if (! $countryId) {
+                $this->error("Unknown country code: {$countryCode}");
+
+                exit(1);
+            }
+
+            $updates['country_id'] = $countryId;
+        }
+
+        if (filled($currencyCode)) {
+            $currency = Currency::query()->where('name', strtoupper($currencyCode))->first();
+
+            if (! $currency) {
+                $this->error("Unknown currency code: {$currencyCode}");
+
+                exit(1);
+            }
+
+            $currency->update(['active' => true]);
+
+            $updates['currency_id'] = $currency->id;
+        }
+
+        if ($updates === []) {
+            return;
+        }
+
+        $company->update($updates);
+
+        DB::table('partners_partners')
+            ->where('id', $company->partner_id)
+            ->update(array_filter([
+                'name'       => $updates['name'] ?? null,
+                'email'      => $updates['email'] ?? null,
+                'country_id' => $updates['country_id'] ?? null,
+            ], fn ($value) => filled($value)));
+
+        if (class_exists(Branding::class)) {
+            Branding::forgetCache($company->id);
+        }
+
+        $this->info("✅ Company profile saved: {$company->name}");
     }
 
     /**
@@ -423,7 +503,7 @@ class InstallERP extends Command
             [
                 'group'   => 'currency',
                 'name'    => 'default_currency_id',
-                'payload' => Currency::active()->first()?->id,
+                'payload' => Company::find($user->default_company_id)?->currency_id ?? Currency::active()->first()?->id,
             ],
         ];
 

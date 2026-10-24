@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -49,6 +50,8 @@ use Webkul\Field\Filament\Infolists\Components\ProgressStepper as InfolistProgre
 
 class PaymentResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Payment::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';

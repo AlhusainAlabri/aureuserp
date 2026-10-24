@@ -5,24 +5,23 @@ return [
         'title' => 'Work Orders',
         'group' => 'Operations',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
                 'title'  => 'General',
                 'fields' => [
-                    'work-order'          => 'Work Order',
-                    'work-center'         => 'Work Center',
-                    'product'             => 'Product',
-                    'quantity'            => 'Quantity',
-                    'manufacturing-order' => 'Manufacturing Order',
-                    'lot-serial'          => 'Lot/Serial Number',
-                    'start-date'          => 'Start Date',
-                    'end-date'            => 'End Date',
-                    'date-range-separator'=> 'to',
-                    'expected-duration'   => 'Expected Duration',
-                    'duration-suffix'     => 'minutes',
-                    'real-duration'       => 'Real Duration',
+                    'work-order'           => 'Work Order',
+                    'work-center'          => 'Work Center',
+                    'product'              => 'Product',
+                    'quantity'             => 'Quantity',
+                    'manufacturing-order'  => 'Manufacturing Order',
+                    'lot-serial'           => 'Lot/Serial Number',
+                    'start-date'           => 'Start Date',
+                    'end-date'             => 'End Date',
+                    'date-range-separator' => 'to',
+                    'expected-duration'    => 'Expected Duration',
+                    'duration-suffix'      => 'minutes',
+                    'real-duration'        => 'Real Duration',
                 ],
             ],
         ],
@@ -49,6 +48,7 @@ return [
                     'to-consume' => 'To Consume',
                     'quantity'   => 'Quantity',
                     'uom'        => 'UoM',
+                    'from'       => 'From',
                 ],
             ],
             'work-instruction' => [
@@ -66,7 +66,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'operation'           => 'Operation',
@@ -102,7 +101,6 @@ return [
             'updated-at'          => 'Updated At',
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
@@ -148,7 +146,6 @@ return [
             ],
         ],
     ],
-
     'pages' => [
         'list' => [
             'header-actions' => [

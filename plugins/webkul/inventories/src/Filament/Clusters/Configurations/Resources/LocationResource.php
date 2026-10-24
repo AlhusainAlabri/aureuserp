@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\BulkAction;
@@ -52,6 +53,8 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 
 class LocationResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Location::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';

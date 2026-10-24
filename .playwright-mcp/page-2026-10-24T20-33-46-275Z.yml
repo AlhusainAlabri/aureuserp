@@ -1,0 +1,61 @@
+- generic [ref=f30e1]:
+  - generic [ref=f30e2]:
+    - button "العربية" [ref=f30e6] [cursor=pointer]
+    - main [ref=f30e11]:
+      - generic [ref=f30e13]:
+        - generic [ref=f30e14]:
+          - img "الواحة ERP شعار" [ref=f30e15]
+          - heading "الدخول إلى حسابك" [level=1] [ref=f30e16]
+        - generic [ref=f30e20]:
+          - generic [ref=f30e24]:
+            - generic [ref=f30e27]:
+              - generic [ref=f30e31]:
+                - text: البريد الإلكتروني
+                - superscript [ref=f30e32]: "*"
+              - textbox "البريد الإلكتروني*" [active] [ref=f30e36]
+            - generic [ref=f30e39]:
+              - generic [ref=f30e41]:
+                - generic [ref=f30e43]:
+                  - text: كلمة المرور
+                  - superscript [ref=f30e44]: "*"
+                - link "نسيت كلمة المرور؟" [ref=f30e49] [cursor=pointer]:
+                  - /url: http://localhost:8000/admin/password-reset/request
+              - generic [ref=f30e51]:
+                - textbox "كلمة المرور*" [ref=f30e53]
+                - button "عرض كلمة المرور" [ref=f30e56] [cursor=pointer]
+            - generic [ref=f30e65]:
+              - checkbox "تذكرني" [ref=f30e66]
+              - generic [ref=f30e67]: تذكرني
+          - button "تسجيل الدخول" [ref=f30e73] [cursor=pointer]
+    - contentinfo [ref=f30e75]:
+      - generic [ref=f30e76]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f30e79]:
+    - generic [ref=f30e80] [cursor=pointer]
+    - generic [ref=f30e81]:
+      - generic [ref=f30e82] [cursor=pointer]: Request
+      - generic [ref=f30e83] [cursor=pointer]: Timeline
+      - generic [ref=f30e84] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f30e85]: "8"
+      - generic [ref=f30e86] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f30e87]: "61"
+      - generic [ref=f30e88] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f30e89]: "25"
+      - generic [ref=f30e90] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f30e91]: "2"
+    - generic [ref=f30e92]:
+      - generic [ref=f30e93] [cursor=pointer]
+      - generic [ref=f30e94] [cursor=pointer]
+      - generic [ref=f30e95] [cursor=pointer]
+      - generic [ref=f30e97] [cursor=pointer]
+      - generic [ref=f30e99] [cursor=pointer]:
+        - generic [ref=f30e100]: "2"
+        - generic [ref=f30e101]: GET /admin/login
+      - generic [ref=f30e102] [cursor=pointer]: 201ms
+      - generic [ref=f30e104] [cursor=pointer]: 17MB
+      - generic [ref=f30e106] [cursor=pointer]: 13.x

@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -36,6 +37,8 @@ use Webkul\Account\Models\Journal;
 
 class AccountResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Account::class;
 
     protected static bool $shouldRegisterNavigation = false;

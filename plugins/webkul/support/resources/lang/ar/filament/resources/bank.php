@@ -4,8 +4,7 @@ return [
     'form' => [
         'sections' => [
             'general' => [
-                'title' => 'عام',
-
+                'title'  => 'عام',
                 'fields' => [
                     'name'  => 'الاسم',
                     'code'  => 'رمز البنك',
@@ -13,10 +12,8 @@ return [
                     'phone' => 'الهاتف',
                 ],
             ],
-
             'address' => [
-                'title' => 'العنوان',
-
+                'title'  => 'العنوان',
                 'fields' => [
                     'address' => 'العنوان',
                     'city'    => 'المدينة',
@@ -29,22 +26,19 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'name'           => 'الاسم',
-            'code'           => 'رمز البنك',
-            'country'        => 'الدولة',
-            'created-at'     => 'تاريخ الإنشاء',
-            'updated-at'     => 'تاريخ التحديث',
-            'deleted-at'     => 'تاريخ الحذف',
+            'name'       => 'الاسم',
+            'code'       => 'رمز البنك',
+            'country'    => 'الدولة',
+            'created-at' => 'تاريخ الإنشاء',
+            'updated-at' => 'تاريخ التحديث',
+            'deleted-at' => 'تاريخ الحذف',
         ],
-
         'groups' => [
-            'country'               => 'الدولة',
-            'created-at'            => 'تاريخ الإنشاء',
+            'country'    => 'الدولة',
+            'created-at' => 'تاريخ الإنشاء',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -52,21 +46,18 @@ return [
                     'body'  => 'تم تحديث البنك بنجاح.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'تم استعادة البنك',
                     'body'  => 'تم استعادة البنك بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف البنك',
                     'body'  => 'تم حذف البنك بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف البنك نهائياً',
@@ -74,7 +65,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -82,14 +72,12 @@ return [
                     'body'  => 'تم استعادة البنوك بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف البنوك',
                     'body'  => 'تم حذف البنوك بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف البنوك نهائياً',
@@ -97,5 +85,9 @@ return [
                 ],
             ],
         ],
+    ],
+    'navigation' => [
+        'group' => 'المحاسبة',
+        'title' => 'البنوك',
     ],
 ];

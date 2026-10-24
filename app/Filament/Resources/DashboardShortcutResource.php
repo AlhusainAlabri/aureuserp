@@ -125,7 +125,7 @@ class DashboardShortcutResource extends Resource
                                 $svg = \Filament\Support\generate_icon_html(
                                     $icon,
                                     attributes: new ComponentAttributeBag(['class' => 'h-8 w-8']),
-                                );
+                                )?->toHtml();
 
                                 return new HtmlString(
                                     '<div class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900/50">'

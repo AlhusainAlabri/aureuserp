@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Webkul\Account\Enums\MoveType;
@@ -13,6 +14,8 @@ use Webkul\Account\Models\Refund;
 
 class RefundResource extends BillResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Refund::class;
 
     protected static bool $shouldRegisterNavigation = false;

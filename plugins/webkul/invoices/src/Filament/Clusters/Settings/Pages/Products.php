@@ -15,7 +15,10 @@ class Products extends SettingsPage
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Invoices';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.invoices');
+    }
 
     protected static ?int $navigationSort = 1;
 

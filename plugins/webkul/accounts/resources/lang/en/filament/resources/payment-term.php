@@ -13,11 +13,9 @@ return [
                 'status'               => 'Status',
             ],
         ],
-
         'tabs' => [
             'due-terms' => [
-                'title' => 'Due Terms',
-
+                'title'    => 'Due Terms',
                 'repeater' => [
                     'due-terms' => [
                         'fields' => [
@@ -32,7 +30,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'payment-term' => 'Payment Term',
@@ -40,7 +37,6 @@ return [
             'created-at'   => 'Created At',
             'updated-at'   => 'Updated At',
         ],
-
         'groups' => [
             'company-name'        => 'Company Name',
             'discount-days'       => 'Discount Days',
@@ -50,7 +46,6 @@ return [
             'early-discount'      => 'Early Discount',
             'discount-percentage' => 'Discount Percentage',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -58,21 +53,18 @@ return [
                     'body'  => 'The payment term has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Payment Term deleted',
                     'body'  => 'The payment term has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'Payment Term force deleted',
                         'body'  => 'The payment term has been force deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Payment Term force deletion failed',
                         'body'  => 'The payment term could not be force deleted because it is associated journal entries.',
@@ -80,7 +72,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -88,30 +79,32 @@ return [
                     'body'  => 'The payment Terms has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Payment Terms deleted',
                     'body'  => 'The payment Terms has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'Payment Terms force deleted',
                         'body'  => 'The payment Terms has been force deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Payment Terms force deletion failed',
                         'body'  => 'The payment terms could not be force deleted because they have associated journal entries.',
                     ],
                 ],
             ],
+            'force-restore' => [
+                'notification' => [
+                    'title' => 'Payment terms restored',
+                    'body'  => 'The selected payment terms have been restored successfully.',
+                ],
+            ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'entries' => [
@@ -125,11 +118,9 @@ return [
                 'status'               => 'Status',
             ],
         ],
-
         'tabs' => [
             'due-terms' => [
-                'title' => 'Due Terms',
-
+                'title'    => 'Due Terms',
                 'repeater' => [
                     'due-terms' => [
                         'entries' => [

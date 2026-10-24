@@ -7,7 +7,6 @@ return [
         'template' => 'قالب دور',
         'clone'    => 'نسخ دور موجود',
     ],
-
     'fields' => [
         'role_template'        => 'قالب الدور',
         'clone_role_id'        => 'نسخ من دور',
@@ -15,22 +14,19 @@ return [
         'advanced_editor_open' => 'فتح محرر الصلاحيات المتقدم',
         'grant_all_modules'    => 'منح وصول كامل لجميع الوحدات',
     ],
-
     'sections' => [
-        'basics'    => 'بيانات الدور',
-        'starting'  => 'نقطة البداية',
-        'modules'   => 'صلاحيات الوحدات',
-        'summary'   => 'ملخص الصلاحيات',
-        'advanced'  => 'محرر الصلاحيات المتقدم',
-        'review'    => 'مراجعة',
+        'basics'   => 'بيانات الدور',
+        'starting' => 'نقطة البداية',
+        'modules'  => 'صلاحيات الوحدات',
+        'summary'  => 'ملخص الصلاحيات',
+        'advanced' => 'محرر الصلاحيات المتقدم',
+        'review'   => 'مراجعة',
     ],
-
     'wizard' => [
         'details' => 'التفاصيل',
         'access'  => 'الصلاحيات',
         'review'  => 'المراجعة',
     ],
-
     'module_access' => [
         'levels' => [
             'none'     => 'بدون',
@@ -38,17 +34,20 @@ return [
             'standard' => 'قياسي (عرض + إنشاء + تعديل)',
             'full'     => 'وصول كامل',
         ],
-        'selected_count'      => ':selected / :total صلاحية',
+        'selected_count'      => ':selected/:total صلاحية',
         'modules_with_access' => ':count من :total وحدة بها صلاحيات',
         'reset_template'      => 'إعادة تعيين إلى إعدادات القالب',
     ],
-
     'summary' => [
         'permissions' => ':selected من :total صلاحية محددة',
         'modules'     => ':count من :total وحدة بها صلاحيات',
         'no_modules'  => 'لم يتم ضبط صلاحيات الوحدات بعد.',
+        'table'       => [
+            'module'      => 'الوحدة',
+            'level'       => 'المستوى',
+            'permissions' => 'الصلاحيات',
+        ],
     ],
-
     'templates' => [
         'employee' => [
             'label'       => 'موظف',
@@ -71,25 +70,37 @@ return [
             'description' => 'وصول واسع عبر الوحدات للإشراف التنفيذي.',
         ],
     ],
-
     'modules' => [
-        'Accounting'     => 'المحاسبة',
-        'Account'        => 'الحسابات',
-        'Employee'       => 'الموظفون',
-        'Inventory'      => 'المخزون',
-        'Purchase'       => 'المشتريات',
-        'Sale'           => 'المبيعات',
-        'Project'        => 'المشاريع',
-        'Meetings'       => 'الاجتماعات',
-        'Correspondence' => 'المراسلات',
-        'Assets'         => 'الأصول',
-        'Payroll'        => 'الرواتب',
-        'TimeOff'        => 'الإجازات',
-        'Recruitment'    => 'التوظيف',
-        'Support'        => 'الدعم',
-        'Extensions'     => 'الامتدادات',
+        'Accounting'       => 'المحاسبة',
+        'Account'          => 'الحسابات',
+        'Employee'         => 'الموظفون',
+        'Inventory'        => 'المخزون',
+        'Purchase'         => 'المشتريات',
+        'Sale'             => 'المبيعات',
+        'Project'          => 'المشاريع',
+        'Meetings'         => 'الاجتماعات',
+        'Correspondence'   => 'المراسلات',
+        'Assets'           => 'الأصول',
+        'Payroll'          => 'الرواتب',
+        'TimeOff'          => 'الإجازات',
+        'Recruitment'      => 'التوظيف',
+        'Support'          => 'الدعم',
+        'Extensions'       => 'الامتدادات',
+        'Blog'             => 'المدونة',
+        'Contact'          => 'جهات الاتصال',
+        'DocumentArchive'  => 'أرشيف المستندات',
+        'Field'            => 'الحقول المخصصة',
+        'Filament'         => 'النظام',
+        'FilamentApproval' => 'الموافقات',
+        'Invoice'          => 'الفواتير',
+        'Manufacturing'    => 'التصنيع',
+        'Partner'          => 'الشركاء',
+        'PluginManager'    => 'الإضافات',
+        'Product'          => 'المنتجات',
+        'Security'         => 'الأمان',
+        'Timesheet'        => 'سجلات الوقت',
+        'Website'          => 'الموقع الإلكتروني',
     ],
-
     'advanced' => [
         'search'          => 'بحث في الصلاحيات',
         'resources'       => 'الموارد',
@@ -98,9 +109,8 @@ return [
         'custom'          => 'صلاحيات مخصصة',
         'select_module'   => 'تحديد الكل في الوحدة',
         'deselect_module' => 'إلغاء تحديد الكل في الوحدة',
-        'progress'        => ':selected / :total محددة',
+        'progress'        => ':selected/:total محددة',
     ],
-
     'view' => [
         'permissions_count' => 'الصلاحيات',
         'module_summary'    => 'ملخص صلاحيات الوحدات',

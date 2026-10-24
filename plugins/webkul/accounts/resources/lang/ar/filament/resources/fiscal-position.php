@@ -6,18 +6,17 @@ return [
         'zip-to'   => 'الرمز البريدي إلى',
         'name'     => 'الاسم',
     ],
-
     'form' => [
         'fields' => [
-            'name'                   => 'الاسم',
-            'foreign-vat'            => 'ضريبة القيمة المضافة الأجنبية',
-            'country'                => 'البلد',
-            'country-group'          => 'مجموعة البلدان',
-            'zip-from'               => 'الرمز البريدي من',
-            'zip-to'                 => 'الرمز البريدي إلى',
-            'detect-automatically'   => 'اكتشاف تلقائي',
-            'notes'                  => 'ملاحظات',
-            'company'                => 'الشركة',
+            'name'                 => 'الاسم',
+            'foreign-vat'          => 'ضريبة القيمة المضافة الأجنبية',
+            'country'              => 'البلد',
+            'country-group'        => 'مجموعة البلدان',
+            'zip-from'             => 'الرمز البريدي من',
+            'zip-to'               => 'الرمز البريدي إلى',
+            'detect-automatically' => 'اكتشاف تلقائي',
+            'notes'                => 'ملاحظات',
+            'company'              => 'الشركة',
         ],
         'tabs' => [
             'account-mapping' => [
@@ -27,7 +26,6 @@ return [
                         'destination-account' => 'الحساب الوجهة',
                     ],
                 ],
-
             ],
             'tax-mapping' => [
                 'table' => [
@@ -39,7 +37,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'                 => 'الاسم',
@@ -51,8 +48,23 @@ return [
             'zip-to'               => 'الرمز البريدي إلى',
             'status'               => 'الحالة',
             'detect-automatically' => 'اكتشاف تلقائي',
+            'actions'              => [
+                'delete' => [
+                    'notification' => [
+                        'title' => 'تم حذف الوضع الضريبي',
+                        'body'  => 'تم حذف الوضع الضريبي بنجاح.',
+                    ],
+                ],
+            ],
+            'bulk-actions' => [
+                'delete' => [
+                    'notification' => [
+                        'title' => 'تم حذف الأوضاع الضريبية',
+                        'body'  => 'تم حذف الأوضاع الضريبية المحددة بنجاح.',
+                    ],
+                ],
+            ],
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -61,7 +73,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -71,7 +82,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'entries' => [
             'name'                 => 'الاسم',

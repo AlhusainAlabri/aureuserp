@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -14,6 +15,8 @@ use Webkul\Account\Models\CreditNote;
 
 class CreditNoteResource extends InvoiceResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = CreditNote::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-credit-card';

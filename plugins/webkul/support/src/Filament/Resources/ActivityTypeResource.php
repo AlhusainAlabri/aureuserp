@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -42,15 +43,17 @@ use Webkul\Support\Enums\ActivityDecorationType;
 use Webkul\Support\Enums\ActivityDelayFrom;
 use Webkul\Support\Enums\ActivityDelayUnit;
 use Webkul\Support\Enums\ActivityTypeAction;
+use Webkul\Support\Filament\Clusters\Settings;
 use Webkul\Support\Filament\Resources\ActivityTypeResource\Pages\CreateActivityType;
 use Webkul\Support\Filament\Resources\ActivityTypeResource\Pages\EditActivityType;
 use Webkul\Support\Filament\Resources\ActivityTypeResource\Pages\ListActivityTypes;
 use Webkul\Support\Filament\Resources\ActivityTypeResource\Pages\ViewActivityType;
-use Webkul\Support\Filament\Clusters\Settings;
 use Webkul\Support\Models\ActivityType;
 
 class ActivityTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ActivityType::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';

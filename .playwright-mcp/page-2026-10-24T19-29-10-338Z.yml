@@ -1,0 +1,201 @@
+- generic [active] [ref=f2e630]:
+  - navigation [ref=f2e632]:
+    - button [ref=f2e635] [cursor=pointer]
+    - list [ref=f2e646]:
+      - listitem [ref=f2e647]: الإعدادات
+      - listitem [ref=f2e648]:
+        - link "الأدوار" [ref=f2e649] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f2e651]:
+        - link "الشركات" [ref=f2e652] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f2e654]:
+        - link "الفرق" [ref=f2e655] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f2e657]:
+        - link "المستخدمون" [ref=f2e658] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f2e660]:
+        - link "الحقول المخصصة" [ref=f2e661] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f2e663]:
+        - link "اختصارات لوحة التحكم" [ref=f2e664] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f2e668]:
+        - link "الإعدادات" [ref=f2e669] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f2e42]:
+      - button "جديد" [ref=f2e45] [cursor=pointer]
+      - generic [ref=f2e51]:
+        - generic [ref=f2e53]:
+          - generic [ref=f2e54]: بحث عام
+          - searchbox "بحث عام" [ref=f2e60]: Oman
+        - button "العربية" [ref=f2e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f2e70] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f2e503] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f2e76] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f2e77]
+  - generic [ref=f2e671]:
+    - complementary [ref=f2e672]:
+      - navigation [ref=f2e673]:
+        - list [ref=f2e674]:
+          - list [ref=f2e675]:
+            - listitem [ref=f2e676]:
+              - link "الأدوار" [ref=f2e677] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f2e679]:
+              - link "الشركات" [ref=f2e680] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f2e682]:
+              - link "الفرق" [ref=f2e683] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f2e685]:
+              - link "المستخدمون" [ref=f2e686] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f2e688]:
+              - link "الحقول المخصصة" [ref=f2e689] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f2e691]:
+              - link "اختصارات لوحة التحكم" [ref=f2e692] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f2e696]:
+              - link "الإعدادات" [ref=f2e697] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f2e699]:
+      - main [ref=f2e700]:
+        - generic [ref=f2e702]:
+          - generic [ref=f2e703]:
+            - generic [ref=f2e704]:
+              - navigation [ref=f2e705]:
+                - list [ref=f2e706]:
+                  - listitem [ref=f2e707]:
+                    - link "Companies" [ref=f2e708] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/companies
+                  - listitem [ref=f2e709]:
+                    - link "شركة الواحة للتجارة والخدمات ش.م.م" [ref=f2e712] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/companies/1
+                  - listitem [ref=f2e713]:
+                    - generic [ref=f2e716]: عرض
+              - heading "عرض شركة الواحة للتجارة والخدمات ش.م.م" [level=1] [ref=f2e717]
+            - link "تعديل" [ref=f2e720] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/companies/1/edit
+          - generic [ref=f2e730]:
+            - generic [ref=f2e734]:
+              - generic [ref=f2e738]:
+                - heading "معلومات الشركة" [level=2] [ref=f2e741]
+                - generic [ref=f2e743]:
+                  - generic [ref=f2e746]:
+                    - term [ref=f2e749]: اسم الشركة
+                    - definition [ref=f2e751]:
+                      - generic [ref=f2e752]: شركة الواحة للتجارة والخدمات ش.م.م
+                  - generic [ref=f2e758]:
+                    - term [ref=f2e761]: رقم التسجيل
+                    - definition [ref=f2e763]:
+                      - generic [ref=f2e764]: "1234567"
+                  - generic [ref=f2e770]:
+                    - term [ref=f2e773]: معرف الشركة
+                    - definition [ref=f2e775]:
+                      - generic [ref=f2e776]: OM-ALW-001
+                  - generic [ref=f2e782]:
+                    - term [ref=f2e785]: الرقم الضريبي
+                    - definition [ref=f2e787]:
+                      - generic [ref=f2e788]: OM1100123456
+                  - generic [ref=f2e794]:
+                    - term [ref=f2e797]: الموقع الإلكتروني
+                    - definition [ref=f2e799]:
+                      - generic [ref=f2e800]: https://alwaha.example.om
+              - generic [ref=f2e807]:
+                - heading "معلومات العنوان" [level=2] [ref=f2e810]
+                - generic [ref=f2e812]:
+                  - generic [ref=f2e815]:
+                    - term [ref=f2e818]: الشارع 1
+                    - definition [ref=f2e820]:
+                      - generic [ref=f2e821]: شارع السلطان قابوس، الخوير
+                  - generic [ref=f2e828]:
+                    - term [ref=f2e831]: الشارع 2
+                    - definition [ref=f2e833]:
+                      - paragraph [ref=f2e836]: —
+                  - generic [ref=f2e839]:
+                    - term [ref=f2e842]: المدينة
+                    - definition [ref=f2e844]:
+                      - generic [ref=f2e845]: مسقط
+                  - generic [ref=f2e851]:
+                    - term [ref=f2e854]: الرمز البريدي
+                    - definition [ref=f2e856]:
+                      - generic [ref=f2e857]: "112"
+                  - generic [ref=f2e861]:
+                    - term [ref=f2e864]: الدولة
+                    - definition [ref=f2e866]:
+                      - generic [ref=f2e867]: Oman
+                  - generic [ref=f2e873]:
+                    - term [ref=f2e876]: المنطقة
+                    - definition [ref=f2e878]:
+                      - paragraph [ref=f2e881]: —
+              - generic [ref=f2e885]:
+                - heading "معلومات إضافية" [level=2] [ref=f2e888]
+                - generic [ref=f2e890]:
+                  - generic [ref=f2e893]:
+                    - term [ref=f2e896]: العملة الافتراضية
+                    - definition [ref=f2e898]:
+                      - generic [ref=f2e899]: United States dollar
+                  - generic [ref=f2e905]:
+                    - term [ref=f2e908]: تاريخ تأسيس الشركة
+                    - definition [ref=f2e910]:
+                      - generic [ref=f2e911]: يناير 1, 2000
+                  - generic [ref=f2e917]:
+                    - term [ref=f2e920]: الحالة
+                    - definition [ref=f2e922]
+            - generic [ref=f2e930]:
+              - generic [ref=f2e934]:
+                - heading "الهوية البصرية" [level=2] [ref=f2e937]
+                - generic [ref=f2e939]:
+                  - generic [ref=f2e942]:
+                    - term [ref=f2e945]: شعار الشركة
+                    - definition [ref=f2e947]:
+                      - paragraph [ref=f2e950]: —
+                  - generic [ref=f2e953]:
+                    - term [ref=f2e956]: اللون
+                    - definition [ref=f2e958]
+              - generic [ref=f2e965]:
+                - heading "معلومات الاتصال" [level=2] [ref=f2e968]
+                - generic [ref=f2e970]:
+                  - generic [ref=f2e973]:
+                    - term [ref=f2e976]: رقم الهاتف
+                    - definition [ref=f2e978]:
+                      - generic [ref=f2e979]: "+96824123456"
+                  - generic [ref=f2e985]:
+                    - term [ref=f2e988]: رقم الجوال
+                    - definition [ref=f2e990]:
+                      - generic [ref=f2e991]: "+96899123456"
+                  - generic [ref=f2e997]:
+                    - term [ref=f2e1000]: البريد الإلكتروني
+                    - definition [ref=f2e1002]:
+                      - generic [ref=f2e1003]: info@alwaha.example.om
+      - contentinfo [ref=f2e1011]:
+        - generic [ref=f2e1012]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status:
+      - generic [ref=f2e1013]:
+        - generic [ref=f2e1017]:
+          - heading "تم تحديث الشركة" [level=3] [ref=f2e1018]
+          - generic [ref=f2e1019]: تم تحديث الشركة بنجاح.
+        - button [ref=f2e1020] [cursor=pointer]
+  - generic [ref=f2e1025]:
+    - generic [ref=f2e1026] [cursor=pointer]
+    - generic [ref=f2e1027]:
+      - generic [ref=f2e1028] [cursor=pointer]
+      - generic [ref=f2e1030] [cursor=pointer]
+      - generic [ref=f2e1032] [cursor=pointer]: "13"
+      - generic [ref=f2e1035] [cursor=pointer]: "130"
+      - generic [ref=f2e1038] [cursor=pointer]: "32"
+      - generic [ref=f2e1041] [cursor=pointer]: "6"
+      - generic [ref=f2e1044] [cursor=pointer]: "270"
+    - generic [ref=f2e1047]:
+      - generic [ref=f2e1048] [cursor=pointer]
+      - generic [ref=f2e1049] [cursor=pointer]
+      - generic [ref=f2e1050] [cursor=pointer]
+      - generic [ref=f2e1052] [cursor=pointer]
+      - generic [ref=f2e1053]: GET /admin/companies/1
+      - generic [ref=f2e1056] [cursor=pointer]: 338ms
+      - generic [ref=f2e1058] [cursor=pointer]: 19MB
+      - generic [ref=f2e1060] [cursor=pointer]: 13.x

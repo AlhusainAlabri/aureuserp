@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
@@ -18,6 +19,8 @@ use Webkul\Support\Models\EmailLog;
 
 class EmailLogResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = EmailLog::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope-open';

@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Webkul\Product\Filament\Resources\PackagingResource as BasePackagingResource;
 use Webkul\Purchase\Filament\Admin\Clusters\Configurations;
@@ -11,6 +12,8 @@ use Webkul\Purchase\Settings\ProductSettings;
 
 class PackagingResource extends BasePackagingResource
 {
+    use TranslatesResourceLabels;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-gift';
 
     protected static bool $shouldRegisterNavigation = true;

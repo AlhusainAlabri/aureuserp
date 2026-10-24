@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,6 +18,8 @@ use Webkul\Product\Models\PriceList;
 
 class PriceListResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = PriceList::class;
 
     protected static bool $shouldRegisterNavigation = false;

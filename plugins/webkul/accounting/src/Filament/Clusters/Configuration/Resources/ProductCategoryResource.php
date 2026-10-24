@@ -2,6 +2,7 @@
 
 namespace Webkul\Accounting\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\Page;
 use Webkul\Account\Filament\Resources\ProductCategoryResource as BaseProductCategoryResource;
@@ -15,6 +16,8 @@ use Webkul\Accounting\Models\Category;
 
 class ProductCategoryResource extends BaseProductCategoryResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static ?string $cluster = Configuration::class;

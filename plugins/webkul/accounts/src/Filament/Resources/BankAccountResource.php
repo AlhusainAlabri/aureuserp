@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Webkul\Account\Filament\Resources\BankAccountResource\Pages\ListBankAccounts;
@@ -9,6 +10,8 @@ use Webkul\Partner\Filament\Resources\BankAccountResource as BaseBankAccountReso
 
 class BankAccountResource extends BaseBankAccountResource
 {
+    use TranslatesResourceLabels;
+
     protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Schema $schema): Schema

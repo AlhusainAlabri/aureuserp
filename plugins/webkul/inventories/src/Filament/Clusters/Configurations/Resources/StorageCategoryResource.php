@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -37,6 +38,8 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 
 class StorageCategoryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = StorageCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-folder';

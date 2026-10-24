@@ -5,32 +5,26 @@ return [
         'title' => 'الحقول المخصصة',
         'group' => 'الإعدادات',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
                 'fields' => [
-                    'name'              => 'الاسم',
-                    'code'              => 'الرمز',
-                    'code-helper-text'  => 'يجب أن يبدأ الرمز بحرف أو شرطة سفلية، ويمكن أن يحتوي فقط على أحرف وأرقام وشرطات سفلية.',
+                    'name'             => 'الاسم',
+                    'code'             => 'الرمز',
+                    'code-helper-text' => 'يجب أن يبدأ الرمز بحرف أو شرطة سفلية، ويمكن أن يحتوي فقط على أحرف وأرقام وشرطات سفلية.',
                 ],
             ],
-
             'options' => [
-                'title' => 'الخيارات',
-
+                'title'  => 'الخيارات',
                 'fields' => [
                     'add-option' => 'إضافة خيار',
                 ],
             ],
-
             'form-settings' => [
-                'title' => 'إعدادات النموذج',
-
+                'title'      => 'إعدادات النموذج',
                 'field-sets' => [
                     'validations' => [
-                        'title' => 'التحققات',
-
+                        'title'  => 'التحققات',
                         'fields' => [
                             'validation'     => 'التحقق',
                             'field'          => 'الحقل',
@@ -38,16 +32,13 @@ return [
                             'add-validation' => 'إضافة تحقق',
                         ],
                     ],
-
                     'additional-settings' => [
-                        'title' => 'إعدادات إضافية',
-
+                        'title'  => 'إعدادات إضافية',
                         'fields' => [
-                            'setting'     => 'الإعداد',
-                            'value'       => 'القيمة',
-                            'color'       => 'اللون',
-                            'add-setting' => 'إضافة إعداد',
-
+                            'setting'       => 'الإعداد',
+                            'value'         => 'القيمة',
+                            'color'         => 'اللون',
+                            'add-setting'   => 'إضافة إعداد',
                             'color-options' => [
                                 'danger'    => 'خطر',
                                 'info'      => 'معلومات',
@@ -56,12 +47,10 @@ return [
                                 'warning'   => 'تحذير',
                                 'success'   => 'نجاح',
                             ],
-
                             'grid-options' => [
                                 'row'    => 'صف',
                                 'column' => 'عمود',
                             ],
-
                             'input-modes' => [
                                 'text'     => 'نص',
                                 'email'    => 'بريد إلكتروني',
@@ -74,12 +63,10 @@ return [
                                 'none'     => 'لا شيء',
                                 'decimal'  => 'عشري',
                                 'search'   => 'بحث',
-                                'url'      => 'رابط',
                             ],
                         ],
                     ],
                 ],
-
                 'validations' => [
                     'common' => [
                         'gt'                   => 'أكبر من',
@@ -105,7 +92,6 @@ return [
                         'rules'                => 'قواعد مخصصة',
                         'unique'               => 'فريد',
                     ],
-
                     'text' => [
                         'alpha-dash'        => 'أحرف وشرطات',
                         'alpha-num'         => 'أحرف وأرقام',
@@ -126,63 +112,53 @@ return [
                         'ulid'              => 'ULID',
                         'uuid'              => 'UUID',
                     ],
-
                     'textarea' => [
                         'filled'     => 'مملوء',
                         'max-length' => 'الحد الأقصى للطول',
                         'min-length' => 'الحد الأدنى للطول',
                     ],
-
                     'select' => [
-                        'different'  => 'مختلف',
-                        'exists'     => 'موجود',
-                        'in'         => 'في',
-                        'not-in'     => 'ليس في',
-                        'same'       => 'مماثل',
+                        'different' => 'مختلف',
+                        'exists'    => 'موجود',
+                        'in'        => 'في',
+                        'not-in'    => 'ليس في',
+                        'same'      => 'مماثل',
                     ],
-
-                    'radio' => [],
-
+                    'radio' => [
+                    ],
                     'checkbox' => [
                         'accepted' => 'مقبول',
                         'declined' => 'مرفوض',
                     ],
-
                     'toggle' => [
                         'accepted' => 'مقبول',
                         'declined' => 'مرفوض',
                     ],
-
                     'checkbox-list' => [
                         'in'        => 'في',
                         'max-items' => 'الحد الأقصى للعناصر',
                         'min-items' => 'الحد الأدنى للعناصر',
                     ],
-
                     'datetime' => [
                         'after'           => 'بعد',
                         'after-or-equal'  => 'بعد أو يساوي',
                         'before'          => 'قبل',
                         'before-or-equal' => 'قبل أو يساوي',
                     ],
-
                     'editor' => [
                         'filled'     => 'مملوء',
                         'max-length' => 'الحد الأقصى للطول',
                         'min-length' => 'الحد الأدنى للطول',
                     ],
-
                     'markdown' => [
                         'filled'     => 'مملوء',
                         'max-length' => 'الحد الأقصى للطول',
                         'min-length' => 'الحد الأدنى للطول',
                     ],
-
                     'color' => [
                         'hex-color' => 'لون سداسي عشري',
                     ],
                 ],
-
                 'settings' => [
                     'text' => [
                         'autocapitalize'    => 'تكبير تلقائي',
@@ -207,23 +183,24 @@ return [
                         'suffix-icon'       => 'أيقونة اللاحقة',
                         'suffix-icon-color' => 'لون أيقونة اللاحقة',
                     ],
-
                     'textarea' => [
-                        'autofocus'    => 'تركيز تلقائي',
-                        'autosize'     => 'حجم تلقائي',
-                        'cols'         => 'أعمدة',
-                        'default'      => 'القيمة الافتراضية',
-                        'disabled'     => 'معطل',
-                        'helperText'   => 'نص مساعد',
-                        'hint'         => 'تلميح',
-                        'hintColor'    => 'لون التلميح',
-                        'hintIcon'     => 'أيقونة التلميح',
-                        'id'           => 'المعرف',
-                        'placeholder'  => 'نص توضيحي',
-                        'read-only'    => 'للقراءة فقط',
-                        'rows'         => 'صفوف',
+                        'autofocus'   => 'تركيز تلقائي',
+                        'autosize'    => 'حجم تلقائي',
+                        'cols'        => 'أعمدة',
+                        'default'     => 'القيمة الافتراضية',
+                        'disabled'    => 'معطل',
+                        'helperText'  => 'نص مساعد',
+                        'hint'        => 'تلميح',
+                        'hintColor'   => 'لون التلميح',
+                        'hintIcon'    => 'أيقونة التلميح',
+                        'id'          => 'المعرف',
+                        'placeholder' => 'نص توضيحي',
+                        'read-only'   => 'للقراءة فقط',
+                        'rows'        => 'صفوف',
+                        'helper-text' => 'نص مساعد',
+                        'hint-color'  => 'لون التلميح',
+                        'hinticon'    => 'أيقونة التلميح',
                     ],
-
                     'select' => [
                         'default'                   => 'القيمة الافتراضية',
                         'disabled'                  => 'معطل',
@@ -241,7 +218,6 @@ return [
                         'searching-message'         => 'رسالة البحث',
                         'search-prompt'             => 'موجه البحث',
                     ],
-
                     'radio' => [
                         'default'     => 'القيمة الافتراضية',
                         'disabled'    => 'معطل',
@@ -251,7 +227,6 @@ return [
                         'hint-icon'   => 'أيقونة التلميح',
                         'id'          => 'المعرف',
                     ],
-
                     'checkbox' => [
                         'default'     => 'القيمة الافتراضية',
                         'disabled'    => 'معطل',
@@ -262,7 +237,6 @@ return [
                         'id'          => 'المعرف',
                         'inline'      => 'مضمن',
                     ],
-
                     'toggle' => [
                         'default'     => 'القيمة الافتراضية',
                         'disabled'    => 'معطل',
@@ -276,7 +250,6 @@ return [
                         'on-color'    => 'لون التشغيل',
                         'on-icon'     => 'أيقونة التشغيل',
                     ],
-
                     'checkbox-list' => [
                         'bulk-toggleable'           => 'تبديل جماعي',
                         'columns'                   => 'أعمدة',
@@ -293,7 +266,6 @@ return [
                         'no-search-results-message' => 'رسالة عدم وجود نتائج',
                         'searchable'                => 'قابل للبحث',
                     ],
-
                     'datetime' => [
                         'close-on-date-selection' => 'إغلاق عند اختيار التاريخ',
                         'default'                 => 'القيمة الافتراضية',
@@ -315,32 +287,30 @@ return [
                         'timezone'                => 'المنطقة الزمنية',
                         'week-starts-on-monday'   => 'الأسبوع يبدأ الإثنين',
                         'week-starts-on-sunday'   => 'الأسبوع يبدأ الأحد',
+                        'first-day-of-week'       => 'أول يوم في الأسبوع',
                     ],
-
                     'editor' => [
-                        'default'      => 'القيمة الافتراضية',
-                        'disabled'     => 'معطل',
-                        'helper-text'  => 'نص مساعد',
-                        'hint'         => 'تلميح',
-                        'hint-color'   => 'لون التلميح',
-                        'hint-icon'    => 'أيقونة التلميح',
-                        'id'           => 'المعرف',
-                        'placeholder'  => 'نص توضيحي',
-                        'read-only'    => 'للقراءة فقط',
+                        'default'     => 'القيمة الافتراضية',
+                        'disabled'    => 'معطل',
+                        'helper-text' => 'نص مساعد',
+                        'hint'        => 'تلميح',
+                        'hint-color'  => 'لون التلميح',
+                        'hint-icon'   => 'أيقونة التلميح',
+                        'id'          => 'المعرف',
+                        'placeholder' => 'نص توضيحي',
+                        'read-only'   => 'للقراءة فقط',
                     ],
-
                     'markdown' => [
-                        'default'      => 'القيمة الافتراضية',
-                        'disabled'     => 'معطل',
-                        'helper-text'  => 'نص مساعد',
-                        'hint'         => 'تلميح',
-                        'hint-color'   => 'لون التلميح',
-                        'hint-icon'    => 'أيقونة التلميح',
-                        'id'           => 'المعرف',
-                        'placeholder'  => 'نص توضيحي',
-                        'read-only'    => 'للقراءة فقط',
+                        'default'     => 'القيمة الافتراضية',
+                        'disabled'    => 'معطل',
+                        'helper-text' => 'نص مساعد',
+                        'hint'        => 'تلميح',
+                        'hint-color'  => 'لون التلميح',
+                        'hint-icon'   => 'أيقونة التلميح',
+                        'id'          => 'المعرف',
+                        'placeholder' => 'نص توضيحي',
+                        'read-only'   => 'للقراءة فقط',
                     ],
-
                     'color' => [
                         'default'     => 'القيمة الافتراضية',
                         'disabled'    => 'معطل',
@@ -353,47 +323,45 @@ return [
                         'rgb'         => 'RGB',
                         'rgba'        => 'RGBA',
                     ],
-
                     'file' => [
-                        'accepted-file-types'                   => 'أنواع الملفات المقبولة',
-                        'append-files'                          => 'إلحاق الملفات',
-                        'deletable'                             => 'قابل للحذف',
-                        'directory'                             => 'المجلد',
-                        'downloadable'                          => 'قابل للتحميل',
-                        'fetch-file-information'                => 'جلب معلومات الملف',
-                        'file-attachments-directory'            => 'مجلد المرفقات',
-                        'file-attachments-visibility'           => 'رؤية المرفقات',
-                        'image'                                 => 'صورة',
-                        'image-crop-aspect-ratio'               => 'نسبة قص الصورة',
-                        'image-editor'                          => 'محرر الصور',
-                        'image-editor-aspect-ratios'            => 'نسب محرر الصور',
-                        'image-editor-empty-fill-color'         => 'لون تعبئة المحرر الفارغ',
-                        'image-editor-mode'                     => 'وضع محرر الصور',
-                        'image-preview-height'                  => 'ارتفاع معاينة الصورة',
-                        'image-resize-mode'                     => 'وضع تغيير حجم الصورة',
-                        'image-resize-target-height'            => 'ارتفاع الصورة المستهدف',
-                        'image-resize-target-width'             => 'عرض الصورة المستهدف',
-                        'loading-indicator-position'            => 'موضع مؤشر التحميل',
-                        'move-files'                            => 'نقل الملفات',
-                        'openable'                              => 'قابل للفتح',
-                        'orient-images-from-exif'               => 'توجيه الصور من EXIF',
-                        'panel-aspect-ratio'                    => 'نسبة اللوحة',
-                        'panel-layout'                          => 'تخطيط اللوحة',
-                        'previewable'                           => 'قابل للمعاينة',
-                        'remove-uploaded-file-button-position'  => 'موضع زر حذف الملف',
-                        'reorderable'                           => 'قابل لإعادة الترتيب',
-                        'store-files'                           => 'تخزين الملفات',
-                        'upload-button-position'                => 'موضع زر الرفع',
-                        'uploading-message'                     => 'رسالة الرفع',
-                        'upload-progress-indicator-position'    => 'موضع مؤشر تقدم الرفع',
-                        'visibility'                            => 'الرؤية',
+                        'accepted-file-types'                  => 'أنواع الملفات المقبولة',
+                        'append-files'                         => 'إلحاق الملفات',
+                        'deletable'                            => 'قابل للحذف',
+                        'directory'                            => 'المجلد',
+                        'downloadable'                         => 'قابل للتحميل',
+                        'fetch-file-information'               => 'جلب معلومات الملف',
+                        'file-attachments-directory'           => 'مجلد المرفقات',
+                        'file-attachments-visibility'          => 'رؤية المرفقات',
+                        'image'                                => 'صورة',
+                        'image-crop-aspect-ratio'              => 'نسبة قص الصورة',
+                        'image-editor'                         => 'محرر الصور',
+                        'image-editor-aspect-ratios'           => 'نسب محرر الصور',
+                        'image-editor-empty-fill-color'        => 'لون تعبئة المحرر الفارغ',
+                        'image-editor-mode'                    => 'وضع محرر الصور',
+                        'image-preview-height'                 => 'ارتفاع معاينة الصورة',
+                        'image-resize-mode'                    => 'وضع تغيير حجم الصورة',
+                        'image-resize-target-height'           => 'ارتفاع الصورة المستهدف',
+                        'image-resize-target-width'            => 'عرض الصورة المستهدف',
+                        'loading-indicator-position'           => 'موضع مؤشر التحميل',
+                        'move-files'                           => 'نقل الملفات',
+                        'openable'                             => 'قابل للفتح',
+                        'orient-images-from-exif'              => 'توجيه الصور من EXIF',
+                        'panel-aspect-ratio'                   => 'نسبة اللوحة',
+                        'panel-layout'                         => 'تخطيط اللوحة',
+                        'previewable'                          => 'قابل للمعاينة',
+                        'remove-uploaded-file-button-position' => 'موضع زر حذف الملف',
+                        'reorderable'                          => 'قابل لإعادة الترتيب',
+                        'store-files'                          => 'تخزين الملفات',
+                        'upload-button-position'               => 'موضع زر الرفع',
+                        'uploading-message'                    => 'رسالة الرفع',
+                        'upload-progress-indicator-position'   => 'موضع مؤشر تقدم الرفع',
+                        'visibility'                           => 'الرؤية',
+                        'file-attachment-directory'            => 'مجلد المرفقات',
                     ],
                 ],
             ],
-
             'table-settings' => [
-                'title' => 'إعدادات الجدول',
-
+                'title'  => 'إعدادات الجدول',
                 'fields' => [
                     'use-in-table'  => 'استخدام في الجدول',
                     'setting'       => 'الإعداد',
@@ -404,7 +372,6 @@ return [
                     'icon-position' => 'موضع الأيقونة',
                     'size'          => 'الحجم',
                     'add-setting'   => 'إضافة إعداد',
-
                     'color-options' => [
                         'danger'    => 'خطر',
                         'info'      => 'معلومات',
@@ -413,7 +380,6 @@ return [
                         'warning'   => 'تحذير',
                         'success'   => 'نجاح',
                     ],
-
                     'alignment-options' => [
                         'start'   => 'البداية',
                         'left'    => 'يسار',
@@ -423,7 +389,6 @@ return [
                         'justify' => 'ضبط',
                         'between' => 'بين',
                     ],
-
                     'font-weight-options' => [
                         'extra-light' => 'خفيف جداً',
                         'light'       => 'خفيف',
@@ -432,13 +397,13 @@ return [
                         'semi-bold'   => 'شبه عريض',
                         'bold'        => 'عريض',
                         'extra-bold'  => 'عريض جداً',
+                        'black'       => 'ثقيل جداً',
+                        'thin'        => 'رفيع',
                     ],
-
                     'icon-position-options' => [
-                        'before'  => 'قبل',
-                        'after'   => 'بعد',
+                        'before' => 'قبل',
+                        'after'  => 'بعد',
                     ],
-
                     'size-options' => [
                         'extra-small' => 'صغير جداً',
                         'small'       => 'صغير',
@@ -446,7 +411,6 @@ return [
                         'large'       => 'كبير',
                     ],
                 ],
-
                 'settings' => [
                     'common' => [
                         'align-end'              => 'محاذاة للنهاية',
@@ -489,7 +453,6 @@ return [
                         'hint-color'             => 'لون التلميح',
                         'hint-icon'              => 'أيقونة التلميح',
                     ],
-
                     'datetime' => [
                         'date'              => 'التاريخ',
                         'date-time'         => 'التاريخ والوقت',
@@ -498,10 +461,8 @@ return [
                     ],
                 ],
             ],
-
             'infolist-settings' => [
-                'title' => 'إعدادات قائمة المعلومات',
-
+                'title'  => 'إعدادات قائمة المعلومات',
                 'fields' => [
                     'setting'       => 'الإعداد',
                     'value'         => 'القيمة',
@@ -510,7 +471,6 @@ return [
                     'icon-position' => 'موضع الأيقونة',
                     'size'          => 'الحجم',
                     'add-setting'   => 'إضافة إعداد',
-
                     'color-options' => [
                         'danger'    => 'خطر',
                         'info'      => 'معلومات',
@@ -519,7 +479,6 @@ return [
                         'warning'   => 'تحذير',
                         'success'   => 'نجاح',
                     ],
-
                     'font-weight-options' => [
                         'extra-light' => 'خفيف جداً',
                         'light'       => 'خفيف',
@@ -528,13 +487,13 @@ return [
                         'semi-bold'   => 'شبه عريض',
                         'bold'        => 'عريض',
                         'extra-bold'  => 'عريض جداً',
+                        'black'       => 'ثقيل جداً',
+                        'thin'        => 'رفيع',
                     ],
-
                     'icon-position-options' => [
-                        'before'  => 'قبل',
-                        'after'   => 'بعد',
+                        'before' => 'قبل',
+                        'after'  => 'بعد',
                     ],
-
                     'size-options' => [
                         'extra-small' => 'صغير جداً',
                         'small'       => 'صغير',
@@ -542,7 +501,6 @@ return [
                         'large'       => 'كبير',
                     ],
                 ],
-
                 'settings' => [
                     'common' => [
                         'align-end'              => 'محاذاة للنهاية',
@@ -585,30 +543,26 @@ return [
                         'hint-color'             => 'لون التلميح',
                         'hint-icon'              => 'أيقونة التلميح',
                     ],
-
                     'datetime' => [
                         'date'              => 'التاريخ',
                         'date-time'         => 'التاريخ والوقت',
                         'date-time-tooltip' => 'تلميح التاريخ والوقت',
                         'since'             => 'منذ',
                     ],
-
                     'checkbox-list' => [
-                        'separator'                => 'فاصل',
-                        'list-with-line-breaks'    => 'قائمة بفواصل أسطر',
-                        'bulleted'                 => 'نقطي',
-                        'limit-list'               => 'تحديد القائمة',
-                        'expandable-limited-list'  => 'قائمة محدودة قابلة للتوسيع',
+                        'separator'               => 'فاصل',
+                        'list-with-line-breaks'   => 'قائمة بفواصل أسطر',
+                        'bulleted'                => 'نقطي',
+                        'limit-list'              => 'تحديد القائمة',
+                        'expandable-limited-list' => 'قائمة محدودة قابلة للتوسيع',
                     ],
-
                     'select' => [
-                        'separator'                => 'فاصل',
-                        'list-with-line-breaks'    => 'قائمة بفواصل أسطر',
-                        'bulleted'                 => 'نقطي',
-                        'limit-list'               => 'تحديد القائمة',
-                        'expandable-limited-list'  => 'قائمة محدودة قابلة للتوسيع',
+                        'separator'               => 'فاصل',
+                        'list-with-line-breaks'   => 'قائمة بفواصل أسطر',
+                        'bulleted'                => 'نقطي',
+                        'limit-list'              => 'تحديد القائمة',
+                        'expandable-limited-list' => 'قائمة محدودة قابلة للتوسيع',
                     ],
-
                     'checkbox' => [
                         'boolean'     => 'منطقي',
                         'false-icon'  => 'أيقونة خطأ',
@@ -616,7 +570,6 @@ return [
                         'true-color'  => 'لون صحيح',
                         'false-color' => 'لون خطأ',
                     ],
-
                     'toggle' => [
                         'boolean'     => 'منطقي',
                         'false-icon'  => 'أيقونة خطأ',
@@ -626,17 +579,14 @@ return [
                     ],
                 ],
             ],
-
             'settings' => [
-                'title' => 'الإعدادات',
-
+                'title'  => 'الإعدادات',
                 'fields' => [
                     'type'           => 'النوع',
                     'input-type'     => 'نوع الإدخال',
                     'is-multiselect' => 'اختيار متعدد',
                     'sort-order'     => 'ترتيب الفرز',
-
-                    'type-options' => [
+                    'type-options'   => [
                         'text'          => 'حقل نص',
                         'textarea'      => 'منطقة نص',
                         'select'        => 'قائمة منسدلة',
@@ -649,7 +599,6 @@ return [
                         'markdown'      => 'محرر Markdown',
                         'color'         => 'منتقي الألوان',
                     ],
-
                     'input-type-options' => [
                         'text'     => 'نص',
                         'email'    => 'بريد إلكتروني',
@@ -662,17 +611,14 @@ return [
                     ],
                 ],
             ],
-
             'resource' => [
-                'title' => 'المورد',
-
+                'title'  => 'المورد',
                 'fields' => [
                     'resource' => 'المورد',
                 ],
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'code'       => 'الرمز',
@@ -681,14 +627,11 @@ return [
             'resource'   => 'المورد',
             'created-at' => 'تاريخ الإنشاء',
         ],
-
         'groups' => [
         ],
-
         'filters' => [
-            'type'     => 'النوع',
-            'resource' => 'المورد',
-
+            'type'         => 'النوع',
+            'resource'     => 'المورد',
             'type-options' => [
                 'text'          => 'حقل نص',
                 'textarea'      => 'منطقة نص',
@@ -703,7 +646,6 @@ return [
                 'color'         => 'منتقي الألوان',
             ],
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -711,14 +653,12 @@ return [
                     'body'  => 'تم استعادة الحقل بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف الحقل',
                     'body'  => 'تم حذف الحقل بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف الحقل نهائياً',
@@ -726,7 +666,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -734,14 +673,12 @@ return [
                     'body'  => 'تم استعادة الحقول بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف الحقول',
                     'body'  => 'تم حذف الحقول بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف الحقول نهائياً',

@@ -779,7 +779,7 @@ class RoleResource extends ShieldRoleResource
         $moduleRows = collect($summary['module_summary'])
             ->filter(fn (array $row): bool => ($row['level'] ?? 'none') !== 'none')
             ->map(fn (array $row): string => sprintf(
-                '<tr><td class="px-3 py-2">%s</td><td class="px-3 py-2">%s</td><td class="px-3 py-2">%d / %d</td></tr>',
+                '<tr><td class="px-3 py-2">%s</td><td class="px-3 py-2">%s</td><td class="px-3 py-2"><bdi dir="ltr">%d/%d</bdi></td></tr>',
                 e($row['label']),
                 e(ModuleAccessLevel::tryFrom($row['level'])?->getLabel() ?? $row['level']),
                 $row['selected'],
@@ -801,7 +801,7 @@ class RoleResource extends ShieldRoleResource
         $guard = e($data['guard_name'] ?? 'web');
 
         $table = $moduleRows !== ''
-            ? "<table class=\"mt-4 w-full text-sm\"><thead><tr><th class=\"px-3 py-2 text-start\">Module</th><th class=\"px-3 py-2 text-start\">Level</th><th class=\"px-3 py-2 text-start\">Permissions</th></tr></thead><tbody>{$moduleRows}</tbody></table>"
+            ? '<table class="mt-4 w-full text-sm"><thead><tr><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.module')).'</th><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.level')).'</th><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.permissions'))."</th></tr></thead><tbody>{$moduleRows}</tbody></table>"
             : '<p class="mt-2 text-sm text-gray-500">'.e(__('role-management.summary.no_modules')).'</p>';
 
         return new HtmlString(

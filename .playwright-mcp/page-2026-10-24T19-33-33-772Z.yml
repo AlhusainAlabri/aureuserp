@@ -1,0 +1,179 @@
+- generic [ref=f14e412]:
+  - navigation [ref=f14e414]:
+    - button [ref=f14e417] [cursor=pointer]
+    - list [ref=f14e428]:
+      - listitem [ref=f14e429]: الإعدادات
+      - listitem [ref=f14e430]:
+        - link "الأدوار" [ref=f14e431] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f14e433]:
+        - link "الشركات" [ref=f14e434] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f14e436]:
+        - link "الفرق" [ref=f14e437] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f14e439]:
+        - link "المستخدمون" [ref=f14e440] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f14e442]:
+        - link "الحقول المخصصة" [ref=f14e443] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f14e445]:
+        - link "اختصارات لوحة التحكم" [ref=f14e446] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f14e450]:
+        - link "الإعدادات" [ref=f14e451] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f14e42]:
+      - button "جديد" [ref=f14e45] [cursor=pointer]
+      - generic [ref=f14e51]:
+        - generic [ref=f14e53]:
+          - generic [ref=f14e54]: بحث عام
+          - searchbox "بحث عام" [ref=f14e60]
+        - button "العربية" [ref=f14e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f14e70] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f14e455] [cursor=pointer]
+      - generic [ref=f14e74]:
+        - button "قائمة المستخدم" [active] [ref=f14e76] [cursor=pointer]:
+          - img "صورة شخصية لـ Admin" [ref=f14e77]
+        - generic [ref=f14e731]:
+          - generic [ref=f14e733]:
+            - button "تفعيل الوضع النهاري" [ref=f14e734] [cursor=pointer]
+            - button "تفعيل الوضع الليلي" [ref=f14e737] [cursor=pointer]
+            - button "تفعيل سمة النظام" [ref=f14e740] [cursor=pointer]
+          - generic [ref=f14e743]:
+            - link "Admin" [ref=f14e744] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/settings/profile
+            - button "تسجيل الخروج" [ref=f14e747] [cursor=pointer]
+  - generic [ref=f14e458]:
+    - complementary [ref=f14e459]:
+      - navigation [ref=f14e460]:
+        - list [ref=f14e461]:
+          - list [ref=f14e462]:
+            - listitem [ref=f14e463]:
+              - link "الأدوار" [ref=f14e464] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f14e466]:
+              - link "الشركات" [ref=f14e467] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f14e469]:
+              - link "الفرق" [ref=f14e470] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f14e472]:
+              - link "المستخدمون" [ref=f14e473] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f14e475]:
+              - link "الحقول المخصصة" [ref=f14e476] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f14e478]:
+              - link "اختصارات لوحة التحكم" [ref=f14e479] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f14e483]:
+              - link "الإعدادات" [ref=f14e484] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f14e486]:
+      - main [ref=f14e487]:
+        - generic [ref=f14e489]:
+          - generic [ref=f14e490]:
+            - generic [ref=f14e491]:
+              - navigation [ref=f14e492]:
+                - list [ref=f14e493]:
+                  - listitem [ref=f14e494]:
+                    - link "المستخدمون" [ref=f14e495] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/users
+                  - listitem [ref=f14e496]:
+                    - link "خالد المشتري" [ref=f14e499] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/users/2
+                  - listitem [ref=f14e500]:
+                    - generic [ref=f14e503]: عرض
+              - heading "عرض خالد المشتري" [level=1] [ref=f14e504]
+            - generic [ref=f14e506]:
+              - link "تعديل" [ref=f14e507] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users/2/edit
+              - button "حذف" [ref=f14e508] [cursor=pointer]
+          - generic [ref=f14e518]:
+            - generic [ref=f14e522]:
+              - generic [ref=f14e526]:
+                - heading "معلومات عامة" [level=2] [ref=f14e529]
+                - generic [ref=f14e531]:
+                  - generic [ref=f14e534]:
+                    - term [ref=f14e537]: الاسم
+                    - definition [ref=f14e539]:
+                      - generic [ref=f14e540]: خالد المشتري
+                  - generic [ref=f14e546]:
+                    - term [ref=f14e549]: البريد الإلكتروني
+                    - definition [ref=f14e551]:
+                      - generic [ref=f14e552]: khalid.buyer@alwaha.example.om
+                  - generic [ref=f14e558]:
+                    - term [ref=f14e561]: اللغة المفضلة
+                    - definition [ref=f14e563]:
+                      - generic [ref=f14e564]: ar
+              - generic [ref=f14e571]:
+                - heading "الصلاحيات" [level=2] [ref=f14e574]
+                - generic [ref=f14e576]:
+                  - generic [ref=f14e579]:
+                    - term [ref=f14e582]: الأدوار
+                    - definition [ref=f14e584]:
+                      - list [ref=f14e586]:
+                        - listitem [ref=f14e587]: مدير مشتريات
+                  - generic [ref=f14e592]:
+                    - term [ref=f14e595]: الفرق
+                    - definition [ref=f14e597]:
+                      - paragraph [ref=f14e600]: —
+                  - generic [ref=f14e603]:
+                    - term [ref=f14e606]: صلاحية المورد
+                    - definition [ref=f14e608]:
+                      - generic [ref=f14e609]: عام
+            - generic [ref=f14e616]:
+              - generic [ref=f14e620]:
+                - heading "الصورة الرمزية" [level=2] [ref=f14e623]
+                - definition [ref=f14e630]:
+                  - paragraph [ref=f14e633]: —
+              - generic [ref=f14e637]:
+                - heading "تعدد الشركات" [level=2] [ref=f14e640]
+                - generic [ref=f14e642]:
+                  - generic [ref=f14e645]:
+                    - term [ref=f14e648]: الشركات المسموحة
+                    - definition [ref=f14e650]:
+                      - paragraph [ref=f14e653]: —
+                  - generic [ref=f14e656]:
+                    - term [ref=f14e659]: الشركة الافتراضية
+                    - definition [ref=f14e661]:
+                      - generic [ref=f14e662]: شركة الواحة للتجارة والخدمات ش.م.م
+              - generic [ref=f14e669]:
+                - heading "اللغة والحالة" [level=2] [ref=f14e672]
+                - generic [ref=f14e677]:
+                  - term [ref=f14e680]: الحالة
+                  - definition [ref=f14e682]
+      - contentinfo [ref=f14e687]:
+        - generic [ref=f14e688]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f14e701]:
+    - generic [ref=f14e702] [cursor=pointer]
+    - generic [ref=f14e703]:
+      - generic [ref=f14e704] [cursor=pointer]: Request
+      - generic [ref=f14e705] [cursor=pointer]: Timeline
+      - generic [ref=f14e708] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f14e709]: "62"
+      - generic [ref=f14e710] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f14e711]: "27"
+      - generic [ref=f14e712] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f14e713]: "2"
+      - generic [ref=f14e714] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f14e715]: "2"
+    - generic [ref=f14e716]:
+      - generic [ref=f14e717] [cursor=pointer]
+      - generic [ref=f14e718] [cursor=pointer]
+      - generic [ref=f14e719] [cursor=pointer]
+      - generic [ref=f14e721] [cursor=pointer]
+      - generic [ref=f14e723] [cursor=pointer]:
+        - generic [ref=f14e752]: "2"
+        - generic [ref=f14e724]: POST /livewire-ff82a33d/update
+      - generic [ref=f14e725] [cursor=pointer]: 227ms
+      - generic [ref=f14e727] [cursor=pointer]: 11MB
+      - generic [ref=f14e729] [cursor=pointer]: 13.x

@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Webkul\Inventory\Filament\Clusters\Configurations;
 use Webkul\Inventory\Filament\Clusters\Configurations\Resources\ProductAttributeResource\Pages\CreateProductAttribute;
 use Webkul\Inventory\Filament\Clusters\Configurations\Resources\ProductAttributeResource\Pages\EditProductAttribute;
@@ -13,6 +14,8 @@ use Webkul\Product\Settings\ProductSettings;
 
 class ProductAttributeResource extends AttributeResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Attribute::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-swatch';

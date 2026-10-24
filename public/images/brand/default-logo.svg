@@ -1,0 +1,8 @@
+<svg width="160" height="48" viewBox="0 0 160 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ERP">
+	<rect width="160" height="48" rx="12" fill="#16A34A"/>
+	<g stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M58 14H42V34H58M42 24H55"/>
+		<path d="M72 34V14H82a6 6 0 0 1 0 12H72M82 26L90 34"/>
+		<path d="M102 34V14H112a6 6 0 0 1 0 12H102"/>
+	</g>
+</svg>

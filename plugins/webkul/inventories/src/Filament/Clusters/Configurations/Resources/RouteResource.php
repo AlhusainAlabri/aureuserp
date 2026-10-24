@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -50,6 +51,8 @@ use Webkul\Product\Settings\ProductSettings;
 
 class RouteResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Route::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';

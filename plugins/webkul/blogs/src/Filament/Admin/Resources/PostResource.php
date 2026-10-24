@@ -2,6 +2,7 @@
 
 namespace Webkul\Blog\Filament\Admin\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -47,6 +48,8 @@ use Webkul\Blog\Models\Post;
 
 class PostResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Post::class;
 
     protected static ?string $slug = 'website/posts';

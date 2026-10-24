@@ -8,7 +8,6 @@ use Filament\Forms;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
-use UnitEnum;
 use Webkul\Product\Settings\ProductSettings;
 use Webkul\Support\Filament\Clusters\Settings;
 
@@ -20,7 +19,10 @@ class ManageProducts extends SettingsPage
 
     protected static ?string $slug = 'sale/manage-products';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sales';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.sales');
+    }
 
     protected static ?int $navigationSort = 1;
 

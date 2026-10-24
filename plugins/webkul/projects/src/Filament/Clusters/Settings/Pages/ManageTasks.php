@@ -17,7 +17,10 @@ class ManageTasks extends SettingsPage
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Project';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.project');
+    }
 
     protected static string $settings = TaskSettings::class;
 

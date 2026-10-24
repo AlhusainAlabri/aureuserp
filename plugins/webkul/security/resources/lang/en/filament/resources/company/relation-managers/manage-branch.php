@@ -4,23 +4,20 @@ return [
     'form' => [
         'tabs' => [
             'general-information' => [
-                'title' => 'General Information',
-
+                'title'    => 'General Information',
                 'sections' => [
                     'branch-information' => [
-                        'title' => 'Branch Information',
-
+                        'title'  => 'Branch Information',
                         'fields' => [
-                            'company-name'                => 'Company Name',
-                            'registration-number'         => 'Registration Number',
-                            'tax-id'                      => 'Tax ID',
-                            'tax-id-tooltip'              => 'The Tax ID is a unique identifier for your company.',
-                            'color'                       => 'Color',
-                            'company-id'                  => 'Company ID',
-                            'company-id-tooltip'          => 'The Company ID is a unique identifier for your company.',
+                            'company-name'        => 'Company Name',
+                            'registration-number' => 'Registration Number',
+                            'tax-id'              => 'Tax ID',
+                            'tax-id-tooltip'      => 'The Tax ID is a unique identifier for your company.',
+                            'color'               => 'Color',
+                            'company-id'          => 'Company ID',
+                            'company-id-tooltip'  => 'The Company ID is a unique identifier for your company.',
                         ],
                     ],
-
                     'branding' => [
                         'title'  => 'Branding',
                         'fields' => [
@@ -29,14 +26,11 @@ return [
                     ],
                 ],
             ],
-
             'address-information' => [
-                'title' => 'Address Information',
-
+                'title'    => 'Address Information',
                 'sections' => [
                     'address-information' => [
-                        'title' => 'Address Information',
-
+                        'title'  => 'Address Information',
                         'fields' => [
                             'street1'                => 'Street 1',
                             'street2'                => 'Street 2',
@@ -57,10 +51,8 @@ return [
                             'state-create'           => 'Create State',
                         ],
                     ],
-
                     'additional-information' => [
-                        'title' => 'Additional Information',
-
+                        'title'  => 'Additional Information',
                         'fields' => [
                             'default-currency'        => 'Default Currency',
                             'currency-name'           => 'Currency Name',
@@ -77,14 +69,11 @@ return [
                     ],
                 ],
             ],
-
             'contact-information' => [
-                'title' => 'Contact Information',
-
+                'title'    => 'Contact Information',
                 'sections' => [
                     'contact-information' => [
-                        'title' => 'Contact Information',
-
+                        'title'  => 'Contact Information',
                         'fields' => [
                             'email-address' => 'Email Address',
                             'phone-number'  => 'Phone Number',
@@ -95,21 +84,19 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'logo'                 => 'Logo',
-            'company-name'         => 'Branch Name',
-            'branches'             => 'Branches',
-            'email'                => 'Email',
-            'city'                 => 'City',
-            'country'              => 'Country',
-            'currency'             => 'Currency',
-            'status'               => 'Status',
-            'created-at'           => 'Created At',
-            'updated-at'           => 'Updated At',
+            'logo'         => 'Logo',
+            'company-name' => 'Branch Name',
+            'branches'     => 'Branches',
+            'email'        => 'Email',
+            'city'         => 'City',
+            'country'      => 'Country',
+            'currency'     => 'Currency',
+            'status'       => 'Status',
+            'created-at'   => 'Created At',
+            'updated-at'   => 'Updated At',
         ],
-
         'groups' => [
             'company-name' => 'Branch Name',
             'city'         => 'City',
@@ -121,13 +108,11 @@ return [
             'created-at'   => 'Created At',
             'updated-at'   => 'Updated At',
         ],
-
         'filters' => [
             'trashed' => 'Trashed',
             'status'  => 'Status',
             'country' => 'Country',
         ],
-
         'header-actions' => [
             'create' => [
                 'notification' => [
@@ -136,7 +121,6 @@ return [
                 ],
             ],
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -144,14 +128,12 @@ return [
                     'body'  => 'The branch has been updated successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Branch deleted',
                     'body'  => 'The branch has been deleted successfully.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'Branch restored',
@@ -159,7 +141,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -167,14 +148,12 @@ return [
                     'body'  => 'The branches has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Branches deleted',
                     'body'  => 'The branches has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Branches force deleted',
@@ -183,16 +162,13 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'tabs' => [
             'general-information' => [
-                'title' => 'General Information',
-
+                'title'    => 'General Information',
                 'sections' => [
                     'branch-information' => [
-                        'title' => 'Branch Information',
-
+                        'title'   => 'Branch Information',
                         'entries' => [
                             'company-name'                => 'Company Name',
                             'registration-number'         => 'Registration Number',
@@ -200,7 +176,6 @@ return [
                             'color'                       => 'Color',
                         ],
                     ],
-
                     'branding' => [
                         'title'   => 'Branding',
                         'entries' => [
@@ -209,14 +184,11 @@ return [
                     ],
                 ],
             ],
-
             'address-information' => [
-                'title' => 'Address Information',
-
+                'title'    => 'Address Information',
                 'sections' => [
                     'address-information' => [
-                        'title' => 'Address Information',
-
+                        'title'   => 'Address Information',
                         'entries' => [
                             'street1'                => 'Street 1',
                             'street2'                => 'Street 2',
@@ -237,10 +209,8 @@ return [
                             'state-create'           => 'Create State',
                         ],
                     ],
-
                     'additional-information' => [
-                        'title' => 'Additional Information',
-
+                        'title'   => 'Additional Information',
                         'entries' => [
                             'default-currency'        => 'Default Currency',
                             'currency-name'           => 'Currency Name',
@@ -257,14 +227,11 @@ return [
                     ],
                 ],
             ],
-
             'contact-information' => [
-                'title' => 'Contact Information',
-
+                'title'    => 'Contact Information',
                 'sections' => [
                     'contact-information' => [
-                        'title' => 'Contact Information',
-
+                        'title'   => 'Contact Information',
                         'entries' => [
                             'email-address' => 'Email Address',
                             'phone-number'  => 'Phone Number',
@@ -275,4 +242,6 @@ return [
             ],
         ],
     ],
+    'title'       => 'Branches',
+    'model-label' => 'branch',
 ];

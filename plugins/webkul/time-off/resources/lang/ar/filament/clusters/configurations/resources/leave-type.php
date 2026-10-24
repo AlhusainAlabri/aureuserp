@@ -5,7 +5,6 @@ return [
     'navigation' => [
         'title' => 'نوع الإجازة',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
@@ -25,8 +24,7 @@ return [
                 ],
             ],
             'configuration' => [
-                'title' => 'الإعدادات',
-
+                'title'  => 'الإعدادات',
                 'fields' => [
                     'notified-time-off-officers'          => 'مسؤولو الإجازات المُبلَّغون',
                     'take-time-off-in'                    => 'أخذ الإجازة بـ',
@@ -41,19 +39,17 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'name'                      => 'الاسم',
-            'company-name'              => 'الشركة',
-            'color'                     => 'اللون',
-            'notified-time-officers'    => 'مسؤولو الإجازات المُبلَّغون',
-            'time-off-approval'         => 'موافقة الإجازة',
-            'requires-allocation'       => 'يتطلب تخصيص',
-            'allocation-approval'       => 'موافقة التخصيص',
-            'employee-request'          => 'طلب الموظف',
+            'name'                   => 'الاسم',
+            'company-name'           => 'الشركة',
+            'color'                  => 'اللون',
+            'notified-time-officers' => 'مسؤولو الإجازات المُبلَّغون',
+            'time-off-approval'      => 'موافقة الإجازة',
+            'requires-allocation'    => 'يتطلب تخصيص',
+            'allocation-approval'    => 'موافقة التخصيص',
+            'employee-request'       => 'طلب الموظف',
         ],
-
         'filters' => [
             'name'                => 'الاسم',
             'company-name'        => 'الشركة',
@@ -62,8 +58,10 @@ return [
             'time-type'           => 'نوع الوقت',
             'request-unit'        => 'وحدة الطلب',
             'created-by'          => 'أنشئ بواسطة',
+            'created-at'          => 'تاريخ الإنشاء',
+            'updated-at'          => 'تاريخ التحديث',
+            'employee-request'    => 'طلبات الموظفين',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -78,7 +76,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -86,14 +83,12 @@ return [
                     'body'  => 'تم استعادة نوع الإجازة بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف نوع الإجازة',
                     'body'  => 'تم حذف نوع الإجازة بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
@@ -108,7 +103,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
@@ -128,8 +122,7 @@ return [
                 ],
             ],
             'configuration' => [
-                'title' => 'الإعدادات',
-
+                'title'   => 'الإعدادات',
                 'entries' => [
                     'notified-time-off-officers'          => 'مسؤولو الإجازات المُبلَّغون',
                     'take-time-off-in'                    => 'أخذ الإجازة بـ',

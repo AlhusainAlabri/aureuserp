@@ -3,12 +3,10 @@
 return [
     'create-employee' => 'Create Employee',
     'goto-employee'   => 'Go to Employee',
-
-    'notification' => [
+    'notification'    => [
         'title' => 'Applicant updated',
         'body'  => 'The applicant has been updated successfully.',
     ],
-
     'header-actions' => [
         'delete' => [
             'notification' => [
@@ -22,7 +20,6 @@ return [
                 'body'  => 'The applicant has been force deleted successfully.',
             ],
         ],
-
         'refuse' => [
             'title'        => 'Refuse Reason',
             'notification' => [
@@ -30,7 +27,6 @@ return [
                 'body'  => 'The applicant has been refused successfully.',
             ],
         ],
-
         'reopen' => [
             'title'        => 'Reopen Applicant',
             'notification' => [
@@ -38,20 +34,23 @@ return [
                 'body'  => 'The applicant has been reopened successfully.',
             ],
         ],
-
         'state' => [
             'notification' => [
                 'title' => 'Applicant state updated',
                 'body'  => 'The applicant state has been updated successfully.',
             ],
         ],
+        'restore' => [
+            'notification' => [
+                'title' => 'Applicant restored',
+                'body'  => 'The applicant has been restored successfully.',
+            ],
+        ],
     ],
-
     'mail' => [
         'application-refused' => [
             'subject' => 'Your Job Application: :application',
         ],
-
         'application-confirm' => [
             'subject' => 'Your Job Application: :job_position',
         ],

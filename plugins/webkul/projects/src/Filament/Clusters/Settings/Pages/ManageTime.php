@@ -15,7 +15,10 @@ class ManageTime extends SettingsPage
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Project';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.project');
+    }
 
     protected static string $settings = TimeSettings::class;
 

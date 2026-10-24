@@ -1,14 +1,12 @@
 <?php
 
 return [
-    'title'      => 'وارد/صادر',
-    'breadcrumb' => 'حركات المخزون',
-
+    'title'       => 'وارد/صادر',
+    'breadcrumb'  => 'حركات المخزون',
     'empty-state' => [
         'heading'     => 'لا توجد حركات مخزون',
         'description' => 'ستظهر حركات الوارد والصادر لهذا المنتج هنا.',
     ],
-
     'tabs' => [
         'todo'     => 'للتنفيذ',
         'done'     => 'منجز',
@@ -16,7 +14,6 @@ return [
         'outgoing' => 'صادر',
         'internal' => 'داخلي',
     ],
-
     'table' => [
         'columns' => [
             'date'                 => 'التاريخ',
@@ -31,7 +28,6 @@ return [
             'state'                => 'الحالة',
             'done-by'              => 'تم بواسطة',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [

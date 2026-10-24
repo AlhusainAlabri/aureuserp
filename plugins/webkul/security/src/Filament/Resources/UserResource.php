@@ -465,6 +465,7 @@ class UserResource extends Resource
                                             ->placeholder('—')
                                             ->label(__('security::filament/resources/user.infolist.sections.general-information.entries.email')),
                                         TextEntry::make('language')
+                                            ->formatStateUsing(fn (?string $state): ?string => filled($state) ? config("app.supported_locales.{$state}.native", $state) : null)
                                             ->icon('heroicon-o-language')
                                             ->placeholder('—')
                                             ->label(__('security::filament/resources/user.infolist.sections.lang-and-status.entries.language')),

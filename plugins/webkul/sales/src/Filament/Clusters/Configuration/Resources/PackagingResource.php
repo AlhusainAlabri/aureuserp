@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Webkul\Product\Filament\Resources\PackagingResource as BasePackagingResource;
 use Webkul\Product\Settings\ProductSettings;
 use Webkul\Sale\Filament\Clusters\Configuration;
@@ -10,6 +11,8 @@ use Webkul\Sale\Models\Packaging;
 
 class PackagingResource extends BasePackagingResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Packaging::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-gift';

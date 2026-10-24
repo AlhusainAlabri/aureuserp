@@ -2,6 +2,7 @@
 
 namespace Webkul\Website\Filament\Admin\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -43,6 +44,8 @@ use Webkul\Website\Models\Page as PageModel;
 
 class PageResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = PageModel::class;
 
     protected static ?string $slug = 'website/pages';

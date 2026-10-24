@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\AccountResourceExtensions;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -93,6 +94,7 @@ use Webkul\Support\Models\UOM;
 class InvoiceResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Invoice::class;
 

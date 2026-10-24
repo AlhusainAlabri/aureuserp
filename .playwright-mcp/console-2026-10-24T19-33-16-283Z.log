@@ -1,0 +1,29 @@
+[     430ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:8000/admin/users/create:0
+[     430ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:8000/admin/users/create:0
+[   12814ms] [WARNING] The resource http://localhost:8000/build/assets/theme-D03k5_VK.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:8000/admin/users/2:0
+[   12814ms] [WARNING] The resource http://localhost:8000/fonts/filament/filament/inter/inter-latin-wght-normal-NRMW37G5.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:8000/admin/users/2:0
+[   19374ms] [WARNING] The resource http://localhost:8000/build/assets/theme-D03k5_VK.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:8000/admin/users/2:0
+[   19375ms] [WARNING] The resource http://localhost:8000/fonts/filament/filament/inter/inter-latin-wght-normal-NRMW37G5.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:8000/admin/users/2:0
+[   34420ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/users:0
+[   34751ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/shield/roles:0
+[   35067ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/companies:0
+[   35375ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/settings/manage-users:0
+[   35684ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/settings/manage-branding:0
+[   35994ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/system-backups:0
+[   36788ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/fields:0
+[   37092ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8000/admin/purchase/orders/orders:0
+[   37416ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/employees/employees:0
+[   37701ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8000/admin/payroll/payrolls:0
+[   38012ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/sale/orders/orders:0
+[   38322ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/accounting/customers/invoices:0
+[   38633ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/inventory/operations/receipts:0
+[   38955ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/currencies:0
+[   39279ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/system-health-dashboard:0
+[   39600ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/github-deploy:0
+[   52501ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/payroll/loans:0
+[   53275ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/payroll/configuration/salary-components:0
+[   56145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8000/admin/purchase/vendors/vendors:0
+[   56465ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/contact/contacts:0
+[   56804ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/inventory/products/products:0
+[   58433ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/teams:0
+[   60912ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ http://localhost:8000/admin/settings/dashboard-shortcuts:0

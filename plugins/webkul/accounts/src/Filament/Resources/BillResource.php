@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\AccountResourceExtensions;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -90,6 +91,8 @@ use Webkul\Support\Models\UOM;
 
 class BillResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Bill::class;
 
     protected static ?string $recordTitleAttribute = 'name';

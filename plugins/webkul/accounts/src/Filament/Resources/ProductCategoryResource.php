@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Fieldset;
@@ -17,6 +18,8 @@ use Webkul\Product\Filament\Resources\CategoryResource as BaseProductCategoryRes
 
 class ProductCategoryResource extends BaseProductCategoryResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static bool $shouldRegisterNavigation = false;

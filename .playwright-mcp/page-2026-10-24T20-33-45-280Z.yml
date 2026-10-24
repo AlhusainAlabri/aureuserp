@@ -1,0 +1,142 @@
+- generic [ref=f29e1]:
+  - navigation [ref=f29e3]:
+    - button [ref=f29e6] [cursor=pointer]
+    - list [ref=f29e17]:
+      - listitem [ref=f29e18]: لوحة التحكم
+      - listitem [ref=f29e19]:
+        - link "لوحة التحكم الرئيسية" [ref=f29e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin
+      - listitem [ref=f29e24]:
+        - link "نظرة تنفيذية" [ref=f29e25] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/org-overview
+      - listitem [ref=f29e29]:
+        - link "المشاريع" [ref=f29e30] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/project
+      - listitem [ref=f29e32]:
+        - link "التوظيف" [ref=f29e33] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/recruitment
+    - generic [ref=f29e35]:
+      - button "جديد" [ref=f29e38] [cursor=pointer]
+      - generic [ref=f29e44]:
+        - generic [ref=f29e46]:
+          - generic [ref=f29e47]: بحث عام
+          - searchbox "بحث عام" [ref=f29e53]
+        - button "العربية" [ref=f29e56] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f29e63] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f29e405] [cursor=pointer]
+      - generic [ref=f29e67]:
+        - button "قائمة المستخدم" [active] [ref=f29e69] [cursor=pointer]:
+          - img "صورة شخصية لـ Admin" [ref=f29e70]
+        - generic [ref=f29e408]:
+          - generic [ref=f29e410]:
+            - button "تفعيل الوضع النهاري" [ref=f29e411] [cursor=pointer]
+            - button "تفعيل الوضع الليلي" [ref=f29e414] [cursor=pointer]
+            - button "تفعيل سمة النظام" [ref=f29e417] [cursor=pointer]
+          - generic [ref=f29e420]:
+            - link "Admin" [ref=f29e421] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/settings/profile
+            - button "تسجيل الخروج" [ref=f29e424] [cursor=pointer]
+  - generic [ref=f29e71]:
+    - complementary [ref=f29e72]:
+      - navigation [ref=f29e73]:
+        - list [ref=f29e74]:
+          - list [ref=f29e75]:
+            - listitem [ref=f29e76]:
+              - link "لوحة التحكم الرئيسية" [ref=f29e77] [cursor=pointer]:
+                - /url: http://localhost:8000/admin
+            - listitem [ref=f29e81]:
+              - link "المشاريع" [ref=f29e82] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/project
+            - listitem [ref=f29e84]:
+              - link "التوظيف" [ref=f29e85] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/recruitment
+            - listitem [ref=f29e87]:
+              - link "نظرة تنفيذية" [ref=f29e88] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/org-overview
+    - generic [ref=f29e93]:
+      - main [ref=f29e94]:
+        - generic [ref=f29e99]:
+          - generic [ref=f29e100]:
+            - img "الواحة ERP" [ref=f29e101]
+            - heading "مرحباً، Admin" [level=1] [ref=f29e103]
+          - generic [ref=f29e104]:
+            - generic [ref=f29e108]:
+              - generic [ref=f29e109]: بحث
+              - searchbox "بحث" [ref=f29e115]
+            - button "تخصيص" [ref=f29e118] [cursor=pointer]
+          - paragraph [ref=f29e121]: جميع الوحدات والاختصارات ظاهرة
+          - generic [ref=f29e122]:
+            - link "لوحة التحكم" [ref=f29e123] [cursor=pointer]:
+              - /url: http://localhost:8000/admin
+            - link "جهات الاتصال" [ref=f29e135] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/contact/contacts
+            - link "المبيعات" [ref=f29e151] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/sale/orders
+            - link "المشتريات" [ref=f29e159] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/purchase/orders
+            - link "التصنيع" [ref=f29e171] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/manufacturing/operations
+            - link "المخزون" [ref=f29e186] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/inventory/dashboard
+            - link "الفواتير" [ref=f29e198] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/invoices/customers
+            - link "المحاسبة" [ref=f29e209] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/accounting/customers
+            - link "المشروع" [ref=f29e226] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/projects/task-hub
+            - link "إدارة المحاضر" [ref=f29e234] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/meetings/dashboard
+            - link "مذكرتي" [ref=f29e247] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/my-notes?lang=ar
+            - link "المراسلات" [ref=f29e260] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/correspondence/dashboard
+            - link "أرشيف المستندات" [ref=f29e272] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/document-archive/dashboard
+            - link "إدارة الأصول" [ref=f29e285] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/assets/dashboard
+            - link "الموظفون" [ref=f29e297] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/employees/employees
+            - link "الرواتب" [ref=f29e309] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/payroll/employee-components?lang=ar
+            - link "الإجازات" [ref=f29e321] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/time-off/dashboard
+            - link "التوظيف" [ref=f29e330] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/recruitments/applications
+            - link "الموقع الإلكتروني" [ref=f29e340] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/website
+            - link "الموافقات" [ref=f29e351] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/approval-flows
+            - link "الإعدادات" [ref=f29e361] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/companies
+      - contentinfo [ref=f29e369]:
+        - generic [ref=f29e370]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f29e373]:
+    - generic [ref=f29e374] [cursor=pointer]
+    - generic [ref=f29e375]:
+      - generic [ref=f29e376] [cursor=pointer]: Request
+      - generic [ref=f29e377] [cursor=pointer]: Timeline
+      - generic [ref=f29e380] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f29e381]: "61"
+      - generic [ref=f29e382] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f29e383]: "27"
+      - generic [ref=f29e384] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f29e385]: "1"
+      - generic [ref=f29e386] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f29e387]: "2"
+    - generic [ref=f29e388]:
+      - generic [ref=f29e389] [cursor=pointer]
+      - generic [ref=f29e390] [cursor=pointer]
+      - generic [ref=f29e391] [cursor=pointer]
+      - generic [ref=f29e393] [cursor=pointer]
+      - generic [ref=f29e395] [cursor=pointer]:
+        - generic [ref=f29e429]: "2"
+        - generic [ref=f29e396]: POST /livewire-ff82a33d/update
+      - generic [ref=f29e397] [cursor=pointer]: 217ms
+      - generic [ref=f29e399] [cursor=pointer]: 18MB
+      - generic [ref=f29e401] [cursor=pointer]: 13.x

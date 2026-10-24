@@ -22,7 +22,10 @@ class ManageOperations extends SettingsPage
 
     protected static ?string $slug = 'inventory/manage-operations';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Inventory';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.inventory');
+    }
 
     protected static ?int $navigationSort = 1;
 

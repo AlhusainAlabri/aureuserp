@@ -1,0 +1,194 @@
+- generic [active] [ref=f12e1]:
+  - navigation [ref=f12e3]:
+    - button [ref=f12e6] [cursor=pointer]
+    - list [ref=f12e17]:
+      - listitem [ref=f12e18]: الإعدادات
+      - listitem [ref=f12e19]:
+        - link "الأدوار" [ref=f12e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f12e22]:
+        - link "الشركات" [ref=f12e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f12e25]:
+        - link "الفرق" [ref=f12e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f12e28]:
+        - link "المستخدمون" [ref=f12e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f12e31]:
+        - link "الحقول المخصصة" [ref=f12e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f12e34]:
+        - link "اختصارات لوحة التحكم" [ref=f12e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f12e39]:
+        - link "الإعدادات" [ref=f12e40] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f12e42]:
+      - button "جديد" [ref=f12e45] [cursor=pointer]
+      - generic [ref=f12e51]:
+        - generic [ref=f12e53]:
+          - generic [ref=f12e54]: بحث عام
+          - searchbox "بحث عام" [ref=f12e60]
+        - button "العربية" [ref=f12e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f12e70] [cursor=pointer]
+      - generic [ref=f12e73]:
+        - button "عرض التنبيهات" [disabled]
+      - button "قائمة المستخدم" [ref=f12e76] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f12e77]
+  - generic [ref=f12e78]:
+    - complementary [ref=f12e79]:
+      - navigation [ref=f12e80]:
+        - list [ref=f12e81]:
+          - list [ref=f12e82]:
+            - listitem [ref=f12e83]:
+              - link "الأدوار" [ref=f12e84] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f12e86]:
+              - link "الشركات" [ref=f12e87] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f12e89]:
+              - link "الفرق" [ref=f12e90] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f12e92]:
+              - link "المستخدمون" [ref=f12e93] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f12e95]:
+              - link "الحقول المخصصة" [ref=f12e96] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f12e98]:
+              - link "اختصارات لوحة التحكم" [ref=f12e99] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f12e103]:
+              - link "الإعدادات" [ref=f12e104] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f12e106]:
+      - main [ref=f12e107]:
+        - generic [ref=f12e109]:
+          - generic [ref=f12e111]:
+            - navigation [ref=f12e112]:
+              - list [ref=f12e113]:
+                - listitem [ref=f12e114]:
+                  - link "المستخدمون" [ref=f12e115] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/users
+                - listitem [ref=f12e116]:
+                  - generic [ref=f12e119]: إضافة
+            - heading "إضافة المستخدم" [level=1] [ref=f12e120]
+          - generic [ref=f12e126]:
+            - generic [ref=f12e134]:
+              - generic [ref=f12e138]:
+                - generic [ref=f12e142]:
+                  - heading "معلومات عامة" [level=2] [ref=f12e145]
+                  - generic [ref=f12e147]:
+                    - generic [ref=f12e150]:
+                      - generic [ref=f12e154]:
+                        - text: الاسم
+                        - superscript [ref=f12e155]: "*"
+                      - textbox "الاسم*" [ref=f12e159]
+                    - generic [ref=f12e162]:
+                      - generic [ref=f12e166]:
+                        - text: البريد الإلكتروني
+                        - superscript [ref=f12e167]: "*"
+                      - textbox "البريد الإلكتروني*" [ref=f12e171]
+                    - generic [ref=f12e174]:
+                      - generic [ref=f12e178]:
+                        - text: كلمة المرور
+                        - superscript [ref=f12e179]: "*"
+                      - generic [ref=f12e181]:
+                        - textbox "كلمة المرور*" [ref=f12e183]
+                        - generic [ref=f12e185]:
+                          - button "عرض كلمة المرور" [disabled]
+                    - generic [ref=f12e188]:
+                      - generic [ref=f12e189]: تأكيد كلمة المرور
+                      - generic [ref=f12e194]:
+                        - textbox "تأكيد كلمة المرور" [ref=f12e196]
+                        - generic [ref=f12e198]:
+                          - button "عرض كلمة المرور" [disabled]
+                - generic [ref=f12e202]:
+                  - heading "الصلاحيات" [level=2] [ref=f12e205]
+                  - generic [ref=f12e207]:
+                    - generic [ref=f12e210]:
+                      - generic [ref=f12e214]:
+                        - text: الأدوار
+                        - superscript [ref=f12e215]: "*"
+                      - button "اختر" [ref=f12e222] [cursor=pointer]
+                    - generic [ref=f12e227]:
+                      - generic [ref=f12e231]:
+                        - text: صلاحية المورد
+                        - superscript [ref=f12e232]: "*"
+                      - generic [ref=f12e238]:
+                        - button "عام" [ref=f12e239] [cursor=pointer]
+                        - button "Clear selection" [ref=f12e242] [cursor=pointer]
+                    - generic [ref=f12e247]:
+                      - generic [ref=f12e248]: الفرق
+                      - generic [ref=f12e253]:
+                        - button "اختر" [ref=f12e258] [cursor=pointer]
+                        - button "إنشاء" [ref=f12e263] [cursor=pointer]
+              - generic [ref=f12e269]:
+                - generic [ref=f12e273]:
+                  - heading "الصورة الرمزية" [level=2] [ref=f12e276]
+                  - generic [ref=f12e281]:
+                    - generic [ref=f12e282]: Avatar
+                    - group [ref=f12e284]:
+                      - button "Avatar" [ref=f12e286]
+                - generic [ref=f12e290]:
+                  - heading "اللغة والحالة" [level=2] [ref=f12e293]
+                  - generic [ref=f12e295]:
+                    - generic [ref=f12e298]:
+                      - generic [ref=f12e299]: اللغة المفضلة
+                      - generic [ref=f12e308]:
+                        - button "العربية (Arabic)" [ref=f12e309] [cursor=pointer]
+                        - button "Clear selection" [ref=f12e312] [cursor=pointer]
+                    - generic [ref=f12e320]:
+                      - switch "الحالة" [checked] [ref=f12e321] [cursor=pointer]
+                      - generic [ref=f12e322]: الحالة
+                - generic [ref=f12e326]:
+                  - heading "تعدد الشركات" [level=2] [ref=f12e329]
+                  - generic [ref=f12e331]:
+                    - generic [ref=f12e334]:
+                      - generic [ref=f12e335]: الشركات المسموحة
+                      - button "اختر" [ref=f12e345] [cursor=pointer]
+                    - generic [ref=f12e350]:
+                      - generic [ref=f12e354]:
+                        - text: الشركة الافتراضية
+                        - superscript [ref=f12e355]: "*"
+                      - generic [ref=f12e357]:
+                        - button "اختر" [ref=f12e362] [cursor=pointer]
+                        - button "إنشاء" [ref=f12e367] [cursor=pointer]
+            - generic [ref=f12e374]:
+              - button "إضافة" [ref=f12e375] [cursor=pointer]
+              - button "إضافة وبدء إضافة المزيد" [ref=f12e377] [cursor=pointer]
+              - button "إلغاء" [disabled]
+      - contentinfo [ref=f12e378]:
+        - generic [ref=f12e379]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f12e382]:
+    - generic [ref=f12e383] [cursor=pointer]
+    - generic [ref=f12e384]:
+      - generic [ref=f12e385] [cursor=pointer]: Request
+      - generic [ref=f12e386] [cursor=pointer]: Timeline
+      - generic [ref=f12e387] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f12e388]: "13"
+      - generic [ref=f12e389] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f12e390]: "128"
+      - generic [ref=f12e391] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f12e392]: "30"
+      - generic [ref=f12e393] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f12e394]: "6"
+      - generic [ref=f12e395] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f12e396]: "258"
+    - generic [ref=f12e397]:
+      - generic [ref=f12e398] [cursor=pointer]
+      - generic [ref=f12e399] [cursor=pointer]
+      - generic [ref=f12e400] [cursor=pointer]
+      - generic [ref=f12e402] [cursor=pointer]
+      - generic [ref=f12e403]: GET /admin/users/create
+      - generic [ref=f12e406] [cursor=pointer]: 374ms
+      - generic [ref=f12e408] [cursor=pointer]: 19MB
+      - generic [ref=f12e410] [cursor=pointer]: 13.x

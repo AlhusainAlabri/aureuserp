@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -53,6 +54,8 @@ use Webkul\Support\Filament\Infolists\Components\Repeater\TableColumn as Infolis
 
 class PaymentTermResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = PaymentTerm::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';

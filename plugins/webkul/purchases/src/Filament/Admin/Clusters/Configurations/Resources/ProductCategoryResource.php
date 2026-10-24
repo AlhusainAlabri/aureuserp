@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\Page;
@@ -16,6 +17,8 @@ use Webkul\Purchase\Models\Category;
 
 class ProductCategoryResource extends BaseProductCategoryResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-folder';

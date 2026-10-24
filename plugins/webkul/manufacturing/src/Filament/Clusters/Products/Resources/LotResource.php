@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Products\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Resources\Pages\Page;
 use Webkul\Inventory\Filament\Clusters\Products\Resources\LotResource as BaseLotResource;
 use Webkul\Manufacturing\Filament\Clusters\Products;
@@ -14,6 +15,8 @@ use Webkul\Manufacturing\Models\Lot;
 
 class LotResource extends BaseLotResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Lot::class;
 
     protected static ?string $cluster = Products::class;

@@ -4,31 +4,45 @@ namespace App\Providers;
 
 use App\Http\Responses\LocaleAwareLoginResponse;
 use App\Livewire\ModuleLauncherGlobalSearch;
+use App\Policies\AccountTagPolicy;
+use App\Policies\ApprovalFlowPolicy;
+use App\Policies\CorrespondenceDepartmentPolicy;
+use App\Policies\EmailLogPolicy;
+use App\Policies\EmailTemplatePolicy;
+use App\Policies\EmployeeComponentPolicy;
+use App\Policies\EmployeeSubmissionPolicy;
+use App\Policies\WarningTypePolicy;
 use App\Services\Deploy\CommandRunner;
 use App\Services\Deploy\SymfonyCommandRunner;
+use App\Support\Branding;
 use App\Support\Console\DestructiveCommandGuard;
 use App\Support\ExtensionSchema;
 use App\Support\Pdf\ArabicAwarePdf;
+use App\Support\Rtl\LtrValueFormatter;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use ReflectionClass;
 use Webkul\Security\Models\User;
+use Webkul\Support\Models\Company;
 use Wezlo\FilamentApproval\FilamentApprovalServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -53,6 +67,11 @@ class AppServiceProvider extends ServiceProvider
             app(DestructiveCommandGuard::class)->handleCommandStarting($event);
         });
 
+        $this->registerShieldPolicies();
+
+        Company::saved(fn () => Branding::forgetCache());
+        Company::deleted(fn () => Branding::forgetCache());
+
         Event::listen(CommandFinished::class, function (CommandFinished $event): void {
             app(DestructiveCommandGuard::class)->handleCommandFinished($event);
         });
@@ -72,6 +91,18 @@ class AppServiceProvider extends ServiceProvider
         FileUpload::configureUsing(function (FileUpload $component): void {
             if ($component->getVisibility() === 'public') {
                 $component->disk('public');
+            }
+        });
+
+        TextEntry::configureUsing(function (TextEntry $entry): void {
+            if (LtrValueFormatter::appliesTo($entry->getName())) {
+                $entry->formatStateUsing(fn (mixed $state): mixed => LtrValueFormatter::format($state));
+            }
+        });
+
+        TextColumn::configureUsing(function (TextColumn $column): void {
+            if (LtrValueFormatter::appliesTo($column->getName())) {
+                $column->formatStateUsing(fn (mixed $state): mixed => LtrValueFormatter::format($state));
             }
         });
 
@@ -109,6 +140,30 @@ class AppServiceProvider extends ServiceProvider
                 $this->removeSupportUserMenuVersionHook($viewManager);
             });
         });
+    }
+
+    /**
+     * Resources whose models had no policy, which left them open to every
+     * signed-in user. They are now guarded by their Shield permissions.
+     */
+    protected function registerShieldPolicies(): void
+    {
+        $policies = [
+            'Wezlo\\FilamentApproval\\Models\\ApprovalFlow'    => ApprovalFlowPolicy::class,
+            'Webkul\\Payroll\\Models\\EmployeeComponent'       => EmployeeComponentPolicy::class,
+            'Webkul\\Employee\\Models\\EmployeeSubmission'     => EmployeeSubmissionPolicy::class,
+            'Webkul\\Employee\\Models\\WarningType'            => WarningTypePolicy::class,
+            'Webkul\\Support\\Models\\EmailTemplate'           => EmailTemplatePolicy::class,
+            'Webkul\\Support\\Models\\EmailLog'                => EmailLogPolicy::class,
+            'Webkul\\Account\\Models\\Tag'                     => AccountTagPolicy::class,
+            'Webkul\\Correspondence\\Models\\Department'       => CorrespondenceDepartmentPolicy::class,
+        ];
+
+        foreach ($policies as $model => $policy) {
+            if (class_exists($model)) {
+                Gate::policy($model, $policy);
+            }
+        }
     }
 
     protected function registerFilamentApprovalBladeComponents(): void

@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,6 +28,8 @@ use Webkul\Project\Settings\TaskSettings;
 
 class ProjectStageResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ProjectStage::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';

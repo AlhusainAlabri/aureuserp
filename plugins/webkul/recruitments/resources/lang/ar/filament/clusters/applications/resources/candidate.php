@@ -1,24 +1,20 @@
 <?php
 
 return [
-    'title' => 'المرشح',
-
+    'title'      => 'المرشح',
     'navigation' => [
         'title' => 'المرشحون',
     ],
-
     'global-search' => [
         'email-from' => 'البريد الإلكتروني من',
         'phone'      => 'الهاتف',
         'company'    => 'الشركة',
         'degree'     => 'الدرجة العلمية',
     ],
-
     'form' => [
         'sections' => [
             'basic-information' => [
-                'title' => 'المعلومات الأساسية',
-
+                'title'  => 'المعلومات الأساسية',
                 'fields' => [
                     'full-name' => 'الاسم الكامل',
                     'email'     => 'البريد الإلكتروني',
@@ -27,37 +23,30 @@ return [
                     'contact'   => 'جهة الاتصال',
                 ],
             ],
-
             'additional-details' => [
-                'title' => 'تفاصيل إضافية',
-
+                'title'  => 'تفاصيل إضافية',
                 'fields' => [
                     'company'           => 'الشركة',
                     'degree'            => 'الدرجة العلمية',
                     'tags'              => 'الوسوم',
                     'manager'           => 'المدير',
                     'availability-date' => 'تاريخ التوفر',
-
-                    'priority-options' => [
+                    'priority-options'  => [
                         'low'    => 'منخفضة',
                         'medium' => 'متوسطة',
                         'high'   => 'عالية',
                     ],
                 ],
             ],
-
             'status-and-evaluation' => [
-                'title' => 'الحالة',
-
+                'title'  => 'الحالة',
                 'fields' => [
                     'active'     => 'نشط',
                     'evaluation' => 'التقييم',
                 ],
             ],
-
             'communication' => [
-                'title' => 'التواصل',
-
+                'title'  => 'التواصل',
                 'fields' => [
                     'cc-email'      => 'نسخة البريد الإلكتروني',
                     'email-bounced' => 'بريد مرتجع',
@@ -65,25 +54,21 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'       => 'الاسم الكامل',
             'tags'       => 'الوسوم',
             'evaluation' => 'التقييم',
         ],
-
         'filters' => [
             'company'      => 'الشركة',
             'partner-name' => 'جهة الاتصال',
             'degree'       => 'الدرجة العلمية',
             'manager-name' => 'المدير',
         ],
-
         'groups' => [
             'manager-name' => 'المدير',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -91,7 +76,6 @@ return [
                     'body'  => 'تم حذف المرشح بنجاح.',
                 ],
             ],
-
             'empty-state-actions' => [
                 'create' => [
                     'notification' => [
@@ -101,7 +85,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -110,13 +93,19 @@ return [
                 ],
             ],
         ],
+        'empty-state-actions' => [
+            'create' => [
+                'notification' => [
+                    'title' => 'تم إنشاء المرشح',
+                    'body'  => 'تم إنشاء المرشح بنجاح.',
+                ],
+            ],
+        ],
     ],
-
     'infolist' => [
         'sections' => [
             'basic-information' => [
-                'title' => 'المعلومات الأساسية',
-
+                'title'   => 'المعلومات الأساسية',
                 'entries' => [
                     'full-name' => 'الاسم الكامل',
                     'email'     => 'البريد الإلكتروني',
@@ -125,37 +114,30 @@ return [
                     'contact'   => 'جهة الاتصال',
                 ],
             ],
-
             'additional-details' => [
-                'title' => 'تفاصيل إضافية',
-
+                'title'   => 'تفاصيل إضافية',
                 'entries' => [
                     'company'           => 'الشركة',
                     'degree'            => 'الدرجة العلمية',
                     'tags'              => 'الوسوم',
                     'manager'           => 'المدير',
                     'availability-date' => 'تاريخ التوفر',
-
-                    'priority-options' => [
+                    'priority-options'  => [
                         'low'    => 'منخفضة',
                         'medium' => 'متوسطة',
                         'high'   => 'عالية',
                     ],
                 ],
             ],
-
             'status-and-evaluation' => [
-                'title' => 'الحالة',
-
+                'title'   => 'الحالة',
                 'entries' => [
                     'active'     => 'نشط',
                     'evaluation' => 'التقييم',
                 ],
             ],
-
             'communication' => [
-                'title' => 'التواصل',
-
+                'title'   => 'التواصل',
                 'entries' => [
                     'cc-email'      => 'نسخة البريد الإلكتروني',
                     'email-bounced' => 'بريد مرتجع',

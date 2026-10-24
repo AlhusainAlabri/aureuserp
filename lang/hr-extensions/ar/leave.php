@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'substitute_section'    => 'بديل الإجازة',
-    'substitute_employee'   => 'الموظف البديل',
-    'substitute_helper'     => 'اختر زميلا لتغطية مهامك.',
-    'handover_notes'        => 'ملاحظات التسليم',
-    'handover_helper'       => 'تعليمات مختصرة للموظف البديل.',
-    'substitute_pending'    => 'بانتظار الموافقة',
-    'substitute_accepted'   => 'تم القبول',
-    'substitute_declined'   => 'تم الرفض',
-    'actions'               => [
+    'substitute_section'  => 'بديل الإجازة',
+    'substitute_employee' => 'الموظف البديل',
+    'substitute_helper'   => 'اختر زميلا لتغطية مهامك.',
+    'handover_notes'      => 'ملاحظات التسليم',
+    'handover_helper'     => 'تعليمات مختصرة للموظف البديل.',
+    'substitute_pending'  => 'بانتظار الموافقة',
+    'substitute_accepted' => 'تم القبول',
+    'substitute_declined' => 'تم الرفض',
+    'actions'             => [
         'accept_substitute'  => 'قبول',
         'decline_substitute' => 'رفض',
         'view_leave'         => 'عرض طلب الإجازة',
@@ -30,6 +30,8 @@ return [
             'title' => 'رفض البديل',
             'body'  => ':substitute رفض تغطية إجازتك.',
         ],
+        'pending_approvals_title' => 'طلبات إجازة بانتظار الموافقة',
+        'pending_approvals_body'  => 'لديك :count طلب(ات) إجازة بانتظار الموافقة.',
     ],
     'covering_for' => 'أنت تغطي مهام :employee من :start إلى :end',
 ];

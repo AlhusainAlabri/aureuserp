@@ -2,6 +2,7 @@
 
 namespace Webkul\Invoice\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Webkul\Account\Filament\Resources\BankAccountResource as BaseBankAccountResource;
 use Webkul\Invoice\Filament\Clusters\Configuration;
 use Webkul\Invoice\Filament\Clusters\Configuration\Resources\BankAccountResource\Pages\ListBankAccounts;
@@ -9,6 +10,8 @@ use Webkul\Invoice\Models\BankAccount;
 
 class BankAccountResource extends BaseBankAccountResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = BankAccount::class;
 
     protected static bool $shouldRegisterNavigation = true;

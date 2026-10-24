@@ -5,7 +5,6 @@ return [
         'title' => 'الكميات',
         'group' => 'التعديلات',
     ],
-
     'form' => [
         'fields' => [
             'location'         => 'الموقع',
@@ -17,31 +16,28 @@ return [
             'storage-category' => 'فئة التخزين',
         ],
     ],
-
     'table' => [
         'empty-state' => [
             'heading'     => 'لا توجد تعديلات كمية',
             'description' => 'أضف تعديل كمية لبدء جرد المخزون.',
         ],
-
         'columns' => [
-            'location'           => 'الموقع',
-            'product'            => 'المنتج',
-            'product-category'   => 'فئة المنتج',
-            'lot'                => 'الدفعة / الأرقام التسلسلية',
-            'storage-category'   => 'فئة التخزين',
-            'available-quantity' => 'الكمية المتاحة',
-            'quantity'           => 'الكمية',
-            'package'            => 'الطرد',
-            'last-counted-at'    => 'آخر جرد في',
-            'on-hand'            => 'الكمية المتاحة',
-            'uom'                => 'وحدة القياس',
-            'counted'            => 'الكمية المحسوبة',
-            'difference'         => 'الفرق',
-            'scheduled-at'       => 'موعد الجدولة',
-            'user'               => 'المستخدم',
-            'company'            => 'الشركة',
-
+            'location'                     => 'الموقع',
+            'product'                      => 'المنتج',
+            'product-category'             => 'فئة المنتج',
+            'lot'                          => 'الدفعة / الأرقام التسلسلية',
+            'storage-category'             => 'فئة التخزين',
+            'available-quantity'           => 'الكمية المتاحة',
+            'quantity'                     => 'الكمية',
+            'package'                      => 'الطرد',
+            'last-counted-at'              => 'آخر جرد في',
+            'on-hand'                      => 'الكمية المتاحة',
+            'uom'                          => 'وحدة القياس',
+            'counted'                      => 'الكمية المحسوبة',
+            'difference'                   => 'الفرق',
+            'scheduled-at'                 => 'موعد الجدولة',
+            'user'                         => 'المستخدم',
+            'company'                      => 'الشركة',
             'on-hand-before-state-updated' => [
                 'notification' => [
                     'title' => 'تم تحديث الكمية',
@@ -49,7 +45,6 @@ return [
                 ],
             ],
         ],
-
         'groups' => [
             'product'          => 'المنتج',
             'product-category' => 'فئة المنتج',
@@ -59,7 +54,6 @@ return [
             'company'          => 'الشركة',
             'package'          => 'الطرد',
         ],
-
         'filters' => [
             'product'             => 'المنتج',
             'uom'                 => 'وحدة القياس',
@@ -78,16 +72,13 @@ return [
             'updated-at'          => 'تاريخ التحديث',
             'creator'             => 'المُنشئ',
         ],
-
         'header-actions' => [
             'create' => [
-                'label' => 'إضافة كمية',
-
+                'label'        => 'إضافة كمية',
                 'notification' => [
                     'title' => 'تمت إضافة الكمية',
                     'body'  => 'تمت إضافة الكمية بنجاح.',
                 ],
-
                 'before' => [
                     'notification' => [
                         'title' => 'الكمية موجودة بالفعل',
@@ -96,20 +87,16 @@ return [
                 ],
             ],
         ],
-
         'actions' => [
             'apply' => [
-                'label' => 'تطبيق',
-
+                'label'        => 'تطبيق',
                 'notification' => [
                     'title' => 'تم تطبيق تغييرات الكمية',
                     'body'  => 'تم تطبيق تغييرات الكمية بنجاح.',
                 ],
             ],
-
             'clear' => [
-                'label' => 'مسح',
-
+                'label'        => 'مسح',
                 'notification' => [
                     'title' => 'تم مسح تغييرات الكمية',
                     'body'  => 'تم مسح تغييرات الكمية بنجاح.',

@@ -33,6 +33,10 @@ class InventoryDemoSeeder extends Seeder
 
     public function run(): void
     {
+        if (! config('erp.seed_demo_data', false)) {
+            return;
+        }
+
         if (! Schema::hasTable('inventories_order_points') || ! Schema::hasTable('products_products')) {
             return;
         }

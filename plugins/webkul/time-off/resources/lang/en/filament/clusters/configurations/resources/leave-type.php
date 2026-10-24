@@ -5,7 +5,6 @@ return [
     'navigation' => [
         'title' => 'Leave Type',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
@@ -25,8 +24,7 @@ return [
                 ],
             ],
             'configuration' => [
-                'title' => 'Configuration',
-
+                'title'  => 'Configuration',
                 'fields' => [
                     'notified-time-off-officers'          => 'Notified Time Off Officers',
                     'take-time-off-in'                    => 'Take Time Off In',
@@ -41,19 +39,17 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'name'                      => 'Name',
-            'company-name'              => 'Company',
-            'color'                     => 'Color',
-            'notified-time-officers'    => 'Notified Time Officers',
-            'time-off-approval'         => 'Time Off Approval',
-            'requires-allocation'       => 'Requires Allocation',
-            'allocation-approval'       => 'Allocation Approval',
-            'employee-request'          => 'Employee Request',
+            'name'                   => 'Name',
+            'company-name'           => 'Company',
+            'color'                  => 'Color',
+            'notified-time-officers' => 'Notified Time Officers',
+            'time-off-approval'      => 'Time Off Approval',
+            'requires-allocation'    => 'Requires Allocation',
+            'allocation-approval'    => 'Allocation Approval',
+            'employee-request'       => 'Employee Request',
         ],
-
         'filters' => [
             'name'                => 'Name',
             'company-name'        => 'Company',
@@ -62,8 +58,10 @@ return [
             'time-type'           => 'Time Type',
             'request-unit'        => 'Request Unit',
             'created-by'          => 'Created By',
+            'created-at'          => 'Created at',
+            'updated-at'          => 'Updated at',
+            'employee-request'    => 'Employee requests',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -78,7 +76,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -86,14 +83,12 @@ return [
                     'body'  => 'The Leave Type has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Leave Type deleted',
                     'body'  => 'The Leave Type has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
@@ -108,7 +103,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
@@ -128,8 +122,7 @@ return [
                 ],
             ],
             'configuration' => [
-                'title' => 'Configuration',
-
+                'title'   => 'Configuration',
                 'entries' => [
                     'notified-time-off-officers'          => 'Notified Time Off Officers',
                     'take-time-off-in'                    => 'Take Time Off In',

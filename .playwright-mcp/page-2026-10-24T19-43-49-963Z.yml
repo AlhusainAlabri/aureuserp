@@ -1,0 +1,215 @@
+- generic [active] [ref=f28e1]:
+  - navigation [ref=f28e3]:
+    - button [ref=f28e6] [cursor=pointer]
+    - list [ref=f28e17]:
+      - listitem [ref=f28e18]: الإعدادات
+      - listitem [ref=f28e19]:
+        - link "الأدوار" [ref=f28e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f28e22]:
+        - link "الشركات" [ref=f28e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f28e25]:
+        - link "الفرق" [ref=f28e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f28e28]:
+        - link "المستخدمون" [ref=f28e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f28e31]:
+        - link "الحقول المخصصة" [ref=f28e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f28e34]:
+        - link "اختصارات لوحة التحكم" [ref=f28e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f28e39]:
+        - link "الإعدادات" [ref=f28e40] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f28e42]:
+      - button "جديد" [ref=f28e45] [cursor=pointer]
+      - generic [ref=f28e51]:
+        - generic [ref=f28e53]:
+          - generic [ref=f28e54]: بحث عام
+          - searchbox "بحث عام" [ref=f28e60]
+        - button "العربية" [ref=f28e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f28e70] [cursor=pointer]
+      - generic [ref=f28e73]:
+        - button "عرض التنبيهات" [disabled]
+      - button "قائمة المستخدم" [ref=f28e76] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f28e77]
+  - generic [ref=f28e78]:
+    - complementary [ref=f28e79]:
+      - navigation [ref=f28e80]:
+        - list [ref=f28e81]:
+          - list [ref=f28e82]:
+            - listitem [ref=f28e83]:
+              - link "الأدوار" [ref=f28e84] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f28e86]:
+              - link "الشركات" [ref=f28e87] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f28e89]:
+              - link "الفرق" [ref=f28e90] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f28e92]:
+              - link "المستخدمون" [ref=f28e93] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f28e95]:
+              - link "الحقول المخصصة" [ref=f28e96] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f28e98]:
+              - link "اختصارات لوحة التحكم" [ref=f28e99] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f28e103]:
+              - link "الإعدادات" [ref=f28e104] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f28e106]:
+      - main [ref=f28e107]:
+        - generic [ref=f28e109]:
+          - generic [ref=f28e110]:
+            - generic [ref=f28e111]:
+              - navigation [ref=f28e112]:
+                - list [ref=f28e113]:
+                  - listitem [ref=f28e114]:
+                    - link "المستخدمون" [ref=f28e115] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/users
+                  - listitem [ref=f28e116]:
+                    - generic [ref=f28e119]: القائمة
+              - heading "المستخدمون" [level=1] [ref=f28e120]
+            - generic [ref=f28e122]:
+              - link "مستخدم جديد" [ref=f28e123] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users/create
+              - button "دعوة مستخدم" [ref=f28e126] [cursor=pointer]
+          - generic [ref=f28e131]:
+            - tablist [ref=f28e135]:
+              - tab "جميع المستخدمين 2" [ref=f28e136] [cursor=pointer]:
+                - generic [ref=f28e137]: جميع المستخدمين
+                - generic [ref=f28e138]: "2"
+              - tab "المستخدمون المؤرشفون 0" [ref=f28e141] [cursor=pointer]:
+                - generic [ref=f28e142]: المستخدمون المؤرشفون
+                - generic [ref=f28e143]: "0"
+            - generic [ref=f28e150]:
+              - generic [ref=f28e153]:
+                - generic [ref=f28e154]:
+                  - generic [ref=f28e155]: بحث
+                  - searchbox "بحث" [ref=f28e161]
+                - button "تصفية" [ref=f28e164] [cursor=pointer]:
+                  - generic [ref=f28e167]: "0"
+                - button "تبديل الأعمدة" [ref=f28e171] [cursor=pointer]
+              - table [ref=f28e175]:
+                - rowgroup [ref=f28e176]:
+                  - row [ref=f28e177]:
+                    - columnheader [ref=f28e178]:
+                      - checkbox "تحديد/إلغاء تحديد كافة العناصر للإجراءات الجماعية." [ref=f28e179]
+                    - columnheader "الصورة الرمزية" [ref=f28e180]
+                    - columnheader [ref=f28e181]:
+                      - button "الاسم" [ref=f28e182] [cursor=pointer]
+                    - columnheader [ref=f28e185]:
+                      - button "البريد الإلكتروني" [ref=f28e186] [cursor=pointer]
+                    - columnheader "الفرق" [ref=f28e189]
+                    - columnheader "الدور" [ref=f28e190]
+                    - columnheader [ref=f28e191]:
+                      - button "صلاحية المورد" [ref=f28e192] [cursor=pointer]
+                    - columnheader [ref=f28e195]:
+                      - button "الشركة الافتراضية" [ref=f28e196] [cursor=pointer]
+                    - columnheader "الشركة المسموحة" [ref=f28e199]
+                    - columnheader "إجراء" [ref=f28e200]
+                - rowgroup [ref=f28e201]:
+                  - row "تحديد/إلغاء تحديد العنصر 2 للإجراءات الجماعية. خالد المشتري khalid.buyer@alwaha.example.om مدير مشتريات عام شركة الواحة للتجارة والخدمات ش.م.م الإجراءات" [ref=f28e202]:
+                    - cell [ref=f28e203]:
+                      - checkbox "تحديد/إلغاء تحديد العنصر 2 للإجراءات الجماعية." [ref=f28e204]
+                    - cell [ref=f28e205]:
+                      - link [ref=f28e206] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e208]:
+                      - link "خالد المشتري" [ref=f28e209] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e211]:
+                      - link "khalid.buyer@alwaha.example.om" [ref=f28e212] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e214]:
+                      - link [ref=f28e215] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e217]:
+                      - link "مدير مشتريات" [ref=f28e218] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e220]:
+                      - link "عام" [ref=f28e221] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e225]:
+                      - link "شركة الواحة للتجارة والخدمات ش.م.م" [ref=f28e226] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e228]:
+                      - link [ref=f28e229] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/2
+                    - cell [ref=f28e231]:
+                      - button "الإجراءات" [ref=f28e235] [cursor=pointer]
+                  - row "Admin nodhumtech@gmail.com Admin عام شركة الواحة للتجارة والخدمات ش.م.م الإجراءات" [ref=f28e238]:
+                    - cell [ref=f28e239]
+                    - cell [ref=f28e240]:
+                      - link [ref=f28e241] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e243]:
+                      - link "Admin" [ref=f28e244] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e246]:
+                      - link "nodhumtech@gmail.com" [ref=f28e247] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e249]:
+                      - link [ref=f28e250] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e252]:
+                      - link "Admin" [ref=f28e253] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e255]:
+                      - link "عام" [ref=f28e256] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e260]:
+                      - link "شركة الواحة للتجارة والخدمات ش.م.م" [ref=f28e261] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e263]:
+                      - link [ref=f28e264] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/users/1
+                    - cell [ref=f28e266]:
+                      - button "الإجراءات" [ref=f28e270] [cursor=pointer]
+              - navigation "التنقل بين الصفحات" [ref=f28e273]:
+                - generic [ref=f28e274]: عرض 1 إلى 2 من 2 نتيجة
+                - generic [ref=f28e277]:
+                  - generic [ref=f28e278]: لكل صفحة
+                  - combobox "لكل صفحة" [ref=f28e281]:
+                    - option "5"
+                    - option "10" [selected]
+                    - option "25"
+                    - option "50"
+      - contentinfo [ref=f28e282]:
+        - generic [ref=f28e283]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f28e286]:
+    - generic [ref=f28e287] [cursor=pointer]
+    - generic [ref=f28e288]:
+      - generic [ref=f28e289] [cursor=pointer]: Request
+      - generic [ref=f28e290] [cursor=pointer]: Timeline
+      - generic [ref=f28e291] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f28e292]: "14"
+      - generic [ref=f28e293] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f28e294]: "143"
+      - generic [ref=f28e295] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f28e296]: "44"
+      - generic [ref=f28e297] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f28e298]: "6"
+      - generic [ref=f28e299] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f28e300]: "390"
+    - generic [ref=f28e301]:
+      - generic [ref=f28e302] [cursor=pointer]
+      - generic [ref=f28e303] [cursor=pointer]
+      - generic [ref=f28e304] [cursor=pointer]
+      - generic [ref=f28e306] [cursor=pointer]
+      - generic [ref=f28e307]: GET /admin/users
+      - generic [ref=f28e310] [cursor=pointer]: 365ms
+      - generic [ref=f28e312] [cursor=pointer]: 18MB
+      - generic [ref=f28e314] [cursor=pointer]: 13.x

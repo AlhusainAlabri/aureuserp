@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Products\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\ActionGroup;
@@ -45,6 +46,8 @@ use Webkul\Inventory\Settings\OperationSettings;
 
 class PackageResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Package::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cube';

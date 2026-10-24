@@ -5,7 +5,6 @@ return [
         'title' => 'Job Positions',
         'group' => 'Job Positions',
     ],
-
     'global-search' => [
         'name'            => 'Job Position',
         'department'      => 'Department',
@@ -13,12 +12,10 @@ return [
         'company'         => 'Company',
         'created-by'      => 'Created By',
     ],
-
     'form' => [
         'sections' => [
             'employment-information' => [
-                'title' => 'Employment Information',
-
+                'title'  => 'Employment Information',
                 'fields' => [
                     'job-position-title'         => 'Job Position Title',
                     'job-position-title-tooltip' => 'Enter the official job position title',
@@ -31,21 +28,18 @@ return [
                     'interviewers'               => 'Interviewers',
                     'recruiter'                  => 'Recruiter',
                     'manager'                    => 'Manager',
+                    'company-modal-title'        => 'Create company',
                 ],
             ],
-
             'job-description' => [
-                'title' => 'Job Description',
-
+                'title'  => 'Job Description',
                 'fields' => [
                     'job-description'  => 'Job Description',
                     'job-requirements' => 'Job Requirements',
                 ],
             ],
-
             'workforce-planning' => [
-                'title' => 'Workforce Planning',
-
+                'title'  => 'Workforce Planning',
                 'fields' => [
                     'recruitment-target' => 'Recruitment Target',
                     'date-from'          => 'Date From',
@@ -55,17 +49,14 @@ return [
                     'status'             => 'Status',
                 ],
             ],
-
             'position-status' => [
-                'title' => 'Position Status',
-
+                'title'  => 'Position Status',
                 'fields' => [
                     'status' => 'Status',
                 ],
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'id'                 => 'ID',
@@ -80,7 +71,6 @@ return [
             'created-at'         => 'Created At',
             'updated-at'         => 'Updated At',
         ],
-
         'filters' => [
             'department'      => 'Department',
             'employment-type' => 'Employment Type',
@@ -91,7 +81,6 @@ return [
             'updated-at'      => 'Updated At',
             'created-at'      => 'Created At',
         ],
-
         'groups' => [
             'job-position'    => 'Job Position',
             'company'         => 'Company',
@@ -101,7 +90,6 @@ return [
             'created-at'      => 'Created At',
             'updated-at'      => 'Updated At',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -109,7 +97,6 @@ return [
                     'body'  => 'The Job Position has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Job Position deleted',
@@ -117,7 +104,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -125,14 +111,12 @@ return [
                     'body'  => 'The Job Positions has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Job Positions deleted',
                     'body'  => 'The Job Positions has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Job Positions force deleted',
@@ -140,7 +124,6 @@ return [
                 ],
             ],
         ],
-
         'empty-state-actions' => [
             'create' => [
                 'notification' => [
@@ -150,12 +133,10 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'employment-information' => [
-                'title' => 'Employment Information',
-
+                'title'   => 'Employment Information',
                 'entries' => [
                     'job-position-title' => 'Job Position Title',
                     'department'         => 'Department',
@@ -169,16 +150,14 @@ return [
                 ],
             ],
             'job-description' => [
-                'title' => 'Job Description',
-
+                'title'   => 'Job Description',
                 'entries' => [
                     'job-description'  => 'Job Description',
                     'job-requirements' => 'Job Requirements',
                 ],
             ],
             'work-planning' => [
-                'title' => 'Workforce Planning',
-
+                'title'   => 'Workforce Planning',
                 'entries' => [
                     'expected-employees' => 'Expected Employees',
                     'current-employees'  => 'Current Employees',
@@ -188,8 +167,7 @@ return [
                 ],
             ],
             'position-status' => [
-                'title' => 'Position Status',
-
+                'title'   => 'Position Status',
                 'entries' => [
                     'status' => 'Status',
                 ],

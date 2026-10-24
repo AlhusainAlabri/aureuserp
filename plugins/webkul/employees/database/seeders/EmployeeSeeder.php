@@ -14,6 +14,10 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
+        if (! config('erp.seed_demo_data', false)) {
+            return;
+        }
+
         DB::table('employees_employees')->delete();
 
         $user = User::first();

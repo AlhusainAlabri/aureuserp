@@ -1,28 +1,23 @@
 <?php
 
 return [
-    'title' => 'القيود اليومية',
-
+    'title'      => 'القيود اليومية',
     'navigation' => [
         'title' => 'القيود اليومية',
     ],
-
     'record-sub-navigation' => [
         'payment' => 'الدفعة',
     ],
-
     'global-search' => [
         'number'   => 'الرقم',
         'partner'  => 'الشريك',
         'date'     => 'تاريخ الفاتورة',
         'due-date' => 'تاريخ استحقاق الفاتورة',
     ],
-
     'form' => [
         'section' => [
             'general' => [
                 'title'  => 'عام',
-
                 'fields' => [
                     'reference'       => 'المرجع',
                     'accounting-date' => 'تاريخ المحاسبة',
@@ -30,16 +25,13 @@ return [
                 ],
             ],
         ],
-
         'tabs' => [
             'lines' => [
-                'title' => 'عناصر اليومية',
-
+                'title'    => 'عناصر اليومية',
                 'repeater' => [
-                    'title'       => 'العناصر',
-                    'add-item'    => 'إضافة عنصر',
-
-                    'columns' => [
+                    'title'    => 'العناصر',
+                    'add-item' => 'إضافة عنصر',
+                    'columns'  => [
                         'account'                  => 'الحساب',
                         'partner'                  => 'الشريك',
                         'label'                    => 'التسمية',
@@ -50,7 +42,6 @@ return [
                         'credit'                   => 'دائن',
                         'discount-amount-currency' => 'مبلغ الخصم (العملة)',
                     ],
-
                     'fields' => [
                         'account'                  => 'الحساب',
                         'partner'                  => 'الشريك',
@@ -64,23 +55,20 @@ return [
                     ],
                 ],
             ],
-
             'other-information' => [
-                'title'    => 'معلومات أخرى',
-
+                'title'  => 'معلومات أخرى',
                 'fields' => [
-                    'checked'         => 'تم التحقق',
-                    'company'         => 'الشركة',
-                    'fiscal-position' => 'الموقف الضريبي',
+                    'checked'                 => 'تم التحقق',
+                    'company'                 => 'الشركة',
+                    'fiscal-position'         => 'الموقف الضريبي',
+                    'fiscal-position-tooltip' => 'يطبّق تعيين الضرائب والحسابات لعملاء أو مناطق محددة.',
                 ],
             ],
-
             'term-and-conditions' => [
                 'title' => 'الشروط والأحكام',
             ],
         ],
     ],
-
     'table' => [
         'total'   => 'الإجمالي',
         'columns' => [
@@ -95,11 +83,9 @@ return [
             'state'        => 'الحالة',
             'checked'      => 'تم التحقق',
         ],
-
         'summarizers' => [
             'total' => 'الإجمالي',
         ],
-
         'groups' => [
             'partner'        => 'الشريك',
             'journal'        => 'اليومية',
@@ -109,7 +95,6 @@ return [
             'invoice-date'   => 'تاريخ الفاتورة',
             'company'        => 'الشركة',
         ],
-
         'filters' => [
             'number'                       => 'الرقم',
             'invoice-partner-display-name' => 'اسم شريك الفاتورة المعروض',
@@ -120,7 +105,6 @@ return [
             'created-at'                   => 'تاريخ الإنشاء',
             'updated-at'                   => 'تاريخ التحديث',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -129,7 +113,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -138,14 +121,12 @@ return [
                 ],
             ],
         ],
-
         'toolbar-actions' => [
             'export' => [
                 'label' => 'تصدير',
             ],
         ],
     ],
-
     'infolist' => [
         'section' => [
             'general' => [
@@ -158,11 +139,9 @@ return [
                 ],
             ],
         ],
-
         'tabs' => [
             'lines' => [
-                'title' => 'عناصر اليومية',
-
+                'title'    => 'عناصر اليومية',
                 'repeater' => [
                     'entries' => [
                         'account'  => 'الحساب',
@@ -175,14 +154,11 @@ return [
                     ],
                 ],
             ],
-
             'other-information' => [
-                'title' => 'معلومات أخرى',
-
+                'title'    => 'معلومات أخرى',
                 'fieldset' => [
                     'accounting' => [
-                        'title' => 'المحاسبة',
-
+                        'title'   => 'المحاسبة',
                         'entries' => [
                             'company'         => 'الشركة',
                             'fiscal-position' => 'الموقف الضريبي',
@@ -191,11 +167,9 @@ return [
                     ],
                 ],
             ],
-
             'term-and-conditions' => [
                 'title' => 'الشروط والأحكام',
             ],
         ],
     ],
-
 ];

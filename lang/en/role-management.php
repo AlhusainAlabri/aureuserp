@@ -7,7 +7,6 @@ return [
         'template' => 'Role template',
         'clone'    => 'Clone existing role',
     ],
-
     'fields' => [
         'role_template'        => 'Role template',
         'clone_role_id'        => 'Clone from role',
@@ -15,22 +14,19 @@ return [
         'advanced_editor_open' => 'Open advanced permission editor',
         'grant_all_modules'    => 'Grant full access to all modules',
     ],
-
     'sections' => [
-        'basics'    => 'Role details',
-        'starting'  => 'Starting point',
-        'modules'   => 'Module access',
-        'summary'   => 'Permission summary',
-        'advanced'  => 'Advanced permission editor',
-        'review'    => 'Review',
+        'basics'   => 'Role details',
+        'starting' => 'Starting point',
+        'modules'  => 'Module access',
+        'summary'  => 'Permission summary',
+        'advanced' => 'Advanced permission editor',
+        'review'   => 'Review',
     ],
-
     'wizard' => [
         'details' => 'Details',
         'access'  => 'Access',
         'review'  => 'Review',
     ],
-
     'module_access' => [
         'levels' => [
             'none'     => 'None',
@@ -42,13 +38,16 @@ return [
         'modules_with_access' => ':count of :total modules with access',
         'reset_template'      => 'Reset to template defaults',
     ],
-
     'summary' => [
         'permissions' => ':selected of :total permissions selected',
         'modules'     => ':count of :total modules with access',
         'no_modules'  => 'No module access configured yet.',
+        'table'       => [
+            'module'      => 'Module',
+            'level'       => 'Level',
+            'permissions' => 'Permissions',
+        ],
     ],
-
     'templates' => [
         'employee' => [
             'label'       => 'Employee',
@@ -71,25 +70,37 @@ return [
             'description' => 'Broad cross-module access for executive oversight.',
         ],
     ],
-
     'modules' => [
-        'Accounting'     => 'Accounting',
-        'Account'        => 'Accounts',
-        'Employee'       => 'Employees',
-        'Inventory'      => 'Inventory',
-        'Purchase'       => 'Purchases',
-        'Sale'           => 'Sales',
-        'Project'        => 'Projects',
-        'Meetings'       => 'Meetings',
-        'Correspondence' => 'Correspondence',
-        'Assets'         => 'Assets',
-        'Payroll'        => 'Payroll',
-        'TimeOff'        => 'Time Off',
-        'Recruitment'    => 'Recruitment',
-        'Support'        => 'Support',
-        'Extensions'     => 'Extensions',
+        'Accounting'       => 'Accounting',
+        'Account'          => 'Accounts',
+        'Employee'         => 'Employees',
+        'Inventory'        => 'Inventory',
+        'Purchase'         => 'Purchases',
+        'Sale'             => 'Sales',
+        'Project'          => 'Projects',
+        'Meetings'         => 'Meetings',
+        'Correspondence'   => 'Correspondence',
+        'Assets'           => 'Assets',
+        'Payroll'          => 'Payroll',
+        'TimeOff'          => 'Time Off',
+        'Recruitment'      => 'Recruitment',
+        'Support'          => 'Support',
+        'Extensions'       => 'Extensions',
+        'Blog'             => 'Blog',
+        'Contact'          => 'Contacts',
+        'DocumentArchive'  => 'Document Archive',
+        'Field'            => 'Custom Fields',
+        'Filament'         => 'System',
+        'FilamentApproval' => 'Approvals',
+        'Invoice'          => 'Invoices',
+        'Manufacturing'    => 'Manufacturing',
+        'Partner'          => 'Partners',
+        'PluginManager'    => 'Plugins',
+        'Product'          => 'Products',
+        'Security'         => 'Security',
+        'Timesheet'        => 'Timesheets',
+        'Website'          => 'Website',
     ],
-
     'advanced' => [
         'search'          => 'Search permissions',
         'resources'       => 'Resources',
@@ -100,7 +111,6 @@ return [
         'deselect_module' => 'Deselect all in module',
         'progress'        => ':selected / :total selected',
     ],
-
     'view' => [
         'permissions_count' => 'Permissions',
         'module_summary'    => 'Module access summary',

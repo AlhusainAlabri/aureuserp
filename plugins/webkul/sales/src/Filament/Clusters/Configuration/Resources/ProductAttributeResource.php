@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Webkul\Invoice\Filament\Clusters\Configuration\Resources\ProductAttributeResource as BaseProductAttributeResource;
 use Webkul\Sale\Filament\Clusters\Configuration;
 use Webkul\Sale\Filament\Clusters\Configuration\Resources\ProductAttributeResource\Pages\CreateProductAttribute;
@@ -12,6 +13,8 @@ use Webkul\Sale\Models\Attribute;
 
 class ProductAttributeResource extends BaseProductAttributeResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Attribute::class;
 
     protected static bool $shouldRegisterNavigation = true;

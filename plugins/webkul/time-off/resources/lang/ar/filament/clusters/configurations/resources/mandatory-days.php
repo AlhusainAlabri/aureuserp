@@ -1,14 +1,11 @@
 <?php
 
 return [
-    'title' => 'الأيام الإلزامية',
-
+    'title'       => 'الأيام الإلزامية',
     'model-label' => 'يوم إلزامي',
-
-    'navigation' => [
+    'navigation'  => [
         'title' => 'العطل الإلزامية',
     ],
-
     'form' => [
         'fields' => [
             'name'       => 'الاسم',
@@ -17,7 +14,6 @@ return [
             'color'      => 'اللون',
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'         => 'الاسم',
@@ -26,15 +22,15 @@ return [
             'start-date'   => 'تاريخ البداية',
             'end-date'     => 'تاريخ النهاية',
         ],
-
         'filters' => [
             'name'         => 'الاسم',
             'company-name' => 'اسم الشركة',
             'created-by'   => 'أنشئ بواسطة',
             'start-date'   => 'تاريخ البداية',
             'end-date'     => 'تاريخ النهاية',
+            'created-at'   => 'تاريخ الإنشاء',
+            'updated-at'   => 'تاريخ التحديث',
         ],
-
         'groups' => [
             'name'         => 'الاسم',
             'company-name' => 'اسم الشركة',
@@ -42,7 +38,6 @@ return [
             'start-date'   => 'تاريخ البداية',
             'end-date'     => 'تاريخ النهاية',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -50,7 +45,6 @@ return [
                     'body'  => 'تم تحديث اليوم الإلزامي بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف اليوم الإلزامي',
@@ -58,7 +52,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -68,7 +61,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'entries' => [
             'name'       => 'الاسم',

@@ -2,6 +2,7 @@
 
 namespace Webkul\Invoice\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Webkul\Account\Filament\Resources\TaxResource as BaseTaxResource;
 use Webkul\Invoice\Filament\Clusters\Configuration;
 use Webkul\Invoice\Filament\Clusters\Configuration\Resources\TaxResource\Pages\CreateTax;
@@ -14,6 +15,8 @@ use Webkul\Invoice\Models\Tax;
 
 class TaxResource extends BaseTaxResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Tax::class;
 
     protected static bool $shouldRegisterNavigation = true;

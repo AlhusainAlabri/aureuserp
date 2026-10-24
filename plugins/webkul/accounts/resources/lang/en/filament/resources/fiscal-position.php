@@ -6,18 +6,17 @@ return [
         'zip-to'   => 'Zip To',
         'name'     => 'Name',
     ],
-
     'form' => [
         'fields' => [
-            'name'                   => 'Name',
-            'foreign-vat'            => 'Foreign VAT',
-            'country'                => 'Country',
-            'country-group'          => 'Country Group',
-            'zip-from'               => 'Zip From',
-            'zip-to'                 => 'Zip To',
-            'detect-automatically'   => 'Detect Automatically',
-            'notes'                  => 'Notes',
-            'company'                => 'Company',
+            'name'                 => 'Name',
+            'foreign-vat'          => 'Foreign VAT',
+            'country'              => 'Country',
+            'country-group'        => 'Country Group',
+            'zip-from'             => 'Zip From',
+            'zip-to'               => 'Zip To',
+            'detect-automatically' => 'Detect Automatically',
+            'notes'                => 'Notes',
+            'company'              => 'Company',
         ],
         'tabs' => [
             'account-mapping' => [
@@ -27,7 +26,6 @@ return [
                         'destination-account' => 'Destination Account',
                     ],
                 ],
-
             ],
             'tax-mapping' => [
                 'table' => [
@@ -39,7 +37,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'                 => 'Name',
@@ -51,8 +48,23 @@ return [
             'zip-to'               => 'Zip To',
             'status'               => 'Status',
             'detect-automatically' => 'Detect Automatically',
+            'actions'              => [
+                'delete' => [
+                    'notification' => [
+                        'title' => 'Fiscal position deleted',
+                        'body'  => 'The fiscal position has been deleted successfully.',
+                    ],
+                ],
+            ],
+            'bulk-actions' => [
+                'delete' => [
+                    'notification' => [
+                        'title' => 'Fiscal positions deleted',
+                        'body'  => 'The selected fiscal positions have been deleted successfully.',
+                    ],
+                ],
+            ],
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -61,7 +73,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -71,7 +82,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'entries' => [
             'name'                 => 'Name',

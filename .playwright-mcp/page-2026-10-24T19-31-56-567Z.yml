@@ -1,0 +1,393 @@
+- generic [active] [ref=f10e1]:
+  - navigation [ref=f10e3]:
+    - button [ref=f10e6] [cursor=pointer]
+    - list [ref=f10e17]:
+      - listitem [ref=f10e18]: الإعدادات
+      - listitem [ref=f10e19]:
+        - link "الأدوار" [ref=f10e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/shield/roles
+      - listitem [ref=f10e22]:
+        - link "الشركات" [ref=f10e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/companies
+      - listitem [ref=f10e25]:
+        - link "الفرق" [ref=f10e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/teams
+      - listitem [ref=f10e28]:
+        - link "المستخدمون" [ref=f10e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/users
+      - listitem [ref=f10e31]:
+        - link "الحقول المخصصة" [ref=f10e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/fields
+      - listitem [ref=f10e34]:
+        - link "اختصارات لوحة التحكم" [ref=f10e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+      - listitem [ref=f10e39]:
+        - link "الإعدادات" [ref=f10e40] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings
+    - generic [ref=f10e42]:
+      - button "جديد" [ref=f10e45] [cursor=pointer]
+      - generic [ref=f10e51]:
+        - generic [ref=f10e53]:
+          - generic [ref=f10e54]: بحث عام
+          - searchbox "بحث عام" [ref=f10e60]
+        - button "العربية" [ref=f10e63] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f10e70] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f10e265] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f10e76] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f10e77]
+  - generic [ref=f10e78]:
+    - complementary [ref=f10e79]:
+      - navigation [ref=f10e80]:
+        - list [ref=f10e81]:
+          - list [ref=f10e82]:
+            - listitem [ref=f10e83]:
+              - link "الأدوار" [ref=f10e84] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/shield/roles
+            - listitem [ref=f10e86]:
+              - link "الشركات" [ref=f10e87] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/companies
+            - listitem [ref=f10e89]:
+              - link "الفرق" [ref=f10e90] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/teams
+            - listitem [ref=f10e92]:
+              - link "المستخدمون" [ref=f10e93] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/users
+            - listitem [ref=f10e95]:
+              - link "الحقول المخصصة" [ref=f10e96] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/fields
+            - listitem [ref=f10e98]:
+              - link "اختصارات لوحة التحكم" [ref=f10e99] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/dashboard-shortcuts
+            - listitem [ref=f10e103]:
+              - link "الإعدادات" [ref=f10e104] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings
+    - generic [ref=f10e106]:
+      - main [ref=f10e107]:
+        - generic [ref=f10e109]:
+          - generic [ref=f10e111]:
+            - navigation [ref=f10e112]:
+              - list [ref=f10e113]:
+                - listitem [ref=f10e114]:
+                  - link "الأدوار" [ref=f10e115] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/shield/roles
+                - listitem [ref=f10e116]:
+                  - generic [ref=f10e119]: إضافة
+            - heading "إضافة دور" [level=1] [ref=f10e120]
+          - generic [ref=f10e126]:
+            - generic [ref=f10e133]:
+              - list [ref=f10e134]:
+                - listitem [ref=f10e135]:
+                  - button "التفاصيل" [ref=f10e136] [cursor=pointer]
+                - listitem [ref=f10e144]:
+                  - button "الصلاحيات" [disabled] [ref=f10e145]
+                - listitem [ref=f10e153]:
+                  - button "المراجعة" [disabled] [ref=f10e154]
+              - tabpanel [ref=f10e270]:
+                - generic [ref=f10e271]:
+                  - generic [ref=f10e277]:
+                    - switch "منح وصول كامل لجميع الوحدات" [ref=f10e278] [cursor=pointer]
+                    - generic [ref=f10e279]: منح وصول كامل لجميع الوحدات
+                  - generic [ref=f10e283]:
+                    - generic [ref=f10e287]:
+                      - generic [ref=f10e289]:
+                        - heading "الحسابات" [level=2] [ref=f10e290]
+                        - paragraph [ref=f10e291]: 0 / 148 صلاحية
+                      - generic [ref=f10e296]:
+                        - generic [ref=f10e297]: صلاحيات الوحدات
+                        - generic [ref=f10e306]:
+                          - button "بدون" [ref=f10e307] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e310] [cursor=pointer]
+                    - generic [ref=f10e316]:
+                      - generic [ref=f10e318]:
+                        - heading "المحاسبة" [level=2] [ref=f10e319]
+                        - paragraph [ref=f10e320]: 0 / 169 صلاحية
+                      - generic [ref=f10e325]:
+                        - generic [ref=f10e326]: صلاحيات الوحدات
+                        - generic [ref=f10e335]:
+                          - button "بدون" [ref=f10e336] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e339] [cursor=pointer]
+                    - generic [ref=f10e345]:
+                      - generic [ref=f10e347]:
+                        - heading "الأصول" [level=2] [ref=f10e348]
+                        - paragraph [ref=f10e349]: 0 / 8 صلاحية
+                      - generic [ref=f10e354]:
+                        - generic [ref=f10e355]: صلاحيات الوحدات
+                        - generic [ref=f10e364]:
+                          - button "بدون" [ref=f10e365] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e368] [cursor=pointer]
+                    - generic [ref=f10e374]:
+                      - generic [ref=f10e376]:
+                        - heading "Blog" [level=2] [ref=f10e377]
+                        - paragraph [ref=f10e378]: 0 / 31 صلاحية
+                      - generic [ref=f10e383]:
+                        - generic [ref=f10e384]: صلاحيات الوحدات
+                        - generic [ref=f10e393]:
+                          - button "بدون" [ref=f10e394] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e397] [cursor=pointer]
+                    - generic [ref=f10e403]:
+                      - generic [ref=f10e405]:
+                        - heading "Contact" [level=2] [ref=f10e406]
+                        - paragraph [ref=f10e407]: 0 / 66 صلاحية
+                      - generic [ref=f10e412]:
+                        - generic [ref=f10e413]: صلاحيات الوحدات
+                        - generic [ref=f10e422]:
+                          - button "بدون" [ref=f10e423] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e426] [cursor=pointer]
+                    - generic [ref=f10e432]:
+                      - generic [ref=f10e434]:
+                        - heading "المراسلات" [level=2] [ref=f10e435]
+                        - paragraph [ref=f10e436]: 0 / 17 صلاحية
+                      - generic [ref=f10e441]:
+                        - generic [ref=f10e442]: صلاحيات الوحدات
+                        - generic [ref=f10e451]:
+                          - button "بدون" [ref=f10e452] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e455] [cursor=pointer]
+                    - generic [ref=f10e461]:
+                      - generic [ref=f10e463]:
+                        - heading "DocumentArchive" [level=2] [ref=f10e464]
+                        - paragraph [ref=f10e465]: 0 / 17 صلاحية
+                      - generic [ref=f10e470]:
+                        - generic [ref=f10e471]: صلاحيات الوحدات
+                        - generic [ref=f10e480]:
+                          - button "بدون" [ref=f10e481] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e484] [cursor=pointer]
+                    - generic [ref=f10e490]:
+                      - generic [ref=f10e492]:
+                        - heading "الموظفون" [level=2] [ref=f10e493]
+                        - paragraph [ref=f10e494]: 0 / 115 صلاحية
+                      - generic [ref=f10e499]:
+                        - generic [ref=f10e500]: صلاحيات الوحدات
+                        - generic [ref=f10e509]:
+                          - button "بدون" [ref=f10e510] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e513] [cursor=pointer]
+                    - generic [ref=f10e519]:
+                      - generic [ref=f10e521]:
+                        - heading "الامتدادات" [level=2] [ref=f10e522]
+                        - paragraph [ref=f10e523]: 0 / 34 صلاحية
+                      - generic [ref=f10e528]:
+                        - generic [ref=f10e529]: صلاحيات الوحدات
+                        - generic [ref=f10e538]:
+                          - button "بدون" [ref=f10e539] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e542] [cursor=pointer]
+                    - generic [ref=f10e548]:
+                      - generic [ref=f10e550]:
+                        - heading "Field" [level=2] [ref=f10e551]
+                        - paragraph [ref=f10e552]: 0 / 11 صلاحية
+                      - generic [ref=f10e557]:
+                        - generic [ref=f10e558]: صلاحيات الوحدات
+                        - generic [ref=f10e567]:
+                          - button "بدون" [ref=f10e568] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e571] [cursor=pointer]
+                    - generic [ref=f10e577]:
+                      - generic [ref=f10e579]:
+                        - heading "Filament" [level=2] [ref=f10e580]
+                        - paragraph [ref=f10e581]: 0 / 86 صلاحية
+                      - generic [ref=f10e586]:
+                        - generic [ref=f10e587]: صلاحيات الوحدات
+                        - generic [ref=f10e596]:
+                          - button "بدون" [ref=f10e597] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e600] [cursor=pointer]
+                    - generic [ref=f10e606]:
+                      - generic [ref=f10e608]:
+                        - heading "FilamentApproval" [level=2] [ref=f10e609]
+                        - paragraph [ref=f10e610]: 0 / 13 صلاحية
+                      - generic [ref=f10e615]:
+                        - generic [ref=f10e616]: صلاحيات الوحدات
+                        - generic [ref=f10e625]:
+                          - button "بدون" [ref=f10e626] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e629] [cursor=pointer]
+                    - generic [ref=f10e635]:
+                      - generic [ref=f10e637]:
+                        - heading "المخزون" [level=2] [ref=f10e638]
+                        - paragraph [ref=f10e639]: 0 / 89 صلاحية
+                      - generic [ref=f10e644]:
+                        - generic [ref=f10e645]: صلاحيات الوحدات
+                        - generic [ref=f10e654]:
+                          - button "بدون" [ref=f10e655] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e658] [cursor=pointer]
+                    - generic [ref=f10e664]:
+                      - generic [ref=f10e666]:
+                        - heading "Invoice" [level=2] [ref=f10e667]
+                        - paragraph [ref=f10e668]: 0 / 134 صلاحية
+                      - generic [ref=f10e673]:
+                        - generic [ref=f10e674]: صلاحيات الوحدات
+                        - generic [ref=f10e683]:
+                          - button "بدون" [ref=f10e684] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e687] [cursor=pointer]
+                    - generic [ref=f10e693]:
+                      - generic [ref=f10e695]:
+                        - heading "Manufacturing" [level=2] [ref=f10e696]
+                        - paragraph [ref=f10e697]: 0 / 29 صلاحية
+                      - generic [ref=f10e702]:
+                        - generic [ref=f10e703]: صلاحيات الوحدات
+                        - generic [ref=f10e712]:
+                          - button "بدون" [ref=f10e713] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e716] [cursor=pointer]
+                    - generic [ref=f10e722]:
+                      - generic [ref=f10e724]:
+                        - heading "الاجتماعات" [level=2] [ref=f10e725]
+                        - paragraph [ref=f10e726]: 0 / 12 صلاحية
+                      - generic [ref=f10e731]:
+                        - generic [ref=f10e732]: صلاحيات الوحدات
+                        - generic [ref=f10e741]:
+                          - button "بدون" [ref=f10e742] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e745] [cursor=pointer]
+                    - generic [ref=f10e751]:
+                      - generic [ref=f10e753]:
+                        - heading "Partner" [level=2] [ref=f10e754]
+                        - paragraph [ref=f10e755]: 0 / 66 صلاحية
+                      - generic [ref=f10e760]:
+                        - generic [ref=f10e761]: صلاحيات الوحدات
+                        - generic [ref=f10e770]:
+                          - button "بدون" [ref=f10e771] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e774] [cursor=pointer]
+                    - generic [ref=f10e780]:
+                      - generic [ref=f10e782]:
+                        - heading "الرواتب" [level=2] [ref=f10e783]
+                        - paragraph [ref=f10e784]: 0 / 55 صلاحية
+                      - generic [ref=f10e789]:
+                        - generic [ref=f10e790]: صلاحيات الوحدات
+                        - generic [ref=f10e799]:
+                          - button "بدون" [ref=f10e800] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e803] [cursor=pointer]
+                    - generic [ref=f10e809]:
+                      - generic [ref=f10e811]:
+                        - heading "PluginManager" [level=2] [ref=f10e812]
+                        - paragraph [ref=f10e813]: 0 / 7 صلاحية
+                      - generic [ref=f10e818]:
+                        - generic [ref=f10e819]: صلاحيات الوحدات
+                        - generic [ref=f10e828]:
+                          - button "بدون" [ref=f10e829] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e832] [cursor=pointer]
+                    - generic [ref=f10e838]:
+                      - generic [ref=f10e840]:
+                        - heading "Product" [level=2] [ref=f10e841]
+                        - paragraph [ref=f10e842]: 0 / 42 صلاحية
+                      - generic [ref=f10e847]:
+                        - generic [ref=f10e848]: صلاحيات الوحدات
+                        - generic [ref=f10e857]:
+                          - button "بدون" [ref=f10e858] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e861] [cursor=pointer]
+                    - generic [ref=f10e867]:
+                      - generic [ref=f10e869]:
+                        - heading "المشاريع" [level=2] [ref=f10e870]
+                        - paragraph [ref=f10e871]: 0 / 67 صلاحية
+                      - generic [ref=f10e876]:
+                        - generic [ref=f10e877]: صلاحيات الوحدات
+                        - generic [ref=f10e886]:
+                          - button "بدون" [ref=f10e887] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e890] [cursor=pointer]
+                    - generic [ref=f10e896]:
+                      - generic [ref=f10e898]:
+                        - heading "المشتريات" [level=2] [ref=f10e899]
+                        - paragraph [ref=f10e900]: 0 / 66 صلاحية
+                      - generic [ref=f10e905]:
+                        - generic [ref=f10e906]: صلاحيات الوحدات
+                        - generic [ref=f10e915]:
+                          - button "بدون" [ref=f10e916] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e919] [cursor=pointer]
+                    - generic [ref=f10e925]:
+                      - generic [ref=f10e927]:
+                        - heading "التوظيف" [level=2] [ref=f10e928]
+                        - paragraph [ref=f10e929]: 0 / 132 صلاحية
+                      - generic [ref=f10e934]:
+                        - generic [ref=f10e935]: صلاحيات الوحدات
+                        - generic [ref=f10e944]:
+                          - button "بدون" [ref=f10e945] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e948] [cursor=pointer]
+                    - generic [ref=f10e954]:
+                      - generic [ref=f10e956]:
+                        - heading "المبيعات" [level=2] [ref=f10e957]
+                        - paragraph [ref=f10e958]: 0 / 126 صلاحية
+                      - generic [ref=f10e963]:
+                        - generic [ref=f10e964]: صلاحيات الوحدات
+                        - generic [ref=f10e973]:
+                          - button "بدون" [ref=f10e974] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e977] [cursor=pointer]
+                    - generic [ref=f10e983]:
+                      - generic [ref=f10e985]:
+                        - heading "Security" [level=2] [ref=f10e986]
+                        - paragraph [ref=f10e987]: 0 / 36 صلاحية
+                      - generic [ref=f10e992]:
+                        - generic [ref=f10e993]: صلاحيات الوحدات
+                        - generic [ref=f10e1002]:
+                          - button "بدون" [ref=f10e1003] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e1006] [cursor=pointer]
+                    - generic [ref=f10e1012]:
+                      - generic [ref=f10e1014]:
+                        - heading "الدعم" [level=2] [ref=f10e1015]
+                        - paragraph [ref=f10e1016]: 0 / 84 صلاحية
+                      - generic [ref=f10e1021]:
+                        - generic [ref=f10e1022]: صلاحيات الوحدات
+                        - generic [ref=f10e1031]:
+                          - button "بدون" [ref=f10e1032] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e1035] [cursor=pointer]
+                    - generic [ref=f10e1041]:
+                      - generic [ref=f10e1043]:
+                        - heading "الإجازات" [level=2] [ref=f10e1044]
+                        - paragraph [ref=f10e1045]: 0 / 77 صلاحية
+                      - generic [ref=f10e1050]:
+                        - generic [ref=f10e1051]: صلاحيات الوحدات
+                        - generic [ref=f10e1060]:
+                          - button "بدون" [ref=f10e1061] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e1064] [cursor=pointer]
+                    - generic [ref=f10e1070]:
+                      - generic [ref=f10e1072]:
+                        - heading "Timesheet" [level=2] [ref=f10e1073]
+                        - paragraph [ref=f10e1074]: 0 / 5 صلاحية
+                      - generic [ref=f10e1079]:
+                        - generic [ref=f10e1080]: صلاحيات الوحدات
+                        - generic [ref=f10e1089]:
+                          - button "بدون" [ref=f10e1090] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e1093] [cursor=pointer]
+                    - generic [ref=f10e1099]:
+                      - generic [ref=f10e1101]:
+                        - heading "Website" [level=2] [ref=f10e1102]
+                        - paragraph [ref=f10e1103]: 0 / 22 صلاحية
+                      - generic [ref=f10e1108]:
+                        - generic [ref=f10e1109]: صلاحيات الوحدات
+                        - generic [ref=f10e1118]:
+                          - button "بدون" [ref=f10e1119] [cursor=pointer]
+                          - button "Clear selection" [ref=f10e1122] [cursor=pointer]
+                  - generic [ref=f10e1129] [cursor=pointer]:
+                    - heading "محرر الصلاحيات المتقدم" [level=2] [ref=f10e1133]
+                    - button [ref=f10e1134]
+              - generic [ref=f10e217]:
+                - button "الخطوة السابقة" [ref=f10e1138] [cursor=pointer]
+                - button "الخطوة التالية" [ref=f10e219] [cursor=pointer]
+            - generic [ref=f10e224]:
+              - button "إضافة" [ref=f10e225] [cursor=pointer]
+              - button "إضافة وبدء إضافة المزيد" [ref=f10e227] [cursor=pointer]
+              - button "إلغاء" [ref=f10e228] [cursor=pointer]
+      - contentinfo [ref=f10e229]:
+        - generic [ref=f10e230]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f10e233]:
+    - generic [ref=f10e234] [cursor=pointer]
+    - generic [ref=f10e235]:
+      - generic [ref=f10e236] [cursor=pointer]: Request
+      - generic [ref=f10e237] [cursor=pointer]: Timeline
+      - generic [ref=f10e240] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f10e241]: "60"
+      - generic [ref=f10e242] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f10e243]: "27"
+      - generic [ref=f10e244] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f10e245]: "1"
+      - generic [ref=f10e246] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f10e247]: "6"
+    - generic [ref=f10e248]:
+      - generic [ref=f10e249] [cursor=pointer]
+      - generic [ref=f10e250] [cursor=pointer]
+      - generic [ref=f10e251] [cursor=pointer]
+      - generic [ref=f10e253] [cursor=pointer]
+      - generic [ref=f10e255] [cursor=pointer]:
+        - generic [ref=f10e1139]: "3"
+        - generic [ref=f10e256]: POST /livewire-ff82a33d/update
+      - generic [ref=f10e257] [cursor=pointer]: 578ms
+      - generic [ref=f10e259] [cursor=pointer]: 29MB
+      - generic [ref=f10e261] [cursor=pointer]: 13.x

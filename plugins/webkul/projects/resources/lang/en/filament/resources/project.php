@@ -5,27 +5,22 @@ return [
         'title' => 'Projects',
         'group' => 'Project',
     ],
-
     'global-search' => [
         'project-manager' => 'Project Manager',
         'customer'        => 'Customer',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
-                'title' => 'General',
-
+                'title'  => 'General',
                 'fields' => [
                     'name'             => 'Name',
                     'name-placeholder' => 'Project Name...',
                     'description'      => 'Description',
                 ],
             ],
-
             'additional' => [
-                'title' => 'Additional Information',
-
+                'title'  => 'Additional Information',
                 'fields' => [
                     'project-manager'             => 'Project Manager',
                     'customer'                    => 'Customer',
@@ -37,10 +32,8 @@ return [
                     'company'                     => 'Company',
                 ],
             ],
-
             'settings' => [
-                'title' => 'Settings',
-
+                'title'  => 'Settings',
                 'fields' => [
                     'visibility'                   => 'Visibility',
                     'visibility-hint-tooltip'      => 'Allow employees to access your project or tasks by adding them as followers. They will automatically gain access to any tasks assigned to them..',
@@ -57,7 +50,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'            => 'Name',
@@ -67,15 +59,14 @@ return [
             'planned-date'    => 'Planned Date',
             'remaining-hours' => 'Remaining Hours',
             'project-manager' => 'Project Manager',
+            'stage'           => 'Stage',
         ],
-
         'groups' => [
             'stage'           => 'Stage',
             'project-manager' => 'Project Manager',
             'customer'        => 'Customer',
             'created-at'      => 'Created At',
         ],
-
         'filters' => [
             'name'             => 'Name',
             'visibility'       => 'Visibility',
@@ -93,60 +84,47 @@ return [
             'creator'          => 'Creator',
             'tags'             => 'Tags',
         ],
-
         'actions' => [
             'tasks'      => '{0} No tasks|{1} :count task|[2,*] :count tasks',
             'milestones' => ':completed milestones completed out of :all',
-
-            'restore' => [
+            'restore'    => [
                 'notification' => [
                     'title' => 'Project restored',
                     'body'  => 'The project has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Project deleted',
                     'body'  => 'The project has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
-
                 'notification' => [
-
                     'success' => [
                         'title' => 'Project permanently deleted',
                         'body'  => 'The project has been permanently deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Project cannot be permanently deleted',
                         'body'  => 'The project is associated with other records.',
                     ],
-
                 ],
             ],
-
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
-                'title' => 'General',
-
+                'title'   => 'General',
                 'entries' => [
                     'name'             => 'Name',
                     'name-placeholder' => 'Project Name...',
                     'description'      => 'Description',
                 ],
             ],
-
             'additional' => [
-                'title' => 'Additional Information',
-
+                'title'   => 'Additional Information',
                 'entries' => [
                     'project-manager'        => 'Project Manager',
                     'customer'               => 'Customer',
@@ -159,29 +137,23 @@ return [
                     'tags'                   => 'Tags',
                 ],
             ],
-
             'statistics' => [
-                'title' => 'Statistics',
-
+                'title'   => 'Statistics',
                 'entries' => [
                     'total-tasks'         => 'Total Tasks',
                     'milestones-progress' => 'Milestones Progress',
                 ],
             ],
-
             'record-information' => [
-                'title' => 'Record Information',
-
+                'title'   => 'Record Information',
                 'entries' => [
                     'created-at'   => 'Created At',
                     'created-by'   => 'Created By',
                     'last-updated' => 'Last Updated',
                 ],
             ],
-
             'settings' => [
-                'title' => 'Project Settings',
-
+                'title'   => 'Project Settings',
                 'entries' => [
                     'visibility'         => 'Visibility',
                     'timesheets-enabled' => 'Timesheets Enabled',

@@ -4,23 +4,20 @@ return [
     'form' => [
         'tabs' => [
             'general-information' => [
-                'title' => 'المعلومات العامة',
-
+                'title'    => 'المعلومات العامة',
                 'sections' => [
                     'branch-information' => [
-                        'title' => 'معلومات الفرع',
-
+                        'title'  => 'معلومات الفرع',
                         'fields' => [
-                            'company-name'                => 'اسم الشركة',
-                            'registration-number'         => 'رقم التسجيل',
-                            'tax-id'                      => 'الرقم الضريبي',
-                            'tax-id-tooltip'              => 'الرقم الضريبي هو معرف فريد لشركتك.',
-                            'color'                       => 'اللون',
-                            'company-id'                  => 'معرف الشركة',
-                            'company-id-tooltip'          => 'معرف الشركة هو معرف فريد لشركتك.',
+                            'company-name'        => 'اسم الشركة',
+                            'registration-number' => 'رقم التسجيل',
+                            'tax-id'              => 'الرقم الضريبي',
+                            'tax-id-tooltip'      => 'الرقم الضريبي هو معرف فريد لشركتك.',
+                            'color'               => 'اللون',
+                            'company-id'          => 'معرف الشركة',
+                            'company-id-tooltip'  => 'معرف الشركة هو معرف فريد لشركتك.',
                         ],
                     ],
-
                     'branding' => [
                         'title'  => 'العلامة التجارية',
                         'fields' => [
@@ -29,14 +26,11 @@ return [
                     ],
                 ],
             ],
-
             'address-information' => [
-                'title' => 'معلومات العنوان',
-
+                'title'    => 'معلومات العنوان',
                 'sections' => [
                     'address-information' => [
-                        'title' => 'معلومات العنوان',
-
+                        'title'  => 'معلومات العنوان',
                         'fields' => [
                             'street1'                => 'الشارع 1',
                             'street2'                => 'الشارع 2',
@@ -57,10 +51,8 @@ return [
                             'state-create'           => 'إنشاء ولاية',
                         ],
                     ],
-
                     'additional-information' => [
-                        'title' => 'معلومات إضافية',
-
+                        'title'  => 'معلومات إضافية',
                         'fields' => [
                             'default-currency'        => 'العملة الافتراضية',
                             'currency-name'           => 'اسم العملة',
@@ -77,14 +69,11 @@ return [
                     ],
                 ],
             ],
-
             'contact-information' => [
-                'title' => 'معلومات الاتصال',
-
+                'title'    => 'معلومات الاتصال',
                 'sections' => [
                     'contact-information' => [
-                        'title' => 'معلومات الاتصال',
-
+                        'title'  => 'معلومات الاتصال',
                         'fields' => [
                             'email-address' => 'البريد الإلكتروني',
                             'phone-number'  => 'رقم الهاتف',
@@ -95,21 +84,19 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'logo'                 => 'الشعار',
-            'company-name'         => 'اسم الفرع',
-            'branches'             => 'الفروع',
-            'email'                => 'البريد الإلكتروني',
-            'city'                 => 'المدينة',
-            'country'              => 'الدولة',
-            'currency'             => 'العملة',
-            'status'               => 'الحالة',
-            'created-at'           => 'تاريخ الإنشاء',
-            'updated-at'           => 'تاريخ التحديث',
+            'logo'         => 'الشعار',
+            'company-name' => 'اسم الفرع',
+            'branches'     => 'الفروع',
+            'email'        => 'البريد الإلكتروني',
+            'city'         => 'المدينة',
+            'country'      => 'الدولة',
+            'currency'     => 'العملة',
+            'status'       => 'الحالة',
+            'created-at'   => 'تاريخ الإنشاء',
+            'updated-at'   => 'تاريخ التحديث',
         ],
-
         'groups' => [
             'company-name' => 'اسم الفرع',
             'city'         => 'المدينة',
@@ -121,13 +108,11 @@ return [
             'created-at'   => 'تاريخ الإنشاء',
             'updated-at'   => 'تاريخ التحديث',
         ],
-
         'filters' => [
             'trashed' => 'المحذوفة',
             'status'  => 'الحالة',
             'country' => 'الدولة',
         ],
-
         'header-actions' => [
             'create' => [
                 'notification' => [
@@ -136,7 +121,6 @@ return [
                 ],
             ],
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -144,14 +128,12 @@ return [
                     'body'  => 'تم تحديث الفرع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف الفرع',
                     'body'  => 'تم حذف الفرع بنجاح.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'تم استعادة الفرع',
@@ -159,7 +141,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -167,14 +148,12 @@ return [
                     'body'  => 'تم استعادة الفروع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف الفروع',
                     'body'  => 'تم حذف الفروع بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف الفروع نهائياً',
@@ -183,16 +162,13 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'tabs' => [
             'general-information' => [
-                'title' => 'المعلومات العامة',
-
+                'title'    => 'المعلومات العامة',
                 'sections' => [
                     'branch-information' => [
-                        'title' => 'معلومات الفرع',
-
+                        'title'   => 'معلومات الفرع',
                         'entries' => [
                             'company-name'                => 'اسم الشركة',
                             'registration-number'         => 'رقم التسجيل',
@@ -200,7 +176,6 @@ return [
                             'color'                       => 'اللون',
                         ],
                     ],
-
                     'branding' => [
                         'title'   => 'العلامة التجارية',
                         'entries' => [
@@ -209,14 +184,11 @@ return [
                     ],
                 ],
             ],
-
             'address-information' => [
-                'title' => 'معلومات العنوان',
-
+                'title'    => 'معلومات العنوان',
                 'sections' => [
                     'address-information' => [
-                        'title' => 'معلومات العنوان',
-
+                        'title'   => 'معلومات العنوان',
                         'entries' => [
                             'street1'                => 'الشارع 1',
                             'street2'                => 'الشارع 2',
@@ -237,10 +209,8 @@ return [
                             'state-create'           => 'إنشاء ولاية',
                         ],
                     ],
-
                     'additional-information' => [
-                        'title' => 'معلومات إضافية',
-
+                        'title'   => 'معلومات إضافية',
                         'entries' => [
                             'default-currency'        => 'العملة الافتراضية',
                             'currency-name'           => 'اسم العملة',
@@ -257,14 +227,11 @@ return [
                     ],
                 ],
             ],
-
             'contact-information' => [
-                'title' => 'معلومات الاتصال',
-
+                'title'    => 'معلومات الاتصال',
                 'sections' => [
                     'contact-information' => [
-                        'title' => 'معلومات الاتصال',
-
+                        'title'   => 'معلومات الاتصال',
                         'entries' => [
                             'email-address' => 'البريد الإلكتروني',
                             'phone-number'  => 'رقم الهاتف',
@@ -275,4 +242,6 @@ return [
             ],
         ],
     ],
+    'title'       => 'الفروع',
+    'model-label' => 'فرع',
 ];

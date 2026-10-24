@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -28,6 +29,8 @@ use Webkul\Project\Settings\TaskSettings;
 
 class MilestoneResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Milestone::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-flag';

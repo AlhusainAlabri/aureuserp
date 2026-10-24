@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Reportings\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
@@ -24,6 +25,8 @@ use Webkul\Support\Filament\Tables as CustomTables;
 
 class EmployeeSkillResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = EmployeeSkill::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';

@@ -19,7 +19,10 @@ class ManageCustomerInvoice extends SettingsPage
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Accounting';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.accounting');
+    }
 
     protected static ?int $navigationSort = 10;
 

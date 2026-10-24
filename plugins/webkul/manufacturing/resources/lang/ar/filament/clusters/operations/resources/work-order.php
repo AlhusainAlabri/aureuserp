@@ -5,7 +5,6 @@ return [
         'title' => 'أوامر العمل',
         'group' => 'العمليات',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
@@ -49,6 +48,7 @@ return [
                     'to-consume' => 'للاستهلاك',
                     'quantity'   => 'الكمية',
                     'uom'        => 'وحدة القياس',
+                    'from'       => 'من',
                 ],
             ],
             'work-instruction' => [
@@ -66,7 +66,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'operation'           => 'العملية',
@@ -102,7 +101,6 @@ return [
             'updated-at'          => 'تاريخ التحديث',
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
@@ -148,7 +146,6 @@ return [
             ],
         ],
     ],
-
     'pages' => [
         'list' => [
             'header-actions' => [

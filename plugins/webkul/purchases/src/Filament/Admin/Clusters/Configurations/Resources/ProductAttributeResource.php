@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Webkul\Product\Filament\Resources\AttributeResource;
 use Webkul\Purchase\Filament\Admin\Clusters\Configurations;
@@ -14,6 +15,8 @@ use Webkul\Purchase\Settings\ProductSettings;
 
 class ProductAttributeResource extends AttributeResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Attribute::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-swatch';

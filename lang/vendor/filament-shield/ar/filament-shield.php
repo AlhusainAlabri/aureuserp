@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'column.name' => 'العنوان',
+    'column.name' => 'اسم الدور',
     'column.guard_name' => 'اسم الحارس',
     'column.roles' => 'الأدوار',
     'column.permissions' => 'الصلاحيات',
@@ -19,8 +19,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'field.name' => 'العنوان',
-    'field.guard_name' => 'اسم الحارس',
+    'field.name' => 'اسم الدور',
+    'field.guard_name' => 'الحارس (Guard)',
     'field.permissions' => 'الصلاحيات',
     'field.select_all.name' => 'تحديد الكل',
     'field.select_all.message' => 'تفعيل كافة الصلاحيات لهذا الدور',

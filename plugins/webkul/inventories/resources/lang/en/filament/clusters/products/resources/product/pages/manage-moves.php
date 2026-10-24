@@ -2,15 +2,13 @@
 
 return [
     'title' => 'IN/OUT',
-
-    'tabs' => [
+    'tabs'  => [
         'todo'     => 'To Do',
         'done'     => 'Done',
         'incoming' => 'Incoming',
         'outgoing' => 'Outgoing',
         'internal' => 'Internal',
     ],
-
     'table' => [
         'columns' => [
             'date'                 => 'Date',
@@ -25,7 +23,6 @@ return [
             'state'                => 'State',
             'done-by'              => 'Done By',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -34,5 +31,10 @@ return [
                 ],
             ],
         ],
+    ],
+    'breadcrumb'  => 'Moves',
+    'empty-state' => [
+        'heading'     => 'No moves',
+        'description' => 'Stock moves for this product will appear here.',
     ],
 ];

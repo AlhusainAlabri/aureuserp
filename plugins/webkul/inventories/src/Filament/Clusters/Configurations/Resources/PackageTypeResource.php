@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -31,6 +32,8 @@ use Webkul\Inventory\Settings\OperationSettings;
 
 class PackageTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = PackageType::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';

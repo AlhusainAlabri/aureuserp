@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Filament\Facades\Filament;
 use Filament\GlobalSearch\GlobalSearchResults;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
@@ -48,7 +49,10 @@ class GlobalSearchProvider extends BaseGlobalSearchProvider
                 ->before('\\')
                 ->toString();
 
-            $builder->category($pluginKey.'→'.$resource::getPluralModelLabel(), $resourceResults);
+            $moduleKey = 'global-search.modules.'.Str::snake($pluginKey);
+            $module = Lang::has($moduleKey) ? __($moduleKey) : $pluginKey;
+
+            $builder->category($module.' → '.$resource::getPluralModelLabel(), $resourceResults);
         }
 
         return $builder;

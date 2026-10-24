@@ -1,28 +1,23 @@
 <?php
 
 return [
-    'title' => 'Journal Entries',
-
+    'title'      => 'Journal Entries',
     'navigation' => [
         'title' => 'Journal Entries',
     ],
-
     'record-sub-navigation' => [
         'payment' => 'Payment',
     ],
-
     'global-search' => [
         'number'   => 'Number',
         'partner'  => 'Partner',
         'date'     => 'Invoice Date',
         'due-date' => 'Invoice Due Date',
     ],
-
     'form' => [
         'section' => [
             'general' => [
                 'title'  => 'General',
-
                 'fields' => [
                     'reference'       => 'Reference',
                     'accounting-date' => 'Accounting Date',
@@ -30,16 +25,13 @@ return [
                 ],
             ],
         ],
-
         'tabs' => [
             'lines' => [
-                'title' => 'Journal Items',
-
+                'title'    => 'Journal Items',
                 'repeater' => [
-                    'title'       => 'Items',
-                    'add-item'    => 'Add Item',
-
-                    'columns' => [
+                    'title'    => 'Items',
+                    'add-item' => 'Add Item',
+                    'columns'  => [
                         'account'                  => 'Account',
                         'partner'                  => 'Partner',
                         'label'                    => 'Label',
@@ -50,7 +42,6 @@ return [
                         'credit'                   => 'Credit',
                         'discount-amount-currency' => 'Discount Amount (Currency)',
                     ],
-
                     'fields' => [
                         'account'                  => 'Account',
                         'partner'                  => 'Partner',
@@ -64,23 +55,20 @@ return [
                     ],
                 ],
             ],
-
             'other-information' => [
-                'title'    => 'Other Information',
-
+                'title'  => 'Other Information',
                 'fields' => [
-                    'checked'         => 'Checked',
-                    'company'         => 'Company',
-                    'fiscal-position' => 'Fiscal Position',
+                    'checked'                 => 'Checked',
+                    'company'                 => 'Company',
+                    'fiscal-position'         => 'Fiscal Position',
+                    'fiscal-position-tooltip' => 'Maps taxes and accounts for specific customers or regions.',
                 ],
             ],
-
             'term-and-conditions' => [
                 'title' => 'Term & Conditions',
             ],
         ],
     ],
-
     'table' => [
         'total'   => 'Total',
         'columns' => [
@@ -95,11 +83,9 @@ return [
             'state'        => 'State',
             'checked'      => 'Checked',
         ],
-
         'summarizers' => [
             'total' => 'Total',
         ],
-
         'groups' => [
             'partner'        => 'Partner',
             'journal'        => 'Journal',
@@ -109,7 +95,6 @@ return [
             'invoice-date'   => 'Invoice Date',
             'company'        => 'Company',
         ],
-
         'filters' => [
             'number'                       => 'Number',
             'invoice-partner-display-name' => 'Invoice Partner Display Name',
@@ -120,7 +105,6 @@ return [
             'created-at'                   => 'Created At',
             'updated-at'                   => 'Updated At',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -129,7 +113,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -138,14 +121,12 @@ return [
                 ],
             ],
         ],
-
         'toolbar-actions' => [
             'export' => [
                 'label' => 'Export',
             ],
         ],
     ],
-
     'infolist' => [
         'section' => [
             'general' => [
@@ -158,11 +139,9 @@ return [
                 ],
             ],
         ],
-
         'tabs' => [
             'lines' => [
-                'title' => 'Journal Items',
-
+                'title'    => 'Journal Items',
                 'repeater' => [
                     'entries' => [
                         'account'  => 'Account',
@@ -175,14 +154,11 @@ return [
                     ],
                 ],
             ],
-
             'other-information' => [
-                'title' => 'Other Information',
-
+                'title'    => 'Other Information',
                 'fieldset' => [
                     'accounting' => [
-                        'title' => 'Accounting',
-
+                        'title'   => 'Accounting',
                         'entries' => [
                             'company'         => 'Company',
                             'fiscal-position' => 'Fiscal Position',
@@ -191,11 +167,9 @@ return [
                     ],
                 ],
             ],
-
             'term-and-conditions' => [
                 'title' => 'Term & Conditions',
             ],
         ],
     ],
-
 ];

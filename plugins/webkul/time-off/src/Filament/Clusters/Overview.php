@@ -19,6 +19,11 @@ class Overview extends Cluster
         return __('time-off::filament/clusters/overview.navigation.title');
     }
 
+    public function getTitle(): string
+    {
+        return static::getNavigationLabel();
+    }
+
     public static function getNavigationGroup(): string
     {
         return __('time-off::filament/clusters/overview.navigation.group');

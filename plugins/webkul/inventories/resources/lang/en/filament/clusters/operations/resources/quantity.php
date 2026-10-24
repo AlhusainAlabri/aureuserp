@@ -5,7 +5,6 @@ return [
         'title' => 'Quantities',
         'group' => 'Adjustments',
     ],
-
     'form' => [
         'fields' => [
             'location'         => 'Location',
@@ -17,26 +16,24 @@ return [
             'storage-category' => 'Storage Category',
         ],
     ],
-
     'table' => [
         'columns' => [
-            'location'           => 'Location',
-            'product'            => 'Product',
-            'product-category'   => 'Product Category',
-            'lot'                => 'Lot / Serial Numbers',
-            'storage-category'   => 'Storage Category',
-            'available-quantity' => 'Available Quantity',
-            'quantity'           => 'Quantity',
-            'package'            => 'Package',
-            'last-counted-at'    => 'Last Counted At',
-            'on-hand'            => 'On Hand Quantity',
-            'uom'                => 'UOM',
-            'counted'            => 'Counted Quantity',
-            'difference'         => 'Difference',
-            'scheduled-at'       => 'Scheduled At',
-            'user'               => 'User',
-            'company'            => 'Company',
-
+            'location'                     => 'Location',
+            'product'                      => 'Product',
+            'product-category'             => 'Product Category',
+            'lot'                          => 'Lot / Serial Numbers',
+            'storage-category'             => 'Storage Category',
+            'available-quantity'           => 'Available Quantity',
+            'quantity'                     => 'Quantity',
+            'package'                      => 'Package',
+            'last-counted-at'              => 'Last Counted At',
+            'on-hand'                      => 'On Hand Quantity',
+            'uom'                          => 'UOM',
+            'counted'                      => 'Counted Quantity',
+            'difference'                   => 'Difference',
+            'scheduled-at'                 => 'Scheduled At',
+            'user'                         => 'User',
+            'company'                      => 'Company',
             'on-hand-before-state-updated' => [
                 'notification' => [
                     'title' => 'Quantity updated',
@@ -44,7 +41,6 @@ return [
                 ],
             ],
         ],
-
         'groups' => [
             'product'          => 'Product',
             'product-category' => 'Product Category',
@@ -54,7 +50,6 @@ return [
             'company'          => 'Company',
             'package'          => 'Package',
         ],
-
         'filters' => [
             'product'             => 'Product',
             'uom'                 => 'Unit of Measure',
@@ -71,19 +66,15 @@ return [
             'user'                => 'User',
             'created-at'          => 'Created At',
             'updated-at'          => 'Updated At',
-            'company'             => 'Company',
             'creator'             => 'Creator',
         ],
-
         'header-actions' => [
             'create' => [
-                'label' => 'Add Quantity',
-
+                'label'        => 'Add Quantity',
                 'notification' => [
                     'title' => 'Quantity added',
                     'body'  => 'The quantity has been added successfully.',
                 ],
-
                 'before' => [
                     'notification' => [
                         'title' => 'Quantity already exists',
@@ -92,25 +83,25 @@ return [
                 ],
             ],
         ],
-
         'actions' => [
             'apply' => [
-                'label' => 'Apply',
-
+                'label'        => 'Apply',
                 'notification' => [
                     'title' => 'Quantity changes applied',
                     'body'  => 'The quantity changes has been applied successfully.',
                 ],
             ],
-
             'clear' => [
-                'label' => 'Clear',
-
+                'label'        => 'Clear',
                 'notification' => [
                     'title' => 'Quantity changes cleared',
                     'body'  => 'The quantity changes have been cleared successfully.',
                 ],
             ],
+        ],
+        'empty-state' => [
+            'heading'     => 'No stock quantities',
+            'description' => 'Stock quantities will appear here once products are received.',
         ],
     ],
 ];

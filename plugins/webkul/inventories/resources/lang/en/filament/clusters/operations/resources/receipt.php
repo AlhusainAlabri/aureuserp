@@ -5,12 +5,10 @@ return [
         'title' => 'Receipts',
         'group' => 'Transfers',
     ],
-
     'global-search' => [
         'partner' => 'Partner',
         'origin'  => 'Origin',
     ],
-
     'table' => [
         'actions' => [
             'delete' => [
@@ -19,15 +17,15 @@ return [
                         'title' => 'Receipt deleted',
                         'body'  => 'The receipt ras been deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Receipt could not be deleted',
                         'body'  => 'The receipt cannot be deleted because it is currently in use.',
                     ],
+                    'title' => 'Receipt deleted',
+                    'body'  => 'The receipt has been deleted successfully.',
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -35,7 +33,6 @@ return [
                         'title' => 'Receipts deleted',
                         'body'  => 'The receipts has been deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Receipts could not be deleted',
                         'body'  => 'The receipts cannot be deleted because they are currently in use.',

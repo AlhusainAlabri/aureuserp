@@ -2,7 +2,6 @@
 
 return [
     'title'          => 'Purchase Agreement',
-
     'log-attributes' => [
         'state'     => 'Status',
         'reference' => 'Reference',
@@ -10,5 +9,7 @@ return [
         'ends_at'   => 'End Date',
         'partner'   => 'Vendor',
         'buyer'     => 'Buyer',
+        'ends-at'   => 'Ends at',
+        'starts-at' => 'Starts at',
     ],
 ];

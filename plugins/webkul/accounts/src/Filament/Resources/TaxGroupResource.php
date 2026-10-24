@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -29,6 +30,8 @@ use Webkul\Account\Models\TaxGroup;
 
 class TaxGroupResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = TaxGroup::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';

@@ -5,7 +5,6 @@ return [
         'name'      => 'الاسم',
         'full-name' => 'الاسم الكامل',
     ],
-
     'table' => [
         'columns' => [
             'name'       => 'الاسم',
@@ -13,7 +12,6 @@ return [
             'created-at' => 'تاريخ الإنشاء',
             'updated-at' => 'تاريخ التحديث',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -21,21 +19,18 @@ return [
                     'body'  => 'تم تحديث القطاع بنجاح.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'تم استعادة القطاع',
                     'body'  => 'تم استعادة القطاع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف القطاع',
                     'body'  => 'تم حذف القطاع بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف القطاع نهائياً',
@@ -43,7 +38,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -51,14 +45,12 @@ return [
                     'body'  => 'تم استعادة القطاعات بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف القطاعات',
                     'body'  => 'تم حذف القطاعات بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'تم حذف القطاعات نهائياً',
@@ -66,5 +58,8 @@ return [
                 ],
             ],
         ],
+    ],
+    'navigation' => [
+        'title' => 'القطاعات',
     ],
 ];

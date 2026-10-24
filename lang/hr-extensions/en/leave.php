@@ -17,7 +17,7 @@ return [
     'infolist' => [
         'substitute_status' => 'Substitute status',
     ],
-    'notifications'       => [
+    'notifications' => [
         'substitute_request' => [
             'title' => 'You are requested as a substitute',
             'body'  => ':employee requests you cover their duties from :start to :end',

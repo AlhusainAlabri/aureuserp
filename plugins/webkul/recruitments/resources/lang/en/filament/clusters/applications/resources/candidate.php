@@ -1,24 +1,20 @@
 <?php
 
 return [
-    'title' => 'Candidate',
-
+    'title'      => 'Candidate',
     'navigation' => [
         'title' => 'Candidates',
     ],
-
     'global-search' => [
         'email-from' => 'Email From',
         'phone'      => 'Phone',
         'company'    => 'Company',
         'degree'     => 'Degree',
     ],
-
     'form' => [
         'sections' => [
             'basic-information' => [
-                'title' => 'Basic Information',
-
+                'title'  => 'Basic Information',
                 'fields' => [
                     'full-name' => 'Full Name',
                     'email'     => 'Email Address',
@@ -27,37 +23,30 @@ return [
                     'contact'   => 'Contact',
                 ],
             ],
-
             'additional-details' => [
-                'title' => 'Additional Details',
-
+                'title'  => 'Additional Details',
                 'fields' => [
                     'company'           => 'Company',
                     'degree'            => 'Degree',
                     'tags'              => 'Tags',
                     'manager'           => 'Manager',
                     'availability-date' => 'Availability Date',
-
-                    'priority-options' => [
+                    'priority-options'  => [
                         'low'    => 'Low',
                         'medium' => 'Medium',
                         'high'   => 'High',
                     ],
                 ],
             ],
-
             'status-and-evaluation' => [
-                'title' => 'Status',
-
+                'title'  => 'Status',
                 'fields' => [
                     'active'     => 'Active',
                     'evaluation' => 'Evaluation',
                 ],
             ],
-
             'communication' => [
-                'title' => 'Communication',
-
+                'title'  => 'Communication',
                 'fields' => [
                     'cc-email'      => 'CC Email',
                     'email-bounced' => 'Email Bounced',
@@ -65,25 +54,21 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'       => 'Full Name',
             'tags'       => 'Tags',
             'evaluation' => 'Evaluation',
         ],
-
         'filters' => [
             'company'      => 'Company',
             'partner-name' => 'Contact',
             'degree'       => 'Degree',
             'manager-name' => 'Manager',
         ],
-
         'groups' => [
             'manager-name' => 'Manager',
         ],
-
         'actions' => [
             'delete' => [
                 'notification' => [
@@ -91,7 +76,6 @@ return [
                     'body'  => 'The candidates has been deleted successfully.',
                 ],
             ],
-
             'empty-state-actions' => [
                 'create' => [
                     'notification' => [
@@ -101,7 +85,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -110,13 +93,19 @@ return [
                 ],
             ],
         ],
+        'empty-state-actions' => [
+            'create' => [
+                'notification' => [
+                    'title' => 'Candidate created',
+                    'body'  => 'The candidate has been created successfully.',
+                ],
+            ],
+        ],
     ],
-
     'infolist' => [
         'sections' => [
             'basic-information' => [
-                'title' => 'Basic Information',
-
+                'title'   => 'Basic Information',
                 'entries' => [
                     'full-name' => 'Full Name',
                     'email'     => 'Email Address',
@@ -125,37 +114,30 @@ return [
                     'contact'   => 'Contact',
                 ],
             ],
-
             'additional-details' => [
-                'title' => 'Additional Details',
-
+                'title'   => 'Additional Details',
                 'entries' => [
                     'company'           => 'Company',
                     'degree'            => 'Degree',
                     'tags'              => 'Tags',
                     'manager'           => 'Manager',
                     'availability-date' => 'Availability Date',
-
-                    'priority-options' => [
+                    'priority-options'  => [
                         'low'    => 'Low',
                         'medium' => 'Medium',
                         'high'   => 'High',
                     ],
                 ],
             ],
-
             'status-and-evaluation' => [
-                'title' => 'Status',
-
+                'title'   => 'Status',
                 'entries' => [
                     'active'     => 'Active',
                     'evaluation' => 'Evaluation',
                 ],
             ],
-
             'communication' => [
-                'title' => 'Communication',
-
+                'title'   => 'Communication',
                 'entries' => [
                     'cc-email'      => 'CC Email',
                     'email-bounced' => 'Email Bounced',

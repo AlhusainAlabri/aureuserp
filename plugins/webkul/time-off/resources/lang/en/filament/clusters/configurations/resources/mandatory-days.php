@@ -1,14 +1,11 @@
 <?php
 
 return [
-    'title' => 'Mandatory Days',
-
+    'title'       => 'Mandatory Days',
     'model-label' => 'Mandatory Day',
-
-    'navigation' => [
+    'navigation'  => [
         'title' => 'Mandatory Holidays',
     ],
-
     'form' => [
         'fields' => [
             'name'       => 'Name',
@@ -17,7 +14,6 @@ return [
             'color'      => 'Color',
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'         => 'Name',
@@ -26,15 +22,15 @@ return [
             'start-date'   => 'Start Date',
             'end-date'     => 'End Date',
         ],
-
         'filters' => [
             'name'         => 'Name',
             'company-name' => 'Company Name',
             'created-by'   => 'Created By',
             'start-date'   => 'Start Date',
             'end-date'     => 'End Date',
+            'created-at'   => 'Created at',
+            'updated-at'   => 'Updated at',
         ],
-
         'groups' => [
             'name'         => 'Name',
             'company-name' => 'Company Name',
@@ -42,7 +38,6 @@ return [
             'start-date'   => 'Start Date',
             'end-date'     => 'End Date',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -50,7 +45,6 @@ return [
                     'body'  => 'The mandatory day has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Mandatory day deleted',
@@ -58,7 +52,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -68,7 +61,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'entries' => [
             'name'       => 'Name',

@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -34,6 +35,8 @@ use Webkul\Support\Models\EmailTemplate;
 
 class EmailTemplateResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = EmailTemplate::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';

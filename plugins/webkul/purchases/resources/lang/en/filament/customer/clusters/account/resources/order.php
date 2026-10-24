@@ -9,58 +9,53 @@ return [
             'status'            => 'Status',
         ],
     ],
-
     'products' => [
         'columns' => [
-            'product'          => 'Product',
-            'quantity'         => 'Quantity',
-            'quantity_units'   => ':count Units',
-            'unit_price'       => 'Unit Price',
-            'taxes'            => 'Taxes',
-            'discount'         => 'Discount %',
-            'amount'           => 'Amount',
+            'product'        => 'Product',
+            'quantity'       => 'Quantity',
+            'quantity_units' => ':count Units',
+            'unit_price'     => 'Unit Price',
+            'taxes'          => 'Taxes',
+            'discount'       => 'Discount %',
+            'amount'         => 'Amount',
         ],
     ],
-
     'infolist' => [
         'settings' => [
             'entries' => [
                 'buyer' => 'Buyer',
             ],
-
             'actions' => [
                 'accept' => [
-                    'label' => 'Accept',
-
+                    'label'        => 'Accept',
                     'notification' => [
                         'title' => 'Quotation Accepted',
                         'body'  => 'The RFQ has been acknowledged successfully.',
                     ],
-
                     'message' => [
                         'body' => 'The RFQ has been acknowledged by vendor.',
                     ],
+                    'decline' => [
+                        'message' => [
+                            'body' => 'The order has been declined.',
+                        ],
+                    ],
                 ],
-
                 'decline' => [
-                    'label' => 'Decline',
-
+                    'label'        => 'Decline',
                     'notification' => [
                         'title' => 'Quotation Declined',
                         'body'  => 'The RFQ has been declined successfully.',
                     ],
-
                     'message' => [
                         'body' => 'The RFQ has been declined by vendor.',
                     ],
                 ],
-
                 'print' => [
                     'label' => 'Download/Print',
                 ],
             ],
         ],
-
         'general' => [
             'entries' => [
                 'purchase-order'        => 'Purchase Order #:id',

@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -39,6 +40,8 @@ use Webkul\Support\Models\Currency;
 
 class CurrencyResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Currency::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';

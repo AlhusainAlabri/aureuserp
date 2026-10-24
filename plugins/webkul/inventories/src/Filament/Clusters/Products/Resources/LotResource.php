@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Products\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
@@ -50,6 +51,8 @@ use Webkul\Inventory\Settings\TraceabilitySettings;
 
 class LotResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Lot::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';

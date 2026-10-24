@@ -8,7 +8,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
-use UnitEnum;
 use Webkul\Sale\Settings\QuotationAndOrderSettings;
 use Webkul\Support\Filament\Clusters\Settings;
 
@@ -20,7 +19,10 @@ class ManageQuotationAndOrder extends SettingsPage
 
     protected static ?string $slug = 'sale/manage-quotation-and-order';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sales';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.sales');
+    }
 
     protected static ?int $navigationSort = 2;
 

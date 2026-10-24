@@ -5,7 +5,6 @@ return [
         'name'  => 'Name',
         'color' => 'Color',
     ],
-
     'table' => [
         'columns' => [
             'name'       => 'Name',
@@ -13,7 +12,6 @@ return [
             'created-at' => 'Created At',
             'updated-at' => 'Updated At',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -21,21 +19,18 @@ return [
                     'body'  => 'The tag has been updated successfully.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'Tag restored',
                     'body'  => 'The tag has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Tag deleted',
                     'body'  => 'The tag has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Tag force deleted',
@@ -43,7 +38,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -51,14 +45,12 @@ return [
                     'body'  => 'The tags has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Tags deleted',
                     'body'  => 'The tags has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Tags force deleted',
@@ -66,5 +58,8 @@ return [
                 ],
             ],
         ],
+    ],
+    'navigation' => [
+        'title' => 'Tags',
     ],
 ];

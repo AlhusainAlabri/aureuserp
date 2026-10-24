@@ -13,11 +13,9 @@ return [
                 'status'               => 'الحالة',
             ],
         ],
-
         'tabs' => [
             'due-terms' => [
-                'title' => 'شروط الاستحقاق',
-
+                'title'    => 'شروط الاستحقاق',
                 'repeater' => [
                     'due-terms' => [
                         'fields' => [
@@ -32,7 +30,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'payment-term' => 'شرط الدفع',
@@ -40,7 +37,6 @@ return [
             'created-at'   => 'تاريخ الإنشاء',
             'updated-at'   => 'تاريخ التحديث',
         ],
-
         'groups' => [
             'company-name'        => 'اسم الشركة',
             'discount-days'       => 'أيام الخصم',
@@ -50,7 +46,6 @@ return [
             'early-discount'      => 'الخصم المبكر',
             'discount-percentage' => 'نسبة الخصم',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -58,21 +53,18 @@ return [
                     'body'  => 'تم استعادة شرط الدفع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف شرط الدفع',
                     'body'  => 'تم حذف شرط الدفع بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'تم الحذف النهائي لشرط الدفع',
                         'body'  => 'تم الحذف النهائي لشرط الدفع بنجاح.',
                     ],
-
                     'error' => [
                         'title' => 'فشل الحذف النهائي لشرط الدفع',
                         'body'  => 'لا يمكن حذف شرط الدفع نهائياً لأنه مرتبط بقيود يومية.',
@@ -80,7 +72,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -88,30 +79,32 @@ return [
                     'body'  => 'تم استعادة شروط الدفع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف شروط الدفع',
                     'body'  => 'تم حذف شروط الدفع بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'تم الحذف النهائي لشروط الدفع',
                         'body'  => 'تم الحذف النهائي لشروط الدفع بنجاح.',
                     ],
-
                     'error' => [
                         'title' => 'فشل الحذف النهائي لشروط الدفع',
                         'body'  => 'لا يمكن حذف شروط الدفع نهائياً لأنها مرتبطة بقيود يومية.',
                     ],
                 ],
             ],
+            'force-restore' => [
+                'notification' => [
+                    'title' => 'تمت استعادة شروط الدفع',
+                    'body'  => 'تمت استعادة شروط الدفع المحددة بنجاح.',
+                ],
+            ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'entries' => [
@@ -125,11 +118,9 @@ return [
                 'status'               => 'الحالة',
             ],
         ],
-
         'tabs' => [
             'due-terms' => [
-                'title' => 'شروط الاستحقاق',
-
+                'title'    => 'شروط الاستحقاق',
                 'repeater' => [
                     'due-terms' => [
                         'entries' => [

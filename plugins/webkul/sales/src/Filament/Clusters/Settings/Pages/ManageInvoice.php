@@ -7,7 +7,6 @@ use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\Radio;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
-use UnitEnum;
 use Webkul\Account\Enums\InvoicePolicy;
 use Webkul\Sale\Settings\InvoiceSettings;
 use Webkul\Support\Filament\Clusters\Settings;
@@ -20,7 +19,10 @@ class ManageInvoice extends SettingsPage
 
     protected static ?string $slug = 'sale/manage-invoicing';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Sales';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.sales');
+    }
 
     protected static ?int $navigationSort = 2;
 

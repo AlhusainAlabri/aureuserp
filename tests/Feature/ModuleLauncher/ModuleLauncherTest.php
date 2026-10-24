@@ -149,3 +149,16 @@ it('opens the customize launcher slide-over action', function (): void {
         ->assertActionMounted('customizeLauncher')
         ->assertMountedActionModalSee(__('module-launcher.customize.heading'));
 });
+
+it('renders the dashboard shortcut create form with the icon preview', function (): void {
+    $admin = User::withoutEvents(fn (): User => User::factory()->create(['is_active' => true]));
+    $admin->assignRole('Admin');
+
+    $this->actingAs($admin);
+
+    Livewire::test(DashboardShortcutResource\Pages\CreateDashboardShortcut::class)
+        ->assertSuccessful()
+        ->fillForm(['icon' => 'heroicon-o-link'])
+        ->assertSuccessful()
+        ->assertSee('heroicon-o-link');
+});

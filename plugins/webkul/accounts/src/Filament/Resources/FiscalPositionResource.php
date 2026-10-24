@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -39,6 +40,8 @@ use Webkul\Support\Filament\Infolists\Components\Repeater\TableColumn as Infolis
 
 class FiscalPositionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = FiscalPosition::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-uturn-left';

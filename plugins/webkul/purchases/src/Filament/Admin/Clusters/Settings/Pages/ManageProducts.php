@@ -20,7 +20,10 @@ class ManageProducts extends SettingsPage
 
     protected static ?string $slug = 'purchase/manage-products';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Purchase';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.purchase');
+    }
 
     protected static ?int $navigationSort = 2;
 

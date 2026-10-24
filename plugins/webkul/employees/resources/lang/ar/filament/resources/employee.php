@@ -1,20 +1,17 @@
 <?php
 
 return [
-    'title'    => 'الموظفون',
-    'singular' => 'موظف',
-
+    'title'      => 'الموظفون',
+    'singular'   => 'موظف',
     'navigation' => [
         'title' => 'الموظفون',
         'group' => 'الموظفون',
     ],
-
     'global-search' => [
         'department' => 'القسم',
         'work-email' => 'البريد الإلكتروني للعمل',
         'work-phone' => 'هاتف العمل',
     ],
-
     'form' => [
         'sections' => [
             'fields' => [
@@ -44,11 +41,9 @@ return [
                 'deleted-option-suffix'  => ' (محذوف)',
             ],
         ],
-
         'tabs' => [
             'work-information' => [
-                'title' => 'معلومات العمل',
-
+                'title'  => 'معلومات العمل',
                 'fields' => [
                     'location'             => 'الموقع',
                     'work-address'         => 'عنوان العمل',
@@ -66,10 +61,8 @@ return [
                     'color'                => 'اللون',
                 ],
             ],
-
             'private-information' => [
-                'title' => 'المعلومات الخاصة',
-
+                'title'  => 'المعلومات الخاصة',
                 'fields' => [
                     'private-address-country'     => 'دولة العنوان الخاص',
                     'private-address-state'       => 'منطقة العنوان الخاص',
@@ -103,11 +96,6 @@ return [
                     'private-email'               => 'البريد الإلكتروني الخاص',
                     'private-contact'             => 'جهة الاتصال الخاصة',
                     'private-phone'               => 'الهاتف الخاص',
-                    'bank-account-number'         => 'رقم الحساب البنكي',
-                    'bank-account-holder-name'    => 'اسم صاحب الحساب',
-                    'bank'                        => 'البنك',
-                    'create-bank'                 => 'إنشاء بنك',
-                    'bank-account'                => 'الحساب البنكي',
                     'bank-name'                   => 'اسم البنك',
                     'bank-code'                   => 'رمز البنك',
                     'bank-email'                  => 'البريد الإلكتروني',
@@ -118,13 +106,7 @@ return [
                     'bank-zipcode'                => 'الرمز البريدي',
                     'bank-country'                => 'الدولة',
                     'bank-state'                  => 'المنطقة',
-                    'bank-country'                => 'الدولة',
-                    'bank-state'                  => 'المنطقة',
-                    'status'                      => 'الحالة',
-                    'send-money'                  => 'إرسال أموال',
                     'create-bank-account'         => 'إنشاء حساب بنكي',
-                    'bank-account'                => 'الحساب البنكي',
-                    'private-email'               => 'البريد الإلكتروني الخاص',
                     'private-car-plate'           => 'لوحة السيارة الخاصة',
                     'distance-home-to-work'       => 'المسافة من المنزل للعمل',
                     'km-home-to-work'             => 'كم من المنزل للعمل',
@@ -155,7 +137,6 @@ return [
                     'permit-no'                   => 'رقم التصريح',
                     'gender'                      => 'الجنس',
                     'date-of-birth'               => 'تاريخ الميلاد',
-                    'country-of-birth'            => 'بلد الميلاد',
                     'work-permit'                 => 'تصريح العمل',
                     'visa-no'                     => 'رقم التأشيرة',
                     'work-permit-no'              => 'رقم تصريح العمل',
@@ -164,10 +145,8 @@ return [
                     'visa-number'                 => 'رقم التأشيرة',
                 ],
             ],
-
             'settings' => [
-                'title' => 'الإعدادات',
-
+                'title'  => 'الإعدادات',
                 'fields' => [
                     'employment-status'              => 'حالة التوظيف',
                     'active-employee'                => 'موظف نشط',
@@ -190,104 +169,100 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'avatar'           => 'الصورة',
-            'name'             => 'الاسم',
-            'manager-name'     => 'المدير',
-            'company-name'     => 'الشركة',
-            'department'       => 'القسم',
-            'employment-type'  => 'نوع التوظيف',
-            'civil-id-expiry'  => 'انتهاء الرقم المدني',
-            'compliance'       => 'الامتثال',
-            'status'           => 'الحالة',
-            'job-title'        => 'المسمى الوظيفي',
-            'work-email'       => 'البريد الإلكتروني للعمل',
-            'work-phone'       => 'هاتف العمل',
+            'avatar'          => 'الصورة',
+            'name'            => 'الاسم',
+            'manager-name'    => 'المدير',
+            'company-name'    => 'الشركة',
+            'department'      => 'القسم',
+            'employment-type' => 'نوع التوظيف',
+            'civil-id-expiry' => 'انتهاء الرقم المدني',
+            'compliance'      => 'الامتثال',
+            'status'          => 'الحالة',
+            'job-title'       => 'المسمى الوظيفي',
+            'work-email'      => 'البريد الإلكتروني للعمل',
+            'work-phone'      => 'هاتف العمل',
+            'categories'      => 'التصنيفات',
         ],
-
         'status' => [
             'active'   => 'نشط',
             'inactive' => 'غير نشط',
         ],
-
         'compliance-badges' => [
-            'inactive'         => 'غير نشط',
-            'expired-docs'     => ':count مستند منتهٍ|:count مستندات منتهية',
-            'expiring-docs'    => ':count مستند ينتهي قريباً|:count مستندات تنتهي قريباً',
-            'active-warnings'  => ':count إنذار|:count إنذارات',
-            'civil-id'         => 'الرقم المدني ينتهي قريباً',
+            'inactive'        => 'غير نشط',
+            'expired-docs'    => ':count مستند منتهٍ|:count مستندات منتهية',
+            'expiring-docs'   => ':count مستند ينتهي قريباً|:count مستندات تنتهي قريباً',
+            'active-warnings' => ':count إنذار|:count إنذارات',
+            'civil-id'        => 'الرقم المدني ينتهي قريباً',
         ],
-
         'filters' => [
-            'skills'                          => 'المهارات',
-            'resumes'                         => 'السير الذاتية',
-            'timezone'                        => 'المنطقة الزمنية',
-            'job-title'                       => 'المسمى الوظيفي',
-            'birth-date'                      => 'تاريخ الميلاد',
-            'work-email'                      => 'البريد الإلكتروني للعمل',
-            'mobile-phone'                    => 'الجوال',
-            'work-phone'                      => 'هاتف العمل',
-            'is-flexible'                     => 'مرن',
-            'is-fully-flexible'               => 'مرن بالكامل',
-            'is-active'                       => 'نشط',
-            'work-permit-scheduled-activity'  => 'نشاط مجدول لتصريح العمل',
-            'emergency-contact'               => 'جهة اتصال الطوارئ',
-            'emergency-phone'                 => 'هاتف الطوارئ',
-            'private-phone'                   => 'الهاتف الخاص',
-            'private-email'                   => 'البريد الإلكتروني الخاص',
-            'private-car-plate'               => 'لوحة السيارة الخاصة',
-            'distance-home-work'              => 'المسافة من المنزل للعمل',
-            'km-home-work'                    => 'كم من المنزل للعمل',
-            'distance-home-work-unit'         => 'وحدة المسافة',
-            'marital-status'                  => 'الحالة الاجتماعية',
-            'spouse-name'                     => 'اسم الزوج/ة',
-            'spouse-birthdate'                => 'تاريخ ميلاد الزوج/ة',
-            'certificate'                     => 'الشهادة',
-            'study-field'                     => 'مجال الدراسة',
-            'study-school'                    => 'مكان الدراسة',
-            'identification-id'               => 'رقم الهوية',
-            'ssnid'                           => 'رقم الضمان الاجتماعي',
-            'sinid'                           => 'رقم التأمين الاجتماعي',
-            'passport-id'                     => 'رقم جواز السفر',
-            'gender'                          => 'الجنس',
-            'children'                        => 'الأطفال',
-            'visa-no'                         => 'رقم التأشيرة',
-            'civil-id-expiry'                 => 'انتهاء الرقم المدني',
-            'permit-no'                       => 'رقم التصريح',
-            'language'                        => 'اللغة',
-            'additional-note'                 => 'ملاحظة إضافية',
-            'notes'                           => 'ملاحظات',
-            'barcode'                         => 'الباركود',
-            'visa-expire'                     => 'انتهاء التأشيرة',
-            'work-permit-expiration-date'     => 'تاريخ انتهاء تصريح العمل',
-            'departure-date'                  => 'تاريخ المغادرة',
-            'departure-description'           => 'وصف المغادرة',
-            'created-at'                      => 'تاريخ الإنشاء',
-            'updated-at'                      => 'تاريخ التحديث',
-            'company'                         => 'الشركة',
-            'created-by'                      => 'أنشئ بواسطة',
-            'calendar'                        => 'التقويم',
-            'department'                      => 'القسم',
-            'job'                             => 'الوظيفة',
-            'partner'                         => 'الشريك',
-            'leave-approvers'                 => 'معتمدو الإجازات',
-            'attendance'                      => 'الحضور',
-            'work-location'                   => 'موقع العمل',
-            'manager'                         => 'المدير',
-            'coach'                           => 'المدرب',
-            'private-state'                   => 'المنطقة الخاصة',
-            'private-country'                 => 'الدولة الخاصة',
-            'country'                         => 'الدولة',
-            'state'                           => 'المنطقة',
-            'country-of-birth'                => 'بلد الميلاد',
-            'bank-account'                    => 'الحساب البنكي',
-            'departure-reason'                => 'سبب المغادرة',
-            'employee-type'                   => 'نوع الموظف',
-            'tags'                            => 'الوسوم',
+            'skills'                         => 'المهارات',
+            'resumes'                        => 'السير الذاتية',
+            'timezone'                       => 'المنطقة الزمنية',
+            'job-title'                      => 'المسمى الوظيفي',
+            'birth-date'                     => 'تاريخ الميلاد',
+            'work-email'                     => 'البريد الإلكتروني للعمل',
+            'mobile-phone'                   => 'الجوال',
+            'work-phone'                     => 'هاتف العمل',
+            'is-flexible'                    => 'مرن',
+            'is-fully-flexible'              => 'مرن بالكامل',
+            'is-active'                      => 'نشط',
+            'work-permit-scheduled-activity' => 'نشاط مجدول لتصريح العمل',
+            'emergency-contact'              => 'جهة اتصال الطوارئ',
+            'emergency-phone'                => 'هاتف الطوارئ',
+            'private-phone'                  => 'الهاتف الخاص',
+            'private-email'                  => 'البريد الإلكتروني الخاص',
+            'private-car-plate'              => 'لوحة السيارة الخاصة',
+            'distance-home-work'             => 'المسافة من المنزل للعمل',
+            'km-home-work'                   => 'كم من المنزل للعمل',
+            'distance-home-work-unit'        => 'وحدة المسافة',
+            'marital-status'                 => 'الحالة الاجتماعية',
+            'spouse-name'                    => 'اسم الزوج/ة',
+            'spouse-birthdate'               => 'تاريخ ميلاد الزوج/ة',
+            'certificate'                    => 'الشهادة',
+            'study-field'                    => 'مجال الدراسة',
+            'study-school'                   => 'مكان الدراسة',
+            'identification-id'              => 'رقم الهوية',
+            'ssnid'                          => 'رقم الضمان الاجتماعي',
+            'sinid'                          => 'رقم التأمين الاجتماعي',
+            'passport-id'                    => 'رقم جواز السفر',
+            'gender'                         => 'الجنس',
+            'children'                       => 'الأطفال',
+            'visa-no'                        => 'رقم التأشيرة',
+            'civil-id-expiry'                => 'انتهاء الرقم المدني',
+            'permit-no'                      => 'رقم التصريح',
+            'language'                       => 'اللغة',
+            'additional-note'                => 'ملاحظة إضافية',
+            'notes'                          => 'ملاحظات',
+            'barcode'                        => 'الباركود',
+            'visa-expire'                    => 'انتهاء التأشيرة',
+            'work-permit-expiration-date'    => 'تاريخ انتهاء تصريح العمل',
+            'departure-date'                 => 'تاريخ المغادرة',
+            'departure-description'          => 'وصف المغادرة',
+            'created-at'                     => 'تاريخ الإنشاء',
+            'updated-at'                     => 'تاريخ التحديث',
+            'company'                        => 'الشركة',
+            'created-by'                     => 'أنشئ بواسطة',
+            'calendar'                       => 'التقويم',
+            'department'                     => 'القسم',
+            'job'                            => 'الوظيفة',
+            'partner'                        => 'الشريك',
+            'leave-approvers'                => 'معتمدو الإجازات',
+            'attendance'                     => 'الحضور',
+            'work-location'                  => 'موقع العمل',
+            'manager'                        => 'المدير',
+            'coach'                          => 'المدرب',
+            'private-state'                  => 'المنطقة الخاصة',
+            'private-country'                => 'الدولة الخاصة',
+            'country'                        => 'الدولة',
+            'state'                          => 'المنطقة',
+            'country-of-birth'               => 'بلد الميلاد',
+            'bank-account'                   => 'الحساب البنكي',
+            'departure-reason'               => 'سبب المغادرة',
+            'employee-type'                  => 'نوع الموظف',
+            'tags'                           => 'الوسوم',
         ],
-
         'groups' => [
             'name'             => 'الاسم',
             'company'          => 'الشركة',
@@ -304,7 +279,6 @@ return [
             'created-at'       => 'تاريخ الإنشاء',
             'updated-at'       => 'تاريخ التحديث',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -312,7 +286,6 @@ return [
                     'body'  => 'تم استعادة الموظف بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف الموظف',
@@ -320,7 +293,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -328,14 +300,12 @@ return [
                     'body'  => 'تم حذف الموظفين بنجاح.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'تم حذف الموظفين',
                         'body'  => 'تم حذف الموظفين بنجاح.',
                     ],
-
                     'error' => [
                         'title' => 'تعذر حذف الموظف',
                         'body'  => 'لا يمكن حذف الموظف لأنه قيد الاستخدام حالياً.',
@@ -344,7 +314,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'entries' => [
@@ -364,11 +333,9 @@ return [
                 'membership-type' => 'نوع العضوية',
             ],
         ],
-
         'tabs' => [
             'work-information' => [
-                'title' => 'معلومات العمل',
-
+                'title'   => 'معلومات العمل',
                 'entries' => [
                     'location'             => 'الموقع',
                     'approvers'            => 'المُعتمِدون',
@@ -385,51 +352,52 @@ return [
                     'schedule'             => 'الجدول',
                 ],
             ],
-
             'private-information' => [
-                'title' => 'المعلومات الخاصة',
-
+                'title'   => 'المعلومات الخاصة',
                 'entries' => [
-                    'private-address-country'     => 'دولة العنوان الخاص',
-                    'private-address-state'       => 'منطقة العنوان الخاص',
-                    'citizenship-country'         => 'دولة الجنسية',
-                    'citizenship-state'           => 'منطقة الجنسية',
-                    'country'                     => 'الدولة',
-                    'state'                       => 'المنطقة',
-                    'street-address'              => 'عنوان الشارع',
-                    'street-address-line-2'       => 'عنوان الشارع - السطر 2',
-                    'city'                        => 'المدينة',
-                    'post-code'                   => 'الرمز البريدي',
-                    'private-contact'             => 'جهة الاتصال الخاصة',
-                    'private-phone'               => 'الهاتف الخاص',
-                    'private-email'               => 'البريد الإلكتروني الخاص',
-                    'private-car-plate'           => 'لوحة السيارة الخاصة',
-                    'distance-home-to-work'       => 'المسافة من المنزل للعمل',
-                    'emergency-contact'           => 'جهة اتصال الطوارئ',
-                    'contact-name'                => 'اسم جهة الاتصال',
-                    'contact-phone'               => 'هاتف جهة الاتصال',
-                    'work-permit'                 => 'تصريح العمل',
-                    'visa-number'                 => 'رقم التأشيرة',
-                    'work-permit-number'          => 'رقم تصريح العمل',
-                    'visa-expiration-date'        => 'تاريخ انتهاء التأشيرة',
-                    'work-permit-expiration-date' => 'تاريخ انتهاء تصريح العمل',
-                    'work-permit-document'        => 'مستند تصريح العمل',
-                    'citizenship'                 => 'الجنسية',
-                    'identification-id'           => 'رقم الهوية',
-                    'ssnid'                       => 'رقم الضمان الاجتماعي',
-                    'sinid'                       => 'رقم التأمين الاجتماعي',
-                    'passport-id'                 => 'رقم جواز السفر',
-                    'gender'                      => 'الجنس',
-                    'date-of-birth'               => 'تاريخ الميلاد',
-                    'country-of-birth'            => 'بلد الميلاد',
-                    'phone-code'                  => 'رمز الهاتف',
-
+                    'private-address-country'         => 'دولة العنوان الخاص',
+                    'private-address-state'           => 'منطقة العنوان الخاص',
+                    'citizenship-country'             => 'دولة الجنسية',
+                    'citizenship-state'               => 'منطقة الجنسية',
+                    'country'                         => 'الدولة',
+                    'state'                           => 'المنطقة',
+                    'street-address'                  => 'عنوان الشارع',
+                    'street-address-line-2'           => 'عنوان الشارع - السطر 2',
+                    'city'                            => 'المدينة',
+                    'post-code'                       => 'الرمز البريدي',
+                    'private-contact'                 => 'جهة الاتصال الخاصة',
+                    'private-phone'                   => 'الهاتف الخاص',
+                    'private-email'                   => 'البريد الإلكتروني الخاص',
+                    'private-car-plate'               => 'لوحة السيارة الخاصة',
+                    'distance-home-to-work'           => 'المسافة من المنزل للعمل',
+                    'emergency-contact'               => 'جهة اتصال الطوارئ',
+                    'contact-name'                    => 'اسم جهة الاتصال',
+                    'contact-phone'                   => 'هاتف جهة الاتصال',
+                    'work-permit'                     => 'تصريح العمل',
+                    'visa-number'                     => 'رقم التأشيرة',
+                    'work-permit-number'              => 'رقم تصريح العمل',
+                    'visa-expiration-date'            => 'تاريخ انتهاء التأشيرة',
+                    'work-permit-expiration-date'     => 'تاريخ انتهاء تصريح العمل',
+                    'work-permit-document'            => 'مستند تصريح العمل',
+                    'citizenship'                     => 'الجنسية',
+                    'identification-id'               => 'رقم الهوية',
+                    'ssnid'                           => 'رقم الضمان الاجتماعي',
+                    'sinid'                           => 'رقم التأمين الاجتماعي',
+                    'passport-id'                     => 'رقم جواز السفر',
+                    'gender'                          => 'الجنس',
+                    'date-of-birth'                   => 'تاريخ الميلاد',
+                    'country-of-birth'                => 'بلد الميلاد',
+                    'phone-code'                      => 'رمز الهاتف',
+                    'identification-id-copy-message'  => 'تم نسخ رقم الهوية',
+                    'passport-id-copy-message'        => 'تم نسخ رقم الجواز',
+                    'sinid-copy-message'              => 'تم نسخ رقم التأمين الاجتماعي',
+                    'ssnid-copy-message'              => 'تم نسخ الرقم الوطني',
+                    'visa-number-copy-message'        => 'تم نسخ رقم التأشيرة',
+                    'work-permit-number-copy-message' => 'تم نسخ رقم تصريح العمل',
                 ],
             ],
-
             'settings' => [
-                'title' => 'الإعدادات',
-
+                'title'   => 'الإعدادات',
                 'entries' => [
                     'employee-settings'              => 'إعدادات الموظف',
                     'active-employee'                => 'موظف نشط',
@@ -451,11 +419,9 @@ return [
             ],
         ],
     ],
-
     'relation-manager/warnings' => [
         'title' => 'الإنذارات',
-
-        'form' => [
+        'form'  => [
             'fields' => [
                 'warning-type'             => 'نوع الإنذار',
                 'warning-type-placeholder' => 'اختر نوع الإنذار',
@@ -469,16 +435,15 @@ return [
                 'employee'                 => 'الموظف',
             ],
         ],
-
         'table' => [
             'columns' => [
-                'warning-type'     => 'نوع الإنذار',
-                'subject'          => 'الموضوع',
-                'issued-at'        => 'تاريخ الإصدار',
-                'effective-date'   => 'تاريخ السريان',
-                'expiry-date'      => 'تاريخ الانتهاء',
-                'is-acknowledged'  => 'تم الاعتراف',
-                'acknowledged-by'  => 'معترف من قبل',
+                'warning-type'    => 'نوع الإنذار',
+                'subject'         => 'الموضوع',
+                'issued-at'       => 'تاريخ الإصدار',
+                'effective-date'  => 'تاريخ السريان',
+                'expiry-date'     => 'تاريخ الانتهاء',
+                'is-acknowledged' => 'تم الاعتراف',
+                'acknowledged-by' => 'معترف من قبل',
             ],
             'header-actions' => [
                 'add-warning' => 'إضافة إنذار',
@@ -509,16 +474,13 @@ return [
                 ],
             ],
         ],
-
         'mail' => [
             'subject' => 'إنذار موظف: :subject',
         ],
     ],
-
     'relation-manager/documents' => [
         'title' => 'المستندات',
-
-        'form' => [
+        'form'  => [
             'fields' => [
                 'document-type'    => 'نوع المستند',
                 'document-name'    => 'اسم المستند',
@@ -533,7 +495,6 @@ return [
                 'other'            => 'أخرى',
             ],
         ],
-
         'table' => [
             'columns' => [
                 'document-type' => 'نوع المستند',
@@ -546,13 +507,11 @@ return [
                 'download' => 'تحميل',
             ],
         ],
-
         'preview' => [
             'close'          => 'إغلاق',
             'no-preview'     => 'المعاينة غير متاحة لهذا النوع من الملفات.',
             'file-not-found' => 'تعذر العثور على الملف.',
         ],
-
         'notifications' => [
             'expiring-soon' => [
                 'title' => 'مستند على وشك الانتهاء',

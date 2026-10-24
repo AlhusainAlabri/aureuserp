@@ -1,20 +1,17 @@
 <?php
 
 return [
-    'title'    => 'Employees',
-    'singular' => 'Employee',
-
+    'title'      => 'Employees',
+    'singular'   => 'Employee',
     'navigation' => [
         'title' => 'Employees',
         'group' => 'Employees',
     ],
-
     'global-search' => [
         'department' => 'Department',
         'work-email' => 'Work Email',
         'work-phone' => 'Work Phone',
     ],
-
     'form' => [
         'sections' => [
             'fields' => [
@@ -44,11 +41,9 @@ return [
                 'deleted-option-suffix'  => ' (Deleted)',
             ],
         ],
-
         'tabs' => [
             'work-information' => [
-                'title' => 'Work Information',
-
+                'title'  => 'Work Information',
                 'fields' => [
                     'location'             => 'Location',
                     'work-address'         => 'Work Address',
@@ -66,10 +61,8 @@ return [
                     'color'                => 'Color',
                 ],
             ],
-
             'private-information' => [
-                'title' => 'Private Information',
-
+                'title'  => 'Private Information',
                 'fields' => [
                     'private-address-country'     => 'Private Address Country',
                     'private-address-state'       => 'Private Address State',
@@ -103,11 +96,6 @@ return [
                     'private-email'               => 'Private Email',
                     'private-contact'             => 'Private Contact',
                     'private-phone'               => 'Private Phone',
-                    'bank-account-number'         => 'Bank Account Number',
-                    'bank-account-holder-name'    => 'Bank Account Holder Name',
-                    'bank'                        => 'Bank',
-                    'create-bank'                 => 'Create Bank',
-                    'bank-account'                => 'Bank Account',
                     'bank-name'                   => 'Bank Name',
                     'bank-code'                   => 'Bank Code',
                     'bank-email'                  => 'Email',
@@ -118,13 +106,7 @@ return [
                     'bank-zipcode'                => 'Zipcode',
                     'bank-country'                => 'Country',
                     'bank-state'                  => 'State',
-                    'bank-country'                => 'Country',
-                    'bank-state'                  => 'State',
-                    'status'                      => 'Status',
-                    'send-money'                  => 'Send Money',
                     'create-bank-account'         => 'Create Bank Account',
-                    'bank-account'                => 'Bank Account',
-                    'private-email'               => 'Private Email',
                     'private-car-plate'           => 'Private Car Plate',
                     'distance-home-to-work'       => 'Distance Home to Work',
                     'km-home-to-work'             => 'Km Home to Work',
@@ -155,7 +137,6 @@ return [
                     'permit-no'                   => 'Permit No',
                     'gender'                      => 'Gender',
                     'date-of-birth'               => 'Date of Birth',
-                    'country-of-birth'            => 'Country of Birth',
                     'work-permit'                 => 'Work Permit',
                     'visa-no'                     => 'Visa No',
                     'work-permit-no'              => 'Work Permit No',
@@ -164,10 +145,8 @@ return [
                     'visa-number'                 => 'Visa Number',
                 ],
             ],
-
             'settings' => [
-                'title' => 'Settings',
-
+                'title'  => 'Settings',
                 'fields' => [
                     'employment-status'              => 'Employment Status',
                     'active-employee'                => 'Active Employee',
@@ -190,104 +169,100 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'avatar'           => 'Avatar',
-            'name'             => 'Name',
-            'manager-name'     => 'Manager',
-            'company-name'     => 'Company',
-            'department'       => 'Department',
-            'employment-type'  => 'Employment Type',
-            'civil-id-expiry'  => 'Civil ID Expiry',
-            'compliance'       => 'Compliance',
-            'status'           => 'Status',
-            'job-title'        => 'Job Title',
-            'work-email'       => 'Work Email',
-            'work-phone'       => 'Work Phone',
+            'avatar'          => 'Avatar',
+            'name'            => 'Name',
+            'manager-name'    => 'Manager',
+            'company-name'    => 'Company',
+            'department'      => 'Department',
+            'employment-type' => 'Employment Type',
+            'civil-id-expiry' => 'Civil ID Expiry',
+            'compliance'      => 'Compliance',
+            'status'          => 'Status',
+            'job-title'       => 'Job Title',
+            'work-email'      => 'Work Email',
+            'work-phone'      => 'Work Phone',
+            'categories'      => 'Categories',
         ],
-
         'status' => [
             'active'   => 'Active',
             'inactive' => 'Inactive',
         ],
-
         'compliance-badges' => [
-            'inactive'         => 'Inactive',
-            'expired-docs'     => ':count expired doc|:count expired docs',
-            'expiring-docs'    => ':count expiring doc|:count expiring docs',
-            'active-warnings'  => ':count warning|:count warnings',
-            'civil-id'         => 'Civil ID expiring',
+            'inactive'        => 'Inactive',
+            'expired-docs'    => ':count expired doc|:count expired docs',
+            'expiring-docs'   => ':count expiring doc|:count expiring docs',
+            'active-warnings' => ':count warning|:count warnings',
+            'civil-id'        => 'Civil ID expiring',
         ],
-
         'filters' => [
-            'skills'                          => 'Skills',
-            'resumes'                         => 'Resumes',
-            'timezone'                        => 'Timezone',
-            'job-title'                       => 'Job Title',
-            'birth-date'                      => 'Birth Date',
-            'work-email'                      => 'Work Email',
-            'mobile-phone'                    => 'Mobile Phone',
-            'work-phone'                      => 'Work Phone',
-            'is-flexible'                     => 'Is Flexible',
-            'is-fully-flexible'               => 'Is Fully Flexible',
-            'is-active'                       => 'Is Active',
-            'work-permit-scheduled-activity'  => 'Work Permit Scheduled Activity',
-            'emergency-contact'               => 'Emergency Contact',
-            'emergency-phone'                 => 'Emergency Phone',
-            'private-phone'                   => 'Private Phone',
-            'private-email'                   => 'Private Email',
-            'private-car-plate'               => 'Private Car Plate',
-            'distance-home-work'              => 'Distance Home Work',
-            'km-home-work'                    => 'Km Home Work',
-            'distance-home-work-unit'         => 'Distance Home Work Unit',
-            'marital-status'                  => 'Marital Status',
-            'spouse-name'                     => 'Spouse Name',
-            'spouse-birthdate'                => 'Spouse Birthdate',
-            'certificate'                     => 'Certificate',
-            'study-field'                     => 'Study Field',
-            'study-school'                    => 'Study School',
-            'identification-id'               => 'Identification ID',
-            'ssnid'                           => 'SSN No',
-            'sinid'                           => 'SIN No',
-            'passport-id'                     => 'Passport ID',
-            'gender'                          => 'Gender',
-            'children'                        => 'Children',
-            'visa-no'                         => 'Visa No',
-            'civil-id-expiry'                 => 'Civil ID Expiry',
-            'permit-no'                       => 'Permit No',
-            'language'                        => 'Language',
-            'additional-note'                 => 'Additional Note',
-            'notes'                           => 'Notes',
-            'barcode'                         => 'Barcode',
-            'visa-expire'                     => 'Visa Expire',
-            'work-permit-expiration-date'     => 'Work Permit Expiration Date',
-            'departure-date'                  => 'Departure Date',
-            'departure-description'           => 'Departure Description',
-            'created-at'                      => 'Created At',
-            'updated-at'                      => 'Updated At',
-            'company'                         => 'Company',
-            'created-by'                      => 'Created By',
-            'calendar'                        => 'Calendar',
-            'department'                      => 'Department',
-            'job'                             => 'Job',
-            'partner'                         => 'Partner',
-            'leave-approvers'                 => 'Leave Approvers',
-            'attendance'                      => 'Attendance',
-            'work-location'                   => 'Work Location',
-            'manager'                         => 'Manager',
-            'coach'                           => 'Coach',
-            'private-state'                   => 'Private State',
-            'private-country'                 => 'Private Country',
-            'country'                         => 'Country',
-            'state'                           => 'State',
-            'country-of-birth'                => 'Country of Birth',
-            'bank-account'                    => 'Bank Account',
-            'departure-reason'                => 'Departure Reason',
-            'employee-type'                   => 'Employee Type',
-            'tags'                            => 'Tags',
+            'skills'                         => 'Skills',
+            'resumes'                        => 'Resumes',
+            'timezone'                       => 'Timezone',
+            'job-title'                      => 'Job Title',
+            'birth-date'                     => 'Birth Date',
+            'work-email'                     => 'Work Email',
+            'mobile-phone'                   => 'Mobile Phone',
+            'work-phone'                     => 'Work Phone',
+            'is-flexible'                    => 'Is Flexible',
+            'is-fully-flexible'              => 'Is Fully Flexible',
+            'is-active'                      => 'Is Active',
+            'work-permit-scheduled-activity' => 'Work Permit Scheduled Activity',
+            'emergency-contact'              => 'Emergency Contact',
+            'emergency-phone'                => 'Emergency Phone',
+            'private-phone'                  => 'Private Phone',
+            'private-email'                  => 'Private Email',
+            'private-car-plate'              => 'Private Car Plate',
+            'distance-home-work'             => 'Distance Home Work',
+            'km-home-work'                   => 'Km Home Work',
+            'distance-home-work-unit'        => 'Distance Home Work Unit',
+            'marital-status'                 => 'Marital Status',
+            'spouse-name'                    => 'Spouse Name',
+            'spouse-birthdate'               => 'Spouse Birthdate',
+            'certificate'                    => 'Certificate',
+            'study-field'                    => 'Study Field',
+            'study-school'                   => 'Study School',
+            'identification-id'              => 'Identification ID',
+            'ssnid'                          => 'SSN No',
+            'sinid'                          => 'SIN No',
+            'passport-id'                    => 'Passport ID',
+            'gender'                         => 'Gender',
+            'children'                       => 'Children',
+            'visa-no'                        => 'Visa No',
+            'civil-id-expiry'                => 'Civil ID Expiry',
+            'permit-no'                      => 'Permit No',
+            'language'                       => 'Language',
+            'additional-note'                => 'Additional Note',
+            'notes'                          => 'Notes',
+            'barcode'                        => 'Barcode',
+            'visa-expire'                    => 'Visa Expire',
+            'work-permit-expiration-date'    => 'Work Permit Expiration Date',
+            'departure-date'                 => 'Departure Date',
+            'departure-description'          => 'Departure Description',
+            'created-at'                     => 'Created At',
+            'updated-at'                     => 'Updated At',
+            'company'                        => 'Company',
+            'created-by'                     => 'Created By',
+            'calendar'                       => 'Calendar',
+            'department'                     => 'Department',
+            'job'                            => 'Job',
+            'partner'                        => 'Partner',
+            'leave-approvers'                => 'Leave Approvers',
+            'attendance'                     => 'Attendance',
+            'work-location'                  => 'Work Location',
+            'manager'                        => 'Manager',
+            'coach'                          => 'Coach',
+            'private-state'                  => 'Private State',
+            'private-country'                => 'Private Country',
+            'country'                        => 'Country',
+            'state'                          => 'State',
+            'country-of-birth'               => 'Country of Birth',
+            'bank-account'                   => 'Bank Account',
+            'departure-reason'               => 'Departure Reason',
+            'employee-type'                  => 'Employee Type',
+            'tags'                           => 'Tags',
         ],
-
         'groups' => [
             'name'             => 'Name',
             'company'          => 'Company',
@@ -304,7 +279,6 @@ return [
             'created-at'       => 'Created At',
             'updated-at'       => 'Updated At',
         ],
-
         'actions' => [
             'restore' => [
                 'notification' => [
@@ -312,7 +286,6 @@ return [
                     'body'  => 'The employee has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Employee deleted',
@@ -320,7 +293,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'delete' => [
                 'notification' => [
@@ -328,14 +300,12 @@ return [
                     'body'  => 'The employees has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'Employees deleted',
                         'body'  => 'The employees has been deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Employee could not be deleted',
                         'body'  => 'The employee cannot be deleted because it is currently in use.',
@@ -344,7 +314,6 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'entries' => [
@@ -364,11 +333,9 @@ return [
                 'membership-type' => 'Membership Type',
             ],
         ],
-
         'tabs' => [
             'work-information' => [
-                'title' => 'Work Information',
-
+                'title'   => 'Work Information',
                 'entries' => [
                     'location'             => 'Location',
                     'approvers'            => 'Approvers',
@@ -385,51 +352,52 @@ return [
                     'schedule'             => 'Schedule',
                 ],
             ],
-
             'private-information' => [
-                'title' => 'Private Information',
-
+                'title'   => 'Private Information',
                 'entries' => [
-                    'private-address-country'     => 'Private Address Country',
-                    'private-address-state'       => 'Private Address State',
-                    'citizenship-country'         => 'Citizenship Country',
-                    'citizenship-state'           => 'Citizenship State',
-                    'country'                     => 'Country',
-                    'state'                       => 'State',
-                    'street-address'              => 'Street Address',
-                    'street-address-line-2'       => 'Street Address Line 2',
-                    'city'                        => 'City',
-                    'post-code'                   => 'Post Code',
-                    'private-contact'             => 'Private Contact',
-                    'private-phone'               => 'Private Phone',
-                    'private-email'               => 'Private Email',
-                    'private-car-plate'           => 'Private Car Plate',
-                    'distance-home-to-work'       => 'Distance Home to Work',
-                    'emergency-contact'           => 'Emergency Contact',
-                    'contact-name'                => 'Contact Name',
-                    'contact-phone'               => 'Contact Phone',
-                    'work-permit'                 => 'Work Permit',
-                    'visa-number'                 => 'Visa Number',
-                    'work-permit-number'          => 'Work Permit Number',
-                    'visa-expiration-date'        => 'Visa Expiration Date',
-                    'work-permit-expiration-date' => 'Work Permit Expiration Date',
-                    'work-permit-document'        => 'Work Permit Document',
-                    'citizenship'                 => 'Citizenship',
-                    'identification-id'           => 'Identification ID',
-                    'ssnid'                       => 'SSN No',
-                    'sinid'                       => 'SIN No',
-                    'passport-id'                 => 'Passport ID',
-                    'gender'                      => 'Gender',
-                    'date-of-birth'               => 'Date of Birth',
-                    'country-of-birth'            => 'Country of Birth',
-                    'phone-code'                  => 'Phone Code',
-
+                    'private-address-country'         => 'Private Address Country',
+                    'private-address-state'           => 'Private Address State',
+                    'citizenship-country'             => 'Citizenship Country',
+                    'citizenship-state'               => 'Citizenship State',
+                    'country'                         => 'Country',
+                    'state'                           => 'State',
+                    'street-address'                  => 'Street Address',
+                    'street-address-line-2'           => 'Street Address Line 2',
+                    'city'                            => 'City',
+                    'post-code'                       => 'Post Code',
+                    'private-contact'                 => 'Private Contact',
+                    'private-phone'                   => 'Private Phone',
+                    'private-email'                   => 'Private Email',
+                    'private-car-plate'               => 'Private Car Plate',
+                    'distance-home-to-work'           => 'Distance Home to Work',
+                    'emergency-contact'               => 'Emergency Contact',
+                    'contact-name'                    => 'Contact Name',
+                    'contact-phone'                   => 'Contact Phone',
+                    'work-permit'                     => 'Work Permit',
+                    'visa-number'                     => 'Visa Number',
+                    'work-permit-number'              => 'Work Permit Number',
+                    'visa-expiration-date'            => 'Visa Expiration Date',
+                    'work-permit-expiration-date'     => 'Work Permit Expiration Date',
+                    'work-permit-document'            => 'Work Permit Document',
+                    'citizenship'                     => 'Citizenship',
+                    'identification-id'               => 'Identification ID',
+                    'ssnid'                           => 'SSN No',
+                    'sinid'                           => 'SIN No',
+                    'passport-id'                     => 'Passport ID',
+                    'gender'                          => 'Gender',
+                    'date-of-birth'                   => 'Date of Birth',
+                    'country-of-birth'                => 'Country of Birth',
+                    'phone-code'                      => 'Phone Code',
+                    'identification-id-copy-message'  => 'Identification number copied',
+                    'passport-id-copy-message'        => 'Passport number copied',
+                    'sinid-copy-message'              => 'Social insurance number copied',
+                    'ssnid-copy-message'              => 'National number copied',
+                    'visa-number-copy-message'        => 'Visa number copied',
+                    'work-permit-number-copy-message' => 'Work permit number copied',
                 ],
             ],
-
             'settings' => [
-                'title' => 'Settings',
-
+                'title'   => 'Settings',
                 'entries' => [
                     'employee-settings'              => 'Employee Settings',
                     'active-employee'                => 'Active Employee',
@@ -451,11 +419,9 @@ return [
             ],
         ],
     ],
-
     'relation-manager/warnings' => [
         'title' => 'Warnings',
-
-        'form' => [
+        'form'  => [
             'fields' => [
                 'warning-type'             => 'Warning Type',
                 'warning-type-placeholder' => 'Select a warning type',
@@ -469,16 +435,15 @@ return [
                 'employee'                 => 'Employee',
             ],
         ],
-
         'table' => [
             'columns' => [
-                'warning-type'     => 'Warning Type',
-                'subject'          => 'Subject',
-                'issued-at'        => 'Issued At',
-                'effective-date'   => 'Effective Date',
-                'expiry-date'      => 'Expiry Date',
-                'is-acknowledged'  => 'Acknowledged',
-                'acknowledged-by'  => 'Acknowledged By',
+                'warning-type'    => 'Warning Type',
+                'subject'         => 'Subject',
+                'issued-at'       => 'Issued At',
+                'effective-date'  => 'Effective Date',
+                'expiry-date'     => 'Expiry Date',
+                'is-acknowledged' => 'Acknowledged',
+                'acknowledged-by' => 'Acknowledged By',
             ],
             'header-actions' => [
                 'add-warning' => 'Add Warning',
@@ -509,16 +474,13 @@ return [
                 ],
             ],
         ],
-
         'mail' => [
             'subject' => 'Employee Warning: :subject',
         ],
     ],
-
     'relation-manager/documents' => [
         'title' => 'Documents',
-
-        'form' => [
+        'form'  => [
             'fields' => [
                 'document-type'    => 'Document Type',
                 'document-name'    => 'Document Name',
@@ -533,7 +495,6 @@ return [
                 'other'            => 'Other',
             ],
         ],
-
         'table' => [
             'columns' => [
                 'document-type' => 'Document Type',
@@ -546,13 +507,11 @@ return [
                 'download' => 'Download',
             ],
         ],
-
         'preview' => [
             'close'          => 'Close',
             'no-preview'     => 'Preview is not available for this file type.',
             'file-not-found' => 'The file could not be found.',
         ],
-
         'notifications' => [
             'expiring-soon' => [
                 'title' => 'Document expiring soon',

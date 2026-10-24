@@ -17,7 +17,10 @@ class ManagePlanning extends SettingsPage
 
     protected static ?string $slug = 'manufacturing/manage-planning';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Manufacturing';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.manufacturing');
+    }
 
     protected static ?int $navigationSort = 5;
 

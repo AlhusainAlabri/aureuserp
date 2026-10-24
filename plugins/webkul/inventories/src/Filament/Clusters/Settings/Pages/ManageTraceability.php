@@ -24,7 +24,10 @@ class ManageTraceability extends SettingsPage
 
     protected static ?string $slug = 'inventory/manage-traceability';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Inventory';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.inventory');
+    }
 
     protected static ?int $navigationSort = 4;
 

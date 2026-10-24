@@ -28,9 +28,9 @@ class Branding
             return self::resolveDisplayName($companyId);
         }
 
-        $cacheKey = $companyId !== null
+        $cacheKey = self::cacheVersion().'.'.($companyId !== null
             ? "branding.company.{$companyId}"
-            : 'branding.default.'.(Auth::id() ?? 'guest');
+            : 'branding.default.'.(Auth::id() ?? 'guest'));
 
         return Cache::remember($cacheKey, 3600, fn (): string => self::resolveDisplayName($companyId));
     }
@@ -69,13 +69,13 @@ class Branding
         if ($dark) {
             return self::resolvePublicUrl(
                 ['logo_full_dark', 'logo_full'],
-                ['images/logo_2.png', 'images/logo-full-dark.svg', 'images/logo-full-light.svg', 'images/logo.png', 'images/logo.svg'],
+                [self::defaultLogoPath()],
             );
         }
 
         return self::resolvePublicUrl(
             ['logo_full'],
-            ['images/logo_2.png', 'images/logo-full-light.svg', 'images/logo.png', 'images/logo.svg'],
+            [self::defaultLogoPath()],
         );
     }
 
@@ -93,8 +93,10 @@ class Branding
             return $uploaded;
         }
 
-        if (is_file(public_path('images/logo.png'))) {
-            return asset('images/logo.png');
+        $compactPath = (string) config('branding.default_logo_compact');
+
+        if ($compactPath !== '' && is_file(public_path($compactPath))) {
+            return asset($compactPath);
         }
 
         return self::fullLogoUrl($dark);
@@ -148,11 +150,12 @@ class Branding
             return;
         }
 
-        if ($companyId !== null) {
-            Cache::forget("branding.company.{$companyId}");
-        }
+        Cache::forever('branding.version', self::cacheVersion() + 1);
+    }
 
-        Cache::forget('branding.default.'.(Auth::id() ?? 'guest'));
+    protected static function cacheVersion(): int
+    {
+        return (int) Cache::get('branding.version', 1);
     }
 
     protected static function companyName(int $companyId): ?string
@@ -256,7 +259,16 @@ class Branding
             }
         }
 
-        return asset('images/logo_2.png');
+        return asset(self::defaultLogoPath());
+    }
+
+    /**
+     * Bundled logo shown until an administrator uploads one. Sites can point it
+     * at their own file with BRANDING_DEFAULT_LOGO.
+     */
+    protected static function defaultLogoPath(): string
+    {
+        return (string) config('branding.default_logo');
     }
 
     protected static function uploadedPublicUrl(string $settingKey): ?string
@@ -299,7 +311,7 @@ class Branding
             }
         }
 
-        foreach (['images/logo_2.png', 'images/logo-full-light.svg', 'images/logo.png', 'images/logo.svg'] as $publicRelativePath) {
+        foreach ([self::defaultLogoPath()] as $publicRelativePath) {
             $absolutePath = public_path($publicRelativePath);
 
             if (is_file($absolutePath)) {

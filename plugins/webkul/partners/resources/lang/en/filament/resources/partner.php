@@ -5,49 +5,44 @@ return [
         'email' => 'Email',
         'phone' => 'Phone',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
-                'title' => 'General',
-
+                'title'  => 'General',
                 'fields' => [
-                    'company'    => 'Company',
-                    'avatar'     => 'Avatar',
-                    'tax-id'     => 'Tax ID',
-                    'job-title'  => 'Job Title',
-                    'phone'      => 'Phone',
-                    'mobile'     => 'Mobile',
-                    'email'      => 'Email',
-                    'website'    => 'Website',
-                    'title'      => 'Title',
-                    'name'       => 'Name',
-                    'short-name' => 'Short Name',
-                    'tags'       => 'Tags',
-                    'color'      => 'Color',
+                    'company'      => 'Company',
+                    'avatar'       => 'Avatar',
+                    'tax-id'       => 'Tax ID',
+                    'job-title'    => 'Job Title',
+                    'phone'        => 'Phone',
+                    'mobile'       => 'Mobile',
+                    'email'        => 'Email',
+                    'website'      => 'Website',
+                    'title'        => 'Title',
+                    'name'         => 'Name',
+                    'short-name'   => 'Short Name',
+                    'tags'         => 'Tags',
+                    'color'        => 'Color',
+                    'account-type' => 'Account type',
                 ],
-
                 'address' => [
-                    'title' => 'Address',
-
+                    'title'  => 'Address',
                     'fields' => [
-                        'street1'  => 'Street 1',
-                        'street2'  => 'Street 2',
-                        'city'     => 'City',
-                        'zip'      => 'ZIP',
-                        'state'    => 'State',
-                        'country'  => 'Country',
-                        'name'     => 'Name',
-                        'code'     => 'Code',
+                        'street1' => 'Street 1',
+                        'street2' => 'Street 2',
+                        'city'    => 'City',
+                        'zip'     => 'ZIP',
+                        'state'   => 'State',
+                        'country' => 'Country',
+                        'name'    => 'Name',
+                        'code'    => 'Code',
                     ],
                 ],
             ],
         ],
-
         'tabs' => [
             'sales-purchase' => [
-                'title' => 'Sales and Purchases',
-
+                'title'  => 'Sales and Purchases',
                 'fields' => [
                     'responsible'           => 'Responsible',
                     'responsible-hint-text' => 'This is internal salesperson responsible for this customer',
@@ -59,12 +54,10 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'parent'     => 'Parent',
+            'parent' => 'Parent',
         ],
-
         'groups' => [
             'account-type' => 'Account Type',
             'parent'       => 'Parent',
@@ -72,7 +65,6 @@ return [
             'job-title'    => 'Job Title',
             'industry'     => 'Industry',
         ],
-
         'filters' => [
             'account-type'     => 'Account Type',
             'name'             => 'Name',
@@ -87,13 +79,10 @@ return [
             'company-registry' => 'Company Registry',
             'responsible'      => 'Responsible',
             'reference'        => 'Reference',
-            'parent'           => 'Parent',
             'creator'          => 'Creator',
             'company'          => 'Company',
             'industry'         => 'Industry',
-            'industry'         => 'Industry',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -101,28 +90,24 @@ return [
                     'body'  => 'The contact has been updated successfully.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'Contact restored',
                     'body'  => 'The contact has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Contact deleted',
                     'body'  => 'The contact has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'Contact force deleted',
                         'body'  => 'The contact has been force deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Contact could not be deleted',
                         'body'  => 'The contact cannot be deleted because it is currently in use.',
@@ -130,7 +115,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -138,21 +122,18 @@ return [
                     'body'  => 'The contacts has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Contacts deleted',
                     'body'  => 'The contacts has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'success' => [
                         'title' => 'Contacts force deleted',
                         'body'  => 'The contacts has been force deleted successfully.',
                     ],
-
                     'error' => [
                         'title' => 'Contacts could not be deleted',
                         'body'  => 'The contacts cannot be deleted because they are currently in use.',
@@ -161,48 +142,43 @@ return [
             ],
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
-                'title' => 'General',
-
+                'title'  => 'General',
                 'fields' => [
-                    'company'    => 'Company',
-                    'avatar'     => 'Avatar',
-                    'tax-id'     => 'Tax ID',
-                    'job-title'  => 'Job Title',
-                    'phone'      => 'Phone',
-                    'mobile'     => 'Mobile',
-                    'email'      => 'Email',
-                    'website'    => 'Website',
-                    'title'      => 'Title',
-                    'name'       => 'Name',
-                    'short-name' => 'Short Name',
-                    'tags'       => 'Tags',
+                    'company'      => 'Company',
+                    'avatar'       => 'Avatar',
+                    'tax-id'       => 'Tax ID',
+                    'job-title'    => 'Job Title',
+                    'phone'        => 'Phone',
+                    'mobile'       => 'Mobile',
+                    'email'        => 'Email',
+                    'website'      => 'Website',
+                    'title'        => 'Title',
+                    'name'         => 'Name',
+                    'short-name'   => 'Short Name',
+                    'tags'         => 'Tags',
+                    'account-type' => 'Account type',
                 ],
-
                 'address' => [
-                    'title' => 'Address',
-
+                    'title'  => 'Address',
                     'fields' => [
-                        'street1'  => 'Street 1',
-                        'street2'  => 'Street 2',
-                        'city'     => 'City',
-                        'zip'      => 'ZIP',
-                        'state'    => 'State',
-                        'country'  => 'Country',
-                        'name'     => 'Name',
-                        'code'     => 'Code',
+                        'street1' => 'Street 1',
+                        'street2' => 'Street 2',
+                        'city'    => 'City',
+                        'zip'     => 'ZIP',
+                        'state'   => 'State',
+                        'country' => 'Country',
+                        'name'    => 'Name',
+                        'code'    => 'Code',
                     ],
                 ],
             ],
         ],
-
         'tabs' => [
             'sales-purchase' => [
-                'title' => 'Sales and Purchases',
-
+                'title'  => 'Sales and Purchases',
                 'fields' => [
                     'responsible'           => 'Responsible',
                     'responsible-hint-text' => 'This is internal salesperson responsible for this customer',

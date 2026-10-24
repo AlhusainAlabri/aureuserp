@@ -4,8 +4,7 @@ return [
     'form' => [
         'sections' => [
             'general' => [
-                'title' => 'General',
-
+                'title'  => 'General',
                 'fields' => [
                     'name'  => 'Name',
                     'code'  => 'Bank Identifier Code',
@@ -13,10 +12,8 @@ return [
                     'phone' => 'Phone',
                 ],
             ],
-
             'address' => [
-                'title' => 'Address',
-
+                'title'  => 'Address',
                 'fields' => [
                     'address' => 'Address',
                     'city'    => 'City',
@@ -29,22 +26,19 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
-            'name'           => 'Name',
-            'code'           => 'Bank Identifier Code',
-            'country'        => 'Country',
-            'created-at'     => 'Created At',
-            'updated-at'     => 'Updated At',
-            'deleted-at'     => 'Deleted At',
+            'name'       => 'Name',
+            'code'       => 'Bank Identifier Code',
+            'country'    => 'Country',
+            'created-at' => 'Created At',
+            'updated-at' => 'Updated At',
+            'deleted-at' => 'Deleted At',
         ],
-
         'groups' => [
-            'country'               => 'Country',
-            'created-at'            => 'Created At',
+            'country'    => 'Country',
+            'created-at' => 'Created At',
         ],
-
         'actions' => [
             'edit' => [
                 'notification' => [
@@ -52,21 +46,18 @@ return [
                     'body'  => 'The bank has been updated successfully.',
                 ],
             ],
-
             'restore' => [
                 'notification' => [
                     'title' => 'Bank restored',
                     'body'  => 'The bank has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Bank deleted',
                     'body'  => 'The bank has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Bank force deleted',
@@ -74,7 +65,6 @@ return [
                 ],
             ],
         ],
-
         'bulk-actions' => [
             'restore' => [
                 'notification' => [
@@ -82,14 +72,12 @@ return [
                     'body'  => 'The banks has been restored successfully.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'Banks deleted',
                     'body'  => 'The banks has been deleted successfully.',
                 ],
             ],
-
             'force-delete' => [
                 'notification' => [
                     'title' => 'Banks force deleted',
@@ -97,5 +85,9 @@ return [
                 ],
             ],
         ],
+    ],
+    'navigation' => [
+        'group' => 'Accounting',
+        'title' => 'Banks',
     ],
 ];

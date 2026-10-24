@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -34,6 +35,8 @@ use Webkul\Project\Models\ActivityPlan;
 
 class ActivityPlanResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ActivityPlan::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';

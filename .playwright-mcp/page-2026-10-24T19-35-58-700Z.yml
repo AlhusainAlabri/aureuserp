@@ -1,0 +1,91 @@
+- generic [active] [ref=f23e1]:
+  - navigation [ref=f23e3]:
+    - button [ref=f23e6] [cursor=pointer]
+    - list [ref=f23e17]:
+      - listitem [ref=f23e18]: النظام
+      - listitem [ref=f23e19]:
+        - link "صحة النظام" [ref=f23e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/system-health-dashboard
+      - listitem [ref=f23e24]:
+        - link "التحديثات" [ref=f23e25] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/github-deploy
+      - listitem [ref=f23e29]:
+        - link "النسخ الاحتياطي" [ref=f23e30] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/system-backups
+    - generic [ref=f23e34]:
+      - button "جديد" [ref=f23e37] [cursor=pointer]
+      - generic [ref=f23e43]:
+        - generic [ref=f23e45]:
+          - generic [ref=f23e46]: بحث عام
+          - searchbox "بحث عام" [ref=f23e52]
+        - button "العربية" [ref=f23e55] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f23e62] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f23e161] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f23e68] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f23e69]
+  - generic [ref=f23e70]:
+    - complementary [ref=f23e71]:
+      - navigation [ref=f23e72]:
+        - list [ref=f23e73]:
+          - list [ref=f23e74]:
+            - listitem [ref=f23e75]:
+              - link "صحة النظام" [ref=f23e76] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/system-health-dashboard
+            - listitem [ref=f23e80]:
+              - link "التحديثات" [ref=f23e81] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/github-deploy
+            - listitem [ref=f23e85]:
+              - link "النسخ الاحتياطي" [ref=f23e86] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/system-backups
+    - generic [ref=f23e90]:
+      - main [ref=f23e91]:
+        - generic [ref=f23e93]:
+          - generic [ref=f23e94]:
+            - generic [ref=f23e95]:
+              - heading "صحة النظام" [level=1] [ref=f23e96]
+              - paragraph [ref=f23e97]: لم يتم تسجيل أي فحص صحي بعد.
+            - generic [ref=f23e99]:
+              - button "تشغيل فحص الصحة" [ref=f23e100] [cursor=pointer]
+              - button "إرسال بريد تجريبي" [ref=f23e103] [cursor=pointer]
+          - generic [ref=f23e108]:
+            - generic [ref=f23e112]:
+              - generic [ref=f23e113]:
+                - paragraph [ref=f23e114]: صحة النظام
+                - paragraph [ref=f23e115]: غير معروف
+              - generic [ref=f23e116]: "آخر فحص: —"
+            - paragraph [ref=f23e124]: لم يتم تسجيل أي فحص صحي بعد.
+      - contentinfo [ref=f23e125]:
+        - generic [ref=f23e126]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status:
+      - generic [ref=f23e164]:
+        - heading "تمت جدولة فحص الصحة." [level=3] [ref=f23e169]
+        - button [ref=f23e170] [cursor=pointer]
+  - generic [ref=f23e129]:
+    - generic [ref=f23e130] [cursor=pointer]
+    - generic [ref=f23e131]:
+      - generic [ref=f23e132] [cursor=pointer]: Request
+      - generic [ref=f23e133] [cursor=pointer]: Timeline
+      - generic [ref=f23e136] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f23e137]: "59"
+      - generic [ref=f23e138] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f23e139]: "27"
+      - generic [ref=f23e140] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f23e141]: "1"
+      - generic [ref=f23e142] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f23e143]: "2"
+    - generic [ref=f23e144]:
+      - generic [ref=f23e145] [cursor=pointer]
+      - generic [ref=f23e146] [cursor=pointer]
+      - generic [ref=f23e147] [cursor=pointer]
+      - generic [ref=f23e149] [cursor=pointer]
+      - generic [ref=f23e151] [cursor=pointer]:
+        - generic [ref=f23e173]: "4"
+        - generic [ref=f23e152]: POST /livewire-ff82a33d/update
+      - generic [ref=f23e153] [cursor=pointer]: 175ms
+      - generic [ref=f23e155] [cursor=pointer]: 12MB
+      - generic [ref=f23e157] [cursor=pointer]: 13.x

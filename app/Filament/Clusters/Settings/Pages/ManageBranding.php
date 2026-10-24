@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Settings\Pages;
 
 use App\Settings\BrandingSettings;
+use App\Support\Branding;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
@@ -128,6 +129,8 @@ class ManageBranding extends SettingsPage
         }
 
         $this->replacedLogoPaths = [];
+
+        Branding::forgetCache();
 
         config(['app.name' => brand_name()]);
     }

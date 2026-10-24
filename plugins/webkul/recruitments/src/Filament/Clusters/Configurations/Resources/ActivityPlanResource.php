@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -32,6 +33,8 @@ use Webkul\Recruitment\Models\ActivityPlan;
 
 class ActivityPlanResource extends BaseActivityPlanResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ActivityPlan::class;
 
     protected static ?string $cluster = Configurations::class;

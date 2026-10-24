@@ -9,58 +9,53 @@ return [
             'status'            => 'الحالة',
         ],
     ],
-
     'products' => [
         'columns' => [
-            'product'          => 'المنتج',
-            'quantity'         => 'الكمية',
-            'quantity_units'   => ':count وحدة',
-            'unit_price'       => 'سعر الوحدة',
-            'taxes'            => 'الضرائب',
-            'discount'         => 'الخصم %',
-            'amount'           => 'المبلغ',
+            'product'        => 'المنتج',
+            'quantity'       => 'الكمية',
+            'quantity_units' => ':count وحدة',
+            'unit_price'     => 'سعر الوحدة',
+            'taxes'          => 'الضرائب',
+            'discount'       => 'الخصم %',
+            'amount'         => 'المبلغ',
         ],
     ],
-
     'infolist' => [
         'settings' => [
             'entries' => [
                 'buyer' => 'المشتري',
             ],
-
             'actions' => [
                 'accept' => [
-                    'label' => 'قبول',
-
+                    'label'        => 'قبول',
                     'notification' => [
                         'title' => 'تم قبول عرض السعر',
                         'body'  => 'تم الإقرار بطلب عرض السعر بنجاح.',
                     ],
-
                     'message' => [
                         'body' => 'تم الإقرار بطلب عرض السعر من قبل المورد.',
                     ],
+                    'decline' => [
+                        'message' => [
+                            'body' => 'تم رفض الطلب.',
+                        ],
+                    ],
                 ],
-
                 'decline' => [
-                    'label' => 'رفض',
-
+                    'label'        => 'رفض',
                     'notification' => [
                         'title' => 'تم رفض عرض السعر',
                         'body'  => 'تم رفض طلب عرض السعر بنجاح.',
                     ],
-
                     'message' => [
                         'body' => 'تم رفض طلب عرض السعر من قبل المورد.',
                     ],
                 ],
-
                 'print' => [
                     'label' => 'تحميل/طباعة',
                 ],
             ],
         ],
-
         'general' => [
             'entries' => [
                 'purchase-order'        => 'أمر شراء #:id',

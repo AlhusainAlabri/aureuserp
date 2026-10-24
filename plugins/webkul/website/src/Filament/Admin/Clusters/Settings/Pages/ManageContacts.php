@@ -8,7 +8,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use UnitEnum;
 use Webkul\Support\Filament\Clusters\Settings;
 use Webkul\Website\Settings\ContactSettings;
 
@@ -18,7 +17,10 @@ class ManageContacts extends SettingsPage
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-truck';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Website';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-groups.website');
+    }
 
     protected static ?string $slug = 'website/manage-contacts';
 

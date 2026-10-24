@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Exception;
 use Filament\Actions\ActionGroup;
@@ -49,6 +50,8 @@ use Webkul\Support\Filament\Forms\Components\Repeater\TableColumn;
 
 class TaxResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Tax::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-receipt-percent';

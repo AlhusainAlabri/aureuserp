@@ -2,6 +2,7 @@
 
 namespace Webkul\Security\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -56,6 +57,7 @@ use Webkul\Support\Models\Currency;
 class CompanyResource extends Resource
 {
     use HasCustomFields, HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Company::class;
 
@@ -135,6 +137,7 @@ class CompanyResource extends Resource
                                                 TextInput::make('street2')
                                                     ->label(__('security::filament/resources/company.form.sections.address-information.fields.street2')),
                                                 TextInput::make('city')
+                                                    ->label(__('security::filament/resources/company.form.sections.address-information.fields.city'))
                                                     ->maxLength(255),
                                                 TextInput::make('zip')
                                                     ->live()

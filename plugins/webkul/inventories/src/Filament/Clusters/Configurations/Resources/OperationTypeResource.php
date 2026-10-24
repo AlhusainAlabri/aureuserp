@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -60,6 +61,8 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 
 class OperationTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = OperationType::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';

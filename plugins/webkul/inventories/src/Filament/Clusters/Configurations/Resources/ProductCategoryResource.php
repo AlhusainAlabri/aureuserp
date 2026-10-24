@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Forms\Components\Select;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -21,6 +22,8 @@ use Webkul\Product\Filament\Resources\CategoryResource;
 
 class ProductCategoryResource extends CategoryResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-folder';

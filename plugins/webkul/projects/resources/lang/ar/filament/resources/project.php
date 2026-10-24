@@ -5,27 +5,22 @@ return [
         'title' => 'المشاريع',
         'group' => 'المشروع',
     ],
-
     'global-search' => [
         'project-manager' => 'مدير المشروع',
         'customer'        => 'العميل',
     ],
-
     'form' => [
         'sections' => [
             'general' => [
-                'title' => 'عام',
-
+                'title'  => 'عام',
                 'fields' => [
                     'name'             => 'الاسم',
                     'name-placeholder' => 'اسم المشروع...',
                     'description'      => 'الوصف',
                 ],
             ],
-
             'additional' => [
-                'title' => 'معلومات إضافية',
-
+                'title'  => 'معلومات إضافية',
                 'fields' => [
                     'project-manager'             => 'مدير المشروع',
                     'customer'                    => 'العميل',
@@ -37,10 +32,8 @@ return [
                     'company'                     => 'الشركة',
                 ],
             ],
-
             'settings' => [
-                'title' => 'الإعدادات',
-
+                'title'  => 'الإعدادات',
                 'fields' => [
                     'visibility'                   => 'الرؤية',
                     'visibility-hint-tooltip'      => 'اسمح للموظفين بالوصول إلى مشروعك أو مهامك عن طريق إضافتهم كمتابعين. سيحصلون تلقائياً على حق الوصول لأي مهام مسندة إليهم.',
@@ -57,7 +50,6 @@ return [
             ],
         ],
     ],
-
     'table' => [
         'columns' => [
             'name'            => 'الاسم',
@@ -67,15 +59,14 @@ return [
             'planned-date'    => 'التاريخ المخطط',
             'remaining-hours' => 'الساعات المتبقية',
             'project-manager' => 'مدير المشروع',
+            'stage'           => 'المرحلة',
         ],
-
         'groups' => [
             'stage'           => 'المرحلة',
             'project-manager' => 'مدير المشروع',
             'customer'        => 'العميل',
             'created-at'      => 'تاريخ الإنشاء',
         ],
-
         'filters' => [
             'name'             => 'الاسم',
             'visibility'       => 'الرؤية',
@@ -93,60 +84,47 @@ return [
             'creator'          => 'المُنشئ',
             'tags'             => 'الوسوم',
         ],
-
         'actions' => [
             'tasks'      => '{0} لا مهام|{1} :count مهمة|[2,*] :count مهام',
             'milestones' => ':completed مراحل رئيسية مكتملة من أصل :all',
-
-            'restore' => [
+            'restore'    => [
                 'notification' => [
                     'title' => 'تم استعادة المشروع',
                     'body'  => 'تم استعادة المشروع بنجاح.',
                 ],
             ],
-
             'delete' => [
                 'notification' => [
                     'title' => 'تم حذف المشروع',
                     'body'  => 'تم حذف المشروع بنجاح.',
                 ],
             ],
-
             'force-delete' => [
-
                 'notification' => [
-
                     'success' => [
                         'title' => 'تم حذف المشروع نهائياً',
                         'body'  => 'تم حذف المشروع نهائياً بنجاح.',
                     ],
-
                     'error' => [
                         'title' => 'لا يمكن حذف المشروع نهائياً',
                         'body'  => 'المشروع مرتبط بسجلات أخرى.',
                     ],
-
                 ],
             ],
-
         ],
     ],
-
     'infolist' => [
         'sections' => [
             'general' => [
-                'title' => 'عام',
-
+                'title'   => 'عام',
                 'entries' => [
                     'name'             => 'الاسم',
                     'name-placeholder' => 'اسم المشروع...',
                     'description'      => 'الوصف',
                 ],
             ],
-
             'additional' => [
-                'title' => 'معلومات إضافية',
-
+                'title'   => 'معلومات إضافية',
                 'entries' => [
                     'project-manager'        => 'مدير المشروع',
                     'customer'               => 'العميل',
@@ -159,29 +137,23 @@ return [
                     'tags'                   => 'الوسوم',
                 ],
             ],
-
             'statistics' => [
-                'title' => 'الإحصائيات',
-
+                'title'   => 'الإحصائيات',
                 'entries' => [
                     'total-tasks'         => 'إجمالي المهام',
                     'milestones-progress' => 'تقدم المراحل الرئيسية',
                 ],
             ],
-
             'record-information' => [
-                'title' => 'معلومات السجل',
-
+                'title'   => 'معلومات السجل',
                 'entries' => [
                     'created-at'   => 'تاريخ الإنشاء',
                     'created-by'   => 'أنشئ بواسطة',
                     'last-updated' => 'آخر تحديث',
                 ],
             ],
-
             'settings' => [
-                'title' => 'إعدادات المشروع',
-
+                'title'   => 'إعدادات المشروع',
                 'entries' => [
                     'visibility'         => 'الرؤية',
                     'timesheets-enabled' => 'جداول الوقت مفعلة',

@@ -2,7 +2,6 @@
 
 return [
     'title'          => 'طلب المشتريات',
-
     'log-attributes' => [
         'state'     => 'الحالة',
         'reference' => 'المرجع',
@@ -10,5 +9,7 @@ return [
         'ends_at'   => 'تاريخ الانتهاء',
         'partner'   => 'المورد',
         'buyer'     => 'المشتري',
+        'ends-at'   => 'ينتهي في',
+        'starts-at' => 'يبدأ في',
     ],
 ];
