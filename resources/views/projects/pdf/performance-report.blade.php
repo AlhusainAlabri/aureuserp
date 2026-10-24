@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>{{ __('projects-extensions::reports.title') }}</title>
     <style>
-        @php($pdfFont = \App\Support\Pdf\ArabicText::pdfFontFamily())
+        @php
+            $pdfFont = \App\Support\Pdf\ArabicText::pdfFontFamily();
+        @endphp
         {!! \App\Support\Pdf\PdfArabicFont::fontFaceCss($pdfFont) !!}
 
         body {

@@ -9,6 +9,7 @@ use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 use Webkul\Support\Models\Currency;
+use Wezlo\FilamentApproval\Models\ApprovalFlow;
 
 require_once __DIR__.'/../../../../../support/tests/Helpers/SecurityHelper.php';
 require_once __DIR__.'/../../../../../support/tests/Helpers/TestBootstrapHelper.php';
@@ -262,6 +263,7 @@ it('deletes a purchase order for authorized users', function () {
 
 it('confirms a draft purchase order', function () {
     actingAsPurchaseOrderApiUser(['update_purchase_purchase::order']);
+    ApprovalFlow::query()->update(['is_active' => false]);
 
     $order = Order::factory()->draft()->create();
 
@@ -273,6 +275,7 @@ it('confirms a draft purchase order', function () {
 
 it('confirms a sent purchase order', function () {
     actingAsPurchaseOrderApiUser(['update_purchase_purchase::order']);
+    ApprovalFlow::query()->update(['is_active' => false]);
 
     $order = Order::factory()->sent()->create();
 
@@ -435,4 +438,18 @@ it('rejects confirming receipt date for a draft order', function () {
     $this->postJson(route('admin.api.v1.purchases.purchase-orders.confirm-receipt-date', ['id' => $order->id]))
         ->assertUnprocessable()
         ->assertJsonPath('message', 'Only unconfirmed purchase or done orders can confirm receipt date.');
+});
+
+it('refuses to confirm an order whose approval flow is still pending', function () {
+    actingAsPurchaseOrderApiUser(['update_purchase_purchase::order']);
+
+    $order = Order::factory()->draft()->create();
+
+    ApprovalFlow::query()->updateOrCreate(
+        ['approvable_type' => $order->getMorphClass()],
+        ['name' => 'Test flow', 'is_active' => true],
+    );
+
+    $this->postJson(route('admin.api.v1.purchases.purchase-orders.confirm', ['id' => $order->id]))
+        ->assertStatus(422);
 });

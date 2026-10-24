@@ -23,9 +23,17 @@ class PurchaseOrder extends Order
                 ? $order->state->value
                 : $order->state;
 
+            $confirmedStates = [OrderState::PURCHASE->value, OrderState::DONE->value];
+
+            $originalState = $order->getOriginal('state');
+            $originalState = $originalState instanceof OrderState ? $originalState->value : $originalState;
+
+            // Approval is required to *enter* a confirmed state; locking or unlocking an
+            // already confirmed order (purchase <-> done) must not ask for it again.
             if (
                 $order->isDirty('state')
-                && in_array($state, [OrderState::PURCHASE->value, OrderState::DONE->value], true)
+                && in_array($state, $confirmedStates, true)
+                && ! in_array($originalState, $confirmedStates, true)
                 && $order->hasActiveApprovalFlow()
                 && ! $order->isApproved()
             ) {

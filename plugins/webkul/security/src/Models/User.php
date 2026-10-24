@@ -131,13 +131,25 @@ class User extends BaseUser implements FilamentUser, HasAppAuthentication, HasAp
         });
     }
 
+    /**
+     * The user attributes mirrored into the partner row. Listed explicitly so
+     * columns that only exist on users (language, permissions, 2FA secrets…)
+     * never reach partners_partners, even when models are unguarded by db:seed.
+     *
+     * @return array<string, mixed>
+     */
+    private function partnerAttributes(): array
+    {
+        return Arr::only($this->toArray(), ['name', 'email', 'is_active', 'password']);
+    }
+
     private function handlePartnerCreation(self $user)
     {
         $partner = $user->partner()->create([
             'creator_id' => Auth::user()->id ?? $user->id,
             'user_id'    => $user->id,
             'sub_type'   => 'partner',
-            ...Arr::except($user->toArray(), ['id', 'partner_id', 'email_verified_at']),
+            ...$user->partnerAttributes(),
         ]);
 
         $user->partner_id = $partner->id;
@@ -152,7 +164,7 @@ class User extends BaseUser implements FilamentUser, HasAppAuthentication, HasAp
                 'creator_id' => Auth::user()->id ?? $user->id,
                 'user_id'    => $user->id,
                 'sub_type'   => 'partner',
-                ...Arr::except($user->toArray(), ['id', 'partner_id', 'email_verified_at']),
+                ...$user->partnerAttributes(),
             ]
         );
 

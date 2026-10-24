@@ -34,4 +34,9 @@ class Configurations extends Cluster
     {
         return __('employees::filament/clusters/configurations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

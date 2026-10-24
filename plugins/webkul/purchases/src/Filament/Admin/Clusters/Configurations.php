@@ -19,4 +19,9 @@ class Configurations extends Cluster
     {
         return __('purchases::filament/admin/clusters/configurations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

@@ -19,4 +19,9 @@ class Configurations extends Cluster
     {
         return __('website::filament/admin/clusters/configurations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

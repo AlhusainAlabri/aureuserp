@@ -183,7 +183,7 @@ class PurchaseOrderController extends Controller
     #[Endpoint('Confirm purchase order', 'Confirm a request for quotation into a purchase order')]
     #[UrlParam('id', 'integer', 'The purchase order ID', required: true, example: 1)]
     #[ResponseFromApiResource(OrderResource::class, PurchaseOrder::class, additional: ['message' => 'Purchase order confirmed successfully.'])]
-    #[Response(status: 422, description: 'Only draft or sent purchase orders can be confirmed.', content: '{"message": "Only draft or sent purchase orders can be confirmed."}')]
+    #[Response(status: 422, description: 'Only draft or sent purchase orders can be confirmed, and an order with an active approval flow must be fully approved first.', content: '{"message": "Only draft or sent purchase orders can be confirmed."}')]
     #[Response(status: 404, description: 'Purchase order not found', content: '{"message": "Resource not found."}')]
     #[Response(status: 401, description: 'Unauthenticated', content: '{"message": "Unauthenticated."}')]
     public function confirm(string $id)
@@ -195,6 +195,12 @@ class PurchaseOrderController extends Controller
         if (! in_array($order->state, [OrderState::DRAFT, OrderState::SENT], true)) {
             return response()->json([
                 'message' => 'Only draft or sent purchase orders can be confirmed.',
+            ], 422);
+        }
+
+        if ($order->hasActiveApprovalFlow() && ! $order->isApproved()) {
+            return response()->json([
+                'message' => __('purchases::models/purchase-order.approval.required'),
             ], 422);
         }
 

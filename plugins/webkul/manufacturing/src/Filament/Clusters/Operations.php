@@ -19,4 +19,9 @@ class Operations extends Cluster
     {
         return __('manufacturing::filament/clusters/operations.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

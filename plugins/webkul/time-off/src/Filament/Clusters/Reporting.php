@@ -23,4 +23,9 @@ class Reporting extends Cluster
     {
         return __('time-off::filament/clusters/reporting.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

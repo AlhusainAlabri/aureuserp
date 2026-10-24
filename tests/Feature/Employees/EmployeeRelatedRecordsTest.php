@@ -71,7 +71,7 @@ it('creates a warning and emails the employee automatically', function (): void 
         ->where('subject', 'Repeated tardiness')
         ->firstOrFail();
 
-    Mail::assertSent(EmployeeWarningMail::class, fn (EmployeeWarningMail $mail): bool => $mail->warning->is($warning));
+    Mail::assertQueued(EmployeeWarningMail::class, fn (EmployeeWarningMail $mail): bool => $mail->warning->is($warning));
 });
 
 it('can resend a warning email from the table action', function (): void {
@@ -96,7 +96,7 @@ it('can resend a warning email from the table action', function (): void {
         ->callAction(TestAction::make('send')->table($warning))
         ->assertNotified();
 
-    Mail::assertSent(EmployeeWarningMail::class, fn (EmployeeWarningMail $mail): bool => $mail->warning->is($warning));
+    Mail::assertQueued(EmployeeWarningMail::class, fn (EmployeeWarningMail $mail): bool => $mail->warning->is($warning));
 });
 
 it('adds a skill to an employee from the skills page', function (): void {

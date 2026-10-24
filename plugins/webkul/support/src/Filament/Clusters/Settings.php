@@ -17,4 +17,9 @@ class Settings extends Cluster
     {
         return __('support::filament/clusters/settings/pages/settings.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

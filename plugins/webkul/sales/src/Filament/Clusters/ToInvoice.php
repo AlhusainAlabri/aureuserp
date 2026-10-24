@@ -17,4 +17,9 @@ class ToInvoice extends Cluster
     {
         return __('sales::filament/clusters/to-invoice.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

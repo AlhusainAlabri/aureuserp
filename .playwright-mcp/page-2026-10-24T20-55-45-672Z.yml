@@ -1,0 +1,242 @@
+- generic [active] [ref=f50e1]:
+  - navigation [ref=f50e3]:
+    - button [ref=f50e6] [cursor=pointer]
+    - list [ref=f50e17]:
+      - listitem [ref=f50e18]: الموظفون
+      - listitem [ref=f50e19]:
+        - link "الموظفون" [ref=f50e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/employees/employees
+      - listitem [ref=f50e22]:
+        - link "الأقسام" [ref=f50e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/employees/departments
+      - listitem [ref=f50e25]:
+        - link "الطلبات الداخلية 0" [ref=f50e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/submissions
+          - generic [ref=f50e27]: الطلبات الداخلية
+          - generic [ref=f50e28]: "0"
+    - generic [ref=f50e31]:
+      - button "جديد" [ref=f50e34] [cursor=pointer]
+      - generic [ref=f50e40]:
+        - generic [ref=f50e42]:
+          - generic [ref=f50e43]: بحث عام
+          - searchbox "بحث عام" [ref=f50e49]
+        - button "العربية" [ref=f50e52] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f50e59] [cursor=pointer]
+      - generic [ref=f50e62]:
+        - button "عرض التنبيهات" [disabled]
+      - button "قائمة المستخدم" [ref=f50e65] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f50e66]
+  - generic [ref=f50e67]:
+    - complementary [ref=f50e68]:
+      - navigation [ref=f50e69]:
+        - list [ref=f50e70]:
+          - list [ref=f50e71]:
+            - listitem [ref=f50e72]:
+              - link "الموظفون" [ref=f50e73] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees
+            - listitem [ref=f50e75]:
+              - link "الأقسام" [ref=f50e76] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/departments
+            - listitem [ref=f50e78]:
+              - link "الطلبات الداخلية 0" [ref=f50e79] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/submissions
+                - generic [ref=f50e80]: الطلبات الداخلية
+                - generic [ref=f50e81]: "0"
+    - generic [ref=f50e85]:
+      - main [ref=f50e86]:
+        - generic [ref=f50e88]:
+          - generic [ref=f50e90]:
+            - navigation [ref=f50e91]:
+              - list [ref=f50e92]:
+                - listitem [ref=f50e93]:
+                  - link "الموظفون" [ref=f50e94] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/employees/employees
+                - listitem [ref=f50e95]:
+                  - generic [ref=f50e98]: إضافة
+            - heading "إضافة موظف" [level=1] [ref=f50e99]
+          - generic [ref=f50e105]:
+            - generic [ref=f50e109]:
+              - generic [ref=f50e115]:
+                - generic [ref=f50e119]:
+                  - generic [ref=f50e123]:
+                    - generic [ref=f50e126]:
+                      - generic [ref=f50e130]:
+                        - text: الاسم
+                        - superscript [ref=f50e131]: "*"
+                      - textbox "الاسم*" [ref=f50e135]
+                    - generic [ref=f50e138]:
+                      - generic [ref=f50e139]: المسمى الوظيفي
+                      - textbox "المسمى الوظيفي" [ref=f50e146]
+                  - generic [ref=f50e153]:
+                    - generic [ref=f50e154]: صورة الموظف
+                    - group [ref=f50e156]:
+                      - button "صورة الموظف" [ref=f50e158]
+                - generic [ref=f50e162]:
+                  - generic [ref=f50e165]:
+                    - generic [ref=f50e166]: البريد الإلكتروني للعمل
+                    - generic [ref=f50e171]:
+                      - textbox "البريد الإلكتروني للعمل" [ref=f50e173]
+                      - link "فتح البريد" [ref=f50e176] [cursor=pointer]:
+                        - /url: "#"
+                  - generic [ref=f50e182]:
+                    - heading "الأقسام" [level=2] [ref=f50e185]
+                    - generic [ref=f50e190]:
+                      - generic [ref=f50e194]:
+                        - text: جميع الأقسام
+                        - superscript [ref=f50e195]: "*"
+                      - button "اختر" [ref=f50e202] [cursor=pointer]
+                  - generic [ref=f50e208]:
+                    - heading "تفاصيل التوظيف" [level=2] [ref=f50e211]
+                    - generic [ref=f50e216]:
+                      - generic [ref=f50e217]: المسؤوليات الوظيفية الأساسية
+                      - textbox "المسؤوليات الوظيفية الأساسية" [ref=f50e225]
+                  - generic [ref=f50e228]:
+                    - generic [ref=f50e232]:
+                      - text: جوال العمل
+                      - superscript [ref=f50e233]: "*"
+                    - generic [ref=f50e234]:
+                      - generic [ref=f50e235]:
+                        - textbox "جوال العمل*" [ref=f50e237]
+                        - link "اتصال بالجوال" [ref=f50e240] [cursor=pointer]:
+                          - /url: "#"
+                      - generic [ref=f50e243]: أدخل رمز الدولة، مثل +968 لعُمان.
+                  - generic [ref=f50e249]:
+                    - generic [ref=f50e250]: المنصب الوظيفي
+                    - generic [ref=f50e255]:
+                      - button "اختر" [ref=f50e260] [cursor=pointer]
+                      - button "إنشاء" [ref=f50e265] [cursor=pointer]
+                  - generic [ref=f50e270]:
+                    - generic [ref=f50e271]: هاتف العمل
+                    - generic [ref=f50e275]:
+                      - generic [ref=f50e276]:
+                        - textbox "هاتف العمل" [ref=f50e278]
+                        - link "اتصال بهاتف العمل" [ref=f50e281] [cursor=pointer]:
+                          - /url: "#"
+                      - generic [ref=f50e284]: أدخل رمز الدولة، مثل +968 لعُمان.
+                  - generic [ref=f50e290]:
+                    - generic [ref=f50e291]: المدير
+                    - button "اختر" [ref=f50e301] [cursor=pointer]
+                  - generic [ref=f50e309]:
+                    - generic [ref=f50e310]: وسوم الموظف
+                    - generic [ref=f50e315]:
+                      - button "اختر" [ref=f50e320] [cursor=pointer]
+                      - button "إنشاء" [ref=f50e325] [cursor=pointer]
+                  - generic [ref=f50e330]:
+                    - generic [ref=f50e331]: المدرب
+                    - button "اختر" [ref=f50e341] [cursor=pointer]
+                  - generic [ref=f50e346]:
+                    - generic [ref=f50e350]:
+                      - text: نوع العضوية
+                      - superscript [ref=f50e351]: "*"
+                    - combobox "نوع العضوية*" [ref=f50e355]:
+                      - option "اختر"
+                      - option "موظف" [selected]
+                      - option "متعاون"
+                      - option "متطوع"
+                  - generic [ref=f50e358]:
+                    - generic [ref=f50e362]:
+                      - text: الرقم المدني
+                      - superscript [ref=f50e363]: "*"
+                    - generic [ref=f50e364]:
+                      - textbox "الرقم المدني*" [ref=f50e367]
+                      - generic [ref=f50e368]: رقم الهوية المدنية الوطني المستخدم لمتابعة الامتثال.
+                  - generic [ref=f50e374]:
+                    - generic [ref=f50e375]: انتهاء الرقم المدني
+                    - generic [ref=f50e379]:
+                      - button [ref=f50e383] [cursor=pointer]:
+                        - textbox "انتهاء الرقم المدني" [ref=f50e384]:
+                          - /placeholder: ""
+                      - generic [ref=f50e388]: يُستخدم تاريخ الانتهاء لتنبيهات الامتثال في النظرة العامة وقائمة الموظفين.
+              - generic [ref=f50e394]:
+                - tablist [ref=f50e395]:
+                  - tab "معلومات العمل" [ref=f50e396] [cursor=pointer]
+                  - tab "المعلومات الخاصة" [ref=f50e400] [cursor=pointer]
+                  - tab "الإعدادات" [ref=f50e404] [cursor=pointer]
+                - tabpanel [ref=f50e409]:
+                  - generic [ref=f50e414]:
+                    - generic [ref=f50e418]:
+                      - group "الموقع" [ref=f50e421]:
+                        - generic [ref=f50e423]:
+                          - generic [ref=f50e426]:
+                            - generic [ref=f50e427]: عنوان العمل
+                            - button "اختر" [ref=f50e437] [cursor=pointer]
+                          - generic [ref=f50e446]:
+                            - generic [ref=f50e447]: موقع العمل
+                            - button "اختر" [ref=f50e461] [cursor=pointer]
+                      - group "المُعتمِد" [ref=f50e468]:
+                        - generic [ref=f50e470]:
+                          - generic [ref=f50e473]:
+                            - generic [ref=f50e474]: الإجازات
+                            - button "اختر" [ref=f50e484] [cursor=pointer]
+                          - generic [ref=f50e492]:
+                            - generic [ref=f50e493]: مدير الحضور
+                            - button "اختر" [ref=f50e503] [cursor=pointer]
+                      - group "الجدول" [ref=f50e511]:
+                        - generic [ref=f50e513]:
+                          - generic [ref=f50e516]:
+                            - generic [ref=f50e517]: ساعات العمل
+                            - button "اختر" [ref=f50e527] [cursor=pointer]
+                          - generic [ref=f50e535]:
+                            - generic [ref=f50e536]: المنطقة الزمنية
+                            - generic [ref=f50e550]:
+                              - button "Asia/Muscat" [ref=f50e551] [cursor=pointer]
+                              - button "Clear selection" [ref=f50e554] [cursor=pointer]
+                    - group "تفاصيل المؤسسة" [ref=f50e570]:
+                      - generic [ref=f50e572]:
+                        - generic [ref=f50e575]:
+                          - generic [ref=f50e579]:
+                            - text: نوع التوظيف
+                            - superscript [ref=f50e580]: "*"
+                          - button "اختر" [ref=f50e587] [cursor=pointer]
+                        - generic [ref=f50e592]:
+                          - generic [ref=f50e596]:
+                            - text: الشركة
+                            - superscript [ref=f50e597]: "*"
+                          - button "اختر" [ref=f50e607] [cursor=pointer]
+                        - generic [ref=f50e612]: اللون
+                - option "اختر"
+                - option "كيلومتر" [selected]
+                - option "متر"
+                - option "اختر" [selected]
+                - option "متخرج"
+                - option "بكالوريوس"
+                - option "ماجستير"
+                - option "دكتوراه"
+                - option "أخرى"
+            - generic [ref=f50e628]:
+              - button "إضافة" [ref=f50e629] [cursor=pointer]
+              - button "إضافة وبدء إضافة المزيد" [ref=f50e631] [cursor=pointer]
+              - button "إلغاء" [ref=f50e632] [cursor=pointer]
+      - contentinfo [ref=f50e633]:
+        - generic [ref=f50e634]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f50e637]:
+    - generic [ref=f50e638] [cursor=pointer]
+    - generic [ref=f50e639]:
+      - generic [ref=f50e640] [cursor=pointer]: Request
+      - generic [ref=f50e641] [cursor=pointer]: Timeline
+      - generic [ref=f50e642] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f50e643]: "13"
+      - generic [ref=f50e644] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f50e645]: "164"
+      - generic [ref=f50e646] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f50e647]: "32"
+      - generic [ref=f50e648] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f50e649]: "6"
+      - generic [ref=f50e650] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f50e651]: "266"
+    - generic [ref=f50e652]:
+      - generic [ref=f50e653] [cursor=pointer]
+      - generic [ref=f50e654] [cursor=pointer]
+      - generic [ref=f50e655] [cursor=pointer]
+      - generic [ref=f50e657] [cursor=pointer]
+      - generic [ref=f50e658]: GET /admin/employees/employees/create
+      - generic [ref=f50e661] [cursor=pointer]: 413ms
+      - generic [ref=f50e663] [cursor=pointer]: 37MB
+      - generic [ref=f50e665] [cursor=pointer]: 13.x

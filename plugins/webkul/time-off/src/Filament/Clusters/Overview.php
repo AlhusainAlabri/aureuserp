@@ -28,4 +28,9 @@ class Overview extends Cluster
     {
         return __('time-off::filament/clusters/overview.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

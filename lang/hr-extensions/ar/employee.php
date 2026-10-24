@@ -12,7 +12,7 @@ return [
     'document_types' => [
         'professional_conduct' => 'سياسة السلوك المهني',
     ],
-    'all_departments'         => 'جميع الأقسام',
+    'all_departments'         => 'أقسام الموظف',
     'primary_department'      => 'القسم الرئيسي',
     'show_closed_files'       => 'إظهار الملفات المغلقة',
     'close_file'              => 'إغلاق ملف الموظف',

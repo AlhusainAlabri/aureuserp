@@ -23,4 +23,9 @@ class Applications extends Cluster
     {
         return __('recruitments::filament/clusters/applications.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

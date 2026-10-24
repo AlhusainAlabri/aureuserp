@@ -73,6 +73,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerShieldPolicies();
 
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn (): string => view('filament.components.ltr-values-script')->render(),
+        );
+
         Company::saved(fn () => Branding::forgetCache());
         Company::deleted(fn () => Branding::forgetCache());
 
@@ -98,8 +103,15 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Table::configureUsing(fn (Table $table) => $table->defaultCurrency(fn (): string => DefaultCurrency::code()));
-        Schema::configureUsing(fn (Schema $schema) => $schema->defaultCurrency(fn (): string => DefaultCurrency::code()));
+        Table::configureUsing(fn (Table $table) => $table
+            ->defaultCurrency(fn (): string => DefaultCurrency::code())
+            ->defaultDateDisplayFormat('d M Y')
+            ->defaultDateTimeDisplayFormat('d M Y h:i A'));
+
+        Schema::configureUsing(fn (Schema $schema) => $schema
+            ->defaultCurrency(fn (): string => DefaultCurrency::code())
+            ->defaultDateDisplayFormat('d M Y')
+            ->defaultDateTimeDisplayFormat('d M Y h:i A'));
 
         TextEntry::configureUsing(function (TextEntry $entry): void {
             if (LtrValueFormatter::appliesTo($entry->getName())) {

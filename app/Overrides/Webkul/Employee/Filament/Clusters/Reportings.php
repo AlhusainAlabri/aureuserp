@@ -34,4 +34,9 @@ class Reportings extends Cluster
     {
         return __('employees::filament/clusters/reportings.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

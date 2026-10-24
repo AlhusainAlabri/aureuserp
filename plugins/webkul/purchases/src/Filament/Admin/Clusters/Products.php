@@ -19,4 +19,9 @@ class Products extends Cluster
     {
         return __('purchases::filament/admin/clusters/products.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

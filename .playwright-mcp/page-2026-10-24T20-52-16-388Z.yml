@@ -1,0 +1,139 @@
+- generic [active] [ref=f44e1]:
+  - navigation [ref=f44e3]:
+    - button [ref=f44e6] [cursor=pointer]
+    - list [ref=f44e17]:
+      - listitem [ref=f44e18]: Dashboard
+      - listitem [ref=f44e19]:
+        - link "Main Dashboard" [ref=f44e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin
+      - listitem [ref=f44e24]:
+        - link "Executive Overview" [ref=f44e25] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/org-overview
+      - listitem [ref=f44e29]:
+        - link "Project" [ref=f44e30] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/project
+      - listitem [ref=f44e32]:
+        - link "Recruitment" [ref=f44e33] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/recruitment
+      - listitem [ref=f44e35]:
+        - link "Website" [ref=f44e36] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/website
+    - generic [ref=f44e38]:
+      - button "New" [ref=f44e41] [cursor=pointer]
+      - generic [ref=f44e47]:
+        - generic [ref=f44e49]:
+          - generic [ref=f44e50]: Global search
+          - searchbox "Global search" [ref=f44e56]
+        - button "English" [ref=f44e59] [cursor=pointer]
+      - button "Quick note" [ref=f44e66] [cursor=pointer]
+      - button "Notifications" [ref=f44e70] [cursor=pointer]
+      - button "User menu" [ref=f44e75] [cursor=pointer]:
+        - img "Avatar of Admin" [ref=f44e76]
+  - generic [ref=f44e77]:
+    - complementary [ref=f44e78]:
+      - navigation [ref=f44e79]:
+        - list [ref=f44e80]:
+          - list [ref=f44e81]:
+            - listitem [ref=f44e82]:
+              - link "Main Dashboard" [ref=f44e83] [cursor=pointer]:
+                - /url: http://localhost:8000/admin
+            - listitem [ref=f44e87]:
+              - link "Project" [ref=f44e88] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/project
+            - listitem [ref=f44e90]:
+              - link "Recruitment" [ref=f44e91] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/recruitment
+            - listitem [ref=f44e93]:
+              - link "Website" [ref=f44e94] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/website
+            - listitem [ref=f44e96]:
+              - link "Executive Overview" [ref=f44e97] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/org-overview
+    - generic [ref=f44e102]:
+      - main [ref=f44e103]:
+        - generic [ref=f44e108]:
+          - generic [ref=f44e109]:
+            - img "الواحة ERP" [ref=f44e110]
+            - heading "Welcome back, Admin" [level=1] [ref=f44e112]
+          - generic [ref=f44e113]:
+            - generic [ref=f44e117]:
+              - generic [ref=f44e118]: Search
+              - searchbox "Search" [ref=f44e124]
+            - button "Customize" [ref=f44e127] [cursor=pointer]
+          - paragraph [ref=f44e130]: All modules and shortcuts are visible
+          - generic [ref=f44e131]:
+            - link "Dashboard" [ref=f44e132] [cursor=pointer]:
+              - /url: http://localhost:8000/admin
+            - link "Contact" [ref=f44e144] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/contact/contacts
+            - link "Sales" [ref=f44e160] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/sale/orders
+            - link "Purchase" [ref=f44e168] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/purchase/orders
+            - link "Manufacturing" [ref=f44e180] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/manufacturing/operations
+            - link "Inventory" [ref=f44e195] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/inventory/dashboard
+            - link "Invoices" [ref=f44e207] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/invoices/customers
+            - link "Accounting" [ref=f44e218] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/accounting/customers
+            - link "Project" [ref=f44e235] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/projects/task-hub
+            - link "Meeting Minutes" [ref=f44e243] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/meetings/dashboard
+            - link "My Notes" [ref=f44e256] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/my-notes?lang=en
+            - link "Correspondence" [ref=f44e269] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/correspondence/dashboard
+            - link "Document Archive" [ref=f44e281] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/document-archive/dashboard
+            - link "Asset Management" [ref=f44e294] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/assets/dashboard
+            - link "Employees" [ref=f44e306] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/employees/employees
+            - link "Payroll" [ref=f44e318] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/payroll/employee-components?lang=en
+            - link "Time Off" [ref=f44e330] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/time-off/dashboard
+            - link "Recruitments" [ref=f44e339] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/recruitments/applications
+            - link "Website" [ref=f44e349] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/website
+            - link "Approvals" [ref=f44e360] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/approval-flows
+            - link "Settings" [ref=f44e370] [cursor=pointer]:
+              - /url: http://localhost:8000/admin/companies
+      - contentinfo [ref=f44e378]:
+        - generic [ref=f44e379]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f44e382]:
+    - generic [ref=f44e383] [cursor=pointer]
+    - generic [ref=f44e384]:
+      - generic [ref=f44e385] [cursor=pointer]: Request
+      - generic [ref=f44e386] [cursor=pointer]: Timeline
+      - generic [ref=f44e387] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f44e388]: "16"
+      - generic [ref=f44e389] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f44e390]: "139"
+      - generic [ref=f44e391] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f44e392]: "28"
+      - generic [ref=f44e393] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f44e394]: "7"
+      - generic [ref=f44e395] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f44e396]: "403"
+    - generic [ref=f44e397]:
+      - generic [ref=f44e398] [cursor=pointer]
+      - generic [ref=f44e399] [cursor=pointer]
+      - generic [ref=f44e400] [cursor=pointer]
+      - generic [ref=f44e402] [cursor=pointer]
+      - generic [ref=f44e403]: GET /admin?lang=en
+      - generic [ref=f44e406] [cursor=pointer]: 348ms
+      - generic [ref=f44e408] [cursor=pointer]: 16MB
+      - generic [ref=f44e410] [cursor=pointer]: 13.x

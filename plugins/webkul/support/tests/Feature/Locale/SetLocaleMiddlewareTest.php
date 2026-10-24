@@ -89,11 +89,12 @@ it('ignores unsupported locale stored in session', function () {
     expect(runSetLocale([], ['locale' => 'fr']))->toBe('en');
 });
 
-it('uses authenticated user language preference over session', function () {
+it('lets a freshly switched session locale win once and saves it as the user language', function () {
     $user = User::withoutEvents(fn () => User::factory()->create(['language' => 'ar']));
     Auth::login($user);
 
-    expect(runSetLocale([], ['locale' => 'en']))->toBe('ar');
+    expect(runSetLocale([], ['locale' => 'en']))->toBe('en')
+        ->and($user->fresh()->language)->toBe('en');
 });
 
 it('clears stale session locale on authenticated requests', function () {

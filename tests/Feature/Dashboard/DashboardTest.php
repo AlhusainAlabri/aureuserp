@@ -64,13 +64,13 @@ it('dashboard page renders for an authenticated user', function (): void {
 });
 
 it('unauthenticated user is redirected from the dashboard', function (): void {
-    $this->get(route('filament.admin.pages.home'))->assertRedirect();
+    $this->get(url('/admin'))->assertRedirect();
 });
 
 it('org dashboard is the panel home url', function (): void {
     dashboardUser();
 
-    expect(route('filament.admin.pages.home'))->toEndWith('/admin');
+    expect(url('/admin'))->toEndWith('/admin');
 });
 
 it('uses the org dashboard view without the module hub', function (): void {

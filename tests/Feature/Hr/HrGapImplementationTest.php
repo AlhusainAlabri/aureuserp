@@ -80,8 +80,8 @@ it('seeds oman org structure idempotently', function (): void {
     $this->seed(OmanOrgStructureSeeder::class);
     $this->seed(OmanOrgStructureSeeder::class);
 
-    expect(Department::query()->where('name', 'Social Research Department')->count())->toBe(1)
-        ->and(Department::query()->where('name', 'Reception Section')->count())->toBe(1);
+    expect(Department::query()->where('name', 'دائرة البحوث الاجتماعية')->count())->toBe(1)
+        ->and(Department::query()->where('name', 'قسم الاستقبال')->count())->toBe(1);
 });
 
 it('stores primary job responsibilities on employee', function (): void {

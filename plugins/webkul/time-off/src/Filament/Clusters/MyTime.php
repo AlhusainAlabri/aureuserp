@@ -23,4 +23,9 @@ class MyTime extends Cluster
     {
         return __('time-off::filament/clusters/my-time.navigation.group');
     }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return static::getNavigationLabel();
+    }
 }

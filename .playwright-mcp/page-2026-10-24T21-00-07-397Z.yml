@@ -1,0 +1,171 @@
+- generic [active] [ref=f51e1]:
+  - navigation [ref=f51e3]:
+    - button [ref=f51e6] [cursor=pointer]
+    - list [ref=f51e17]:
+      - listitem [ref=f51e18]: الموظفون
+      - listitem [ref=f51e19]:
+        - link "الموظفون" [ref=f51e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/employees/employees
+      - listitem [ref=f51e22]:
+        - link "الأقسام" [ref=f51e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/employees/departments
+      - listitem [ref=f51e25]:
+        - link "الطلبات الداخلية 0" [ref=f51e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/submissions
+          - generic [ref=f51e27]: الطلبات الداخلية
+          - generic [ref=f51e28]: "0"
+    - generic [ref=f51e31]:
+      - button "جديد" [ref=f51e34] [cursor=pointer]
+      - generic [ref=f51e40]:
+        - generic [ref=f51e42]:
+          - generic [ref=f51e43]: بحث عام
+          - searchbox "بحث عام" [ref=f51e49]
+        - button "العربية" [ref=f51e52] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f51e59] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f51e63] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f51e68] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f51e69]
+  - generic [ref=f51e70]:
+    - complementary [ref=f51e71]:
+      - navigation [ref=f51e72]:
+        - list [ref=f51e73]:
+          - list [ref=f51e74]:
+            - listitem [ref=f51e75]:
+              - link "الموظفون" [ref=f51e76] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees
+            - listitem [ref=f51e78]:
+              - link "الأقسام" [ref=f51e79] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/departments
+            - listitem [ref=f51e81]:
+              - link "الطلبات الداخلية 0" [ref=f51e82] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/submissions
+                - generic [ref=f51e83]: الطلبات الداخلية
+                - generic [ref=f51e84]: "0"
+    - generic [ref=f51e88]:
+      - main [ref=f51e89]:
+        - generic [ref=f51e91]:
+          - generic [ref=f51e92]:
+            - generic [ref=f51e93]:
+              - navigation [ref=f51e94]:
+                - list [ref=f51e95]:
+                  - listitem [ref=f51e96]:
+                    - link "الموظفون" [ref=f51e97] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/employees/employees
+                  - listitem [ref=f51e98]:
+                    - link "محمد بن سالم الهنائي" [ref=f51e101] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/employees/employees/11
+                  - listitem [ref=f51e102]:
+                    - generic [ref=f51e105]: نظرة عامة على الموظف
+              - heading "نظرة عامة على الموظف" [level=1] [ref=f51e106]
+            - generic [ref=f51e108]:
+              - link "تعديل الموظف" [ref=f51e109] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/edit
+              - link "إضافة مستند" [ref=f51e112] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/documents
+              - link "إصدار إنذار" [ref=f51e115] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/warnings
+          - generic [ref=f51e119]:
+            - navigation [ref=f51e126]:
+              - link "نظرة عامة" [ref=f51e127] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/overview
+              - link "التفاصيل" [ref=f51e131] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11
+              - link "تعديل" [ref=f51e136] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/edit
+              - link "إدارة المهارات" [ref=f51e140] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/skills
+              - link "إدارة السير الذاتية" [ref=f51e144] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/resumes
+              - link "الوثائق" [ref=f51e148] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/documents
+              - link "عقود التوظيف" [ref=f51e152] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/contracts
+              - link "التحذيرات" [ref=f51e156] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/warnings
+              - link "الاجتماعات" [ref=f51e160] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/meetings
+              - link "التدريب" [ref=f51e164] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/trainings
+              - link "البدلات" [ref=f51e168] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/compensation
+              - link "زيادات الراتب" [ref=f51e172] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/salary-raises
+              - link "كشوف الرواتب" [ref=f51e176] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/payslip-history
+              - link "التقييمات الذاتية" [ref=f51e180] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/employees/employees/11/self-assessments
+            - generic [ref=f51e184]:
+              - generic [ref=f51e185]:
+                - generic [ref=f51e186]:
+                  - generic [ref=f51e187]: وثائق منتهية
+                  - generic [ref=f51e191]: "0"
+                - generic [ref=f51e192]:
+                  - generic [ref=f51e193]: تنتهي قريباً
+                  - generic [ref=f51e197]: "0"
+                - generic [ref=f51e198]:
+                  - generic [ref=f51e199]: تحذيرات نشطة
+                  - generic [ref=f51e203]: "0"
+                - generic [ref=f51e204]:
+                  - generic [ref=f51e205]: مشكلات الامتثال
+                  - generic [ref=f51e209]: "0"
+              - generic [ref=f51e210]:
+                - heading "معلومات الموظف" [level=2] [ref=f51e213]
+                - generic [ref=f51e216]:
+                  - generic [ref=f51e221]:
+                    - paragraph [ref=f51e222]: القسم
+                    - paragraph [ref=f51e223]: الخدمات المهنية
+                  - generic [ref=f51e228]:
+                    - paragraph [ref=f51e229]: المسمى الوظيفي
+                    - paragraph [ref=f51e230]: مدير الموارد البشرية
+                  - generic [ref=f51e235]:
+                    - paragraph [ref=f51e236]: البريد الإلكتروني للعمل
+                    - paragraph [ref=f51e237]: mohammed.alhinai@alwaha.example.om
+                  - generic [ref=f51e242]:
+                    - paragraph [ref=f51e243]: هاتف العمل
+                    - paragraph [ref=f51e244]: "+96824112233"
+                  - generic [ref=f51e249]:
+                    - paragraph [ref=f51e250]: نوع التوظيف
+                    - paragraph [ref=f51e251]: دائم
+                  - generic [ref=f51e256]:
+                    - paragraph [ref=f51e257]: الرقم المدني
+                    - paragraph [ref=f51e258]: 12345678 (ينتهي 20 مايو 2030)
+              - generic [ref=f51e259]:
+                - heading "تنبيهات الامتثال" [level=2] [ref=f51e262]
+                - generic [ref=f51e269]:
+                  - generic [ref=f51e270]:
+                    - paragraph [ref=f51e271]: انتهاء البطاقة المدنية
+                    - paragraph [ref=f51e272]: 20 مايو 2030
+                  - generic [ref=f51e273]: ساري
+      - contentinfo [ref=f51e276]:
+        - generic [ref=f51e277]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f51e280]:
+    - generic [ref=f51e281] [cursor=pointer]
+    - generic [ref=f51e282]:
+      - generic [ref=f51e283] [cursor=pointer]: Request
+      - generic [ref=f51e284] [cursor=pointer]: Timeline
+      - generic [ref=f51e285] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f51e286]: "16"
+      - generic [ref=f51e287] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f51e288]: "132"
+      - generic [ref=f51e289] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f51e290]: "32"
+      - generic [ref=f51e291] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f51e292]: "7"
+      - generic [ref=f51e293] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f51e294]: "272"
+    - generic [ref=f51e295]:
+      - generic [ref=f51e296] [cursor=pointer]
+      - generic [ref=f51e297] [cursor=pointer]
+      - generic [ref=f51e298] [cursor=pointer]
+      - generic [ref=f51e300] [cursor=pointer]
+      - generic [ref=f51e301]: GET /admin/employees/employees/11/overview
+      - generic [ref=f51e304] [cursor=pointer]: 321ms
+      - generic [ref=f51e306] [cursor=pointer]: 17MB
+      - generic [ref=f51e308] [cursor=pointer]: 13.x

@@ -12,7 +12,7 @@ return [
     'document_types' => [
         'professional_conduct' => 'Professional Conduct Policy',
     ],
-    'all_departments'         => 'All Departments',
+    'all_departments'         => 'Employee departments',
     'primary_department'      => 'Primary Department',
     'show_closed_files'       => 'Show closed files',
     'close_file'              => 'Close Employee File',

@@ -12,10 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('partners_partners', function (Blueprint $table) {
-            $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->string('password')->nullable();
-            $table->rememberToken();
+            if (! Schema::hasColumn('partners_partners', 'email_verified_at')) {
+                $table->timestamp('email_verified_at')->nullable();
+            }
+
+            if (! Schema::hasColumn('partners_partners', 'is_active')) {
+                $table->boolean('is_active')->default(true);
+            }
+
+            if (! Schema::hasColumn('partners_partners', 'password')) {
+                $table->string('password')->nullable();
+            }
+
+            if (! Schema::hasColumn('partners_partners', 'remember_token')) {
+                $table->rememberToken();
+            }
         });
     }
 
@@ -24,11 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('partners_partners', function (Blueprint $table) {
-            $table->dropColumn('email_verified_at');
-            $table->dropColumn('is_active');
-            $table->dropColumn('password');
-            $table->dropColumn('remember_token');
-        });
+        // These columns belong to the core partners plugin now; leave them in place.
     }
 };

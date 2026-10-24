@@ -5,7 +5,6 @@ use App\Http\Middleware\SetLocale;
 use App\Support\FilamentUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 use Webkul\Security\Models\User;
 
 it('appends locale to employee record navigation urls', function (): void {
@@ -81,7 +80,7 @@ it('splits employee navigation into primary and overflow groups', function (): v
     })::count())->toBe(8);
 });
 
-it('persists query locale in session for authenticated users', function (): void {
+it('applies the query locale to that request only for authenticated users', function (): void {
     $user = User::factory()->create(['language' => 'en']);
 
     $middleware = new SetLocale;
@@ -92,8 +91,9 @@ it('persists query locale in session for authenticated users', function (): void
 
     $middleware->handle($first, fn () => response('ok'));
 
+    // ?lang= only overrides this request; the language switcher route is what persists a choice.
     expect(App::getLocale())->toBe('ar')
-        ->and(Session::get('locale'))->toBe('ar');
+        ->and($user->fresh()->language)->toBe('en');
 
     $second = Request::create('/admin/employees/employees', 'GET');
     $second->setLaravelSession(app('session.store'));
@@ -101,7 +101,7 @@ it('persists query locale in session for authenticated users', function (): void
 
     $middleware->handle($second, fn () => response('ok'));
 
-    expect(App::getLocale())->toBe('ar');
+    expect(App::getLocale())->toBe('en');
 });
 
 it('uses session locale when building filament urls', function (): void {
