@@ -169,10 +169,10 @@ class OperationTypeResource extends Resource
                                                         modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                                     )
                                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                                     })
                                                     ->disableOptionWhen(function ($label) {
-                                                        return str_contains($label, ' (Deleted)');
+                                                        return str_contains($label, __(' (Deleted)'));
                                                     })
                                                     ->searchable()
                                                     ->preload()
@@ -242,10 +242,10 @@ class OperationTypeResource extends Resource
                                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                             )
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->searchable()
                                             ->preload()
@@ -277,10 +277,10 @@ class OperationTypeResource extends Resource
                                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                             )
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->searchable()
                                             ->preload()

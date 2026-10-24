@@ -144,10 +144,10 @@ class PayAction extends Action
                                     }
                                 )
                                 ->getOptionLabelFromRecordUsing(function ($record): string {
-                                    return $record->account_number.' - '.$record->bank->name.($record->trashed() ? ' (Deleted)' : '');
+                                    return $record->account_number.' - '.$record->bank->name.($record->trashed() ? __(' (Deleted)') : '');
                                 })
                                 ->disableOptionWhen(function ($label) {
-                                    return str_contains($label, ' (Deleted)');
+                                    return str_contains($label, __(' (Deleted)'));
                                 })
                                 ->label(__('accounts::filament/resources/invoice/actions/pay-action.form.fields.partner-bank-account'))
                                 ->searchable()
@@ -245,7 +245,7 @@ class PayAction extends Action
                                                 ->label(function (Get $get) use ($paymentRegister) {
                                                     $installmentsMode = $get('installments_mode') ?? $paymentRegister->installments_mode;
 
-                                                    return $installmentsMode === 'full' ? 'installments' : 'full amount';
+                                                    return $installmentsMode === 'full' ? __('installments') : __('full amount');
                                                 })
                                                 ->link()
                                                 ->action(function (Set $set, Get $get) use ($paymentRegister) {
@@ -297,7 +297,7 @@ class PayAction extends Action
                 ])
                     ->columns(2);
             })
-            ->action(function (Move $record, $data): void {
+            ->action(function (Move $record, $data, $livewire): void {
                 try {
                     $lineIds = $record->paymentTermLines
                         ->filter(fn ($line) => ! $line->reconciled)
@@ -315,6 +315,8 @@ class PayAction extends Action
                     $paymentRegister->save();
 
                     AccountFacade::createPayments($paymentRegister);
+
+                    $livewire->refreshFormData(['state', 'payment_state']);
                 } catch (Throwable $e) {
                     Notification::make()
                         ->danger()

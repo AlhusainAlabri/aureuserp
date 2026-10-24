@@ -31,14 +31,13 @@ class InvoiceApprovalFlowSeeder extends Seeder
             [
                 'name'        => __('invoices-extensions::approval.flow_name'),
                 'description' => __('invoices-extensions::approval.flow_description'),
-                'is_active'   => true,
+                'is_active'   => false,
             ]
         );
 
         $flow->update([
             'name'        => __('invoices-extensions::approval.flow_name'),
             'description' => __('invoices-extensions::approval.flow_description'),
-            'is_active'   => true,
         ]);
 
         $steps = [

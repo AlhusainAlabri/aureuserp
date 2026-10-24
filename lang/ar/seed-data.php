@@ -108,6 +108,16 @@ return [
         '90 Days, on the 10th'              => '90 يوماً، في اليوم العاشر',
     ],
 
+    'approval_flows.name' => ['Purchase Order Approval Flow' => 'مسار موافقة أوامر الشراء'],
+
+    'approval_flows.description' => ['3-step sequential approval flow for purchase orders.' => 'مسار موافقة متسلسل من ثلاث خطوات لأوامر الشراء.'],
+
+    'approval_steps.name' => [
+        'Department Manager Review' => 'مراجعة مدير القسم',
+        'Finance Manager Review'    => 'مراجعة المدير المالي',
+        'General Manager Review'    => 'مراجعة المدير العام',
+    ],
+
     'activity_plans.name' => ['Offboarding' => 'إنهاء الخدمة', 'Onboarding' => 'مباشرة العمل'],
 
     'activity_types.name' => ['Meeting' => 'اجتماع', 'Exception' => 'استثناء', 'To-Do' => 'مهمة', 'Call' => 'مكالمة'],

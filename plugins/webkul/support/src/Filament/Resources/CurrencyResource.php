@@ -102,9 +102,9 @@ class CurrencyResource extends Resource
                                         TextInput::make('rounding')
                                             ->label(__('support::filament/resources/currency.form.sections.format-information.fields.rounding'))
                                             ->numeric()
-                                            ->step(0.01)
+                                            ->step(0.000001)
                                             ->minValue(0)
-                                            ->default(0.00)
+                                            ->default(0.01)
                                             ->helperText(__('support::filament/resources/currency.form.sections.format-information.fields.rounding-helper-text')),
                                     ])
                                     ->columns(2),
@@ -215,7 +215,7 @@ class CurrencyResource extends Resource
                     ->sortable(),
                 TextColumn::make('rounding')
                     ->label(__('support::filament/resources/currency.table.columns.rounding'))
-                    ->money('USD', divideBy: 1)
+                    ->numeric(decimalPlaces: 6)
                     ->sortable(),
                 ToggleColumn::make('active')
                     ->label(__('support::filament/resources/currency.table.columns.status'))
@@ -326,7 +326,7 @@ class CurrencyResource extends Resource
                                         TextEntry::make('rounding')
                                             ->icon('heroicon-o-arrow-path-rounded-square')
                                             ->placeholder('—')
-                                            ->money('USD', divideBy: 1)
+                                            ->numeric(decimalPlaces: 6)
                                             ->label(__('support::filament/resources/currency.infolist.sections.format-information.entries.rounding')),
                                     ])->columns(2),
                             ])->columnSpan(2),

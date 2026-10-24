@@ -1,0 +1,299 @@
+- generic [ref=f64e1]:
+  - navigation [ref=f64e3]:
+    - button [ref=f64e6] [cursor=pointer]
+    - list [ref=f64e17]:
+      - listitem [ref=f64e18]: المحاسبة
+      - listitem [ref=f64e19]:
+        - link "نظرة عامة" [ref=f64e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/overview
+      - listitem [ref=f64e22]:
+        - link "العملاء" [ref=f64e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/customers
+      - listitem [ref=f64e25]:
+        - link "الموردين" [ref=f64e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/vendors
+      - listitem [ref=f64e28]:
+        - link "المحاسبة" [ref=f64e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/accounting
+      - listitem [ref=f64e31]:
+        - link "التقارير" [ref=f64e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/reporting
+      - listitem [ref=f64e34]:
+        - link "إعدادات المحاسبة" [ref=f64e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/configurations
+      - listitem [ref=f64e37]:
+        - link "الإعدادات" [ref=f64e38] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f64e40]:
+      - button "جديد" [ref=f64e43] [cursor=pointer]
+      - generic [ref=f64e49]:
+        - generic [ref=f64e51]:
+          - generic [ref=f64e52]: بحث عام
+          - searchbox "بحث عام" [ref=f64e58]
+        - button "العربية" [ref=f64e61] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f64e68] [cursor=pointer]
+      - button "عرض التنبيهات" [ref=f64e74] [cursor=pointer]
+      - button "قائمة المستخدم" [ref=f64e79] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f64e80]
+  - generic [ref=f64e81]:
+    - complementary [ref=f64e82]:
+      - navigation [ref=f64e83]:
+        - list [ref=f64e84]:
+          - list [ref=f64e85]:
+            - listitem [ref=f64e86]:
+              - link "نظرة عامة" [ref=f64e87] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/overview
+            - listitem [ref=f64e89]:
+              - link "العملاء" [ref=f64e90] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/customers
+            - listitem [ref=f64e92]:
+              - link "الموردين" [ref=f64e93] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/vendors
+            - listitem [ref=f64e95]:
+              - link "المحاسبة" [ref=f64e96] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/accounting
+            - listitem [ref=f64e98]:
+              - link "التقارير" [ref=f64e99] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/reporting
+            - listitem [ref=f64e101]:
+              - link "إعدادات المحاسبة" [ref=f64e102] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/configurations
+            - listitem [ref=f64e104]:
+              - link "الإعدادات" [ref=f64e105] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f64e107]:
+      - main [ref=f64e108]:
+        - generic [ref=f64e109]:
+          - generic [ref=f64e110]:
+            - generic [ref=f64e111]:
+              - generic [ref=f64e112]:
+                - navigation [ref=f64e113]:
+                  - list [ref=f64e114]:
+                    - listitem [ref=f64e115]:
+                      - link "العملاء" [ref=f64e116] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers
+                    - listitem [ref=f64e117]:
+                      - link "الفواتير" [ref=f64e120] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/invoices
+                    - listitem [ref=f64e121]:
+                      - link "INV/2026/1" [ref=f64e124] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/invoices/1
+                    - listitem [ref=f64e125]:
+                      - generic [ref=f64e128]: عرض
+                - heading "عرض INV/2026/1" [level=1] [ref=f64e129]
+              - generic [ref=f64e131]:
+                - button "المحادثات 2" [ref=f64e132] [cursor=pointer]:
+                  - text: المحادثات
+                  - generic [ref=f64e136]: "2"
+                - button "طباعة وإرسال" [ref=f64e138] [cursor=pointer]
+                - button "معاينة" [ref=f64e141] [cursor=pointer]
+                - button "دفع" [ref=f64e144] [cursor=pointer]
+                - button "استرجاع" [ref=f64e145] [cursor=pointer]
+                - button "إعادة إلى مسودة" [ref=f64e148] [cursor=pointer]
+                - button "إرسال للموافقة" [ref=f64e151] [cursor=pointer]
+            - generic [ref=f64e154]:
+              - list [ref=f64e156]:
+                - listitem [ref=f64e157]:
+                  - list [ref=f64e158]:
+                    - listitem [ref=f64e159]:
+                      - link "الفواتير" [ref=f64e160] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/invoices
+                    - listitem [ref=f64e164]:
+                      - link "إشعارات دائنة" [ref=f64e165] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/credit-notes
+                    - listitem [ref=f64e169]:
+                      - link "المدفوعات" [ref=f64e170] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/payments
+                    - listitem [ref=f64e174]:
+                      - link "العملاء" [ref=f64e175] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/customers
+                    - listitem [ref=f64e179]:
+                      - link "المنتجات" [ref=f64e180] [cursor=pointer]:
+                        - /url: http://localhost:8000/admin/accounting/customers/products
+              - generic [ref=f64e184]:
+                - navigation [ref=f64e191]:
+                  - link "عرض" [ref=f64e192] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers/invoices/1
+                  - link "تعديل" [ref=f64e197] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers/invoices/1/edit
+                  - link "الدفعات" [ref=f64e201] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers/invoices/1/payments
+                - generic [ref=f64e208]:
+                  - generic [ref=f64e211]:
+                    - term [ref=f64e212]: الحالة
+                    - definition [ref=f64e214]:
+                      - generic [ref=f64e216]:
+                        - generic [ref=f64e217]:
+                          - radio "مسودة" [disabled]
+                          - generic: مسودة
+                        - generic [ref=f64e218]:
+                          - radio "مرحّل" [checked] [disabled]
+                          - generic: مرحّل
+                  - generic [ref=f64e227]:
+                    - term [ref=f64e230]: حالة الدفع
+                    - definition [ref=f64e232]:
+                      - generic [ref=f64e233]: غير مدفوع
+                  - generic [ref=f64e241]:
+                    - heading "عام" [level=2] [ref=f64e246]
+                    - generic [ref=f64e248]:
+                      - generic [ref=f64e255]:
+                        - term [ref=f64e258]: فاتورة العميل
+                        - definition [ref=f64e260]:
+                          - generic [ref=f64e261]: INV/2026/1
+                      - generic [ref=f64e268]:
+                        - generic [ref=f64e275]:
+                          - term [ref=f64e278]: العميل
+                          - definition [ref=f64e280]:
+                            - generic [ref=f64e281]: شركة الأفق للمقاولات ش.م.م
+                        - generic [ref=f64e288]:
+                          - generic [ref=f64e291]:
+                            - term [ref=f64e294]: تاريخ الفاتورة
+                            - definition [ref=f64e296]:
+                              - generic [ref=f64e297]: 24 أكتوبر 2026
+                          - generic [ref=f64e303]:
+                            - term [ref=f64e306]: تاريخ الاستحقاق
+                            - definition [ref=f64e308]:
+                              - generic [ref=f64e309]: 24 أكتوبر 2026
+                          - generic [ref=f64e316]:
+                            - generic [ref=f64e319]:
+                              - term [ref=f64e322]: دفتر اليومية
+                              - definition [ref=f64e324]:
+                                - generic [ref=f64e325]: فواتير العملاء
+                            - generic [ref=f64e331]:
+                              - term [ref=f64e334]: العملة
+                              - definition [ref=f64e336]:
+                                - generic [ref=f64e337]: OMR
+                  - generic [ref=f64e343]:
+                    - tablist [ref=f64e344]:
+                      - tab "بنود الفاتورة" [ref=f64e345] [cursor=pointer]
+                      - tab "بنود اليومية" [ref=f64e349] [cursor=pointer]
+                      - tab "معلومات أخرى" [ref=f64e353] [cursor=pointer]
+                      - tab "الشروط والأحكام" [ref=f64e357] [cursor=pointer]
+                    - tabpanel "المنتج الكمية سعر الوحدة الضرائب المجموع الفرعي تبديل الأعمدة ورق طباعة A4 (رزمة 500 ورقة) 20.0000 ‏2.350 ر.ع.‏ ضريبة القيمة المضافة 5% ‏47.000 ر.ع.‏ المبلغ بدون ضريبة ‏47.000 ر.ع.‏ الضريبة ‏2.350 ر.ع.‏ الإجمالي ‏49.350 ر.ع.‏ المبلغ المستحق ‏49.350 ر.ع.‏" [ref=f64e361]:
+                      - generic [ref=f64e362]:
+                        - definition [ref=f64e367]:
+                          - table [ref=f64e370]:
+                            - rowgroup [ref=f64e371]:
+                              - row [ref=f64e372]:
+                                - columnheader "المنتج" [ref=f64e373]
+                                - columnheader "الكمية" [ref=f64e375]
+                                - columnheader "سعر الوحدة" [ref=f64e377]
+                                - columnheader "الضرائب" [ref=f64e379]
+                                - columnheader "المجموع الفرعي" [ref=f64e381]
+                                - columnheader [ref=f64e383]:
+                                  - button "تبديل الأعمدة" [ref=f64e386] [cursor=pointer]
+                            - rowgroup [ref=f64e389]:
+                              - row [ref=f64e390]:
+                                - cell "ورق طباعة A4 (رزمة 500 ورقة)" [ref=f64e391]:
+                                  - definition [ref=f64e395]:
+                                    - generic [ref=f64e396]: ورق طباعة A4 (رزمة 500 ورقة)
+                                - cell "20.0000" [ref=f64e398]:
+                                  - definition [ref=f64e402]:
+                                    - generic [ref=f64e403]: "20.0000"
+                                - cell "‏2.350 ر.ع.‏" [ref=f64e405]:
+                                  - definition [ref=f64e409]:
+                                    - generic [ref=f64e410]: ‏2.350 ر.ع.‏
+                                - cell "ضريبة القيمة المضافة 5%" [ref=f64e412]:
+                                  - definition [ref=f64e416]:
+                                    - generic [ref=f64e417]: ضريبة القيمة المضافة 5%
+                                - cell "‏47.000 ر.ع.‏" [ref=f64e420]:
+                                  - definition [ref=f64e424]:
+                                    - generic [ref=f64e425]: ‏47.000 ر.ع.‏
+                        - generic [ref=f64e431]:
+                          - generic [ref=f64e432]:
+                            - generic [ref=f64e433]: المبلغ بدون ضريبة
+                            - generic [ref=f64e434]: ‏47.000 ر.ع.‏
+                          - generic [ref=f64e435]:
+                            - generic [ref=f64e436]: الضريبة
+                            - generic [ref=f64e437]: ‏2.350 ر.ع.‏
+                          - generic [ref=f64e439]:
+                            - generic [ref=f64e440]: الإجمالي
+                            - generic [ref=f64e441]: ‏49.350 ر.ع.‏
+                          - generic [ref=f64e443]:
+                            - generic [ref=f64e444]: المبلغ المستحق
+                            - generic [ref=f64e445]: ‏49.350 ر.ع.‏
+          - generic:
+            - dialog:
+              - generic [ref=f64e448]:
+                - generic [ref=f64e449]:
+                  - button "إغلاق" [ref=f64e450] [cursor=pointer]
+                  - heading "دفع" [level=2] [ref=f64e454]
+                - generic [ref=f64e456]:
+                  - generic [ref=f64e460]:
+                    - generic [ref=f64e463]:
+                      - generic [ref=f64e467]:
+                        - text: دفتر اليومية
+                        - superscript [ref=f64e468]: "*"
+                      - generic [ref=f64e474]:
+                        - button "معاملات البنك" [ref=f64e475] [cursor=pointer]
+                        - button "Clear selection" [ref=f64e478] [cursor=pointer]
+                    - generic [ref=f64e483]:
+                      - generic [ref=f64e487]:
+                        - text: طريقة الدفع
+                        - superscript [ref=f64e488]: "*"
+                      - generic [ref=f64e494]:
+                        - button "دفع يدوي" [ref=f64e495] [cursor=pointer]
+                        - button "Clear selection" [ref=f64e498] [cursor=pointer]
+                    - generic [ref=f64e503]:
+                      - generic [ref=f64e504]: الحساب البنكي للشريك
+                      - button [disabled] [ref=f64e514]
+                  - generic [ref=f64e519]:
+                    - generic [ref=f64e523]:
+                      - generic [ref=f64e526]:
+                        - generic [ref=f64e528]:
+                          - generic [ref=f64e530]:
+                            - text: المبلغ
+                            - superscript [ref=f64e531]: "*"
+                          - button "الدفع على أقساط" [active] [ref=f64e534] [cursor=pointer]
+                        - generic [ref=f64e536]:
+                          - generic [ref=f64e537]: ر.ع.
+                          - textbox "المبلغ*" [ref=f64e540]: "49.35"
+                      - generic [ref=f64e543]:
+                        - generic [ref=f64e547]:
+                          - text: العملة
+                          - superscript [ref=f64e548]: "*"
+                        - generic [ref=f64e554]:
+                          - button "OMR" [ref=f64e555] [cursor=pointer]
+                          - button "Clear selection" [ref=f64e558] [cursor=pointer]
+                    - generic [ref=f64e563]:
+                      - generic [ref=f64e567]:
+                        - text: تاريخ الدفع
+                        - superscript [ref=f64e568]: "*"
+                      - button [ref=f64e573] [cursor=pointer]:
+                        - textbox "تاريخ الدفع*" [ref=f64e574]:
+                          - /placeholder: ""
+                          - text: 24 أكتوبر 2026
+                    - generic [ref=f64e577]:
+                      - generic [ref=f64e581]:
+                        - text: البيان
+                        - superscript [ref=f64e582]: "*"
+                      - textbox "البيان*" [ref=f64e586]: INV/2026/1
+                - generic [ref=f64e588]:
+                  - button "إرسال" [ref=f64e589] [cursor=pointer]
+                  - button "إلغاء" [ref=f64e591] [cursor=pointer]
+      - contentinfo [ref=f64e592]:
+        - generic [ref=f64e593]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f64e596]:
+    - generic [ref=f64e597] [cursor=pointer]
+    - generic [ref=f64e598]:
+      - generic [ref=f64e599] [cursor=pointer]
+      - generic [ref=f64e601] [cursor=pointer]: "1"
+      - generic [ref=f64e604] [cursor=pointer]
+      - generic [ref=f64e606] [cursor=pointer]: "1"
+      - generic [ref=f64e609] [cursor=pointer]: "118"
+      - generic [ref=f64e612] [cursor=pointer]: "76"
+      - generic [ref=f64e615] [cursor=pointer]: "2"
+      - generic [ref=f64e618] [cursor=pointer]: "6"
+    - generic [ref=f64e621]:
+      - generic [ref=f64e622] [cursor=pointer]
+      - generic [ref=f64e623] [cursor=pointer]
+      - generic [ref=f64e624] [cursor=pointer]
+      - generic [ref=f64e626] [cursor=pointer]
+      - generic [ref=f64e628] [cursor=pointer]:
+        - generic [ref=f64e629]: "3"
+        - generic [ref=f64e630]: POST /livewire-ff82a33d/update
+      - generic [ref=f64e631] [cursor=pointer]: 225ms
+      - generic [ref=f64e633] [cursor=pointer]: 25MB
+      - generic [ref=f64e635] [cursor=pointer]: 13.x

@@ -191,10 +191,10 @@ class TaskResource extends Resource
                                     ->label(__('projects::filament/resources/task.form.sections.settings.fields.project'))
                                     ->relationship('project', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                     ->getOptionLabelFromRecordUsing(function (Model $record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label) {
-                                        return str_contains($label, ' (Deleted)');
+                                        return str_contains($label, __(' (Deleted)'));
                                     })
                                     ->preload()
                                     ->searchable()

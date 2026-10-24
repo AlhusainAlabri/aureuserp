@@ -44,7 +44,7 @@ trait HasApprovalWorkflow
         return $this->isApproved();
     }
 
-    protected function guardApprovalBeforePosting(): void
+    public function guardApprovalBeforePosting(): void
     {
         if (! $this->hasActiveApprovalFlow()) {
             return;

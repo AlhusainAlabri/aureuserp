@@ -196,10 +196,10 @@ class OrderResource extends Resource
                                         modifyQueryUsing: fn (Builder $query) => $query->orderBy('id')->withTrashed()
                                     )
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label) {
-                                        return str_contains($label, ' (Deleted)');
+                                        return str_contains($label, __(' (Deleted)'));
                                     })
                                     ->searchable()
                                     ->required(fn (Get $get): bool => PurchaseOrderResourceExtensions::requiresVendor($get('request_type')))
@@ -242,9 +242,9 @@ class OrderResource extends Resource
                                                 });
                                         })
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
-                                    ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                    ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                     ->searchable()
                                     ->preload()
                                     ->visible(fn (Get $get): bool => static::getOrderSettings()->enable_purchase_agreements
@@ -333,9 +333,9 @@ class OrderResource extends Resource
                                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                             )
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
-                                            ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                            ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                             ->searchable()
                                             ->preload()
                                             ->required()
@@ -831,9 +831,9 @@ class OrderResource extends Resource
 
                                     return [
                                         'currency'         => $record->currency,
-                                        'subtotal'         => round($subtotal, 2),
-                                        'totalTax'         => round($totalTax, 2),
-                                        'grandTotal'       => round($grandTotal, 2),
+                                        'subtotal'         => money_round($subtotal),
+                                        'totalTax'         => money_round($totalTax),
+                                        'grandTotal'       => money_round($grandTotal),
                                     ];
                                 })
                                     ->key('order-summary-view'),
@@ -1037,10 +1037,10 @@ class OrderResource extends Resource
                     ->live()
                     ->wrapOptionLabels(false)
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($value, $state, $component, $label) {
-                        if (str_contains($label, ' (Deleted)')) {
+                        if (str_contains($label, __(' (Deleted)'))) {
                             return true;
                         }
 
@@ -1303,7 +1303,7 @@ class OrderResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         $set('taxes', $product->productTaxes->pluck('id')->toArray());
 
@@ -1337,7 +1337,7 @@ class OrderResource extends Resource
         if (! $get('from_requisition')) {
             $priceUnit = static::calculateUnitPrice($get);
 
-            $set('price_unit', round($priceUnit, 2));
+            $set('price_unit', money_round($priceUnit));
         }
 
         self::calculateLineTotals($set, $get);
@@ -1365,7 +1365,7 @@ class OrderResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         self::calculateLineTotals($set, $get);
     }
@@ -1556,9 +1556,9 @@ class OrderResource extends Resource
         }
 
         $totals = [
-            'subtotal'         => round($subtotal, 2),
-            'totalTax'         => round($totalTax, 2),
-            'grandTotal'       => round($grandTotal, 2),
+            'subtotal'         => money_round($subtotal),
+            'totalTax'         => money_round($totalTax),
+            'grandTotal'       => money_round($grandTotal),
         ];
 
         $livewire->dispatch('itemUpdated', $totals);
@@ -1712,7 +1712,7 @@ class OrderResource extends Resource
                 $vendorPrice = $productModel->cost ?? $productModel->price;
             }
 
-            $set("products.$key.price_unit", round($vendorPrice, 2));
+            $set("products.$key.price_unit", money_round($vendorPrice));
 
             self::calculateLineTotals($set, $get, "products.$key.");
         }

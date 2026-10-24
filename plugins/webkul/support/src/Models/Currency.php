@@ -28,6 +28,16 @@ class Currency extends Model
         'active' => 'boolean',
     ];
 
+    /**
+     * Never hand a zero rounding to the calculators; fall back to the decimals.
+     */
+    public function getRoundingAttribute(mixed $value): float
+    {
+        $rounding = (float) $value;
+
+        return $rounding > 0 ? $rounding : 10 ** -((int) ($this->attributes['decimal_places'] ?? 2));
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);

@@ -205,10 +205,10 @@ class JournalEntryResource extends Resource
                                     ->label(__('accounting::filament/clusters/accounting/resources/journal-entry.form.tabs.other-information.fields.company'))
                                     ->relationship('company', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label) {
-                                        return str_contains($label, ' (Deleted)');
+                                        return str_contains($label, __(' (Deleted)'));
                                     })
                                     ->searchable()
                                     ->preload()
@@ -908,9 +908,9 @@ class JournalEntryResource extends Resource
         $lines = array_values($lines);
 
         foreach ($taxLinesMap as $key => $taxLine) {
-            $taxLine['debit'] = round($taxLine['debit'], 2);
-            $taxLine['credit'] = round($taxLine['credit'], 2);
-            $taxLine['amount_currency'] = round($taxLine['amount_currency'], 2);
+            $taxLine['debit'] = money_round($taxLine['debit']);
+            $taxLine['credit'] = money_round($taxLine['credit']);
+            $taxLine['amount_currency'] = money_round($taxLine['amount_currency']);
 
             $taxLinesMap[$key] = $taxLine;
 
@@ -1003,7 +1003,7 @@ class JournalEntryResource extends Resource
 
     private static function calculateBalancingLine(float $totalDebit, float $totalCredit, Company $company, ?int $accountId = null): ?array
     {
-        $difference = round($totalDebit - $totalCredit, 2);
+        $difference = money_round($totalDebit - $totalCredit);
 
         if (abs($difference) < 0.01) {
             return null;

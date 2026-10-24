@@ -23,13 +23,16 @@ use App\Support\Rtl\LtrValueFormatter;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Infolists\Components\Entry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -112,6 +115,12 @@ class AppServiceProvider extends ServiceProvider
             ->defaultCurrency(fn (): string => DefaultCurrency::code())
             ->defaultDateDisplayFormat('d M Y')
             ->defaultDateTimeDisplayFormat('d M Y h:i A'));
+
+        // Fields, columns and entries without an explicit label show their name ("Payment state");
+        // run those default labels through the translator so lang/*.json can translate them.
+        Field::configureUsing(fn (Field $field) => $field->translateLabel());
+        Entry::configureUsing(fn (Entry $entry) => $entry->translateLabel());
+        Column::configureUsing(fn (Column $column) => $column->translateLabel());
 
         TextEntry::configureUsing(function (TextEntry $entry): void {
             if (LtrValueFormatter::appliesTo($entry->getName())) {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\TimeOff\Widgets;
 
+use App\Filament\Concerns\InheritsWidgetShieldPermission;
 use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Webkul\TimeOff\Enums\State;
@@ -10,6 +11,7 @@ use Webkul\TimeOff\Models\Leave;
 
 class LeaveTypeReportWidget extends BaseLeaveTypeWidget
 {
+    use InheritsWidgetShieldPermission;
     use InteractsWithPageFilters;
 
     protected function getData(): array

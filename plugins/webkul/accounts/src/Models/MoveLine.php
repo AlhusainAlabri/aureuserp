@@ -542,7 +542,7 @@ class MoveLine extends Model implements Sortable
     public function computeAmountCurrency()
     {
         if (is_null($this->amount_currency)) {
-            $this->amount_currency = round($this->balance * $this->move->invoice_currency_rate, 2);
+            $this->amount_currency = round($this->balance * $this->move->invoice_currency_rate, (int) ($this->move->currency?->decimal_places ?? 2));
         }
 
         if ($this->currency_id === $this->company->currency_id) {

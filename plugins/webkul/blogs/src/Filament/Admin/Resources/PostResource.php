@@ -138,10 +138,10 @@ class PostResource extends Resource
                                     )
                                     ->searchable()
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label) {
-                                        return str_contains($label, ' (Deleted)');
+                                        return str_contains($label, __(' (Deleted)'));
                                     })
                                     ->preload()
                                     ->required(),

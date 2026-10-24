@@ -19,7 +19,7 @@ class PayrollBatchApprovalFlowSeeder extends Seeder
         $flow = ApprovalFlow::query()->create([
             'name'            => __('payroll::seeders.batch_approval.flow_name'),
             'approvable_type' => (new PayrollBatch)->getMorphClass(),
-            'is_active'       => true,
+            'is_active'       => false,
         ]);
 
         $flow->steps()->createMany([

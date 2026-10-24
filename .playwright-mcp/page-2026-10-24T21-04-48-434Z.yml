@@ -1,0 +1,198 @@
+- generic [active] [ref=f53e1]:
+  - navigation [ref=f53e3]:
+    - button [ref=f53e6] [cursor=pointer]
+    - list [ref=f53e17]:
+      - listitem [ref=f53e18]: المحاسبة
+      - listitem [ref=f53e19]:
+        - link "نظرة عامة" [ref=f53e20] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/overview
+      - listitem [ref=f53e22]:
+        - link "العملاء" [ref=f53e23] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/customers
+      - listitem [ref=f53e25]:
+        - link "الموردين" [ref=f53e26] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/vendors
+      - listitem [ref=f53e28]:
+        - link "المحاسبة" [ref=f53e29] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/accounting
+      - listitem [ref=f53e31]:
+        - link "التقارير" [ref=f53e32] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/reporting
+      - listitem [ref=f53e34]:
+        - link "إعدادات المحاسبة" [ref=f53e35] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/accounting/configurations
+      - listitem [ref=f53e37]:
+        - link "الإعدادات" [ref=f53e38] [cursor=pointer]:
+          - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f53e40]:
+      - button "جديد" [ref=f53e43] [cursor=pointer]
+      - generic [ref=f53e49]:
+        - generic [ref=f53e51]:
+          - generic [ref=f53e52]: بحث عام
+          - searchbox "بحث عام" [ref=f53e58]
+        - button "العربية" [ref=f53e61] [cursor=pointer]
+      - button "مذكرة سريعة" [ref=f53e68] [cursor=pointer]
+      - generic [ref=f53e71]:
+        - button "عرض التنبيهات" [disabled]
+      - button "قائمة المستخدم" [ref=f53e74] [cursor=pointer]:
+        - img "صورة شخصية لـ Admin" [ref=f53e75]
+  - generic [ref=f53e76]:
+    - complementary [ref=f53e77]:
+      - navigation [ref=f53e78]:
+        - list [ref=f53e79]:
+          - list [ref=f53e80]:
+            - listitem [ref=f53e81]:
+              - link "نظرة عامة" [ref=f53e82] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/overview
+            - listitem [ref=f53e84]:
+              - link "العملاء" [ref=f53e85] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/customers
+            - listitem [ref=f53e87]:
+              - link "الموردين" [ref=f53e88] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/vendors
+            - listitem [ref=f53e90]:
+              - link "المحاسبة" [ref=f53e91] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/accounting
+            - listitem [ref=f53e93]:
+              - link "التقارير" [ref=f53e94] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/reporting
+            - listitem [ref=f53e96]:
+              - link "إعدادات المحاسبة" [ref=f53e97] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/accounting/configurations
+            - listitem [ref=f53e99]:
+              - link "الإعدادات" [ref=f53e100] [cursor=pointer]:
+                - /url: http://localhost:8000/admin/settings/accounting/manage-products
+    - generic [ref=f53e102]:
+      - main [ref=f53e103]:
+        - generic [ref=f53e105]:
+          - generic [ref=f53e107]:
+            - navigation [ref=f53e108]:
+              - list [ref=f53e109]:
+                - listitem [ref=f53e110]:
+                  - link "العملاء" [ref=f53e111] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers
+                - listitem [ref=f53e112]:
+                  - link "الفواتير" [ref=f53e115] [cursor=pointer]:
+                    - /url: http://localhost:8000/admin/accounting/customers/invoices
+                - listitem [ref=f53e116]:
+                  - generic [ref=f53e119]: إضافة
+            - heading "إضافة الفاتورة" [level=1] [ref=f53e120]
+          - generic [ref=f53e121]:
+            - list [ref=f53e123]:
+              - listitem [ref=f53e124]:
+                - list [ref=f53e125]:
+                  - listitem [ref=f53e126]:
+                    - link "الفواتير" [ref=f53e127] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/invoices
+                  - listitem [ref=f53e131]:
+                    - link "إشعارات دائنة" [ref=f53e132] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/credit-notes
+                  - listitem [ref=f53e136]:
+                    - link "المدفوعات" [ref=f53e137] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/payments
+                  - listitem [ref=f53e141]:
+                    - link "العملاء" [ref=f53e142] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/customers
+                  - listitem [ref=f53e146]:
+                    - link "المنتجات" [ref=f53e147] [cursor=pointer]:
+                      - /url: http://localhost:8000/admin/accounting/customers/products
+            - generic [ref=f53e155]:
+              - generic [ref=f53e159]:
+                - generic [ref=f53e162]:
+                  - generic [ref=f53e163]: الحالة
+                  - generic [ref=f53e165]:
+                    - generic [ref=f53e166]:
+                      - radio "مسودة" [checked] [disabled]
+                      - generic: مسودة
+                    - generic [ref=f53e167]:
+                      - radio "مرحّل" [disabled]
+                      - generic: مرحّل
+                - generic [ref=f53e171]:
+                  - heading "عام" [level=2] [ref=f53e176]
+                  - generic [ref=f53e182]:
+                    - generic [ref=f53e186]:
+                      - generic [ref=f53e189]:
+                        - generic [ref=f53e193]:
+                          - text: العميل
+                          - superscript [ref=f53e194]: "*"
+                        - button "اختر" [ref=f53e201] [cursor=pointer]
+                      - generic [ref=f53e206]:
+                        - generic [ref=f53e207]: المشروع
+                        - button "اختر" [ref=f53e217] [cursor=pointer]
+                    - generic [ref=f53e223]:
+                      - generic [ref=f53e226]:
+                        - generic [ref=f53e227]: تاريخ الفاتورة
+                        - button [ref=f53e235] [cursor=pointer]:
+                          - textbox "تاريخ الفاتورة" [ref=f53e236]:
+                            - /placeholder: ""
+                            - text: 24 أكتوبر 2026
+                      - generic [ref=f53e240]:
+                        - generic [ref=f53e243]:
+                          - generic [ref=f53e247]:
+                            - text: تاريخ الاستحقاق
+                            - superscript [ref=f53e248]: "*"
+                          - button [ref=f53e253] [cursor=pointer]:
+                            - textbox "تاريخ الاستحقاق*" [ref=f53e254]:
+                              - /placeholder: ""
+                              - text: 24 أكتوبر 2026
+                        - generic [ref=f53e257]:
+                          - generic [ref=f53e258]: شروط الدفع
+                          - button "اختر" [ref=f53e268] [cursor=pointer]
+                      - generic [ref=f53e274]:
+                        - generic [ref=f53e277]:
+                          - generic [ref=f53e281]:
+                            - text: دفتر اليومية
+                            - superscript [ref=f53e282]: "*"
+                          - generic [ref=f53e284]:
+                            - generic [ref=f53e288]:
+                              - button "فواتير العملاء" [ref=f53e289] [cursor=pointer]
+                              - button "Clear selection" [ref=f53e292] [cursor=pointer]
+                            - button "إنشاء" [ref=f53e297] [cursor=pointer]
+                        - generic [ref=f53e302]:
+                          - generic [ref=f53e306]:
+                            - text: العملة
+                            - superscript [ref=f53e307]: "*"
+                          - button "اختر" [ref=f53e314] [cursor=pointer]
+                - generic [ref=f53e319]:
+                  - tablist [ref=f53e320]:
+                    - tab "بنود الفاتورة" [ref=f53e321] [cursor=pointer]
+                    - tab "معلومات أخرى" [ref=f53e325] [cursor=pointer]
+                    - tab "الشروط والأحكام" [ref=f53e329] [cursor=pointer]
+                  - tabpanel "المنتجات" [ref=f53e333]
+              - generic [ref=f53e347]:
+                - button "إضافة" [ref=f53e348] [cursor=pointer]
+                - button "إضافة وبدء إضافة المزيد" [ref=f53e350] [cursor=pointer]
+                - button "إلغاء" [ref=f53e351] [cursor=pointer]
+      - contentinfo [ref=f53e352]:
+        - generic [ref=f53e353]: © 2026 - طُور بواسطة NODHUM TECHNOLOGY · v1.0.1
+  - generic:
+    - status
+  - generic [ref=f53e356]:
+    - generic [ref=f53e357] [cursor=pointer]
+    - generic [ref=f53e358]:
+      - generic [ref=f53e359] [cursor=pointer]: Request
+      - generic [ref=f53e360] [cursor=pointer]: Timeline
+      - generic [ref=f53e361] [cursor=pointer]:
+        - generic: Views
+        - generic [ref=f53e362]: "18"
+      - generic [ref=f53e363] [cursor=pointer]:
+        - generic: Queries
+        - generic [ref=f53e364]: "149"
+      - generic [ref=f53e365] [cursor=pointer]:
+        - generic: Models
+        - generic [ref=f53e366]: "43"
+      - generic [ref=f53e367] [cursor=pointer]:
+        - generic: Livewire
+        - generic [ref=f53e368]: "6"
+      - generic [ref=f53e369] [cursor=pointer]:
+        - generic: Gate
+        - generic [ref=f53e370]: "276"
+    - generic [ref=f53e371]:
+      - generic [ref=f53e372] [cursor=pointer]
+      - generic [ref=f53e373] [cursor=pointer]
+      - generic [ref=f53e374] [cursor=pointer]
+      - generic [ref=f53e376] [cursor=pointer]
+      - generic [ref=f53e377]: GET /admin/accounting/customers/invoices/create
+      - generic [ref=f53e380] [cursor=pointer]: 373ms
+      - generic [ref=f53e382] [cursor=pointer]: 27MB
+      - generic [ref=f53e384] [cursor=pointer]: 13.x

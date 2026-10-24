@@ -111,11 +111,11 @@ class BillsOfMaterialResource extends Resource
                                     ->label(__('manufacturing::filament/clusters/products/resources/bill-of-material.form.sections.general.fields.product'))
                                     ->relationship('product', 'name', fn (Builder $query) => $query->withTrashed()->whereNull('parent_id'))
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->wrapOptionLabels(false)
                                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                                        $isDeleted = str_contains($label, ' (Deleted)');
+                                        $isDeleted = str_contains($label, __(' (Deleted)'));
 
                                         $isDuplicate = false;
 
@@ -775,11 +775,11 @@ class BillsOfMaterialResource extends Resource
                     ->createOptionAction(fn (Action $action) => $action->modalWidth(Width::SevenExtraLarge))
                     ->live()
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->wrapOptionLabels(false)
                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                        $isDeleted = str_contains($label, ' (Deleted)');
+                        $isDeleted = str_contains($label, __(' (Deleted)'));
 
                         $isDuplicate = false;
 
@@ -1127,11 +1127,11 @@ class BillsOfMaterialResource extends Resource
                     ->required()
                     ->live()
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->wrapOptionLabels(false)
                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                        $isDeleted = str_contains($label, ' (Deleted)');
+                        $isDeleted = str_contains($label, __(' (Deleted)'));
 
                         $isDuplicate = false;
 

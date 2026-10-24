@@ -127,9 +127,9 @@ class OperationResource extends Resource
                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed()
                             )
                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                             })
-                            ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                            ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                             ->searchable()
                             ->preload()
                             ->createOptionForm(fn (Schema $schema): Schema => PartnerResource::form($schema))
@@ -167,10 +167,10 @@ class OperationResource extends Resource
                                     return $record->name;
                                 }
 
-                                return $record->warehouse->name.': '.$record->name.($record->trashed() ? ' (Deleted)' : '');
+                                return $record->warehouse->name.': '.$record->name.($record->trashed() ? __(' (Deleted)') : '');
                             })
                             ->disableOptionWhen(function ($label) {
-                                return str_contains($label, ' (Deleted)');
+                                return str_contains($label, __(' (Deleted)'));
                             })
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 $operationType = OperationType::withTrashed()->find($get('operation_type_id'));
@@ -187,10 +187,10 @@ class OperationResource extends Resource
                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                             )
                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                                return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                             })
                             ->disableOptionWhen(function ($label) {
-                                return str_contains($label, ' (Deleted)');
+                                return str_contains($label, __(' (Deleted)'));
                             })
                             ->searchable()
                             ->preload()
@@ -205,10 +205,10 @@ class OperationResource extends Resource
                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                             )
                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                                return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                             })
                             ->disableOptionWhen(function ($label) {
-                                return str_contains($label, ' (Deleted)');
+                                return str_contains($label, __(' (Deleted)'));
                             })
                             ->searchable()
                             ->preload()
@@ -748,10 +748,10 @@ class OperationResource extends Resource
                     ->preload()
                     ->wrapOptionLabels(false)
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($value, $state, $component, $label) {
-                        if (str_contains($label, ' (Deleted)')) {
+                        if (str_contains($label, __(' (Deleted)'))) {
                             return true;
                         }
 
@@ -784,10 +784,10 @@ class OperationResource extends Resource
                         modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                     )
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($label) {
-                        return str_contains($label, ' (Deleted)');
+                        return str_contains($label, __(' (Deleted)'));
                     })
                     ->searchable()
                     ->preload()
@@ -1067,10 +1067,10 @@ class OperationResource extends Resource
                                     })
                             )
                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                return $record->full_name.($record->trashed() ? ' (Deleted)' : '');
+                                return $record->full_name.($record->trashed() ? __(' (Deleted)') : '');
                             })
                             ->disableOptionWhen(function ($label) {
-                                return str_contains($label, ' (Deleted)');
+                                return str_contains($label, __(' (Deleted)'));
                             })
                             ->searchable()
                             ->preload()

@@ -177,9 +177,9 @@ class ProductResource extends Resource
                                         modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                     )
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
-                                    ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                    ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                     ->searchable()
                                     ->preload()
                                     ->default(Auth::user()->default_company_id),

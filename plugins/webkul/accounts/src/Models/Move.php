@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Models;
 
+use App\Support\Accounting\DocumentSequence;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -503,7 +504,12 @@ class Move extends Model implements Sortable
             $this->date?->format('Y') ?? now()->format('Y'),
         );
 
-        $this->name = $this->sequence_prefix.'/'.$this->id;
+        // A payment's journal entry carries the payment's own number so the two always match.
+        $paymentName = $this->origin_payment_id
+            ? Payment::query()->whereKey($this->origin_payment_id)->value('name')
+            : null;
+
+        $this->name = filled($paymentName) ? $paymentName : DocumentSequence::next($this->sequence_prefix, $this->id);
     }
 
     public function computeCurrencyId()

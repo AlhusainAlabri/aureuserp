@@ -82,10 +82,10 @@ class ActivityPlanResource extends Resource
                             ->preload()
                             ->createOptionForm(fn (Schema $schema) => CompanyResource::form($schema))
                             ->getOptionLabelFromRecordUsing(
-                                fn (Model $record): string => $record->name.($record->trashed() ? ' (Deleted)' : ''),
+                                fn (Model $record): string => $record->name.($record->trashed() ? __(' (Deleted)') : ''),
                             )
                             ->disableOptionWhen(
-                                fn (string $label): bool => str_contains($label, ' (Deleted)'),
+                                fn (string $label): bool => str_contains($label, __(' (Deleted)')),
                             ),
                         Toggle::make('is_active')
                             ->label(__('employees::filament/clusters/configurations/resources/activity-plan.form.sections.general.fields.status'))

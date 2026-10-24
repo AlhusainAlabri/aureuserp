@@ -187,6 +187,10 @@ class InstallCommand extends Command
             $this->callSilently('erp:ensure-extension-schema');
         }
 
+        if ($this->getApplication()?->has('erp:seed-starter-roles')) {
+            $this->callSilently('erp:seed-starter-roles');
+        }
+
         if ($this->getApplication()?->has('erp:localize-data')) {
             $this->callSilently('erp:localize-data');
         }

@@ -1,0 +1,16 @@
+[   14012ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:8000/livewire-ff82a33d/update:0
+[   14024ms] [LOG] 🔍 Browser logger active (MCP server detected). Posting to: http://localhost:8000/_boost/browser-logs @ :6
+[   14457ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:8000/livewire-ff82a33d/update:0
+[   14476ms] [LOG] 🔍 Browser logger active (MCP server detected). Posting to: http://localhost:8000/_boost/browser-logs @ :6
+[   14645ms] [ERROR] Error fetching option label: {status: 500, body: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta ….Alpine=yc;yc.start();
+</script>
+</body>
+</html>
+, json: null, errors: null} @ http://localhost:8000/js/filament/forms/components/select.js?v=5.6.3.0:0
+[   14687ms] InvalidStateError: Failed to execute 'showModal' on 'HTMLDialogElement': The dialog is already open as a non-modal dialog, and therefore cannot be opened as a modal dialog.
+    at showHtmlModal (http://localhost:8000/livewire-ff82a33d/livewire.js?id=ab6b028c:4684:11)
+    at Object.error (http://localhost:8000/livewire-ff82a33d/livewire.js?id=ab6b028c:5509:11)
+    at sendRequest (http://localhost:8000/livewire-ff82a33d/livewire.js?id=ab6b028c:5609:16)

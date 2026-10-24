@@ -140,9 +140,9 @@ class PurchaseAgreementResource extends Resource
                                         fn (Builder $query) => $query->withTrashed()
                                     )
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
-                                    ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                    ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                     ->searchable()
                                     ->required()
                                     ->preload()
@@ -212,10 +212,10 @@ class PurchaseAgreementResource extends Resource
                                     ->label(__('purchases::filament/admin/clusters/orders/resources/purchase-agreement.form.sections.general.fields.company'))
                                     ->relationship('company', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label) {
-                                        return str_contains($label, ' (Deleted)');
+                                        return str_contains($label, __(' (Deleted)'));
                                     })
                                     ->searchable()
                                     ->required()
@@ -302,10 +302,10 @@ class PurchaseAgreementResource extends Resource
                     ->distinct()
                     ->wrapOptionLabels(false)
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($value, $state, $component, $label) {
-                        if (str_contains($label, ' (Deleted)')) {
+                        if (str_contains($label, __(' (Deleted)'))) {
                             return true;
                         }
 

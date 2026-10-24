@@ -21,6 +21,41 @@ class DefaultCurrency
         return app(static::class)->get();
     }
 
+    /**
+     * Id of the default currency, or null if that currency does not exist.
+     */
+    public static function id(): ?int
+    {
+        $id = Currency::query()->where('name', static::code())->value('id');
+
+        return $id === null ? null : (int) $id;
+    }
+
+    /**
+     * Decimal places of the default currency (3 for OMR, 2 for USD).
+     */
+    public static function decimals(): int
+    {
+        return app(static::class)->resolveDecimals();
+    }
+
+    protected ?int $resolvedDecimals = null;
+
+    public function resolveDecimals(): int
+    {
+        if ($this->resolvedDecimals !== null) {
+            return $this->resolvedDecimals;
+        }
+
+        try {
+            $places = Currency::query()->where('name', $this->get())->value('decimal_places');
+        } catch (Throwable) {
+            $places = null;
+        }
+
+        return $this->resolvedDecimals = $places === null ? 2 : (int) $places;
+    }
+
     public function get(): string
     {
         return $this->resolved ??= $this->resolve();

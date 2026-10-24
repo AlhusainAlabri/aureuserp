@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Models;
 
+use App\Support\Accounting\DocumentSequence;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -272,12 +273,12 @@ class Payment extends Model
                 $prefix .= 'P';
             }
 
-            $this->name = sprintf(
+            $this->name = DocumentSequence::next(sprintf(
                 '%s%s/%s',
                 $prefix,
                 $this->journal->code,
                 $this->date->format('Y'),
-            ).'/'.$this->id;
+            ));
         }
     }
 

@@ -21,7 +21,7 @@ class JournalSeeder extends Seeder
 
         $company = Company::first();
 
-        $currency = Currency::active()->first() ?? Currency::first();
+        $currency = Currency::query()->whereKey(DB::table('companies')->orderBy('id')->value('currency_id'))->first() ?? Currency::active()->first() ?? Currency::first();
 
         $journals = [
             [

@@ -2,6 +2,7 @@
 
 namespace App\Filament\TimeOff\Widgets;
 
+use App\Filament\Concerns\InheritsWidgetShieldPermission;
 use App\Filament\TimeOff\Concerns\LocalizesLeaveCalendarActions;
 use App\Filament\TimeOff\Concerns\RepairsMountedActionFormState;
 use App\Filament\TimeOff\Concerns\StabilizesLeaveCalendarForm;
@@ -9,6 +10,7 @@ use Webkul\TimeOff\Filament\Widgets\CalendarWidget as BaseCalendarWidget;
 
 class LocalizedCalendarWidget extends BaseCalendarWidget
 {
+    use InheritsWidgetShieldPermission;
     use LocalizesLeaveCalendarActions;
     use RepairsMountedActionFormState;
     use StabilizesLeaveCalendarForm;

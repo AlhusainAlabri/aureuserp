@@ -62,6 +62,7 @@ class SupportServiceProvider extends PackageServiceProvider
                 '2025_08_08_104814_alter_utm_campaigns_table',
                 '2025_10_10_080114_create_currency_rates_table',
                 '2025_11_14_102615_alter_currency_rates_table',
+                '2026_10_25_000002_fix_currency_rounding_precision',
                 '2026_03_18_000001_alter_unit_of_measures_factor_precision',
                 '2026_04_02_000001_create_calendars_table',
                 '2026_04_29_065935_add_resource_columns_in_calendar_leaves_table',

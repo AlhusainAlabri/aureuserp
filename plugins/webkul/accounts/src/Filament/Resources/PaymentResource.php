@@ -251,10 +251,10 @@ class PaymentResource extends Resource
                                                 modifyQueryUsing: fn (Builder $query, Get $get) => $query->withTrashed()->where('partner_id', $get('partner_id')),
                                             )
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->account_number.' - '.$record->bank->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->account_number.' - '.$record->bank->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->required(function (Get $get) {
                                                 return static::computePayment($get)->require_partner_bank_account

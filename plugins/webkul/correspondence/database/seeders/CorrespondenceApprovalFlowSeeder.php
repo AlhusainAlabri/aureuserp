@@ -19,7 +19,7 @@ class CorrespondenceApprovalFlowSeeder extends Seeder
         $flow = ApprovalFlow::query()->create([
             'name'            => __('correspondence::correspondence.approvals.default_flow'),
             'approvable_type' => (new Correspondence)->getMorphClass(),
-            'is_active'       => true,
+            'is_active'       => false,
         ]);
 
         $flow->steps()->createMany([

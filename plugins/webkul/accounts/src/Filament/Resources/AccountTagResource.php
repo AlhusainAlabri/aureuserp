@@ -79,8 +79,6 @@ class AccountTagResource extends Resource
                     ->label(__('accounts::filament/resources/account-tag.table.columns.color'))
                     ->searchable(),
                 TextColumn::make('country.name')
-                    ->numeric()
-                    ->maxValue(99999999999)
                     ->label(__('accounts::filament/resources/account-tag.table.columns.country'))
                     ->sortable(),
                 TextColumn::make('creator.name')

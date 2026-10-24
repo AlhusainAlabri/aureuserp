@@ -3,6 +3,19 @@
 use App\Support\DefaultCurrency;
 use Illuminate\Support\Number;
 
+if (! function_exists('money_round')) {
+    /**
+     * Round a money amount to the decimals of the default currency (3 for OMR),
+     * instead of a hard-coded 2.
+     */
+    function money_round(float|int|string|null $amount, ?int $decimals = null): float
+    {
+        $decimals ??= class_exists(DefaultCurrency::class) ? DefaultCurrency::decimals() : 2;
+
+        return round((float) $amount, $decimals);
+    }
+}
+
 if (! function_exists('money')) {
     function money(float|Closure $amount, string|Closure|null $currency = null, int $divideBy = 0, string|Closure|null $locale = null): string
     {

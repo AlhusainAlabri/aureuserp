@@ -173,8 +173,8 @@ class QuotationResource extends Resource
                                             })
                                             ->disabled(fn ($record): bool => $record?->locked || in_array($record?->state, [OrderState::CANCEL]))
                                             ->columnSpan(1)
-                                            ->getOptionLabelFromRecordUsing(fn ($record): string => $record->name.($record->trashed() ? ' (Deleted)' : ''))
-                                            ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)')),
+                                            ->getOptionLabelFromRecordUsing(fn ($record): string => $record->name.($record->trashed() ? __(' (Deleted)') : ''))
+                                            ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)'))),
                                     ]),
                                 DatePicker::make('validity_date')
                                     ->label(__('sales::filament/clusters/orders/resources/quotation.form.section.general.fields.expiration'))
@@ -287,10 +287,10 @@ class QuotationResource extends Resource
                                             ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.other-information.fieldset.additional-information.fields.company'))
                                             ->relationship('company', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->searchable()
                                             ->preload()
@@ -873,10 +873,10 @@ class QuotationResource extends Resource
                                     return [
                                         'currency'         => $record->currency,
                                         'enableMargin'     => $settings->enable_margin,
-                                        'subtotal'         => round($subtotal, 2),
-                                        'totalTax'         => round($totalTax, 2),
-                                        'grandTotal'       => round($grandTotal, 2),
-                                        'margin'           => round($margin, 2),
+                                        'subtotal'         => money_round($subtotal),
+                                        'totalTax'         => money_round($totalTax),
+                                        'grandTotal'       => money_round($grandTotal),
+                                        'margin'           => money_round($margin),
                                         'marginPercentage' => round($marginPercentage, 2),
                                     ];
                                 })
@@ -1098,10 +1098,10 @@ class QuotationResource extends Resource
                     ->dehydrated(true)
                     ->wrapOptionLabels(false)
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($value, $state, $component, $label) {
-                        if (str_contains($label, ' (Deleted)')) {
+                        if (str_contains($label, __(' (Deleted)'))) {
                             return true;
                         }
 
@@ -1420,11 +1420,11 @@ class QuotationResource extends Resource
                             ->whereNull('is_configurable'),
                     )
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->wrapOptionLabels(false)
                     ->disableOptionWhen(function ($label, $value, $state, $component) use ($record) {
-                        $isDeleted = str_contains($label, ' (Deleted)');
+                        $isDeleted = str_contains($label, __(' (Deleted)'));
 
                         $isOrderLocked = $record?->locked || in_array($record?->state, [OrderState::CANCEL]);
 
@@ -1669,7 +1669,7 @@ class QuotationResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         $set('taxes', $product->productTaxes->pluck('id')->toArray());
 
@@ -1725,11 +1725,11 @@ class QuotationResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         $purchasePrice = static::calculatePurchasePrice($product, $get('product_uom_id'));
 
-        $set('purchase_price', round($purchasePrice, 2));
+        $set('purchase_price', money_round($purchasePrice));
 
         self::calculateLineTotals($set, $get);
     }
@@ -1955,10 +1955,10 @@ class QuotationResource extends Resource
         $marginPercentage = ($subtotal > 0) ? ($margin / $subtotal) * 100 : 0;
 
         $totals = [
-            'subtotal'         => round($subtotal, 2),
-            'totalTax'         => round($totalTax, 2),
-            'grandTotal'       => round($grandTotal, 2),
-            'margin'           => round($margin, 2),
+            'subtotal'         => money_round($subtotal),
+            'totalTax'         => money_round($totalTax),
+            'grandTotal'       => money_round($grandTotal),
+            'margin'           => money_round($margin),
             'marginPercentage' => round($marginPercentage, 2),
         ];
 

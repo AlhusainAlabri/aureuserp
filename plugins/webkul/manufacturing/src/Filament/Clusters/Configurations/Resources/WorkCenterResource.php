@@ -208,11 +208,11 @@ class WorkCenterResource extends Resource
                                             ->preload()
                                             ->wrapOptionLabels(false)
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->wrapOptionLabels(false)
                                             ->disableOptionWhen(function ($label, $value, $state, $component) {
-                                                $isDeleted = str_contains($label, ' (Deleted)');
+                                                $isDeleted = str_contains($label, __(' (Deleted)'));
 
                                                 $isDuplicate = false;
 

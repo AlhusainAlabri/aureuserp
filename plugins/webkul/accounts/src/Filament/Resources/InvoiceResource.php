@@ -161,8 +161,8 @@ class InvoiceResource extends Resource
                                     ->schema([
                                         Select::make('partner_id')
                                             ->label(__('accounts::filament/resources/invoice.form.section.general.fields.customer'))
-                                            ->getOptionLabelFromRecordUsing(fn ($record): string => $record->name.($record->trashed() ? ' (Deleted)' : ''))
-                                            ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                            ->getOptionLabelFromRecordUsing(fn ($record): string => $record->name.($record->trashed() ? __(' (Deleted)') : ''))
+                                            ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                             ->relationship(
                                                 'partner',
                                                 'name',
@@ -208,10 +208,10 @@ class InvoiceResource extends Resource
                                                         modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                                     )
                                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                                     })
                                                     ->disableOptionWhen(function ($label) {
-                                                        return str_contains($label, ' (Deleted)');
+                                                        return str_contains($label, __(' (Deleted)'));
                                                     })
                                                     ->required(fn (Get $get) => $get('invoice_date_due') === null)
                                                     ->live()
@@ -333,7 +333,7 @@ class InvoiceResource extends Resource
                                                 }
                                             )
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->account_number.' - '.$record->bank->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->account_number.' - '.$record->bank->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->searchable()
                                             ->preload()
@@ -356,10 +356,10 @@ class InvoiceResource extends Resource
                                             ->label(__('accounts::filament/resources/invoice.form.tabs.other-information.fieldset.accounting.fields.company'))
                                             ->relationship('company', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                             ->getOptionLabelFromRecordUsing(function ($record): string {
-                                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->searchable()
                                             ->preload()
@@ -1144,10 +1144,10 @@ class InvoiceResource extends Resource
                     )
                     ->wrapOptionLabels(false)
                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($value, $state, $component, $label) {
-                        if (str_contains($label, ' (Deleted)')) {
+                        if (str_contains($label, __(' (Deleted)'))) {
                             return true;
                         }
 
@@ -1298,7 +1298,7 @@ class InvoiceResource extends Resource
             );
         }
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         $set('taxes', $product->productTaxes->pluck('id')->toArray());
 
@@ -1336,7 +1336,7 @@ class InvoiceResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get('uom_id'), $product);
 
-        $set('price_unit', round($priceUnit, 2));
+        $set('price_unit', money_round($priceUnit));
 
         self::calculateLineTotals($set, $get);
     }
@@ -1547,10 +1547,10 @@ class InvoiceResource extends Resource
         }
 
         $defaultTotals = [
-            'subtotal'   => round($subtotal, 2),
-            'totalTax'   => round($grandTotal - $subtotal, 2),
-            'grandTotal' => round($grandTotal, 2),
-            'rounding'   => round($rounding, 2),
+            'subtotal'   => money_round($subtotal),
+            'totalTax'   => money_round($grandTotal - $subtotal),
+            'grandTotal' => money_round($grandTotal),
+            'rounding'   => money_round($rounding),
         ];
 
         $livewire->dispatch('itemUpdated', $defaultTotals);

@@ -22,6 +22,12 @@ class CurrencySeeder extends Seeder
                 $currency['iso_numeric'] = (int) ($currency['iso_numeric'] ?? null);
                 $currency['decimal_places'] = (int) ($currency['decimal_places'] ?? null);
                 $currency['rounding'] = (float) ($currency['rounding'] ?? 0.00);
+
+                if ($currency['rounding'] <= 0) {
+                    // Three-decimal currencies (OMR, KWD, BHD…) ship with 0.00; derive 0.001 from the decimals.
+                    $currency['rounding'] = 10 ** -$currency['decimal_places'];
+                }
+
                 $currency['active'] = (bool) ($currency['active'] ?? true);
                 $currency['created_at'] = now();
                 $currency['updated_at'] = now();

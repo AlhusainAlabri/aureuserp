@@ -3,13 +3,13 @@
 namespace App\Filament\Extensions;
 
 use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
+use App\Support\DefaultCurrency;
 use Carbon\Carbon;
 use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema as SchemaFacade;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
 use Webkul\Partner\Models\Partner;
 use Webkul\Support\Models\Currency;
@@ -63,9 +63,9 @@ class AccountingResourceExtensions
                     return null;
                 }
 
-                return $partner->name.($partner->trashed() ? ' (Deleted)' : '');
+                return $partner->name.($partner->trashed() ? __(' (Deleted)') : '');
             })
-            ->disableOptionWhen(fn ($label): bool => str_contains((string) $label, ' (Deleted)'));
+            ->disableOptionWhen(fn ($label): bool => str_contains((string) $label, __(' (Deleted)')));
     }
 
     /**
@@ -112,16 +112,13 @@ class AccountingResourceExtensions
         ];
     }
 
+    /**
+     * Default currency for new documents: the one chosen in Settings > Currency
+     * (the method keeps its historic name because other classes call it).
+     */
     public static function defaultOmrCurrencyId(): ?int
     {
-        if (! SchemaFacade::hasTable('support_currencies')) {
-            return null;
-        }
-
-        return Currency::query()
-            ->where('name', 'OMR')
-            ->orWhere('full_name', 'like', '%Omani%')
-            ->value('id');
+        return DefaultCurrency::id();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Filament\Extensions;
 use App\Enums\Purchases\RequestType;
 use App\Enums\Purchases\Urgency;
 use App\Filament\Extensions\Concerns\OptimizesRepeaterSelects;
+use App\Support\DefaultCurrency;
 use App\Support\SchemaMemo;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -186,18 +187,13 @@ class PurchaseOrderResourceExtensions
         ];
     }
 
+    /**
+     * Default currency for new documents: the one chosen in Settings > Currency
+     * (the method keeps its historic name because other classes call it).
+     */
     public static function defaultOmrCurrencyId(): ?int
     {
-        return once(function (): ?int {
-            if (! SchemaMemo::hasTable('support_currencies')) {
-                return null;
-            }
-
-            return Currency::query()
-                ->where('name', 'OMR')
-                ->orWhere('full_name', 'like', '%Omani%')
-                ->value('id');
-        });
+        return DefaultCurrency::id();
     }
 
     /** @return array<int, string> */

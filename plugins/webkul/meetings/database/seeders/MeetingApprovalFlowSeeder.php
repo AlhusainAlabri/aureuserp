@@ -19,7 +19,7 @@ class MeetingApprovalFlowSeeder extends Seeder
         $flow = ApprovalFlow::query()->create([
             'name'            => __('meetings::meetings.approvals.default_flow'),
             'approvable_type' => (new Meeting)->getMorphClass(),
-            'is_active'       => true,
+            'is_active'       => false,
         ]);
 
         $flow->steps()->createMany([

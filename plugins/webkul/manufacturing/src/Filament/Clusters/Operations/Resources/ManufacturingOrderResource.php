@@ -171,10 +171,10 @@ class ManufacturingOrderResource extends Resource
                                             return null;
                                         }
 
-                                        return $product->name.($product->trashed() ? ' (Deleted)' : '');
+                                        return $product->name.($product->trashed() ? __(' (Deleted)') : '');
                                     })
                                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                                        $isDeleted = str_contains((string) $label, ' (Deleted)');
+                                        $isDeleted = str_contains((string) $label, __(' (Deleted)'));
 
                                         $isDuplicate = false;
 
@@ -1050,10 +1050,10 @@ class ManufacturingOrderResource extends Resource
                             return null;
                         }
 
-                        return $product->name.($product->trashed() ? ' (Deleted)' : '');
+                        return $product->name.($product->trashed() ? __(' (Deleted)') : '');
                     })
                     ->disableOptionWhen(function ($label, $value, $state, $component) {
-                        $isDeleted = str_contains((string) $label, ' (Deleted)');
+                        $isDeleted = str_contains((string) $label, __(' (Deleted)'));
 
                         $isDuplicate = false;
 

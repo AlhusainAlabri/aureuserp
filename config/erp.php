@@ -16,4 +16,22 @@ return [
 
     'seed_demo_data' => (bool) env('ERP_SEED_DEMO_DATA', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Standard VAT Rates
+    |--------------------------------------------------------------------------
+    |
+    | ISO country code => standard VAT/sales tax percentage. The default taxes
+    | the installer seeds are set to this rate for the company's country. Add
+    | a country here to support it; countries not listed keep the seeded taxes.
+    |
+    */
+
+    'vat_rates' => [
+        'OM' => 5,
+        'AE' => 5,
+        'SA' => 15,
+        'BH' => 10,
+    ],
+
 ];

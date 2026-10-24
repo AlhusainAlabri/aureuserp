@@ -197,9 +197,9 @@ class EmployeeResource extends Resource
                                         modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                     )
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
-                                        return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                        return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                     })
-                                    ->disableOptionWhen(fn ($label) => str_contains($label, ' (Deleted)'))
+                                    ->disableOptionWhen(fn ($label) => str_contains($label, __(' (Deleted)')))
                                     ->searchable()
                                     ->preload()
                                     ->required(fn (): bool => ! DbSchema::hasTable('department_employee'))
@@ -764,7 +764,7 @@ class EmployeeResource extends Resource
                                                                 $label = $record->name;
 
                                                                 if ($record->trashed()) {
-                                                                    $label .= ' (Deleted)';
+                                                                    $label .= __(' (Deleted)');
                                                                 } elseif ($record->employee && $record->id !== $livewire->record?->user_id) {
                                                                     $label .= ' (Assigned)';
                                                                 }

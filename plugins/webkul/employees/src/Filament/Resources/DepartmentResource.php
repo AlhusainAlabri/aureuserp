@@ -115,10 +115,10 @@ class DepartmentResource extends Resource
                                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                                             )
                                             ->getOptionLabelFromRecordUsing(
-                                                fn (Model $record): string => $record->complete_name.($record->trashed() ? ' (Deleted)' : ''),
+                                                fn (Model $record): string => $record->complete_name.($record->trashed() ? __(' (Deleted)') : ''),
                                             )
                                             ->disableOptionWhen(
-                                                fn (string $label): bool => str_contains($label, ' (Deleted)'),
+                                                fn (string $label): bool => str_contains($label, __(' (Deleted)')),
                                             )
                                             ->searchable()
                                             ->preload()
@@ -134,10 +134,10 @@ class DepartmentResource extends Resource
                                             ->label(__('employees::filament/resources/department.form.sections.general.fields.company'))
                                             ->relationship('company', 'name', modifyQueryUsing: fn (Builder $query) => $query->withTrashed())
                                             ->getOptionLabelFromRecordUsing(function (Model $record): string {
-                                                return $record->name.($record->trashed() ? ' (Deleted)' : '');
+                                                return $record->name.($record->trashed() ? __(' (Deleted)') : '');
                                             })
                                             ->disableOptionWhen(function ($label) {
-                                                return str_contains($label, ' (Deleted)');
+                                                return str_contains($label, __(' (Deleted)'));
                                             })
                                             ->preload()
                                             ->searchable()

@@ -24,14 +24,13 @@ class AssetBorrowingApprovalFlowSeeder extends Seeder
             [
                 'name'        => __('assets-extensions::approval.flow_name'),
                 'description' => __('assets-extensions::approval.flow_description'),
-                'is_active'   => true,
+                'is_active'   => false,
             ]
         );
 
         $flow->update([
             'name'        => __('assets-extensions::approval.flow_name'),
             'description' => __('assets-extensions::approval.flow_description'),
-            'is_active'   => true,
         ]);
 
         $steps = [

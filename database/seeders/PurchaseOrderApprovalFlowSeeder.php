@@ -19,14 +19,13 @@ class PurchaseOrderApprovalFlowSeeder extends Seeder
             [
                 'name'        => 'Purchase Order Approval Flow',
                 'description' => '3-step sequential approval flow for purchase orders.',
-                'is_active'   => true,
+                'is_active'   => false,
             ]
         );
 
         $flow->update([
             'name'        => 'Purchase Order Approval Flow',
             'description' => '3-step sequential approval flow for purchase orders.',
-            'is_active'   => true,
         ]);
 
         $steps = [

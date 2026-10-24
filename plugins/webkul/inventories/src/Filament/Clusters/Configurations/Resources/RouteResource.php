@@ -105,10 +105,10 @@ class RouteResource extends Resource
                                 modifyQueryUsing: fn (Builder $query) => $query->withTrashed(),
                             )
                             ->getOptionLabelFromRecordUsing(
-                                fn (Model $record): string => $record->name.($record->trashed() ? ' (Deleted)' : ''),
+                                fn (Model $record): string => $record->name.($record->trashed() ? __(' (Deleted)') : ''),
                             )
                             ->disableOptionWhen(
-                                fn (string $label): bool => str_contains($label, ' (Deleted)'),
+                                fn (string $label): bool => str_contains($label, __(' (Deleted)')),
                             )
                             ->live()
                             ->searchable()
