@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Configurations\Resources\AccrualPlanResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use BackedEnum;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Support\Traits\HasRecordNavigationTabs;
@@ -12,6 +13,7 @@ class ManageMilestone extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
     use LeaveAccrualPlan;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = AccrualPlanResource::class;
 

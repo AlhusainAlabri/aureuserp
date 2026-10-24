@@ -19,12 +19,12 @@ class VendorResource extends PartnerResource
 
     public static function getModelLabel(): string
     {
-        return __('admin.quick_create.items.vendor');
+        return static::translatedResourceLabel('singular') ?? __('admin.quick_create.items.vendor');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('accounts::filament/resources/vendor.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('accounts::filament/resources/vendor.navigation.title');
     }
 
     public static function getNavigationLabel(): string

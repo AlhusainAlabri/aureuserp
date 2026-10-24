@@ -21,7 +21,7 @@ class AccountResource extends BaseAccountResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/configurations/resources/account.model-label');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/configurations/resources/account.model-label');
     }
 
     public static function getNavigationLabel(): string

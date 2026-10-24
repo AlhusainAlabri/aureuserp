@@ -2,6 +2,7 @@
 
 namespace Webkul\Accounting\Filament\Clusters\Vendors\Resources\ProductResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Pages\Enums\SubNavigationPosition;
@@ -16,6 +17,8 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 
 class ManageMoves extends ManageRelatedRecords
 {
+    use TranslatesRelationPageTitle;
+
     protected static string $resource = ProductResource::class;
 
     protected static string $relationship = 'moveLines';

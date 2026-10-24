@@ -2,6 +2,7 @@
 
 namespace Webkul\Correspondence\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -23,6 +24,8 @@ use Webkul\Support\Models\Company;
 
 class DepartmentResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Department::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office-2';
@@ -45,12 +48,12 @@ class DepartmentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('correspondence::correspondence.departments.model');
+        return static::translatedResourceLabel('singular') ?? __('correspondence::correspondence.departments.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('correspondence::correspondence.departments.plural');
+        return static::translatedResourceLabel('plural') ?? __('correspondence::correspondence.departments.plural');
     }
 
     public static function form(Schema $schema): Schema

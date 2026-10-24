@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -47,6 +48,7 @@ use Webkul\Support\Models\Currency;
 class CompanyResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Company::class;
 

@@ -2,6 +2,7 @@
 
 namespace Webkul\Blog\Filament\Customer\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,8 @@ use Webkul\Blog\Models\Post;
 
 class PostResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     public static ?string $parentResource = CategoryResource::class;
 
     protected static ?string $model = Post::class;

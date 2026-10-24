@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -30,6 +31,8 @@ use Webkul\Inventory\Models\Receipt;
 
 class ReceiptResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Receipt::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-down-tray';
@@ -44,12 +47,12 @@ class ReceiptResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::models/receipt.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::models/receipt.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::models/receipt.plural');
+        return static::translatedResourceLabel('plural') ?? __('inventories::models/receipt.plural');
     }
 
     public static function getNavigationLabel(): string

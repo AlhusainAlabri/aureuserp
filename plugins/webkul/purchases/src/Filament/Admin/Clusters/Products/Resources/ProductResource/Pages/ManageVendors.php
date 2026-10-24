@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Products\Resources\ProductResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
@@ -18,6 +19,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageVendors extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = ProductResource::class;
 

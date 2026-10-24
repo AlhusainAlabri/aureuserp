@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\ProjectResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -12,6 +13,8 @@ use Webkul\Project\Filament\Resources\ProjectResource;
 
 class ManageMilestones extends ManageRelatedRecords
 {
+    use TranslatesRelationPageTitle;
+
     protected static string $resource = ProjectResource::class;
 
     protected static string $relationship = 'milestones';

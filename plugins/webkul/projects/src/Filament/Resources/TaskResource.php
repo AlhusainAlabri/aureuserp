@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\TaskResourceExtensions;
 use App\Filament\Projects\Resources\TaskResource\Pages\ListTasks;
 use Filament\Actions\Action;
@@ -80,6 +81,7 @@ use Webkul\Support\Filament\Tables\Columns\ProgressBarEntry;
 class TaskResource extends Resource
 {
     use HasCustomFields, HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Task::class;
 
@@ -96,12 +98,12 @@ class TaskResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return TaskResourceExtensions::getModelLabel();
+        return static::translatedResourceLabel('singular') ?? TaskResourceExtensions::getModelLabel();
     }
 
     public static function getPluralModelLabel(): string
     {
-        return TaskResourceExtensions::getPluralModelLabel();
+        return static::translatedResourceLabel('plural') ?? TaskResourceExtensions::getPluralModelLabel();
     }
 
     public static function getNavigationGroup(): string

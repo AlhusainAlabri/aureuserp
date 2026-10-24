@@ -132,10 +132,10 @@ class TaxResource extends Resource
 
                 Tabs::make('Tax Configuration')
                     ->tabs([
-                        Tab::make('Repartition Lines')
+                        Tab::make(__('Repartition Lines'))
                             ->icon('heroicon-o-banknotes')
                             ->schema([
-                                Section::make('Invoice & Refund Distribution')
+                                Section::make(__('Invoice & Refund Distribution'))
                                     ->description(__('Define how this tax affects accounts for invoices and refunds.'))
                                     ->schema([
                                         Group::make()
@@ -263,7 +263,7 @@ class TaxResource extends Resource
 
                             ]),
 
-                        Tab::make('Descriptions')
+                        Tab::make(__('Descriptions'))
                             ->icon('heroicon-o-document-text')
                             ->schema([
                                 RichEditor::make('description')

@@ -105,6 +105,32 @@ class DepartmentSeeder extends Seeder
             ],
         ];
 
+        // The upstream sample departments (R&D USA, Long Term Projects…) only belong in a demo install;
+        // a customer starts from a small neutral set to adapt.
+        if (! config('erp.seed_demo_data', false)) {
+            $departments = array_map(
+                fn (array $name): array => [
+                    'company_id'    => $company?->id,
+                    'creator_id'    => $user?->id,
+                    'name'          => $name[0],
+                    'complete_name' => $name[0],
+                    'color'         => $name[1],
+                    'deleted_at'    => null,
+                    'manager_id'    => null,
+                    'created_at'    => $now,
+                    'updated_at'    => $now,
+                ],
+                [
+                    ['Management', '#4e095c'],
+                    ['Administration', '#4e0554'],
+                    ['Finance', '#5d0a6e'],
+                    ['Human Resources', '#5e0870'],
+                    ['Sales', '#590819'],
+                    ['Operations', '#420957'],
+                ],
+            );
+        }
+
         DB::table('employees_departments')->insert($departments);
     }
 }

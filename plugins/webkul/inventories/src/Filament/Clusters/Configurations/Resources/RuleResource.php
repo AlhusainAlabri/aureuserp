@@ -478,7 +478,7 @@ class RuleResource extends Resource
                                                 TextEntry::make('delay')
                                                     ->label(__('inventories::filament/clusters/configurations/resources/rule.infolist.sections.general.entries.lead-time'))
                                                     ->icon('heroicon-o-clock')
-                                                    ->suffix(' days')
+                                                    ->suffix(' '.__('days'))
                                                     ->placeholder('0'),
                                             ]),
                                     ])

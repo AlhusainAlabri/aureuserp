@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\DashboardShortcutResource\Pages\CreateDashboardShortcut;
 use App\Filament\Resources\DashboardShortcutResource\Pages\EditDashboardShortcut;
 use App\Filament\Resources\DashboardShortcutResource\Pages\ListDashboardShortcuts;
@@ -30,6 +31,8 @@ use Illuminate\View\ComponentAttributeBag;
 
 class DashboardShortcutResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = DashboardShortcut::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-plus';
@@ -50,12 +53,12 @@ class DashboardShortcutResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('module-launcher.shortcuts.model');
+        return static::translatedResourceLabel('singular') ?? __('module-launcher.shortcuts.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('module-launcher.shortcuts.plural');
+        return static::translatedResourceLabel('plural') ?? __('module-launcher.shortcuts.plural');
     }
 
     public static function canAccess(): bool

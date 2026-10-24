@@ -2,6 +2,7 @@
 
 namespace Webkul\Accounting\Filament\Clusters\Accounting\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -84,6 +85,7 @@ use Webkul\Support\Models\Currency;
 class JournalEntryResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = JournalEntry::class;
 
@@ -99,7 +101,7 @@ class JournalEntryResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/accounting/resources/journal-entry.title');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/accounting/resources/journal-entry.title');
     }
 
     public static function getNavigationLabel(): string

@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
@@ -71,6 +72,7 @@ use Webkul\TableViews\Filament\Components\PresetView;
 class OperationResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Operation::class;
 
@@ -543,6 +545,7 @@ class OperationResource extends Resource
                         Tab::make(__('inventories::filament/clusters/operations/resources/operation.infolist.tabs.operations.title'))
                             ->schema([
                                 RepeatableEntry::make('moves')
+                                    ->label(__('inventories::filament/clusters/operations/resources/operation/pages/manage-moves.title'))
                                     ->columnManager()
                                     ->columnManagerColumns(2)
                                     ->table([

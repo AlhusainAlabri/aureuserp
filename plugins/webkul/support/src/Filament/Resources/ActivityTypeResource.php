@@ -194,7 +194,9 @@ class ActivityTypeResource extends Resource
                 TextColumn::make('delay_count')
                     ->label(__('support::filament/resources/activity-type.table.columns.planned-in'))
                     ->formatStateUsing(function ($record) {
-                        return $record->delay_count ? "{$record->delay_count} {$record->delay_unit}" : 'No Delay';
+                        return $record->delay_count
+                            ? $record->delay_count.' '.(ActivityDelayUnit::options()[$record->delay_unit] ?? $record->delay_unit)
+                            : __('No Delay');
                     }),
                 TextColumn::make('delay_from')
                     ->label(__('support::filament/resources/activity-type.table.columns.type'))

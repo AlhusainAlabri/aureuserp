@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources\OperationResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -17,6 +18,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageMoves extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = OperationResource::class;
 

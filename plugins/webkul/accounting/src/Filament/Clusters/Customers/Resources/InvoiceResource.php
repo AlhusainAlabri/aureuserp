@@ -33,7 +33,7 @@ class InvoiceResource extends BaseInvoiceResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/customers/resources/invoice.title');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/customers/resources/invoice.title');
     }
 
     public static function getNavigationLabel(): string

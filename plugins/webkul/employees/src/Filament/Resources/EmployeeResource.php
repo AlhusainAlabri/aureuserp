@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\EmployeeResourceExtensions;
 use App\Filament\Resources\EmployeeResource\Pages\CreateEmployee;
 use App\Filament\Resources\EmployeeResource\Pages\EditEmployee;
@@ -86,6 +87,7 @@ use Webkul\Support\Models\Country;
 class EmployeeResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Employee::class;
 
@@ -97,12 +99,12 @@ class EmployeeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/resources/employee.singular');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/resources/employee.singular');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('employees::filament/resources/employee.title');
+        return static::translatedResourceLabel('plural') ?? __('employees::filament/resources/employee.title');
     }
 
     public static function getNavigationLabel(): string

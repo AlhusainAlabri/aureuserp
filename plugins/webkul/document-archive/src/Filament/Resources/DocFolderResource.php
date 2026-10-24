@@ -2,6 +2,7 @@
 
 namespace Webkul\DocumentArchive\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -29,6 +30,8 @@ use Webkul\DocumentArchive\Models\DocFolder;
 
 class DocFolderResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $model = DocFolder::class;
@@ -53,7 +56,7 @@ class DocFolderResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('document-archive::document-archive.models.folder');
+        return static::translatedResourceLabel('singular') ?? __('document-archive::document-archive.models.folder');
     }
 
     public static function form(Schema $schema): Schema

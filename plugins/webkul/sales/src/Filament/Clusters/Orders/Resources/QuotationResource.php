@@ -2,6 +2,8 @@
 
 namespace Webkul\Sale\Filament\Clusters\Orders\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
+use App\Support\DefaultCurrency;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -85,6 +87,7 @@ use Webkul\Support\Models\UOM;
 class QuotationResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Order::class;
 
@@ -98,7 +101,7 @@ class QuotationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/orders/resources/quotation.title');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/orders/resources/quotation.title');
     }
 
     public static function getNavigationLabel(): string
@@ -169,7 +172,9 @@ class QuotationResource extends Resource
                                                 $partner = $state ? Partner::find($state) : null;
 
                                                 $set('user_id', $partner?->user?->id);
-                                                $set('payment_term_id', $partner?->propertyPaymentTerm?->id);
+                                                if ($partner?->propertyPaymentTerm?->id) {
+                                                    $set('payment_term_id', $partner->propertyPaymentTerm->id);
+                                                }
                                             })
                                             ->disabled(fn ($record): bool => $record?->locked || in_array($record?->state, [OrderState::CANCEL]))
                                             ->columnSpan(1)
@@ -199,7 +204,7 @@ class QuotationResource extends Resource
                                     ->searchable()
                                     ->preload()
                                     ->required()
-                                    ->default(PaymentTerm::find(10)?->id)
+                                    ->default(fn (): ?int => PaymentTerm::query()->orderBy('id')->value('id'))
                                     ->columnSpan(1),
                             ])->columns(2),
                     ]),
@@ -782,7 +787,7 @@ class QuotationResource extends Resource
                                         TextEntry::make('customer_lead')
                                             ->placeholder('-')
                                             ->numeric()
-                                            ->suffix(' days'),
+                                            ->suffix(' '.__('days')),
 
                                         TextEntry::make('product_packaging_qty')
                                             ->formatStateUsing(function ($state, ProductSettings $settings) {
@@ -1600,6 +1605,7 @@ class QuotationResource extends Resource
                     ->afterStateUpdated(fn (Set $set, Get $get) => self::calculateLineTotals($set, $get))
                     ->disabled(fn (): bool => $record?->locked || in_array($record?->state, [OrderState::CANCEL])),
                 TextInput::make('price_subtotal')
+                    ->formatStateUsing(fn ($state): string => number_format((float) $state, Currency::query()->exists() ? DefaultCurrency::decimals() : 2))
                     ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.order-line.repeater.products.fields.amount'))
                     ->default(0)
                     ->disabled(),
@@ -1905,7 +1911,7 @@ class QuotationResource extends Resource
 
         $total = $subTotal + $taxAmount;
 
-        $set($prefix.'price_subtotal', round($subTotal, 4));
+        $set($prefix.'price_subtotal', number_format(round($subTotal, 4), DefaultCurrency::decimals(), '.', ''));
 
         $set($prefix.'price_tax', round($taxAmount, 4));
 

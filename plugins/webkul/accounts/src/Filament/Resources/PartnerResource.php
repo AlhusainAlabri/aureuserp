@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -35,6 +36,8 @@ use Webkul\Partner\Filament\Resources\PartnerResource as BasePartnerResource;
 
 class PartnerResource extends BasePartnerResource
 {
+    use TranslatesResourceLabels;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $model = Partner::class;

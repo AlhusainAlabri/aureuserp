@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\CreditNoteResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Pages\Enums\SubNavigationPosition;
@@ -12,6 +13,8 @@ use Webkul\Account\Filament\Resources\PaymentResource;
 
 class ManagePayments extends ManageRelatedRecords
 {
+    use TranslatesRelationPageTitle;
+
     protected static string $resource = CreditNoteResource::class;
 
     protected static string $relationship = 'matchedPayments';

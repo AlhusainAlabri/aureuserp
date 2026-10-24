@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -53,6 +54,7 @@ use Webkul\PluginManager\Package;
 class WarehouseResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Warehouse::class;
 
@@ -78,12 +80,12 @@ class WarehouseResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('inventories::filament/clusters/configurations/resources/warehouse.navigation.title');
     }
 
     public static function form(Schema $schema): Schema

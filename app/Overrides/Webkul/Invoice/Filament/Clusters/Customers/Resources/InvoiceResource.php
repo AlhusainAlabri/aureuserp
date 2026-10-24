@@ -21,7 +21,7 @@ class InvoiceResource extends CoreInvoiceResource
 
     public static function getPluralModelLabel(): string
     {
-        return __('invoices::filament/clusters/customers/resources/invoice.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('invoices::filament/clusters/customers/resources/invoice.navigation.title');
     }
 
     public static function getRecordSubNavigation(Page $page): array

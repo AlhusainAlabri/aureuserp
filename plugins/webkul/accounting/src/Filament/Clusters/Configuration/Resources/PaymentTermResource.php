@@ -23,7 +23,7 @@ class PaymentTermResource extends BasePaymentTermResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/configurations/resources/payment-term.model-label');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/configurations/resources/payment-term.model-label');
     }
 
     public static function getNavigationLabel(): string

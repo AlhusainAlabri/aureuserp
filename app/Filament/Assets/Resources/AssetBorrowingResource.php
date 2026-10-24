@@ -5,6 +5,7 @@ namespace App\Filament\Assets\Resources;
 use App\Filament\Assets\Concerns\ConfiguresAssetBorrowingTable;
 use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Filament\Assets\Resources\AssetBorrowingResource\Pages\ViewAssetBorrowing;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Infolists\ApprovalStatusSection;
 use App\Services\Assets\AssetSignatureStorageService;
 use App\Support\FilamentUrl;
@@ -24,6 +25,7 @@ use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 class AssetBorrowingResource extends Resource
 {
     use ConfiguresAssetBorrowingTable;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = AssetBorrowing::class;
 
@@ -47,12 +49,12 @@ class AssetBorrowingResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('assets-extensions::models.borrowing');
+        return static::translatedResourceLabel('singular') ?? __('assets-extensions::models.borrowing');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('assets-extensions::navigation.borrowings');
+        return static::translatedResourceLabel('plural') ?? __('assets-extensions::navigation.borrowings');
     }
 
     public static function canAccess(): bool

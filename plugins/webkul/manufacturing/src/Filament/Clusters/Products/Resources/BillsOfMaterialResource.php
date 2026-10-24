@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Products\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -74,6 +75,8 @@ use Webkul\Support\Models\Company;
 
 class BillsOfMaterialResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = BillOfMaterial::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-2x2';
@@ -86,7 +89,7 @@ class BillsOfMaterialResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('manufacturing::models/bill-of-material.title');
+        return static::translatedResourceLabel('singular') ?? __('manufacturing::models/bill-of-material.title');
     }
 
     public static function getNavigationLabel(): string

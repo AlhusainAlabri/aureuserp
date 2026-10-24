@@ -2,6 +2,7 @@
 
 namespace Webkul\Website\Filament\Admin\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\RelationManagers\RelationGroup;
@@ -18,6 +19,8 @@ use Webkul\Website\Models\Partner;
 
 class PartnerResource extends BasePartnerResource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Partner::class;
 
     protected static ?string $slug = 'website/contacts';

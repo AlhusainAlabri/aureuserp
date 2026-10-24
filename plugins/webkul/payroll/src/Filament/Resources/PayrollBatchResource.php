@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
@@ -40,6 +41,7 @@ use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 class PayrollBatchResource extends Resource
 {
     use AppendsLocaleToResourceUrls;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = PayrollBatch::class;
 
@@ -65,12 +67,12 @@ class PayrollBatchResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('payroll::payroll.models.payroll_batch');
+        return static::translatedResourceLabel('singular') ?? __('payroll::payroll.models.payroll_batch');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('payroll::payroll.models_plural.payroll_batch');
+        return static::translatedResourceLabel('plural') ?? __('payroll::payroll.models_plural.payroll_batch');
     }
 
     public static function form(Schema $schema): Schema

@@ -14,6 +14,7 @@ use Webkul\Chatter\Models\Attachment;
 use Webkul\Chatter\Models\Follower;
 use Webkul\Chatter\Models\Message;
 use Webkul\Partner\Models\Partner;
+use Webkul\Security\Models\User;
 use Webkul\Support\Models\ActivityPlan;
 
 trait HasChatter
@@ -132,13 +133,13 @@ trait HasChatter
     {
         $message = new Message;
 
-        $user = Filament::auth()->user() ?? Auth::user();
+        $user = Filament::auth()->user() ?? Auth::user() ?? User::query()->orderBy('id')->first();
 
         $message->fill(array_merge([
             'date_deadline' => $data['date_deadline'] ?? now(),
             'causer_type'   => $user?->getMorphClass(),
             'causer_id'     => $user?->id,
-            'company_id'    => $data['company_id'] ?? ($user->defaultCompany?->id ?? null),
+            'company_id'    => $data['company_id'] ?? ($user?->defaultCompany?->id ?? null),
         ], $data));
 
         $this->messages()->save($message);

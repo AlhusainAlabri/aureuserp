@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Products\Resources\PackageResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -20,6 +21,7 @@ class ManageOperations extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
     use HasTableViews;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = PackageResource::class;
 

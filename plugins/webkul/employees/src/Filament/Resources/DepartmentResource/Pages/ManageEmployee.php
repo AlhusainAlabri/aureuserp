@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources\DepartmentResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\DepartmentResource;
 use Webkul\Employee\Traits\Resources\Department\DepartmentEmployee;
@@ -9,6 +10,7 @@ use Webkul\Employee\Traits\Resources\Department\DepartmentEmployee;
 class ManageEmployee extends ManageRelatedRecords
 {
     use DepartmentEmployee;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = DepartmentResource::class;
 

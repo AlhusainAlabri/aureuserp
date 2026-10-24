@@ -2,6 +2,7 @@
 
 namespace Webkul\DocumentArchive\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -46,6 +47,8 @@ use Webkul\Project\Models\Project;
 
 class DocFileResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static bool $shouldRegisterNavigation = true;
 
     protected static ?string $model = DocFile::class;
@@ -70,12 +73,12 @@ class DocFileResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('document-archive::document-archive.models.file');
+        return static::translatedResourceLabel('singular') ?? __('document-archive::document-archive.models.file');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('document-archive::document-archive.navigation.files.label');
+        return static::translatedResourceLabel('plural') ?? __('document-archive::document-archive.navigation.files.label');
     }
 
     public static function getGloballySearchableAttributes(): array

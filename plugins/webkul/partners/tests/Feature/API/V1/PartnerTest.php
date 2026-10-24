@@ -63,7 +63,7 @@ it('lists partners for authorized users', function () {
     $firstPartner = createPartnerRecord();
     $secondPartner = createPartnerRecord();
 
-    $response = $this->getJson(partnerRoute('index'));
+    $response = $this->getJson(partnerRoute('index').'?sort=-id');
 
     $response->assertOk();
 

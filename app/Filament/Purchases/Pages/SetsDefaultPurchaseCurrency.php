@@ -14,9 +14,6 @@ trait SetsDefaultPurchaseCurrency
             return;
         }
 
-        $this->form->fill([
-            ...$this->form->getState(),
-            'currency_id' => $omrCurrencyId,
-        ]);
+        $this->data['currency_id'] = $omrCurrencyId;
     }
 }

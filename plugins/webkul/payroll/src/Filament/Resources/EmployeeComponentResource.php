@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -28,6 +29,7 @@ use Webkul\Payroll\Models\SalaryComponent;
 class EmployeeComponentResource extends Resource
 {
     use AppendsLocaleToResourceUrls;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = EmployeeComponent::class;
 
@@ -49,12 +51,12 @@ class EmployeeComponentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('payroll::payroll.models.employee_component');
+        return static::translatedResourceLabel('singular') ?? __('payroll::payroll.models.employee_component');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('payroll::payroll.models_plural.employee_component');
+        return static::translatedResourceLabel('plural') ?? __('payroll::payroll.models_plural.employee_component');
     }
 
     public static function form(Schema $schema): Schema

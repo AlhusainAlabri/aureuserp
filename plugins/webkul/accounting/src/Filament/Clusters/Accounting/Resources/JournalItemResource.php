@@ -2,6 +2,7 @@
 
 namespace Webkul\Accounting\Filament\Clusters\Accounting\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ExportAction;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
@@ -26,6 +27,8 @@ use Webkul\Accounting\Models\JournalItem;
 
 class JournalItemResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = JournalItem::class;
 
     protected static bool $shouldRegisterNavigation = true;
@@ -42,7 +45,7 @@ class JournalItemResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/accounting/resources/journal-item.title');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/accounting/resources/journal-item.title');
     }
 
     public static function getNavigationLabel(): string

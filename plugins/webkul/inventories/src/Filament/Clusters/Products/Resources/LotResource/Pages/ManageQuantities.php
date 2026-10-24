@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Products\Resources\LotResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -19,6 +20,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageQuantities extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = LotResource::class;
 

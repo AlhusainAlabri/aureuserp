@@ -5,6 +5,7 @@ use Webkul\Product\Models\Product;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Models\Order;
 use Webkul\Purchase\Models\OrderLine;
+use Webkul\Purchase\Models\PurchaseOrder;
 use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -446,7 +447,7 @@ it('refuses to confirm an order whose approval flow is still pending', function 
     $order = Order::factory()->draft()->create();
 
     ApprovalFlow::query()->updateOrCreate(
-        ['approvable_type' => $order->getMorphClass()],
+        ['approvable_type' => (new PurchaseOrder)->getMorphClass()],
         ['name' => 'Test flow', 'is_active' => true],
     );
 

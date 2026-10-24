@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Applications\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
@@ -19,6 +20,8 @@ use Webkul\Recruitment\Models\JobByPosition;
 
 class JobByPositionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = JobByPosition::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
@@ -29,7 +32,7 @@ class JobByPositionResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments::filament/clusters/applications/resources/job-by-application.title');
+        return static::translatedResourceLabel('singular') ?? __('recruitments::filament/clusters/applications/resources/job-by-application.title');
     }
 
     public static function getNavigationLabel(): string

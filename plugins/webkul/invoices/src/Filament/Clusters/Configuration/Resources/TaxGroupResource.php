@@ -22,7 +22,7 @@ class TaxGroupResource extends BaseTaxGroupResource
 
     public static function getModelLabel(): string
     {
-        return __('invoices::filament/clusters/configurations/resources/tax-group.model-label');
+        return static::translatedResourceLabel('singular') ?? __('invoices::filament/clusters/configurations/resources/tax-group.model-label');
     }
 
     public static function getNavigationLabel(): string

@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -30,6 +31,8 @@ use Webkul\Inventory\Settings\LogisticSettings;
 
 class DropshipResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Dropship::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-truck';
@@ -51,7 +54,7 @@ class DropshipResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/operations/resources/dropship.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::filament/clusters/operations/resources/dropship.navigation.title');
     }
 
     public static function getNavigationLabel(): string

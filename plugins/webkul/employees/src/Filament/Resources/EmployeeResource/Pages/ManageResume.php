@@ -3,6 +3,7 @@
 namespace Webkul\Employee\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\HasEmployeeRelatedPageTranslations;
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
@@ -13,6 +14,7 @@ class ManageResume extends ManageRelatedRecords
     use EmployeeResumeRelation;
     use HasEmployeeRecordNavigationTabs;
     use HasEmployeeRelatedPageTranslations;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = EmployeeResource::class;
 

@@ -2,6 +2,7 @@
 
 namespace Webkul\Invoice\Filament\Clusters\Customers\Resources\PaymentResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -15,6 +16,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageInvoices extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = PaymentResource::class;
 

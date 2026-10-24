@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -62,6 +63,13 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
     protected static function getPagePermission(): ?string
     {
         return 'page_purchases_department_report';
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components($this->getFormSchema())
+            ->statePath('data');
     }
 
     protected function getFormSchema(): array
@@ -144,7 +152,7 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
                     ->numeric(),
                 TextColumn::make('total_amount')
                     ->label(__('purchases::filament/admin/pages/department-expense-report.table.columns.total-amount'))
-                    ->formatStateUsing(fn ($state): string => 'ر.ع. '.number_format((float) $state, 3))
+                    ->formatStateUsing(fn ($state): string => PurchaseOrderResourceExtensions::formatOmrAmount((float) $state))
                     ->numeric(),
                 TextColumn::make('receipts_uploaded')
                     ->label(__('purchases::filament/admin/pages/department-expense-report.table.columns.receipts-uploaded'))
@@ -201,7 +209,13 @@ class DepartmentExpenseReport extends Page implements HasForms, HasTable
         $callback = function () use ($data) {
             $file = fopen('php://output', 'w');
             fwrite($file, Utf8Csv::BOM);
-            fputcsv($file, ['Department', 'Purchases Count', 'Total Amount', 'Receipts Uploaded', 'Receipts Missing']);
+            fputcsv($file, [
+                __('purchases::filament/admin/pages/department-expense-report.table.columns.department'),
+                __('purchases::filament/admin/pages/department-expense-report.table.columns.purchases-count'),
+                __('purchases::filament/admin/pages/department-expense-report.table.columns.total-amount'),
+                __('purchases::filament/admin/pages/department-expense-report.table.columns.receipts-uploaded'),
+                __('purchases::filament/admin/pages/department-expense-report.table.columns.receipts-missing'),
+            ]);
             foreach ($data as $row) {
                 fputcsv($file, $row);
             }

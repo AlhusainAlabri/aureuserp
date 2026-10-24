@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -37,6 +38,8 @@ use Webkul\Employee\Models\WorkLocation;
 
 class WorkLocationResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = WorkLocation::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
@@ -45,7 +48,7 @@ class WorkLocationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/configurations/resources/work-location.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/configurations/resources/work-location.title');
     }
 
     public static function getNavigationGroup(): string

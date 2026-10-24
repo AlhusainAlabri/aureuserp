@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -25,6 +26,8 @@ use Webkul\Recruitment\Models\ApplicantCategory;
 
 class ApplicantCategoryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ApplicantCategory::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
@@ -33,7 +36,7 @@ class ApplicantCategoryResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments::filament/clusters/configurations/resources/applicant-category.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('recruitments::filament/clusters/configurations/resources/applicant-category.navigation.title');
     }
 
     public static function getNavigationGroup(): string

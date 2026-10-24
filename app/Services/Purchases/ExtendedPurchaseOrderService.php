@@ -79,7 +79,7 @@ class ExtendedPurchaseOrderService extends CorePurchaseOrderService
 
     public function generateRFQPdf($record): string
     {
-        $filename = 'Request-for-Quotation-'.str_replace('/', '_', $record->name).'.pdf';
+        $filename = 'Request-for-Quotation-'.str_replace('/', '_', $record->name).'-'.$this->pdfVersion($record).'.pdf';
         $pdfPath = $this->pdfStoragePath('rfqs', $filename);
 
         if (! Storage::disk('private')->exists($pdfPath)) {
@@ -95,7 +95,7 @@ class ExtendedPurchaseOrderService extends CorePurchaseOrderService
 
     public function generatePurchaseOrderPdf($record): string
     {
-        $filename = 'Purchase-Order-'.str_replace('/', '_', $record->name).'.pdf';
+        $filename = 'Purchase-Order-'.str_replace('/', '_', $record->name).'-'.$this->pdfVersion($record).'.pdf';
         $pdfPath = $this->pdfStoragePath('orders', $filename);
 
         if (! Storage::disk('private')->exists($pdfPath)) {
@@ -107,6 +107,21 @@ class ExtendedPurchaseOrderService extends CorePurchaseOrderService
         }
 
         return $pdfPath;
+    }
+
+    /**
+     * A stored PDF is reused only while the order and its lines are unchanged, in the same language.
+     */
+    protected function pdfVersion($record): string
+    {
+        $linesChangedAt = $record->lines()->max('updated_at');
+
+        $changedAt = max(
+            $record->updated_at?->getTimestamp() ?? 0,
+            $linesChangedAt ? strtotime((string) $linesChangedAt) : 0,
+        );
+
+        return $changedAt.'-'.app()->getLocale();
     }
 
     protected function pdfStoragePath(string $folder, string $filename): string

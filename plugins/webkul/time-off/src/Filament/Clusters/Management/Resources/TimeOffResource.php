@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Management\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -35,6 +36,7 @@ use Webkul\TimeOff\Traits\TimeOffHelper;
 class TimeOffResource extends Resource
 {
     use TimeOffHelper;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Leave::class;
 
@@ -46,7 +48,7 @@ class TimeOffResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/management/resources/time-off.model-label');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/management/resources/time-off.model-label');
     }
 
     public static function getNavigationLabel(): string

@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +24,8 @@ use Webkul\Sale\Models\Tag;
 
 class TagResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Tag::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-tag';
@@ -33,7 +36,7 @@ class TagResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/configurations/resources/tag.title');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/configurations/resources/tag.title');
     }
 
     public static function getNavigationLabel(): string

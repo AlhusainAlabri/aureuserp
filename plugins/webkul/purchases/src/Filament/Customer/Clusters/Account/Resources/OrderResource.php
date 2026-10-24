@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Customer\Clusters\Account\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
@@ -25,6 +26,8 @@ use Webkul\Website\Filament\Customer\Clusters\Account;
 
 class OrderResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Order::class;
 
     protected static bool $shouldRegisterNavigation = false;

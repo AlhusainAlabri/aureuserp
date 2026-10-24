@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -41,6 +42,8 @@ use Webkul\TimeOff\Models\LeaveAccrualPlan;
 
 class AccrualPlanResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = LeaveAccrualPlan::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-paper-airplane';
@@ -51,7 +54,7 @@ class AccrualPlanResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/configurations/resources/accrual-plan.title');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/configurations/resources/accrual-plan.title');
     }
 
     public static function getNavigationLabel(): string

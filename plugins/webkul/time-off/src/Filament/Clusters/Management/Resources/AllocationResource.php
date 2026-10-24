@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Management\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -41,6 +42,8 @@ use Webkul\TimeOff\Models\LeaveAllocation;
 
 class AllocationResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = LeaveAllocation::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
@@ -53,7 +56,7 @@ class AllocationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/management/resources/allocation.model-label');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/management/resources/allocation.model-label');
     }
 
     public static function getNavigationLabel(): string
@@ -131,7 +134,7 @@ class AllocationResource extends Resource
                                     ->options(AllocationType::class)
                                     ->default(AllocationType::REGULAR->value)
                                     ->required(),
-                                Fieldset::make('Validity Period')
+                                Fieldset::make(__('Validity Period'))
                                     ->schema([
                                         DatePicker::make('date_from')
                                             ->label(__('time-off::filament/clusters/management/resources/allocation.form.fields.date-from'))

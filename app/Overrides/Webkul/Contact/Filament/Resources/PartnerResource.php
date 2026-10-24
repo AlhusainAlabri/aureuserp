@@ -41,12 +41,12 @@ class PartnerResource extends BasePartnerResource
 
     public static function getModelLabel(): string
     {
-        return __('contacts::filament/resources/partner.model.single');
+        return static::translatedResourceLabel('singular') ?? __('contacts::filament/resources/partner.model.single');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('contacts::filament/resources/partner.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('contacts::filament/resources/partner.navigation.title');
     }
 
     public static function form(Schema $schema): Schema

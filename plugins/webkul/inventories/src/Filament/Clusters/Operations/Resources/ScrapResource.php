@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -62,6 +63,8 @@ use Webkul\Product\Settings\ProductSettings;
 
 class ScrapResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Scrap::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-trash';
@@ -79,12 +82,12 @@ class ScrapResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::models/scrap.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::models/scrap.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::models/scrap.plural');
+        return static::translatedResourceLabel('plural') ?? __('inventories::models/scrap.plural');
     }
 
     public static function getNavigationGroup(): string

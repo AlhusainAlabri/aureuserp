@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\TaskResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -22,6 +23,8 @@ use Webkul\Project\Models\TaskStage;
 
 class ManageSubTasks extends ManageRelatedRecords
 {
+    use TranslatesRelationPageTitle;
+
     protected static string $resource = TaskResource::class;
 
     protected static string $relationship = 'subTasks';

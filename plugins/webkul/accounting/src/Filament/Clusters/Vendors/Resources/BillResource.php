@@ -34,7 +34,7 @@ class BillResource extends BaseBillResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/vendors/resources/bill.title');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/vendors/resources/bill.title');
     }
 
     public static function getNavigationLabel(): string

@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -38,6 +39,8 @@ use Webkul\Purchase\Models\ProductSupplier;
 
 class VendorPriceResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ProductSupplier::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
@@ -429,7 +432,7 @@ class VendorPriceResource extends Resource
                                 TextEntry::make('delay')
                                     ->label(__('purchases::filament/admin/clusters/configurations/resources/vendor-price.infolist.sections.general.entries.delay'))
                                     ->icon('heroicon-o-clock')
-                                    ->suffix(' days'),
+                                    ->suffix(' '.__('days')),
                             ]),
                     ])
                     ->columnSpan(['lg' => 2]),

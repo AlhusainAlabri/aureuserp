@@ -28,8 +28,11 @@ use Illuminate\Support\Facades\Auth;
 use Webkul\Employee\Models\Department;
 use Webkul\Employee\Models\Employee;
 use Webkul\Field\Filament\Forms\Components\ProgressStepper as FormProgressStepper;
+use Webkul\Partner\Enums\AccountType;
 use Webkul\Partner\Models\Partner;
 use Webkul\Product\Models\Product;
+use Webkul\Security\Models\User;
+use Webkul\Support\Models\Company;
 use Webkul\Support\Models\Currency;
 use Webkul\TableViews\Filament\Components\PresetView;
 
@@ -427,10 +430,32 @@ class PurchaseOrderResourceExtensions
                 return null;
             }
 
-            return Partner::query()
+            $id = Partner::query()
                 ->where('name', 'Misc Supplier')
                 ->value('id');
+
+            return $id ?? static::createMiscSupplier();
         });
+    }
+
+    /**
+     * The catch-all vendor for requests without one. Created on first use because the seeder that
+     * makes it can run before the company exists on a clean install.
+     */
+    protected static function createMiscSupplier(): ?int
+    {
+        $companyId = Company::query()->value('id');
+
+        if (! $companyId) {
+            return null;
+        }
+
+        return Partner::query()->create([
+            'name'         => 'Misc Supplier',
+            'account_type' => AccountType::COMPANY,
+            'company_id'   => $companyId,
+            'creator_id'   => User::query()->value('id') ?? 1,
+        ])->id;
     }
 
     /** @return array<int, string> */

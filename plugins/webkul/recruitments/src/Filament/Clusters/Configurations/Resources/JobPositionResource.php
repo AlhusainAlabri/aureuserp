@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -54,6 +55,8 @@ use Webkul\Security\Filament\Resources\UserResource;
 
 class JobPositionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = JobPosition::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';

@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\ProjectResourceExtensions;
 use App\Filament\Projects\Resources\ProjectResource\Pages\ListProjects;
 use App\Filament\Resources\ProjectResource\Pages\ManageTasks;
@@ -73,6 +74,7 @@ use Webkul\Security\Traits\HasResourcePermissionQuery;
 class ProjectResource extends Resource
 {
     use HasCustomFields, HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Project::class;
 
@@ -89,12 +91,12 @@ class ProjectResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return ProjectResourceExtensions::getModelLabel();
+        return static::translatedResourceLabel('singular') ?? ProjectResourceExtensions::getModelLabel();
     }
 
     public static function getPluralModelLabel(): string
     {
-        return ProjectResourceExtensions::getPluralModelLabel();
+        return static::translatedResourceLabel('plural') ?? ProjectResourceExtensions::getPluralModelLabel();
     }
 
     public static function getNavigationGroup(): string

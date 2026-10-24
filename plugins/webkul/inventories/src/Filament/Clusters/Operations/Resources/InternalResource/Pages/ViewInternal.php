@@ -26,6 +26,11 @@ class ViewInternal extends ViewRecord
             ChatterAction::make()
                 ->resource(static::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),
+            OperationActions\TodoAction::make(),
+            OperationActions\CheckAvailabilityAction::make(),
+            OperationActions\ValidateAction::make(),
+            OperationActions\CancelAction::make(),
+            OperationActions\ReturnAction::make(),
             ActionGroup::make([
                 OperationActions\Print\PickingOperationAction::make(),
                 OperationActions\Print\DeliverySlipAction::make(),
@@ -60,5 +65,12 @@ class ViewInternal extends ViewRecord
                         ->body(__('inventories::filament/clusters/operations/resources/internal/pages/view-internal.header-actions.delete.notification.success.body')),
                 ),
         ];
+    }
+
+    public function updateForm(): void
+    {
+        $this->record->refresh();
+
+        $this->fillForm();
     }
 }

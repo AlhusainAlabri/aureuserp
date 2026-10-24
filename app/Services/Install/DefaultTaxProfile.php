@@ -4,6 +4,9 @@ namespace App\Services\Install;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Spatie\LaravelSettings\Support\SettingsCacheFactory;
+use Throwable;
+use Webkul\Account\Settings\TaxesSettings;
 
 /**
  * Sets the seeded default sales/purchase taxes to the standard VAT rate of the
@@ -52,7 +55,53 @@ class DefaultTaxProfile
             ->where('name', self::SEEDED_GROUP_NAME)
             ->update(['name' => $label]);
 
+        $changed += $this->alignFiscalCountry($countryId);
+
         return $changed;
+    }
+
+    /**
+     * The accounting settings ship with the United States as the fiscal country; follow the company's country.
+     */
+    protected function alignFiscalCountry(?int $countryId): int
+    {
+        if (! $countryId || ! class_exists(TaxesSettings::class) || ! Schema::hasTable('settings')) {
+            return 0;
+        }
+
+        $unitedStates = DB::table('countries')->where('code', 'US')->value('id');
+
+        $updated = DB::table('settings')
+            ->where('group', 'accounts_taxes')
+            ->where('name', 'account_fiscal_country_id')
+            ->where('payload', json_encode((int) $unitedStates))
+            ->update(['payload' => json_encode($countryId)]);
+
+        if ($updated) {
+            app(SettingsCacheFactory::class)->build()->clear();
+        }
+
+        return $updated;
+    }
+
+    /**
+     * The company default tax chosen in the accounting settings, as the id list a tax select expects.
+     *
+     * @return array<int, int>
+     */
+    public static function defaultTaxIds(string $setting): array
+    {
+        if (! class_exists(TaxesSettings::class) || ! Schema::hasTable('settings')) {
+            return [];
+        }
+
+        try {
+            $id = app(TaxesSettings::class)->{$setting} ?? null;
+        } catch (Throwable) {
+            return [];
+        }
+
+        return $id && DB::table('accounts_taxes')->where('id', $id)->where('is_active', true)->exists() ? [(int) $id] : [];
     }
 
     protected function companyCountryCode(): ?string

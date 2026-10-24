@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -32,6 +33,8 @@ use Webkul\Employee\Models\WarningType;
 
 class WarningTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = WarningType::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-exclamation-triangle';
@@ -44,7 +47,7 @@ class WarningTypeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/configurations/resources/warning-type.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/configurations/resources/warning-type.title');
     }
 
     public static function getNavigationGroup(): string

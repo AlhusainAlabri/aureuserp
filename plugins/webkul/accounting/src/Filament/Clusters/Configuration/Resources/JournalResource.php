@@ -24,7 +24,7 @@ class JournalResource extends BaseJournalResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/configurations/resources/journal.model-label');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/configurations/resources/journal.model-label');
     }
 
     public static function getNavigationLabel(): string

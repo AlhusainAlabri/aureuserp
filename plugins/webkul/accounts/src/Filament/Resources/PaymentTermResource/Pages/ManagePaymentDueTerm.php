@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\PaymentTermResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Account\Filament\Resources\PaymentTermResource;
@@ -10,6 +11,7 @@ use Webkul\Account\Traits\PaymentDueTerm;
 class ManagePaymentDueTerm extends ManageRelatedRecords
 {
     use PaymentDueTerm;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = PaymentTermResource::class;
 

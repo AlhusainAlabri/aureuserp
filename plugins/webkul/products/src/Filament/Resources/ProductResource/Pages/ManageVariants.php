@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources\ProductResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Radio;
@@ -18,6 +19,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageVariants extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = ProductResource::class;
 

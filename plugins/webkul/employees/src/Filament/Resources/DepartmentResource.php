@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -50,6 +51,7 @@ use Webkul\Field\Filament\Traits\HasCustomFields;
 class DepartmentResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Department::class;
 
@@ -84,12 +86,12 @@ class DepartmentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/resources/department.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/resources/department.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('employees::filament/resources/department.title');
+        return static::translatedResourceLabel('plural') ?? __('employees::filament/resources/department.title');
     }
 
     public static function form(Schema $schema): Schema

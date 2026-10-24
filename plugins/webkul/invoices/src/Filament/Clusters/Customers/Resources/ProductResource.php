@@ -29,7 +29,7 @@ class ProductResource extends BaseProductResource
 
     public static function getModelLabel(): string
     {
-        return __('invoices::filament/clusters/customers/resources/products.title');
+        return static::translatedResourceLabel('singular') ?? __('invoices::filament/clusters/customers/resources/products.title');
     }
 
     public static function getNavigationLabel(): string

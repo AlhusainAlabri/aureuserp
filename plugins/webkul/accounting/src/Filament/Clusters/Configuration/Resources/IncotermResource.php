@@ -19,7 +19,7 @@ class IncotermResource extends BaseIncotermResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/configurations/resources/incoterm.model-label');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/configurations/resources/incoterm.model-label');
     }
 
     public static function getNavigationLabel(): string

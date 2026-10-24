@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -58,6 +59,8 @@ use Webkul\Product\Models\ProductAttributeValue;
 
 class OperationResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Operation::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
@@ -79,7 +82,7 @@ class OperationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('manufacturing::models/operation.title');
+        return static::translatedResourceLabel('singular') ?? __('manufacturing::models/operation.title');
     }
 
     public static function getNavigationGroup(): string

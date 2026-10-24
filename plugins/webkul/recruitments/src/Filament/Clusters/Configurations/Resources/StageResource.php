@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -39,6 +40,8 @@ use Webkul\Recruitment\Models\Stage;
 
 class StageResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Stage::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
@@ -49,7 +52,7 @@ class StageResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments::filament/clusters/configurations/resources/stage.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('recruitments::filament/clusters/configurations/resources/stage.navigation.title');
     }
 
     public static function getNavigationGroup(): string

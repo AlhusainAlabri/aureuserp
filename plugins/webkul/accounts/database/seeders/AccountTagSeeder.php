@@ -100,6 +100,14 @@ class AccountTagSeeder extends Seeder
             ],
         ];
 
+        // The upstream sample tags (Demo …, Office Furniture) only belong in a demo install.
+        if (! config('erp.seed_demo_data', false)) {
+            $accountTags = array_values(array_filter(
+                $accountTags,
+                fn (array $tag): bool => ! str_starts_with($tag['name'], 'Demo ') && $tag['name'] !== 'Office Furniture',
+            ));
+        }
+
         DB::table('accounts_account_tags')->insert($accountTags);
     }
 }

@@ -108,7 +108,7 @@ class PurchaseOrder
 
         $this->createInventoryOperation($record);
 
-        return $record;
+        return $this->computePurchaseOrder($record->refresh());
     }
 
     public function canUserApprove($user): bool
@@ -541,6 +541,8 @@ class PurchaseOrder
             $values = $this->prepareInventoryOperation($record);
 
             $operation = Receipt::create($values);
+
+            $record->operations()->syncWithoutDetaching([$operation->id]);
 
             $operations = collect([$operation]);
         } else {

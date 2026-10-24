@@ -2,6 +2,7 @@
 
 namespace Webkul\PluginManager\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -35,6 +36,8 @@ use Webkul\PluginManager\Package;
 
 class PluginResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Plugin::class;
 
     public static function getNavigationGroup(): string
@@ -44,12 +47,12 @@ class PluginResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('plugin-manager::filament/resources/plugin.title');
+        return static::translatedResourceLabel('singular') ?? __('plugin-manager::filament/resources/plugin.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('plugin-manager::filament/resources/plugin.title');
+        return static::translatedResourceLabel('plural') ?? __('plugin-manager::filament/resources/plugin.title');
     }
 
     public static function table(Table $table): Table

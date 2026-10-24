@@ -23,7 +23,7 @@ class FiscalPositionResource extends BaseFiscalPositionResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/configurations/resources/fiscal-position.model-label');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/configurations/resources/fiscal-position.model-label');
     }
 
     public static function getNavigationLabel(): string

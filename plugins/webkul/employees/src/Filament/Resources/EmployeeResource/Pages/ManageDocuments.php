@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources\EmployeeResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
@@ -11,6 +12,7 @@ class ManageDocuments extends ManageRelatedRecords
 {
     use EmployeeDocumentsRelation;
     use HasEmployeeRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = EmployeeResource::class;
 

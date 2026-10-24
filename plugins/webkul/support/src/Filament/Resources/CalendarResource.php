@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -47,6 +48,8 @@ use Webkul\Support\Models\Calendar;
 
 class CalendarResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Calendar::class;
 
     protected static bool $shouldRegisterNavigation = false;
@@ -55,7 +58,7 @@ class CalendarResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('support::filament/resources/calendar.title');
+        return static::translatedResourceLabel('singular') ?? __('support::filament/resources/calendar.title');
     }
 
     public static function getNavigationGroup(): string

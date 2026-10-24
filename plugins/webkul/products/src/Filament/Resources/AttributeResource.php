@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -37,6 +38,8 @@ use Webkul\Product\Models\Attribute;
 
 class AttributeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Attribute::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-swatch';

@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Configuration\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -44,6 +45,8 @@ use Webkul\Sale\Models\Team;
 
 class TeamResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Team::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
@@ -56,7 +59,7 @@ class TeamResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/configurations/resources/team.title');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/configurations/resources/team.title');
     }
 
     public static function getNavigationLabel(): string

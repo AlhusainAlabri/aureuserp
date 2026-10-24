@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -22,6 +23,8 @@ use Webkul\Recruitment\Models\Degree;
 
 class DegreeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Degree::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
@@ -30,7 +33,7 @@ class DegreeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments::filament/clusters/configurations/resources/degree.title');
+        return static::translatedResourceLabel('singular') ?? __('recruitments::filament/clusters/configurations/resources/degree.title');
     }
 
     public static function getNavigationGroup(): string

@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -29,6 +30,8 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 
 class InternalResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = InternalTransfer::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-right-left';
@@ -52,7 +55,7 @@ class InternalResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/operations/resources/internal.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::filament/clusters/operations/resources/internal.navigation.title');
     }
 
     public static function getNavigationLabel(): string

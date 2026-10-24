@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
@@ -39,6 +40,8 @@ use Webkul\Product\Settings\ProductSettings;
 
 class QuantityResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = ProductQuantity::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-up-down';
@@ -54,12 +57,12 @@ class QuantityResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::models/product-quantity.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::models/product-quantity.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::models/product-quantity.plural');
+        return static::translatedResourceLabel('plural') ?? __('inventories::models/product-quantity.plural');
     }
 
     public static function getNavigationGroup(): string

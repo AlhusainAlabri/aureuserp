@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -24,6 +25,8 @@ use Webkul\Partner\Models\Address;
 
 class AddressResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Address::class;
 
     protected static bool $shouldRegisterNavigation = false;

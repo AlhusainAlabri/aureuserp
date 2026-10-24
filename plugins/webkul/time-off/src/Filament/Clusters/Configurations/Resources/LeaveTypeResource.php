@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -53,6 +54,8 @@ use Webkul\TimeOff\Models\LeaveType;
 
 class LeaveTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = LeaveType::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -63,7 +66,7 @@ class LeaveTypeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/configurations/resources/leave-type.title');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/configurations/resources/leave-type.title');
     }
 
     public static function form(Schema $schema): Schema

@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -25,6 +26,7 @@ use Webkul\Payroll\Support\PayrollCalendar;
 class PayslipResource extends Resource
 {
     use AppendsLocaleToResourceUrls;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Payslip::class;
 
@@ -50,12 +52,12 @@ class PayslipResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('payroll::payroll.models.payslip');
+        return static::translatedResourceLabel('singular') ?? __('payroll::payroll.models.payslip');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('payroll::payroll.models_plural.payslip');
+        return static::translatedResourceLabel('plural') ?? __('payroll::payroll.models_plural.payslip');
     }
 
     public static function form(Schema $schema): Schema

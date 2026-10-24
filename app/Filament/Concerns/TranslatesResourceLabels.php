@@ -18,7 +18,16 @@ trait TranslatesResourceLabels
 
     public static function getPluralModelLabel(): string
     {
-        return static::translatedResourceLabel('plural') ?? parent::getPluralModelLabel();
+        $translated = static::translatedResourceLabel('plural');
+
+        if ($translated !== null) {
+            return $translated;
+        }
+
+        $plural = parent::getPluralModelLabel();
+
+        // Filament pluralises with English rules, so an Arabic label comes back with a stray "s".
+        return preg_match('/\p{Arabic}s$/u', $plural) === 1 ? substr($plural, 0, -1) : $plural;
     }
 
     protected static function translatedResourceLabel(string $form): ?string

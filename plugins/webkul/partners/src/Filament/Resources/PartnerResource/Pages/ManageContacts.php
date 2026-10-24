@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources\PartnerResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -14,6 +15,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageContacts extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = PartnerResource::class;
 

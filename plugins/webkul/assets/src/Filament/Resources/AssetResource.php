@@ -2,6 +2,7 @@
 
 namespace Webkul\Assets\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Support\FilamentUrl;
 use BackedEnum;
 use Filament\Actions\CreateAction;
@@ -34,6 +35,8 @@ use Webkul\Assets\Models\Asset;
 
 class AssetResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Asset::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cube';
@@ -56,12 +59,12 @@ class AssetResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('assets::assets.models.asset');
+        return static::translatedResourceLabel('singular') ?? __('assets::assets.models.asset');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('assets::assets.navigation.assets');
+        return static::translatedResourceLabel('plural') ?? __('assets::assets.navigation.assets');
     }
 
     public static function formatOmr(?float $value): string

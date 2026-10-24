@@ -6,12 +6,12 @@ class JobPositionResource extends CoreJobPositionResource
 {
     public static function getModelLabel(): string
     {
-        return __('recruitments-extensions::labels.job_position.single');
+        return static::translatedResourceLabel('singular') ?? __('recruitments-extensions::labels.job_position.single');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('recruitments-extensions::labels.job_position.plural');
+        return static::translatedResourceLabel('plural') ?? __('recruitments-extensions::labels.job_position.plural');
     }
 
     public static function getNavigationLabel(): string

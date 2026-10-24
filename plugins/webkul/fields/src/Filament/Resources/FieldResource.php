@@ -2,6 +2,7 @@
 
 namespace Webkul\Field\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -38,13 +39,15 @@ use Webkul\Field\Models\Field;
 
 class FieldResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Field::class;
 
     protected static ?int $navigationSort = 5;
 
     public static function getModelLabel(): string
     {
-        return __('fields::filament/resources/field.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('fields::filament/resources/field.navigation.title');
     }
 
     public static function getNavigationLabel(): string

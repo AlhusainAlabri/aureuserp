@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\TaxResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Account\Enums\DocumentType;
@@ -11,6 +12,7 @@ use Webkul\Account\Traits\TaxPartition;
 class ManageDistributionForInvoice extends ManageRelatedRecords
 {
     use TaxPartition;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = TaxResource::class;
 

@@ -5,6 +5,7 @@ namespace Webkul\Account\Filament\Resources\InvoiceResource\Actions;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 use Livewire\Component;
 use Throwable;
 use Webkul\Account\Enums\AutoPost;
@@ -29,6 +30,13 @@ class ConfirmAction extends Action
             ->label(__('accounts::filament/resources/invoice/actions/confirm-action.title'))
             ->color('primary')
             ->action(function (Move $record, Component $livewire): void {
+                // Save what is on the form first, otherwise confirming checks the stale stored values.
+                if ($livewire instanceof EditRecord) {
+                    $livewire->save(shouldRedirect: false, shouldSendSavedNotification: false);
+
+                    $record->refresh();
+                }
+
                 if (method_exists($record, 'guardApprovalBeforePosting')) {
                     try {
                         $record->guardApprovalBeforePosting();

@@ -22,7 +22,7 @@ class CurrencyResource extends BaseCurrencyResource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/configurations/resources/currency.model-label');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/configurations/resources/currency.model-label');
     }
 
     public static function getNavigationLabel(): string

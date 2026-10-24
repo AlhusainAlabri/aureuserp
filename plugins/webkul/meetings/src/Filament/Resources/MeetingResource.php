@@ -3,6 +3,7 @@
 namespace Webkul\Meetings\Filament\Resources;
 
 use App\Filament\Actions\ExportMeetingPdfAction;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -52,6 +53,8 @@ use Wezlo\FilamentApproval\Columns\ApprovalStatusColumn;
 
 class MeetingResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Meeting::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
@@ -76,12 +79,12 @@ class MeetingResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('meetings::meetings.models.meeting');
+        return static::translatedResourceLabel('singular') ?? __('meetings::meetings.models.meeting');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('meetings::meetings.navigation.meetings');
+        return static::translatedResourceLabel('plural') ?? __('meetings::meetings.navigation.meetings');
     }
 
     public static function textDirection(): string

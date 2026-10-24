@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\FiscalPositionResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Webkul\Account\Filament\Resources\FiscalPositionResource;
@@ -10,6 +11,7 @@ use Webkul\Account\Traits\FiscalPositionTax;
 class ManageFiscalPositionTax extends ManageRelatedRecords
 {
     use FiscalPositionTax;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = FiscalPositionResource::class;
 

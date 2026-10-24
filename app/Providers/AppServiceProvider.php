@@ -20,6 +20,7 @@ use App\Support\DefaultCurrency;
 use App\Support\ExtensionSchema;
 use App\Support\Pdf\ArabicAwarePdf;
 use App\Support\Rtl\LtrValueFormatter;
+use App\Support\Translation\SafeTranslator;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
@@ -61,6 +62,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Authenticatable::class, User::class);
         $this->app->singleton(CommandRunner::class, SymfonyCommandRunner::class);
         $this->app->bind(LoginResponseContract::class, LocaleAwareLoginResponse::class);
+
+        $this->app->extend('translator', function ($translator) {
+            $safe = new SafeTranslator($translator->getLoader(), $translator->getLocale());
+            $safe->setFallback($translator->getFallback());
+
+            return $safe;
+        });
 
         // Dompdf has no Arabic shaping/bidi — shape glyphs for every PDF export app-wide.
         $this->app->bind('dompdf.wrapper', function ($app): ArabicAwarePdf {

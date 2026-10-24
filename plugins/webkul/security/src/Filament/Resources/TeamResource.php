@@ -2,6 +2,7 @@
 
 namespace Webkul\Security\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -20,6 +21,7 @@ use Webkul\Security\Traits\HasResourcePermissionQuery;
 class TeamResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Team::class;
 

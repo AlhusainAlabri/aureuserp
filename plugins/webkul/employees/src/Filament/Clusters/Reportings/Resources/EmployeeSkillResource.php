@@ -37,7 +37,7 @@ class EmployeeSkillResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/reportings/resources/employee-skill.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/reportings/resources/employee-skill.title');
     }
 
     public static function getNavigationLabel(): string

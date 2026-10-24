@@ -159,9 +159,9 @@ class RoleResource extends ShieldRoleResource
                                 TextEntry::make('level')->badge(),
                                 TextEntry::make('count')
                                     ->label(__('role-management.advanced.progress'))
-                                    ->formatStateUsing(fn (int $state, array $record): string => __('role-management.advanced.progress', [
+                                    ->formatStateUsing(fn (int $state, Get $get): string => __('role-management.advanced.progress', [
                                         'selected' => $state,
-                                        'total'    => $record['total'],
+                                        'total'    => $get('total'),
                                     ])),
                             ])
                             ->columns(3),

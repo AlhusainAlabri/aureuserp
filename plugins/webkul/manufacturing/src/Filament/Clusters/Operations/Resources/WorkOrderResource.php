@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -62,6 +63,8 @@ use Webkul\Support\Models\UOM;
 
 class WorkOrderResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = WorkOrder::class;
 
     protected static ?string $cluster = Operations::class;
@@ -83,7 +86,7 @@ class WorkOrderResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('manufacturing::models/work-order.title');
+        return static::translatedResourceLabel('singular') ?? __('manufacturing::models/work-order.title');
     }
 
     public static function getNavigationLabel(): string

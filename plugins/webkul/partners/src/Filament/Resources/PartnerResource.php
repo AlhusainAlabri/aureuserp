@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -56,6 +57,7 @@ use Webkul\Security\Traits\HasResourcePermissionQuery;
 class PartnerResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Partner::class;
 
@@ -227,7 +229,7 @@ class PartnerResource extends Resource
                                             ->columns(2),
                                     ]),
 
-                                Fieldset::make('Address')
+                                Fieldset::make(__('Address'))
                                     ->schema([
                                         TextInput::make('street1')
                                             ->label(__('partners::filament/resources/partner.form.sections.general.address.fields.street1'))
@@ -295,7 +297,7 @@ class PartnerResource extends Resource
                         Tab::make(__('partners::filament/resources/partner.form.tabs.sales-purchase.title'))
                             ->icon('heroicon-o-currency-dollar')
                             ->schema([
-                                Fieldset::make('Sales')
+                                Fieldset::make(__('Sales'))
                                     ->schema([
                                         Select::make('user_id')
                                             ->label(__('partners::filament/resources/partner.form.tabs.sales-purchase.fields.responsible'))
@@ -306,7 +308,7 @@ class PartnerResource extends Resource
                                     ])
                                     ->columns(1),
 
-                                Fieldset::make('Others')
+                                Fieldset::make(__('Others'))
                                     ->schema([
                                         TextInput::make('company_registry')
                                             ->label(__('partners::filament/resources/partner.form.tabs.sales-purchase.fields.company-id'))
@@ -697,7 +699,7 @@ class PartnerResource extends Resource
                                     ->visible(fn ($record): bool => (bool) $record->tags()->count()),
                             ]),
 
-                        Fieldset::make('Address')
+                        Fieldset::make(__('Address'))
                             ->schema([
                                 TextEntry::make('street1')
                                     ->label(__('partners::filament/resources/partner.infolist.sections.general.address.fields.street1'))
@@ -730,7 +732,7 @@ class PartnerResource extends Resource
                         Tab::make(__('partners::filament/resources/partner.infolist.tabs.sales-purchase.title'))
                             ->icon('heroicon-o-currency-dollar')
                             ->schema([
-                                Section::make('Sales')
+                                Section::make(__('Sales'))
                                     ->schema([
                                         TextEntry::make('user.name')
                                             ->label(__('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.responsible'))
@@ -738,7 +740,7 @@ class PartnerResource extends Resource
                                     ])
                                     ->columns(1),
 
-                                Section::make('Others')
+                                Section::make(__('Others'))
                                     ->schema([
                                         TextEntry::make('company_registry')
                                             ->label(__('partners::filament/resources/partner.infolist.tabs.sales-purchase.fields.company-id'))

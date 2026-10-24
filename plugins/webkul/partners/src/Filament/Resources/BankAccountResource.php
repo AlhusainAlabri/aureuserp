@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,6 +28,8 @@ use Webkul\Partner\Models\BankAccount;
 
 class BankAccountResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = BankAccount::class;
 
     protected static bool $shouldRegisterNavigation = false;

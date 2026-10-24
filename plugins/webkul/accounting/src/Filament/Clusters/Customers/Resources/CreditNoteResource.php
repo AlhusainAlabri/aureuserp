@@ -33,7 +33,7 @@ class CreditNoteResource extends BaseCreditNoteResource
 
     public static function getModelLabel(): string
     {
-        return __('accounting::filament/clusters/customers/resources/credit-note.title');
+        return static::translatedResourceLabel('singular') ?? __('accounting::filament/clusters/customers/resources/credit-note.title');
     }
 
     public static function getNavigationLabel(): string

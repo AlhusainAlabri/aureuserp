@@ -23,7 +23,7 @@ class PurchaseOrderResource extends OrderResource
 
     public static function getModelLabel(): string
     {
-        return __('purchases::filament/customer/clusters/account/resources/purchase-order.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('purchases::filament/customer/clusters/account/resources/purchase-order.navigation.title');
     }
 
     public static function getPages(): array

@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,6 +16,8 @@ use Webkul\Partner\Models\Title;
 
 class TitleResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Title::class;
 
     protected static bool $shouldRegisterNavigation = false;

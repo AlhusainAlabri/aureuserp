@@ -122,7 +122,9 @@ return [
 
     'activity_types.name' => ['Meeting' => 'اجتماع', 'Exception' => 'استثناء', 'To-Do' => 'مهمة', 'Call' => 'مكالمة'],
 
-    'departments.name' => [
+    'activity_types.summary' => ['Meeting' => 'اجتماع', 'Exception' => 'استثناء', 'To-Do' => 'مهمة', 'Call' => 'مكالمة'],
+
+    'employees_departments.name' => [
         'Administration'         => 'الإدارة',
         'Long Term Projects'     => 'المشاريع طويلة الأجل',
         'Management'             => 'الإدارة العليا',
@@ -130,6 +132,9 @@ return [
         'R&D USA'                => 'البحث والتطوير',
         'Research & Development' => 'البحث والتطوير',
         'Sales'                  => 'المبيعات',
+        'Finance'                => 'المالية',
+        'Human Resources'        => 'الموارد البشرية',
+        'Operations'             => 'العمليات',
     ],
 
     'employees_categories.name' => ['Consultant' => 'مستشار', 'Employee' => 'موظف', 'Sales' => 'مبيعات', 'Trainer' => 'مدرّب'],
@@ -194,6 +199,8 @@ return [
     ],
 
     'employees_work_locations.name' => ['Home' => 'المنزل', 'Building 1, Second Floor' => 'المبنى الرئيسي، الطابق الثاني', 'Other' => 'أخرى'],
+
+    'calendars.name' => ['Standard 40 hours/week' => 'قياسي 40 ساعة أسبوعيًا'],
 
     'inventories_locations.name' => [
         'Physical Locations'   => 'المواقع الفعلية', 'Partners' => 'الشركاء', 'Virtual Locations' => 'المواقع الافتراضية', 'Vendors' => 'الموردون',

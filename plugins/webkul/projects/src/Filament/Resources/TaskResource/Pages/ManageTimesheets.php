@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\TaskResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -20,6 +21,8 @@ use Webkul\Project\Settings\TimeSettings;
 
 class ManageTimesheets extends ManageRelatedRecords
 {
+    use TranslatesRelationPageTitle;
+
     protected static string $resource = TaskResource::class;
 
     protected static string $relationship = 'timesheets';

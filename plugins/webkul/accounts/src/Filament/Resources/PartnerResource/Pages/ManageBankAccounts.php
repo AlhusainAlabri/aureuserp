@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\PartnerResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Schemas\Schema;
@@ -13,6 +14,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageBankAccounts extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = PartnerResource::class;
 

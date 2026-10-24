@@ -3,6 +3,7 @@
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
@@ -10,6 +11,7 @@ use Illuminate\Database\QueryException;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource;
+use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource\Actions as OrderActions;
 use Webkul\Purchase\Models\Order;
 use Webkul\Support\Filament\Concerns\HasRepeatableEntryColumnManager;
 use Webkul\Support\Traits\HasRecordNavigationTabs;
@@ -42,6 +44,23 @@ class ViewOrder extends ViewRecord
                 ->record(Order::find($this->getRecord()->id))
                 ->resource(static::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),
+            ActionGroup::make([
+                OrderActions\SendEmailAction::make(),
+                OrderActions\SendPOEmailAction::make(),
+                OrderActions\PrintRFQAction::make(),
+                OrderActions\PrintPOAction::make(),
+                OrderActions\DraftAction::make(),
+                OrderActions\ConfirmReceiptDateAction::make(),
+                OrderActions\LockAction::make(),
+                OrderActions\UnlockAction::make(),
+            ])
+                ->label(__('More actions'))
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->color('gray')
+                ->button(),
+            OrderActions\ConfirmAction::make(),
+            OrderActions\CreateBillAction::make(),
+            OrderActions\CancelAction::make(),
             DeleteAction::make()
                 ->hidden(fn () => $this->getRecord()->state == OrderState::DONE)
                 ->action(function (DeleteAction $action, Order $record) {
@@ -66,5 +85,12 @@ class ViewOrder extends ViewRecord
                         ->body(__('inventories::filament/clusters/orders/resources/order/pages/view-order.header-actions.delete.notification.success.body')),
                 ),
         ];
+    }
+
+    public function updateForm(): void
+    {
+        $this->record->refresh();
+
+        $this->fillForm();
     }
 }

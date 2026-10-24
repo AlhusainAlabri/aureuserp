@@ -2,6 +2,8 @@
 
 namespace Webkul\Account\Filament\Resources;
 
+use App\Services\Install\DefaultTaxProfile;
+use App\Support\DefaultCurrency;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\Page;
@@ -49,6 +51,7 @@ class ProductResource extends BaseProductResource
                 ->live()
                 ->searchable()
                 ->preload()
+                ->default(fn (): array => DefaultTaxProfile::defaultTaxIds('account_sale_tax_id'))
                 ->helperText(function (Get $get) {
                     $price = floatval($get('price'));
 
@@ -92,7 +95,7 @@ class ProductResource extends BaseProductResource
 
                     if ($result['total_included'] != $price) {
                         $parts[] = __('accounts::filament/resources/product.form.helper.incl-taxes', [
-                            'amount' => number_format($result['total_included'], 2),
+                            'amount' => number_format($result['total_included'], DefaultCurrency::decimals()),
                         ]);
                     }
 
@@ -115,7 +118,8 @@ class ProductResource extends BaseProductResource
                 ->multiple()
                 ->live()
                 ->searchable()
-                ->preload(),
+                ->preload()
+                ->default(fn (): array => DefaultTaxProfile::defaultTaxIds('account_purchase_tax_id')),
         ];
 
         $priceComponent = array_merge($newPriceComponents, $priceComponent);

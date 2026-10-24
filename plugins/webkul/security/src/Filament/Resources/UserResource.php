@@ -2,6 +2,7 @@
 
 namespace Webkul\Security\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -54,6 +55,7 @@ use Webkul\Support\Models\Company;
 class UserResource extends Resource
 {
     use HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = User::class;
 

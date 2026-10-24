@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -21,6 +22,8 @@ use Webkul\Support\Models\UOMCategory;
 
 class UOMCategoryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = UOMCategory::class;
 
     protected static bool $shouldRegisterNavigation = false;

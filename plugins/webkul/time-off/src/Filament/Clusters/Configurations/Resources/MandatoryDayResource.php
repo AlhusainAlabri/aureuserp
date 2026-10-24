@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -29,6 +30,8 @@ use Webkul\TimeOff\Models\LeaveMandatoryDay;
 
 class MandatoryDayResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = LeaveMandatoryDay::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
@@ -39,7 +42,7 @@ class MandatoryDayResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/configurations/resources/mandatory-days.title');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/configurations/resources/mandatory-days.title');
     }
 
     public static function getNavigationLabel(): string

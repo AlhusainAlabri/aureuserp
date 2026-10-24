@@ -32,6 +32,16 @@ class DocumentSequence
         });
     }
 
+    /**
+     * Next full name for a prefix in any table that stores document names, e.g. "WH/IN" in inventories_operations.
+     */
+    public static function nextIn(string $table, string $prefix, ?int $ignoreId = null): string
+    {
+        return Cache::lock('document-sequence:'.$table.':'.$prefix, 10)->block(5, function () use ($table, $prefix, $ignoreId): string {
+            return $prefix.'/'.str_pad((string) (static::maxNumber($table, $prefix, $ignoreId) + 1), static::PAD, '0', STR_PAD_LEFT);
+        });
+    }
+
     protected static function maxNumber(string $table, string $prefix, ?int $ignoreId = null): int
     {
         $query = DB::table($table)->where('name', 'like', $prefix.'/%');

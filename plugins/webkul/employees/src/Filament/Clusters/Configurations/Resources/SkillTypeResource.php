@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -42,6 +43,8 @@ use Webkul\Employee\Models\SkillType;
 
 class SkillTypeResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = SkillType::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
@@ -54,7 +57,7 @@ class SkillTypeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/configurations/resources/skill-type.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/configurations/resources/skill-type.title');
     }
 
     public static function getNavigationGroup(): string

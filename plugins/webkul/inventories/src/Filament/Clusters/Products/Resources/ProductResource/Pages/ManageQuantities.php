@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Products\Resources\ProductResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -35,6 +36,7 @@ use Webkul\TableViews\Filament\Concerns\HasTableViews;
 class ManageQuantities extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs, HasTableViews;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = ProductResource::class;
 

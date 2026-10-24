@@ -2,6 +2,7 @@
 
 namespace Webkul\Accounting\Filament\Clusters\Configuration\Resources\JournalResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables\Table;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalItemResource;
@@ -11,6 +12,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageJournalEntries extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = JournalResource::class;
 

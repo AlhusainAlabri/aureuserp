@@ -26,7 +26,7 @@ class OrderResource extends QuotationResource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/orders/resources/order.title');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/orders/resources/order.title');
     }
 
     public static function getNavigationLabel(): string
@@ -36,7 +36,7 @@ class OrderResource extends QuotationResource
 
     public static function getPluralModelLabel(): string
     {
-        return __('sales::filament/clusters/orders/resources/order.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('sales::filament/clusters/orders/resources/order.navigation.title');
     }
 
     public static function getGloballySearchableAttributes(): array

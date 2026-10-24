@@ -2,6 +2,7 @@
 
 namespace Webkul\Partner\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -20,6 +21,8 @@ use Webkul\Partner\Models\Industry;
 
 class IndustryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Industry::class;
 
     protected static bool $shouldRegisterNavigation = false;

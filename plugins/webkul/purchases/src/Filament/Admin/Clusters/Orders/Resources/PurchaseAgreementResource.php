@@ -2,6 +2,7 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -73,6 +74,7 @@ use Webkul\Support\Models\Company;
 class PurchaseAgreementResource extends Resource
 {
     use HasCustomFields;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Requisition::class;
 
@@ -106,7 +108,7 @@ class PurchaseAgreementResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('purchases::filament/admin/clusters/orders/resources/purchase-agreement.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('purchases::filament/admin/clusters/orders/resources/purchase-agreement.navigation.title');
     }
 
     public static function isDiscovered(): bool

@@ -457,6 +457,10 @@ class Move extends Model implements Sortable
             $move->computeInvoiceDateDue();
 
             $move->computePaymentState();
+
+            if ($move->exists && blank($move->name)) {
+                $move->computeName();
+            }
         });
     }
 
@@ -589,6 +593,9 @@ class Move extends Model implements Sortable
     {
         if (! in_array($this->journal?->type, $this->getValidJournalTypes())) {
             $this->journal_id = $this->searchDefaultJournal($this)?->id;
+
+            // The lookup above cached the old (empty) journal; drop it so the number can use the new one.
+            $this->unsetRelation('journal');
         }
     }
 

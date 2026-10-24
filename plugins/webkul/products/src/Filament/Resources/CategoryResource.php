@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -29,6 +30,8 @@ use Webkul\Product\Models\Category;
 
 class CategoryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-folder';

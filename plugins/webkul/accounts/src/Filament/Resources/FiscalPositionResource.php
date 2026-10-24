@@ -96,7 +96,7 @@ class FiscalPositionResource extends Resource
                     ])->columnSpanFull(),
                 Tabs::make('Mappings')
                     ->tabs([
-                        Tab::make('Tax Mapping')
+                        Tab::make(__('Tax Mapping'))
                             ->schema([
                                 Repeater::make('taxes')
                                     ->hiddenLabel()
@@ -131,7 +131,7 @@ class FiscalPositionResource extends Resource
                                     ])
                                     ->columns(2),
                             ]),
-                        Tab::make('Account Mapping')
+                        Tab::make(__('Account Mapping'))
                             ->schema([
                                 Repeater::make('accounts')
                                     ->hiddenLabel()
@@ -286,7 +286,7 @@ class FiscalPositionResource extends Resource
                     ])->columnSpanFull(),
                 Tabs::make('Mappings')
                     ->tabs([
-                        Tab::make('Tax Mapping')
+                        Tab::make(__('Tax Mapping'))
                             ->schema([
                                 RepeatableEntry::make('taxes')
                                     ->hiddenLabel()
@@ -308,7 +308,7 @@ class FiscalPositionResource extends Resource
                                             ->placeholder('-'),
                                     ]),
                             ]),
-                        Tab::make('Account Mapping')
+                        Tab::make(__('Account Mapping'))
                             ->schema([
                                 RepeatableEntry::make('accounts')
                                     ->hiddenLabel()

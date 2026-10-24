@@ -2,6 +2,7 @@
 
 namespace Webkul\TimeOff\Filament\Clusters\MyTime\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -40,6 +41,8 @@ use Webkul\TimeOff\Models\LeaveAllocation;
 
 class MyAllocationResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = LeaveAllocation::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
@@ -50,7 +53,7 @@ class MyAllocationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('time-off::filament/clusters/my-time/resources/my-allocation.model-label');
+        return static::translatedResourceLabel('singular') ?? __('time-off::filament/clusters/my-time/resources/my-allocation.model-label');
     }
 
     public static function getNavigationLabel(): string

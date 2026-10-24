@@ -2,6 +2,7 @@
 
 namespace Webkul\Blog\Filament\Customer\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Resources\Resource;
 use Webkul\Blog\Filament\Customer\Resources\CategoryResource\Pages\ListCategories;
 use Webkul\Blog\Filament\Customer\Resources\CategoryResource\Pages\ViewCategory;
@@ -10,6 +11,8 @@ use Webkul\Blog\Models\Category;
 
 class CategoryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Category::class;
 
     protected static ?string $slug = 'blog';

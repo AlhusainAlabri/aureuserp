@@ -27,6 +27,10 @@ class ViewReceipt extends ViewRecord
             ChatterAction::make()
                 ->resource(static::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),
+            OperationActions\TodoAction::make(),
+            OperationActions\ValidateAction::make(),
+            OperationActions\CancelAction::make(),
+            OperationActions\ReturnAction::make(),
             ActionGroup::make([
                 OperationActions\Print\PickingOperationAction::make(),
                 OperationActions\Print\DeliverySlipAction::make(),
@@ -61,5 +65,12 @@ class ViewReceipt extends ViewRecord
                         ->body(__('inventories::filament/clusters/operations/resources/receipt/pages/view-receipt.header-actions.delete.notification.success.body')),
                 ),
         ];
+    }
+
+    public function updateForm(): void
+    {
+        $this->record->refresh();
+
+        $this->fillForm();
     }
 }

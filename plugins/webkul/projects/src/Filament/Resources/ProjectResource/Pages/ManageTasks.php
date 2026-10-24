@@ -2,6 +2,7 @@
 
 namespace Webkul\Project\Filament\Resources\ProjectResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -25,6 +26,7 @@ use Webkul\TableViews\Filament\Concerns\HasTableViews;
 class ManageTasks extends ManageRelatedRecords
 {
     use HasTableViews;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = ProjectResource::class;
 

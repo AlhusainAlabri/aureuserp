@@ -19,12 +19,12 @@ class QuotationResource extends CoreQuotationResource
 
     public static function getPluralModelLabel(): string
     {
-        return __('purchases-extensions::request.navigation.quotations');
+        return static::translatedResourceLabel('plural') ?? __('purchases-extensions::request.navigation.quotations');
     }
 
     public static function getModelLabel(): string
     {
-        return __('purchases::filament/admin/clusters/orders/resources/quotation.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('purchases::filament/admin/clusters/orders/resources/quotation.navigation.title');
     }
 
     public static function form(Schema $schema): Schema

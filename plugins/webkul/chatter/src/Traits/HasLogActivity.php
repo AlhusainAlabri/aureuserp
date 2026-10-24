@@ -42,6 +42,11 @@ trait HasLogActivity
     {
         $user = Filament::auth()->user() ?? Auth::user();
 
+        // Changes made by the system itself (queue, scheduler, imports) have no one to attribute them to.
+        if (! $user) {
+            return null;
+        }
+
         try {
             $changes = $this->determineChanges($event);
 

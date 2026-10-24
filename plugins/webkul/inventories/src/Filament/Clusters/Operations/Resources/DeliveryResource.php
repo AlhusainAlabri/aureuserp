@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -30,6 +31,8 @@ use Webkul\Inventory\Models\Delivery;
 
 class DeliveryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Delivery::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-truck';
@@ -44,7 +47,7 @@ class DeliveryResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/operations/resources/delivery.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::filament/clusters/operations/resources/delivery.navigation.title');
     }
 
     public static function getNavigationLabel(): string

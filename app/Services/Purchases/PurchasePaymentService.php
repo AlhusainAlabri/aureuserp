@@ -13,7 +13,8 @@ class PurchasePaymentService
         $totalPaid = (float) $order->payments()->sum('amount');
         $totalAmount = (float) ($order->total_amount ?? 0);
 
-        $order->update([
+        // Quietly: this runs from the order's own saved event, and a normal update would fire it again forever.
+        $order->updateQuietly([
             'amount_paid'      => $totalPaid,
             'amount_remaining' => max(0, $totalAmount - $totalPaid),
         ]);

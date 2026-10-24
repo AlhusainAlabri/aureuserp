@@ -67,9 +67,55 @@ class SeedDataLocalizer
 
         $dictionary = require $path;
 
+        $dictionary = array_merge($dictionary, $this->intlDictionary($locale));
+
+        // A department's full name starts as its name.
+        if (isset($dictionary['employees_departments.name'])) {
+            $dictionary['employees_departments.complete_name'] = $dictionary['employees_departments.name'];
+        }
+
         // Campaign titles mirror their names.
         if (isset($dictionary['utm_campaigns.name'])) {
             $dictionary['utm_campaigns.title'] = $dictionary['utm_campaigns.name'];
+        }
+
+        return $dictionary;
+    }
+
+    /**
+     * Country and currency names from the ICU data bundled with PHP, so every country is covered.
+     *
+     * @return array<string, array<string, string>>
+     */
+    protected function intlDictionary(string $locale): array
+    {
+        if (! extension_loaded('intl') || $locale === 'en') {
+            return [];
+        }
+
+        $dictionary = [];
+
+        if (Schema::hasTable('countries') && Schema::hasColumn('countries', 'code')) {
+            foreach (DB::table('countries')->select(['code', 'name'])->get() as $country) {
+                $translated = \Locale::getDisplayRegion('-'.$country->code, $locale);
+
+                if ($translated !== '' && $translated !== $country->code && $translated !== $country->name) {
+                    $dictionary['countries.name'][$country->name] = $translated;
+                }
+            }
+        }
+
+        if (Schema::hasTable('currencies') && Schema::hasColumn('currencies', 'full_name')) {
+            $bundle = \ResourceBundle::create($locale, 'ICUDATA-curr');
+            $currencies = $bundle ? $bundle->get('Currencies') : null;
+
+            foreach (DB::table('currencies')->select(['name', 'full_name'])->get() as $currency) {
+                $translated = $currencies?->get($currency->name)?->get(1);
+
+                if (is_string($translated) && $translated !== '' && $translated !== $currency->full_name) {
+                    $dictionary['currencies.full_name'][$currency->full_name] = $translated;
+                }
+            }
         }
 
         return $dictionary;

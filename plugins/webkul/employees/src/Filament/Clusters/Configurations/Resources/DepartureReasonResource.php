@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -26,6 +27,8 @@ use Webkul\Employee\Models\DepartureReason;
 
 class DepartureReasonResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = DepartureReason::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-fire';
@@ -34,7 +37,7 @@ class DepartureReasonResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/configurations/resources/departure-reason.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/configurations/resources/departure-reason.title');
     }
 
     public static function getNavigationGroup(): string

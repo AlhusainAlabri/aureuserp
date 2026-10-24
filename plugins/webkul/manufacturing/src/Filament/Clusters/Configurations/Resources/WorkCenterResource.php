@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -60,6 +61,8 @@ use Webkul\Support\Models\Calendar;
 
 class WorkCenterResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = WorkCenter::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
@@ -81,7 +84,7 @@ class WorkCenterResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('manufacturing::models/work-center.title');
+        return static::translatedResourceLabel('singular') ?? __('manufacturing::models/work-center.title');
     }
 
     public static function getNavigationGroup(): string

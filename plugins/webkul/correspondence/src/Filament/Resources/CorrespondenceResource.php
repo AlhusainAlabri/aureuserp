@@ -3,6 +3,7 @@
 namespace Webkul\Correspondence\Filament\Resources;
 
 use App\Filament\Actions\ExportCorrespondencePdfAction;
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Infolists\ApprovalStatusSection;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -53,6 +54,8 @@ use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
 class CorrespondenceResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Correspondence::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope';
@@ -77,12 +80,12 @@ class CorrespondenceResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('correspondence::correspondence.correspondence');
+        return static::translatedResourceLabel('singular') ?? __('correspondence::correspondence.correspondence');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('correspondence::correspondence.correspondences');
+        return static::translatedResourceLabel('plural') ?? __('correspondence::correspondence.correspondences');
     }
 
     public static function getGloballySearchableAttributes(): array

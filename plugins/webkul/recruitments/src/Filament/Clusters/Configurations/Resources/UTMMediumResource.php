@@ -2,6 +2,7 @@
 
 namespace Webkul\Recruitment\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +24,8 @@ use Webkul\Recruitment\Models\UTMMedium;
 
 class UTMMediumResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = UTMMedium::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
@@ -31,7 +34,7 @@ class UTMMediumResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments::filament/clusters/configurations/resources/utm-medium.title');
+        return static::translatedResourceLabel('singular') ?? __('recruitments::filament/clusters/configurations/resources/utm-medium.title');
     }
 
     public static function getNavigationGroup(): string

@@ -48,7 +48,7 @@ it('creates an internal request from an order point', function (): void {
 
     expect($order)->toBeInstanceOf(PurchaseOrder::class)
         ->and($order->state)->toBe(OrderState::DRAFT)
-        ->and($order->request_type)->toBe(RequestType::OfficeSupplies->value)
+        ->and($order->request_type)->toBe(RequestType::OfficeSupplies)
         ->and($order->lines)->not->toBeEmpty();
 });
 

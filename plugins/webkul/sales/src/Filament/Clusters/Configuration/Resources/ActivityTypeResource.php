@@ -22,7 +22,7 @@ class ActivityTypeResource extends BaseActivityTypeResource
 
     public static function getModelLabel(): string
     {
-        return __('Activity Type');
+        return static::translatedResourceLabel('singular') ?? __('Activity Type');
     }
 
     public static function getNavigationGroup(): ?string

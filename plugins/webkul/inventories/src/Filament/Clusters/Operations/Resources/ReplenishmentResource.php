@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -33,6 +34,8 @@ use Webkul\Inventory\Models\Warehouse;
 
 class ReplenishmentResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = OrderPoint::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrows-up-down';
@@ -45,12 +48,12 @@ class ReplenishmentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::models/order-point.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::models/order-point.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::models/order-point.plural');
+        return static::translatedResourceLabel('plural') ?? __('inventories::models/order-point.plural');
     }
 
     public static function getNavigationLabel(): string

@@ -4,6 +4,7 @@ namespace Webkul\Account\Filament\Resources;
 
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\AccountResourceExtensions;
+use App\Support\DefaultCurrency;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -1244,6 +1245,7 @@ class InvoiceResource extends Resource
                     ->afterStateUpdated(fn (Get $get, Set $set) => self::calculateLineTotals($set, $get))
                     ->live(),
                 TextInput::make('price_subtotal')
+                    ->formatStateUsing(fn ($state): string => number_format((float) $state, Currency::query()->exists() ? DefaultCurrency::decimals() : 2))
                     ->label(__('accounts::filament/resources/invoice.form.tabs.invoice-lines.repeater.products.fields.sub-total'))
                     ->numeric()
                     ->default(0)
@@ -1434,7 +1436,7 @@ class InvoiceResource extends Resource
         $total = $baseLine['tax_details']['raw_total_included_currency'];
         $tax = $total - $subtotal;
 
-        $set('price_subtotal', round($subtotal, 4));
+        $set('price_subtotal', number_format(round($subtotal, 4), DefaultCurrency::decimals(), '.', ''));
         $set('price_tax', round($tax, 4));
         $set('price_total', round($total, 4));
     }

@@ -32,7 +32,7 @@ class CustomerResource extends BaseCustomerResource
 
     public static function getModelLabel(): string
     {
-        return __('sales::filament/clusters/orders/resources/customer.title');
+        return static::translatedResourceLabel('singular') ?? __('sales::filament/clusters/orders/resources/customer.title');
     }
 
     public static function getNavigationLabel(): string

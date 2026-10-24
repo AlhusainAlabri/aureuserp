@@ -6,12 +6,12 @@ class LeaveTypeResource extends CoreLeaveTypeResource
 {
     public static function getModelLabel(): string
     {
-        return __('time-off-extensions::labels.leave_type.single');
+        return static::translatedResourceLabel('singular') ?? __('time-off-extensions::labels.leave_type.single');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('time-off-extensions::labels.leave_type.plural');
+        return static::translatedResourceLabel('plural') ?? __('time-off-extensions::labels.leave_type.plural');
     }
 
     public static function getNavigationLabel(): string

@@ -14,7 +14,7 @@ class BillResource extends CoreBillResource
 {
     public static function getPluralModelLabel(): string
     {
-        return __('invoices::filament/clusters/vendors/resources/bill.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('invoices::filament/clusters/vendors/resources/bill.navigation.title');
     }
 
     public static function getRecordSubNavigation(Page $page): array

@@ -2,6 +2,7 @@
 
 namespace Webkul\Manufacturing\Filament\Clusters\Products\Resources\ProductResource\Pages;
 
+use App\Filament\Concerns\TranslatesRelationPageTitle;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -19,6 +20,7 @@ use Webkul\Support\Traits\HasRecordNavigationTabs;
 class ManageBillsOfMaterials extends ManageRelatedRecords
 {
     use HasRecordNavigationTabs, HasRepeaterColumnManager;
+    use TranslatesRelationPageTitle;
 
     protected static string $resource = ProductResource::class;
 

@@ -2,7 +2,9 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Extensions\PurchaseOrderResourceExtensions;
+use App\Support\DefaultCurrency;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -83,6 +85,7 @@ use Webkul\Support\Models\UOM;
 class OrderResource extends Resource
 {
     use HasCustomFields, HasResourcePermissionQuery;
+    use TranslatesResourceLabels;
 
     protected static ?string $model = Order::class;
 
@@ -1230,6 +1233,7 @@ class OrderResource extends Resource
                     ->disabled(fn (): bool => in_array($record?->state, [OrderState::DONE, OrderState::CANCELED])),
 
                 TextInput::make('price_subtotal')
+                    ->formatStateUsing(fn ($state): string => number_format((float) $state, Currency::query()->exists() ? DefaultCurrency::decimals() : 2))
                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.products.repeater.products.fields.amount'))
                     ->default(0)
                     ->readOnly()
@@ -1305,7 +1309,7 @@ class OrderResource extends Resource
 
         $set('price_unit', money_round($priceUnit));
 
-        $set('taxes', $product->productTaxes->pluck('id')->toArray());
+        $set('taxes', $product->supplierTaxes->pluck('id')->toArray());
 
         $packaging = static::getBestPackaging($get('product_id'), round($uomQuantity, 2));
 
@@ -1518,7 +1522,7 @@ class OrderResource extends Resource
 
         [$subTotal, $taxAmount] = TaxFacade::collect($taxIds, $subTotal, $quantity);
 
-        $set($prefix.'price_subtotal', round($subTotal, 4));
+        $set($prefix.'price_subtotal', number_format(round($subTotal, 4), DefaultCurrency::decimals(), '.', ''));
 
         $set($prefix.'price_tax', $taxAmount);
 
@@ -1672,7 +1676,7 @@ class OrderResource extends Resource
                 'product_qty'       => $line->qty,
                 'price_unit'        => $line->price_unit,
                 'planned_at'        => now(),
-                'taxes'             => $product?->productTaxes->pluck('id')->toArray() ?? [],
+                'taxes'             => $product?->supplierTaxes->pluck('id')->toArray() ?? [],
                 'discount'          => 0,
                 'from_requisition'  => true,
             ];

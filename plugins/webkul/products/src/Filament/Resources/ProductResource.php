@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use BackedEnum;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
@@ -60,6 +61,8 @@ use Webkul\Support\Models\UOM;
 
 class ProductResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Product::class;
 
     protected static bool $shouldRegisterNavigation = false;

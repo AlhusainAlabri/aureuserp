@@ -57,12 +57,12 @@ class ProductResource extends BaseProductResource
 
     public static function getModelLabel(): string
     {
-        return __('inventories::filament/clusters/products/resources/product.navigation.title');
+        return static::translatedResourceLabel('singular') ?? __('inventories::filament/clusters/products/resources/product.navigation.title');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inventories::filament/clusters/products/resources/product.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('inventories::filament/clusters/products/resources/product.navigation.title');
     }
 
     public static function form(Schema $schema): Schema

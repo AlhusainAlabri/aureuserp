@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Clusters\Configurations\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -49,6 +50,8 @@ use Webkul\Security\Filament\Resources\CompanyResource;
 
 class JobPositionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = EmployeeJobPosition::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
@@ -57,7 +60,7 @@ class JobPositionResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('employees::filament/clusters/configurations/resources/job-position.title');
+        return static::translatedResourceLabel('singular') ?? __('employees::filament/clusters/configurations/resources/job-position.title');
     }
 
     public static function getNavigationGroup(): string

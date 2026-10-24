@@ -2,6 +2,7 @@
 
 namespace Webkul\Employee\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -31,6 +32,8 @@ use Webkul\Employee\Models\EmployeeSubmission;
 
 class SubmissionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = EmployeeSubmission::class;
 
     protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
@@ -44,7 +47,7 @@ class SubmissionResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return __('employees::filament/resources/submission.navigation.title');
+        return static::translatedResourceLabel('plural') ?? __('employees::filament/resources/submission.navigation.title');
     }
 
     public static function getNavigationGroup(): string

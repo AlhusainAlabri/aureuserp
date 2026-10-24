@@ -33,3 +33,5 @@ opencode.json
 /test-results
 *.sql
 *_backup_*
+
+.playwright-mcp/

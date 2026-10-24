@@ -3,6 +3,7 @@
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -59,16 +60,22 @@ class EditOrder extends EditRecord
                 ->record(Order::find($this->getRecord()->id))
                 ->resource(self::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),
-            OrderActions\SendEmailAction::make(),
-            OrderActions\SendPOEmailAction::make(),
-            OrderActions\PrintRFQAction::make(),
-            OrderActions\PrintPOAction::make(),
-            OrderActions\DraftAction::make(),
+            ActionGroup::make([
+                OrderActions\SendEmailAction::make(),
+                OrderActions\SendPOEmailAction::make(),
+                OrderActions\PrintRFQAction::make(),
+                OrderActions\PrintPOAction::make(),
+                OrderActions\DraftAction::make(),
+                OrderActions\ConfirmReceiptDateAction::make(),
+                OrderActions\LockAction::make(),
+                OrderActions\UnlockAction::make(),
+            ])
+                ->label(__('More actions'))
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->color('gray')
+                ->button(),
             OrderActions\ConfirmAction::make(),
-            OrderActions\ConfirmReceiptDateAction::make(),
             OrderActions\CreateBillAction::make(),
-            OrderActions\LockAction::make(),
-            OrderActions\UnlockAction::make(),
             OrderActions\CancelAction::make(),
             DeleteAction::make()
                 ->hidden(fn () => $this->getRecord()->state == OrderState::DONE)

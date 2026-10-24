@@ -24,12 +24,12 @@ class ActivityTypeResource extends BaseActivityTypeResource
 
     public static function getModelLabel(): string
     {
-        return __('recruitments-extensions::labels.activity_type.single');
+        return static::translatedResourceLabel('singular') ?? __('recruitments-extensions::labels.activity_type.single');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('recruitments-extensions::labels.activity_type.plural');
+        return static::translatedResourceLabel('plural') ?? __('recruitments-extensions::labels.activity_type.plural');
     }
 
     public static function getNavigationLabel(): string

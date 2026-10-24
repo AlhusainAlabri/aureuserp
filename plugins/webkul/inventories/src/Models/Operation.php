@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Models;
 
+use App\Support\Accounting\DocumentSequence;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -262,11 +263,16 @@ class Operation extends Model
 
     public function updateName()
     {
-        if (! $this->operationType->warehouse) {
-            $this->name = $this->operationType->sequence_code.'/'.$this->id;
-        } else {
-            $this->name = $this->operationType->warehouse->code.'/'.$this->operationType->sequence_code.'/'.$this->id;
+        $prefix = $this->operationType->warehouse
+            ? $this->operationType->warehouse->code.'/'.$this->operationType->sequence_code
+            : $this->operationType->sequence_code;
+
+        // Saving runs this every time, so a number already issued for this prefix must stay.
+        if (preg_match('#^'.preg_quote($prefix, '#').'/\d+$#', (string) $this->name)) {
+            return;
         }
+
+        $this->name = DocumentSequence::nextIn($this->getTable(), $prefix, $this->id);
     }
 
     public function updateChildrenNames(): void

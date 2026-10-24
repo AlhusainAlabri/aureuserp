@@ -27,12 +27,12 @@ class ActivityTypeResource extends BaseActivityTypeResource
 
     public static function getModelLabel(): string
     {
-        return __('time-off-extensions::labels.activity_type.single');
+        return static::translatedResourceLabel('singular') ?? __('time-off-extensions::labels.activity_type.single');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('time-off-extensions::labels.activity_type.plural');
+        return static::translatedResourceLabel('plural') ?? __('time-off-extensions::labels.activity_type.plural');
     }
 
     public static function getNavigationLabel(): string

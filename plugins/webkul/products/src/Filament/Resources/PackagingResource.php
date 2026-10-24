@@ -2,6 +2,7 @@
 
 namespace Webkul\Product\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -31,6 +32,8 @@ use Webkul\Product\Models\Packaging;
 
 class PackagingResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Packaging::class;
 
     protected static bool $shouldRegisterNavigation = false;
