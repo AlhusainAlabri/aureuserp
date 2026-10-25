@@ -150,7 +150,7 @@ class AuditRecorder
             return 'deleted';
         }
 
-        return $model->trashed() ? 'soft_deleted' : 'hard_deleted';
+        return $model->isForceDeleting() ? 'hard_deleted' : 'soft_deleted';
     }
 
     /**

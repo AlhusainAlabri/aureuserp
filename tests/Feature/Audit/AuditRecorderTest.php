@@ -8,7 +8,9 @@ use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Account\Models\Move;
 use Webkul\Chatter\Models\Message;
 use Webkul\Chatter\Traits\HasLogActivity;
+use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PasiRule;
+use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Models\PayslipLine;
 use Webkul\Payroll\Models\SalaryComponent;
@@ -77,6 +79,40 @@ it('AuditRecorderTest: splits soft and hard deletes and records restores', funct
 
     $user->forceDelete();
     expect(auditEntries('hard_deleted')->where('messageable_id', $user->id)->count())->toBe(1);
+});
+
+it('AuditRecorderTest: logs a permanent delete of an already archived record as hard deleted', function (): void {
+    $user = User::factory()->create();
+
+    $user->delete();
+    $user->forceDelete();
+
+    expect(auditEntries('soft_deleted')->where('messageable_id', $user->id)->count())->toBe(1)
+        ->and(auditEntries('hard_deleted')->where('messageable_id', $user->id)->count())->toBe(1);
+
+    $archived = User::factory()->create();
+    $archived->delete();
+
+    User::withTrashed()->find($archived->id)->forceDelete();
+
+    expect(auditEntries('hard_deleted')->where('messageable_id', $archived->id)->count())->toBe(1);
+});
+
+it('AuditRecorderTest: logs updates to payroll batches and loans', function (): void {
+    $batch = PayrollBatch::factory()->create(['reference_number' => 'PAY-AUDIT-1', 'notes' => 'Before']);
+    $batch->update(['notes' => 'After']);
+
+    $loan = Loan::factory()->create(['reference_number' => 'LOAN-AUDIT-1', 'reason' => 'Before']);
+    $loan->update(['reason' => 'After']);
+
+    $batchEntry = auditEntries('updated')->where('messageable_id', $batch->id)
+        ->where('messageable_type', $batch->getMorphClass())->first();
+    $loanEntry = auditEntries('updated')->where('messageable_id', $loan->id)
+        ->where('messageable_type', $loan->getMorphClass())->first();
+
+    expect(AuditedModels::classes())->toContain(PayrollBatch::class, Loan::class)
+        ->and($batchEntry->properties['notes'])->toMatchArray(['old_value' => 'Before', 'new_value' => 'After'])
+        ->and($loanEntry->properties['reason'])->toMatchArray(['old_value' => 'Before', 'new_value' => 'After']);
 });
 
 it('AuditRecorderTest: skips an update with no loggable change', function (): void {

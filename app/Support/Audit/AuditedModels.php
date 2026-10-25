@@ -15,7 +15,9 @@ use Webkul\Chatter\Traits\HasLogActivity;
 use Webkul\Payroll\Models\EmployeeComponent;
 use Webkul\Payroll\Models\EndOfServiceSettlement;
 use Webkul\Payroll\Models\GratuityTier;
+use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PasiRule;
+use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Models\PayslipLine;
 use Webkul\Payroll\Models\SalaryComponent;
@@ -47,6 +49,7 @@ class AuditedModels
     protected static function candidates(): array
     {
         return [
+            PayrollBatch::class,
             Payslip::class,
             PayslipLine::class,
             SalaryComponent::class,
@@ -54,6 +57,7 @@ class AuditedModels
             GratuityTier::class,
             EndOfServiceSettlement::class,
             EmployeeComponent::class,
+            Loan::class,
             AttendanceDay::class,
             OvertimeRequest::class,
             ImportBatch::class,
