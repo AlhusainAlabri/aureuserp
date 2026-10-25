@@ -3,6 +3,7 @@
 namespace Webkul\Payroll\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -139,8 +140,15 @@ class PayrollCalculator
 
         $payslip->gross_amount = 0;
 
+        $isPasi = fn (EmployeeComponent $assignment): bool => in_array(
+            $assignment->component?->calculation_type,
+            [CalculationType::PasiEmployee, CalculationType::PasiEmployer],
+            true,
+        );
+
         $firstPass = $assignments->filter(
-            fn (EmployeeComponent $assignment): bool => $assignment->component?->calculation_type !== CalculationType::PercentOfGross,
+            fn (EmployeeComponent $assignment): bool => $assignment->component?->calculation_type !== CalculationType::PercentOfGross
+                && ! $isPasi($assignment),
         );
 
         $secondPass = $assignments->filter(
@@ -166,6 +174,8 @@ class PayrollCalculator
                 $payslip->gross_amount = $payslip->getEarningsTotal();
             }
         }
+
+        $this->appendPasiLines($payslip, $employee, $assignments->filter($isPasi), $periodEnd);
 
         $this->appendLoanDeductions($payslip, $employee, $year, $month);
 
@@ -288,6 +298,49 @@ class PayrollCalculator
         }
 
         return $component->calculateAmount($payslip);
+    }
+
+    /**
+     * @param  Collection<int, EmployeeComponent>  $pasiAssignments
+     */
+    protected function appendPasiLines(Payslip $payslip, Employee $employee, Collection $pasiAssignments, Carbon $periodEnd): void
+    {
+        if ($pasiAssignments->isEmpty()) {
+            return;
+        }
+
+        $rule = app(PasiRuleResolver::class)->ruleFor($employee, $periodEnd);
+
+        if ($rule === null) {
+            $payslip->lines()->create([
+                'component_id' => null,
+                'type'         => SalaryComponentType::Deduction->value,
+                'code'         => 'PASI_WARN',
+                'name'         => __('payroll::payslip.pasi_warning'),
+                'quantity'     => 1,
+                'rate'         => 0,
+                'amount'       => 0,
+                'sort_order'   => 950,
+            ]);
+
+            return;
+        }
+
+        $pasi = app(PasiCalculator::class);
+
+        foreach ($pasiAssignments as $assignment) {
+            $component = $assignment->component;
+
+            $amount = $component->calculation_type === CalculationType::PasiEmployee
+                ? $pasi->employeeShare($payslip, $rule)
+                : $pasi->employerShare($payslip, $rule);
+
+            if ($amount == 0.0) {
+                continue;
+            }
+
+            $payslip->addLine($component, $amount);
+        }
     }
 
     protected function appendLoanDeductions(Payslip $payslip, Employee $employee, int $year, int $month): void

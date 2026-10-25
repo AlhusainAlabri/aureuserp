@@ -2,6 +2,7 @@
 
 namespace Webkul\Payroll\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,7 +47,7 @@ class PasiRule extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function scopeInForce(Builder $query, Carbon $date): Builder
+    public function scopeInForce(Builder $query, CarbonInterface $date): Builder
     {
         return $query
             ->whereDate('effective_from', '<=', $date->toDateString())

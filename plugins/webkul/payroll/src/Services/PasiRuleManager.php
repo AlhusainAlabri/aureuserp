@@ -2,7 +2,7 @@
 
 namespace Webkul\Payroll\Services;
 
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -21,7 +21,7 @@ class PasiRuleManager
         float $employeeRate,
         float $employerRate,
         ?float $salaryCap,
-        Carbon $effectiveFrom,
+        CarbonInterface $effectiveFrom,
     ): PasiRule {
         return DB::transaction(function () use ($category, $employeeRate, $employerRate, $salaryCap, $effectiveFrom): PasiRule {
             $open = PasiRule::query()

@@ -2,7 +2,7 @@
 
 namespace Webkul\Payroll\Services;
 
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Enums\PasiCategory;
 use Webkul\Payroll\Models\PasiRule;
@@ -25,7 +25,7 @@ class PasiRuleResolver
             : PasiCategory::Expat;
     }
 
-    public function ruleFor(Employee $employee, Carbon $date): ?PasiRule
+    public function ruleFor(Employee $employee, CarbonInterface $date): ?PasiRule
     {
         $category = $this->categoryFor($employee);
 
