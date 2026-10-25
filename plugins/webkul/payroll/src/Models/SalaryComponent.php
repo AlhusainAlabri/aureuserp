@@ -33,6 +33,7 @@ class SalaryComponent extends Model
         'default_percent',
         'formula',
         'is_taxable',
+        'is_pasi_insurable',
         'is_active',
         'sort_order',
         'account_id',
@@ -46,6 +47,7 @@ class SalaryComponent extends Model
             'type'              => SalaryComponentType::class,
             'calculation_type'  => CalculationType::class,
             'is_taxable'        => 'boolean',
+            'is_pasi_insurable' => 'boolean',
             'is_active'         => 'boolean',
             'default_amount'    => 'decimal:3',
             'default_percent'   => 'decimal:2',
@@ -126,7 +128,8 @@ class SalaryComponent extends Model
                 / max((float) $payslip->working_days, 1),
                 3,
             ),
-            CalculationType::Formula => 0,
+            CalculationType::Formula                                     => 0,
+            CalculationType::PasiEmployee, CalculationType::PasiEmployer => 0,
         };
     }
 

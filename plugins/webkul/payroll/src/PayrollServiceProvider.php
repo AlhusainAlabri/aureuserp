@@ -38,6 +38,8 @@ class PayrollServiceProvider extends PackageServiceProvider
                 '2026_05_23_120004_create_payroll_payslip_lines_table',
                 '2026_05_23_120005_create_payroll_loans_table',
                 '2026_05_23_120006_create_payroll_loan_installments_table',
+                '2026_10_26_100000_create_payroll_pasi_rules_table',
+                '2026_10_26_100001_add_is_pasi_insurable_to_payroll_salary_components_table',
             ])
             ->hasDependencies([
                 'employees',

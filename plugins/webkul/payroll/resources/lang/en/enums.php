@@ -12,6 +12,12 @@ return [
         'percent_of_gross'  => 'Percentage of Gross',
         'formula'           => 'Formula',
         'hours_based'       => 'Hours Based',
+        'pasi_employee'     => 'PASI Employee Share',
+        'pasi_employer'     => 'PASI Employer Share',
+    ],
+    'pasi_category' => [
+        'omani' => 'Omani',
+        'expat' => 'Expat',
     ],
     'batch_status' => [
         'draft'            => 'Draft',

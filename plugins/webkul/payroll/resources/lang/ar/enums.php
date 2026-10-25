@@ -12,6 +12,12 @@ return [
         'percent_of_gross'  => 'نسبة من الإجمالي',
         'formula'           => 'معادلة',
         'hours_based'       => 'حسب الساعات',
+        'pasi_employee'     => 'حصة الموظف في التأمينات',
+        'pasi_employer'     => 'حصة صاحب العمل في التأمينات',
+    ],
+    'pasi_category' => [
+        'omani' => 'عماني',
+        'expat' => 'وافد',
     ],
     'batch_status' => [
         'draft'            => 'مسودة',

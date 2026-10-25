@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Webkul\Payroll\Enums\CalculationType;
 use Webkul\Payroll\Enums\SalaryComponentType;
 use Webkul\Payroll\Models\SalaryComponent;
+use Webkul\Payroll\Services\PasiDefaults;
 
 class DefaultSalaryComponentsSeeder extends Seeder
 {
@@ -47,9 +48,9 @@ class DefaultSalaryComponentsSeeder extends Seeder
                 'name'              => 'PASI Employee Share',
                 'name_ar'           => 'حصة الموظف',
                 'type'              => SalaryComponentType::Deduction,
-                'calculation_type'  => CalculationType::PercentOfBasic,
+                'calculation_type'  => CalculationType::PasiEmployee,
                 'default_amount'    => null,
-                'default_percent'   => 7.00,
+                'default_percent'   => null,
                 'sort_order'        => 40,
             ],
             [
@@ -57,9 +58,9 @@ class DefaultSalaryComponentsSeeder extends Seeder
                 'name'              => 'PASI Employer Share',
                 'name_ar'           => 'حصة صاحب العمل',
                 'type'              => SalaryComponentType::EmployerCost,
-                'calculation_type'  => CalculationType::PercentOfBasic,
+                'calculation_type'  => CalculationType::PasiEmployer,
                 'default_amount'    => null,
-                'default_percent'   => 11.50,
+                'default_percent'   => null,
                 'sort_order'        => 50,
             ],
         ];
@@ -71,11 +72,14 @@ class DefaultSalaryComponentsSeeder extends Seeder
 
             SalaryComponent::query()->create([
                 ...$componentData,
-                'type'             => $componentData['type']->value,
-                'calculation_type' => $componentData['calculation_type']->value,
-                'is_taxable'       => false,
-                'is_active'        => true,
+                'type'              => $componentData['type']->value,
+                'calculation_type'  => $componentData['calculation_type']->value,
+                'is_taxable'        => false,
+                'is_pasi_insurable' => $componentData['code'] === 'BASIC',
+                'is_active'         => true,
             ]);
         }
+
+        PasiDefaults::seedRules();
     }
 }

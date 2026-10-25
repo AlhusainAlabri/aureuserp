@@ -18,6 +18,10 @@ enum CalculationType: string implements HasColor, HasIcon, HasLabel
 
     case HoursBased = 'hours_based';
 
+    case PasiEmployee = 'pasi_employee';
+
+    case PasiEmployer = 'pasi_employer';
+
     public function getLabel(): string
     {
         return __('payroll::enums.calculation_type.'.$this->value);
@@ -31,6 +35,8 @@ enum CalculationType: string implements HasColor, HasIcon, HasLabel
             self::PercentOfGross  => 'info',
             self::Formula         => 'warning',
             self::HoursBased      => 'success',
+            self::PasiEmployee    => 'info',
+            self::PasiEmployer    => 'info',
         };
     }
 
@@ -42,6 +48,8 @@ enum CalculationType: string implements HasColor, HasIcon, HasLabel
             self::PercentOfGross => 'heroicon-o-chart-pie',
             self::Formula        => 'heroicon-o-code-bracket',
             self::HoursBased     => 'heroicon-o-clock',
+            self::PasiEmployee   => 'heroicon-o-shield-check',
+            self::PasiEmployer   => 'heroicon-o-shield-check',
         };
     }
 
