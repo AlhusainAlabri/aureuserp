@@ -16,6 +16,7 @@ return [
     ],
 
     'models' => [
+        'pasi_rule'          => 'PASI Rule',
         'salary_component'   => 'Salary Component',
         'employee_component' => 'Employee Assignment',
         'payroll_batch'      => 'Payroll Batch',
@@ -24,6 +25,7 @@ return [
     ],
 
     'models_plural' => [
+        'pasi_rule'          => 'PASI Rules',
         'salary_component'   => 'Salary Components',
         'employee_component' => 'Salary Assignments',
         'payroll_batch'      => 'Payroll Batches',
@@ -32,6 +34,13 @@ return [
     ],
 
     'fields' => [
+        'pasi_category'       => 'Category',
+        'employee_rate'       => 'Employee rate',
+        'employer_rate'       => 'Employer rate',
+        'salary_cap'          => 'Salary cap (monthly)',
+        'effective_from'      => 'Effective from',
+        'effective_to'        => 'Effective to',
+        'is_pasi_insurable'   => 'Counts toward PASI',
         'code'                => 'Code',
         'name'                => 'Name (English)',
         'name_ar'             => 'Name (Arabic)',
@@ -100,6 +109,7 @@ return [
     'form' => [
         'sections' => [
             'details'     => 'Details',
+            'pasi_rule'   => 'PASI rate',
             'calculation' => 'Calculation',
             'accounting'  => 'Accounting',
             'assignment'  => 'Assignment',
@@ -282,7 +292,14 @@ return [
     ],
 
     'pasi' => [
-        'overlap' => 'This rate overlaps another PASI rule of the same category. A new rate must start after the current one.',
+        'add_rate'           => 'Add new rate',
+        'salary_cap_hint'    => 'Leave empty for no cap.',
+        'effective_to_hint'  => 'Set automatically when a newer rate is added.',
+        'insurable_hint'     => 'Earnings marked here form the PASI salary base.',
+        'no_cap'             => 'No cap',
+        'open_ended'         => 'Current',
+        'current'            => 'Current',
+        'overlap'            => 'This rate overlaps another PASI rule of the same category. A new rate must start after the current one.',
     ],
 
 ];

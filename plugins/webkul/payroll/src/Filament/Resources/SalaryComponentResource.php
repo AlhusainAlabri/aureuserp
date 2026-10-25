@@ -123,7 +123,13 @@ class SalaryComponentResource extends Resource
                         Toggle::make('is_taxable')
                             ->label(__('payroll::payroll.fields.is_taxable'))
                             ->default(false)
-                            ->columnSpanFull(),
+                            ->columnSpan(1),
+                        Toggle::make('is_pasi_insurable')
+                            ->label(__('payroll::payroll.fields.is_pasi_insurable'))
+                            ->helperText(__('payroll::payroll.pasi.insurable_hint'))
+                            ->default(false)
+                            ->visible(fn (Get $get): bool => ($get('type') instanceof SalaryComponentType ? $get('type')->value : $get('type')) === SalaryComponentType::Earning->value)
+                            ->columnSpan(1),
                     ]),
                 ]),
             Section::make(__('payroll::payroll.form.sections.calculation'))

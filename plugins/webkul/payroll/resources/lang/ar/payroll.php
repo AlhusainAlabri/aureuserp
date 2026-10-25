@@ -16,6 +16,7 @@ return [
     ],
 
     'models' => [
+        'pasi_rule'          => 'قاعدة تأمينات',
         'salary_component'   => 'مكون الراتب',
         'employee_component' => 'تعيين الراتب',
         'payroll_batch'      => 'دفعة الرواتب',
@@ -24,6 +25,7 @@ return [
     ],
 
     'models_plural' => [
+        'pasi_rule'          => 'قواعد التأمينات',
         'salary_component'   => 'مكونات الراتب',
         'employee_component' => 'تعيينات الراتب',
         'payroll_batch'      => 'دفعات الرواتب',
@@ -32,6 +34,13 @@ return [
     ],
 
     'fields' => [
+        'pasi_category'       => 'الفئة',
+        'employee_rate'       => 'نسبة الموظف',
+        'employer_rate'       => 'نسبة صاحب العمل',
+        'salary_cap'          => 'سقف الراتب (شهري)',
+        'effective_from'      => 'سارية من',
+        'effective_to'        => 'سارية حتى',
+        'is_pasi_insurable'   => 'يدخل في احتساب التأمينات',
         'code'                => 'الرمز',
         'name'                => 'الاسم',
         'name_ar'             => 'الاسم (عربي)',
@@ -100,6 +109,7 @@ return [
     'form' => [
         'sections' => [
             'details'     => 'التفاصيل',
+            'pasi_rule'   => 'نسبة التأمينات',
             'calculation' => 'الحساب',
             'accounting'  => 'المحاسبة',
             'assignment'  => 'التعيين',
@@ -282,7 +292,14 @@ return [
     ],
 
     'pasi' => [
-        'overlap' => 'هذه النسبة تتداخل مع قاعدة تأمينات أخرى من الفئة نفسها. يجب أن تبدأ النسبة الجديدة بعد الحالية.',
+        'add_rate'           => 'إضافة نسبة جديدة',
+        'salary_cap_hint'    => 'اتركه فارغاً إذا لا يوجد سقف.',
+        'effective_to_hint'  => 'يُحدَّد تلقائياً عند إضافة نسبة أحدث.',
+        'insurable_hint'     => 'الاستحقاقات المحددة هنا تدخل في أساس احتساب التأمينات.',
+        'no_cap'             => 'بلا سقف',
+        'open_ended'         => 'سارية',
+        'current'            => 'الحالية',
+        'overlap'            => 'هذه النسبة تتداخل مع قاعدة تأمينات أخرى من الفئة نفسها. يجب أن تبدأ النسبة الجديدة بعد الحالية.',
     ],
 
 ];
