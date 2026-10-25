@@ -28,6 +28,7 @@ use Webkul\Account\AccountServiceProvider;
 use Webkul\Accounting\AccountingServiceProvider;
 use Webkul\Analytic\AnalyticServiceProvider;
 use Webkul\Assets\AssetsServiceProvider;
+use Webkul\Attendance\AttendanceServiceProvider;
 use Webkul\Blog\BlogServiceProvider;
 use Webkul\Chatter\ChatterServiceProvider;
 use Webkul\Contact\ContactServiceProvider;
@@ -86,6 +87,7 @@ return [
     AccountingServiceProvider::class,
     AnalyticServiceProvider::class,
     AssetsServiceProvider::class,
+    AttendanceServiceProvider::class,
     BlogServiceProvider::class,
     ChatterServiceProvider::class,
     ContactServiceProvider::class,

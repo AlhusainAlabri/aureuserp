@@ -1,0 +1,24 @@
+{
+    "name": "webkul/attendances",
+    "description": "Attendance management — self check-in, device import, daily records, overtime requests",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\Attendance\\AttendanceServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\Attendance\\": "src/",
+            "Webkul\\Attendance\\Database\\Factories\\": "database/factories/"
+        }
+    }
+}
