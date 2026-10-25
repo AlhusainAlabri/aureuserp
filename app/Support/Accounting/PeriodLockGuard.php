@@ -58,6 +58,18 @@ class PeriodLockGuard
     ];
 
     /**
+     * Cached values a model recomputes on every save from its current relations and rate tables (Move::boot `saving`:
+     * computePartnerDisplayInfo, computeInvoiceCurrencyRate, computePartnerShippingId, computeCommercialPartnerId,
+     * computeInvoiceDateDue). They drift after posting when a customer is renamed or a rate is corrected; in a
+     * reconciliation save of a locked record they are put back to their stored values instead of being changed.
+     *
+     * @var array<class-string<Model>, array<int, string>>
+     */
+    public const RECOMPUTED_ATTRIBUTES = [
+        Move::class => ['invoice_partner_display_name', 'invoice_currency_rate', 'partner_shipping_id', 'commercial_partner_id', 'invoice_date_due'],
+    ];
+
+    /**
      * Two numbers closer than this are the same stored amount; the guarded amount columns keep four decimals.
      */
     protected const NUMERIC_TOLERANCE = 0.000001;
@@ -140,7 +152,7 @@ class PeriodLockGuard
         if ($operation === self::UPDATE) {
             $changes = array_diff_key(static::changedAttributes($model), array_flip(self::RECONCILIATION_ATTRIBUTES[$guardedClass]));
 
-            if ($changes === []) {
+            if ($changes === [] || static::keepRecomputedValues($model, $guardedClass, $changes)) {
                 return;
             }
         }
@@ -178,6 +190,39 @@ class PeriodLockGuard
     }
 
     /**
+     * In a reconciliation save of a locked record whose only other changes are recomputed cache values, put those
+     * values back to what is stored and let the save through. Without a reconciliation change nothing is restored, so
+     * editing (or re-saving) only a cached field is still refused.
+     *
+     * @param  class-string<Model>  $guardedClass
+     * @param  array<string, array{old: mixed, new: mixed}>  $changes
+     */
+    protected static function keepRecomputedValues(Model $model, string $guardedClass, array $changes): bool
+    {
+        $recomputed = array_flip(self::RECOMPUTED_ATTRIBUTES[$guardedClass] ?? []);
+
+        if ($recomputed === [] || array_diff_key($changes, $recomputed) !== []) {
+            return false;
+        }
+
+        $reconciliation = array_flip(array_diff(self::RECONCILIATION_ATTRIBUTES[$guardedClass], ['updated_at']));
+
+        if (array_intersect_key(static::changedAttributes($model), $reconciliation) === []) {
+            return false;
+        }
+
+        $attributes = $model->getAttributes();
+
+        foreach (array_keys($changes) as $attribute) {
+            $attributes[$attribute] = $model->getRawOriginal($attribute);
+        }
+
+        $model->setRawAttributes($attributes);
+
+        return true;
+    }
+
+    /**
      * @return class-string<Model>|null
      */
     protected static function guardedClass(Model $model): ?string
@@ -210,11 +255,14 @@ class PeriodLockGuard
         foreach (static::sides($model, $operation) as $side) {
             $attributes = $side === 'original' ? $model->getRawOriginal() : $model->getAttributes();
 
-            $lockDate = static::judge(
-                $attributes['company_id'] ?? null,
-                $attributes['date'] ?? null,
-                $stateColumn ? ($attributes[$stateColumn] ?? null) : null,
-            );
+            $state = $stateColumn ? ($attributes[$stateColumn] ?? null) : null;
+
+            // An entry created without a state is stored with the column default, which is draft.
+            if ($state === null && $operation === self::CREATE && $model instanceof Move) {
+                $state = PeriodLock::DRAFT_STATE;
+            }
+
+            $lockDate = static::judge($attributes['company_id'] ?? null, $attributes['date'] ?? null, $state);
 
             if ($lockDate) {
                 return $lockDate;

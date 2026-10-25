@@ -4,6 +4,8 @@ use App\Exceptions\PeriodLockedException;
 use App\Support\Accounting\PeriodLock;
 use App\Support\Accounting\PeriodLockGuard;
 use Carbon\CarbonImmutable;
+use Filament\Actions\Testing\TestAction;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Livewire\Component;
@@ -18,15 +20,21 @@ use Webkul\Account\Enums\PaymentState;
 use Webkul\Account\Enums\PaymentStatus;
 use Webkul\Account\Enums\PaymentType;
 use Webkul\Account\Facades\Account as AccountFacade;
+use Webkul\Account\Filament\Resources\InvoiceResource\Actions\PayAction;
+use Webkul\Account\Filament\Resources\InvoiceResource\Actions\ResetToDraftAction as InvoiceResetToDraftAction;
+use Webkul\Account\Filament\Resources\PaymentResource\Actions\ResetToDraftAction as PaymentResetToDraftAction;
 use Webkul\Account\Http\Controllers\API\V1\InvoiceController;
+use Webkul\Account\Livewire\InvoiceSummary;
 use Webkul\Account\Models\Account;
 use Webkul\Account\Models\BankStatementLine;
 use Webkul\Account\Models\Bill;
 use Webkul\Account\Models\CreditNote;
+use Webkul\Account\Models\FullReconcile;
 use Webkul\Account\Models\Invoice;
 use Webkul\Account\Models\Journal;
 use Webkul\Account\Models\Move;
 use Webkul\Account\Models\MoveLine;
+use Webkul\Account\Models\PartialReconcile;
 use Webkul\Account\Models\Partner;
 use Webkul\Account\Models\Payment;
 use Webkul\Account\Models\PaymentMethodLine;
@@ -34,6 +42,9 @@ use Webkul\Account\Models\PaymentRegister;
 use Webkul\Account\Models\Product;
 use Webkul\Account\Models\Refund;
 use Webkul\Chatter\Models\Message;
+use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\ViewInvoice;
+use Webkul\Invoice\Filament\Clusters\Customers\Resources\PaymentResource\Pages\ViewPayment;
+use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 use Webkul\Support\Models\Currency;
@@ -362,8 +373,7 @@ it('PeriodLockGuardTest: still blocks changing a paid locked invoice amount date
     periodLockGuardPay($invoice, $this->afterLock);
 
     expect(fn () => $invoice->refresh()->update(['amount_total' => 500]))->toThrow(PeriodLockedException::class)
-        ->and(fn () => $invoice->refresh()->update(['date' => $this->afterLock]))->toThrow(PeriodLockedException::class)
-        ->and(fn () => DB::transaction(fn () => AccountFacade::resetToDraftMove($invoice->refresh())))->toThrow(PeriodLockedException::class);
+        ->and(fn () => $invoice->refresh()->update(['date' => $this->afterLock]))->toThrow(PeriodLockedException::class);
 
     expect($invoice->refresh())
         ->payment_state->toBe(PaymentState::PAID)
@@ -589,4 +599,245 @@ it('PeriodLockGuardTest: answers a JSON request refused by the lock with a 422 a
     $this->postJson("/_period-lock-guard-probe/{$entry->id}")
         ->assertStatus(422)
         ->assertJson(['message' => __('audit.lock.refused', ['date' => $this->lockDate->toDateString()])]);
+});
+
+// ── Fix round 1 ───────────────────────────────────────────────────────────────
+
+function periodLockGuardApiUser(array $permissions): User
+{
+    require_once base_path('plugins/webkul/support/tests/Helpers/SecurityHelper.php');
+
+    $user = SecurityHelper::authenticateWithPermissions($permissions);
+
+    $user->forceFill([
+        'resource_permission' => PermissionType::GLOBAL,
+        'default_company_id'  => test()->company->id,
+    ])->saveQuietly();
+
+    return $user;
+}
+
+function periodLockGuardAdmin(): User
+{
+    $admin = User::withoutEvents(fn (): User => User::factory()->create([
+        'is_active'           => true,
+        'default_company_id'  => test()->company->id,
+        'resource_permission' => PermissionType::GLOBAL,
+    ]));
+
+    $admin->assignRole('Admin');
+
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+    test()->actingAs($admin);
+
+    return $admin;
+}
+
+/**
+ * A locked invoice paid by a payment dated after the lock date, with its payment.
+ *
+ * @return array{0: Move, 1: Payment}
+ */
+function periodLockGuardPaidLockedInvoice(): array
+{
+    $invoice = periodLockGuardDocument(test()->inPeriod);
+
+    periodLockGuardLock(test()->lockDate);
+
+    periodLockGuardPay($invoice, test()->afterLock);
+
+    return [$invoice->refresh(), Payment::query()->latest('id')->firstOrFail()];
+}
+
+/**
+ * Everything a refused unlink or reset must leave exactly as it was.
+ *
+ * @return array<string, mixed>
+ */
+function periodLockGuardReconciliationState(Move $invoice, Payment $payment): array
+{
+    $lineIds = MoveLine::query()->whereIn('move_id', [$invoice->id, $payment->move_id])->pluck('id');
+
+    $partials = PartialReconcile::query()
+        ->whereIn('debit_move_id', $lineIds)
+        ->orWhereIn('credit_move_id', $lineIds)
+        ->orderBy('id')
+        ->get(['id', 'debit_move_id', 'credit_move_id', 'amount', 'full_reconcile_id'])
+        ->toArray();
+
+    return [
+        'partials'      => $partials,
+        'full'          => FullReconcile::query()->whereIn('id', array_filter(array_column($partials, 'full_reconcile_id')))->pluck('id')->all(),
+        'lines'         => MoveLine::query()->whereIn('id', $lineIds)->orderBy('id')->get(['id', 'move_id', 'amount_residual', 'reconciled', 'matching_number', 'full_reconcile_id'])->toArray(),
+        'invoice'       => Move::query()->withoutGlobalScopes()->find($invoice->id)->only(['state', 'payment_state', 'amount_residual']),
+        'payment'       => Payment::query()->find($payment->id)->only(['state', 'is_reconciled']),
+        'payment_entry' => Move::query()->withoutGlobalScopes()->find($payment->move_id)->only(['state', 'payment_state']),
+    ];
+}
+
+it('PeriodLockGuardTest: leaves a locked invoice paid when unlinking its payment is refused', function (): void {
+    [$invoice, $payment] = periodLockGuardPaidLockedInvoice();
+    periodLockGuardAdmin();
+
+    $before = periodLockGuardReconciliationState($invoice, $payment);
+    $partialId = $before['partials'][0]['id'];
+
+    Livewire::test(InvoiceSummary::class, ['record' => $invoice])
+        ->callAction(TestAction::make('unReconcile')->arguments(['partial_id' => $partialId]))
+        ->assertNotified(__('audit.lock.refused_title'));
+
+    expect(periodLockGuardReconciliationState($invoice, $payment))->toBe($before)
+        ->and($before['invoice']['payment_state'])->toBe(PaymentState::PAID);
+});
+
+it('PeriodLockGuardTest: leaves a locked invoice paid when resetting its payment is refused', function (): void {
+    [$invoice, $payment] = periodLockGuardPaidLockedInvoice();
+    periodLockGuardAdmin();
+
+    $before = periodLockGuardReconciliationState($invoice, $payment);
+
+    Livewire::test(ViewPayment::class, ['record' => $payment->id])
+        ->callAction(PaymentResetToDraftAction::class)
+        ->assertNotified(__('audit.lock.refused_title'));
+
+    expect(periodLockGuardReconciliationState($invoice, $payment))->toBe($before);
+});
+
+it('PeriodLockGuardTest: leaves a locked invoice paid when resetting it is refused', function (): void {
+    [$invoice, $payment] = periodLockGuardPaidLockedInvoice();
+    periodLockGuardAdmin();
+
+    $before = periodLockGuardReconciliationState($invoice, $payment);
+
+    Livewire::test(ViewInvoice::class, ['record' => $invoice->id])
+        ->callAction(InvoiceResetToDraftAction::class)
+        ->assertNotified();
+
+    expect(periodLockGuardReconciliationState($invoice, $payment))->toBe($before);
+});
+
+it('PeriodLockGuardTest: rolls back a refused reset through the API', function (): void {
+    [$invoice, $payment] = periodLockGuardPaidLockedInvoice();
+
+    $before = periodLockGuardReconciliationState($invoice, $payment);
+
+    periodLockGuardApiUser(['update_account_invoice']);
+
+    $this->postJson(route('admin.api.v1.accounts.invoices.reset-to-draft', ['id' => $invoice->id]))
+        ->assertStatus(422)
+        ->assertJsonPath('message', __('audit.lock.refused', ['date' => $this->lockDate->toDateString()]));
+
+    expect(periodLockGuardReconciliationState($invoice, $payment))->toBe($before);
+});
+
+it('PeriodLockGuardTest: still unlinks and resets payments of unlocked invoices', function (): void {
+    $first = periodLockGuardDocument($this->afterLock);
+    periodLockGuardPay($first, $this->afterLock);
+    $firstPayment = Payment::query()->latest('id')->firstOrFail();
+
+    $second = periodLockGuardDocument($this->afterLock);
+    periodLockGuardPay($second, $this->afterLock);
+    $secondPayment = Payment::query()->latest('id')->firstOrFail();
+
+    periodLockGuardLock($this->lockDate);
+    periodLockGuardAdmin();
+
+    $partialId = periodLockGuardReconciliationState($first, $firstPayment)['partials'][0]['id'];
+
+    Livewire::test(InvoiceSummary::class, ['record' => $first->refresh()])
+        ->callAction(TestAction::make('unReconcile')->arguments(['partial_id' => $partialId]))
+        ->assertNotNotified(__('audit.lock.refused_title'));
+
+    Livewire::test(ViewPayment::class, ['record' => $secondPayment->id])
+        ->callAction(PaymentResetToDraftAction::class)
+        ->assertNotNotified(__('audit.lock.refused_title'));
+
+    expect(PartialReconcile::query()->find($partialId))->toBeNull()
+        ->and($first->refresh()->payment_state)->toBe(PaymentState::NOT_PAID)
+        ->and($secondPayment->refresh()->state)->toBe(PaymentStatus::DRAFT)
+        ->and($second->refresh()->payment_state)->toBe(PaymentState::NOT_PAID);
+});
+
+it('PeriodLockGuardTest: still pays a locked invoice through the pay action', function (): void {
+    $invoice = periodLockGuardDocument($this->inPeriod);
+
+    periodLockGuardLock($this->lockDate);
+    periodLockGuardAdmin();
+
+    Livewire::test(ViewInvoice::class, ['record' => $invoice->id])
+        ->callAction(PayAction::class, ['payment_date' => $this->afterLock])
+        ->assertHasNoFormErrors()
+        ->assertNotNotified(__('audit.lock.refused_title'));
+
+    expect($invoice->refresh()->payment_state)->toBe(PaymentState::PAID)
+        ->and($invoice->date->toDateString())->toBe($this->inPeriod);
+});
+
+it('PeriodLockGuardTest: pays a locked invoice whose customer was renamed after posting', function (): void {
+    $invoice = periodLockGuardDocument($this->inPeriod);
+    $originalName = $invoice->invoice_partner_display_name;
+
+    $this->partner->update(['name' => 'Renamed customer']);
+
+    periodLockGuardLock($this->lockDate);
+
+    periodLockGuardPay($invoice->refresh(), $this->afterLock);
+
+    expect($invoice->refresh())
+        ->payment_state->toBe(PaymentState::PAID)
+        ->invoice_partner_display_name->toBe($originalName);
+});
+
+it('PeriodLockGuardTest: pays a locked invoice whose stored rate and partner links no longer match their recomputed values', function (): void {
+    $invoice = periodLockGuardDocument($this->inPeriod);
+    $shipping = Partner::factory()->create();
+
+    // As stored when posted (an older rate, a separate delivery address); every save would recompute them now.
+    DB::table('accounts_account_moves')->where('id', $invoice->id)->update([
+        'invoice_currency_rate' => 1.25,
+        'partner_shipping_id'   => $shipping->id,
+        'commercial_partner_id' => $shipping->id,
+    ]);
+
+    periodLockGuardLock($this->lockDate);
+
+    periodLockGuardPay($invoice->refresh(), $this->afterLock);
+
+    $stored = DB::table('accounts_account_moves')->where('id', $invoice->id)->first();
+
+    expect($stored->payment_state)->toBe(PaymentState::PAID->value)
+        ->and((float) $stored->invoice_currency_rate)->toBe(1.25)
+        ->and((int) $stored->partner_shipping_id)->toBe($shipping->id)
+        ->and((int) $stored->commercial_partner_id)->toBe($shipping->id);
+});
+
+it('PeriodLockGuardTest: still refuses editing a recomputed field of a locked posted entry', function (): void {
+    $invoice = periodLockGuardDocument($this->inPeriod);
+
+    $this->partner->update(['name' => 'Renamed customer']);
+
+    periodLockGuardLock($this->lockDate);
+
+    expect(fn () => $invoice->refresh()->save())->toThrow(PeriodLockedException::class)
+        ->and(fn () => $invoice->refresh()->update(['invoice_partner_display_name' => 'Hand-typed']))->toThrow(PeriodLockedException::class)
+        ->and(fn () => $invoice->refresh()->update(['amount_residual' => 0, 'reference' => 'Edited']))->toThrow(PeriodLockedException::class);
+});
+
+it('PeriodLockGuardTest: judges an entry created without a state as a draft', function (): void {
+    periodLockGuardLock($this->lockDate);
+
+    $entry = new Move([
+        'company_id'  => $this->company->id,
+        'currency_id' => $this->currency->id,
+        'journal_id'  => $this->saleJournal->id,
+        'move_type'   => MoveType::ENTRY,
+        'date'        => $this->inPeriod,
+    ]);
+
+    $entry->save();
+
+    expect($entry->refresh()->state)->toBe(MoveState::DRAFT)
+        ->and(fn () => $entry->refresh()->update(['state' => MoveState::POSTED]))->toThrow(PeriodLockedException::class)
+        ->and(fn () => periodLockGuardPostedEntry($this->inPeriod))->toThrow(PeriodLockedException::class);
 });
