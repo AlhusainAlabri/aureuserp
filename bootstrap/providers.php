@@ -5,6 +5,7 @@ use App\Providers\AccountingExtensionsServiceProvider;
 use App\Providers\ApprovalNotificationsServiceProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\AssetsExtensionsServiceProvider;
+use App\Providers\AuditServiceProvider;
 use App\Providers\ChatterExtensionsServiceProvider;
 use App\Providers\ContactExtensionsServiceProvider;
 use App\Providers\DashboardExtensionsServiceProvider;
@@ -64,6 +65,7 @@ return [
     AppServiceProvider::class,
     ApprovalNotificationsServiceProvider::class,
     AssetsExtensionsServiceProvider::class,
+    AuditServiceProvider::class,
     ChatterExtensionsServiceProvider::class,
     ContactExtensionsServiceProvider::class,
     DashboardExtensionsServiceProvider::class,
