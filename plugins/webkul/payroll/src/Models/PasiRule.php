@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Webkul\Payroll\Database\Factories\PasiRuleFactory;
 use Webkul\Payroll\Enums\PasiCategory;
 use Webkul\Security\Models\User;
@@ -55,6 +56,23 @@ class PasiRule extends Model
             });
     }
 
+    public function overlapsAnotherRule(): bool
+    {
+        $from = Carbon::parse($this->effective_from)->toDateString();
+        $to = $this->effective_to === null ? null : Carbon::parse($this->effective_to)->toDateString();
+        $category = $this->category instanceof PasiCategory ? $this->category->value : $this->category;
+
+        return static::query()
+            ->where('category', $category)
+            ->when($this->exists, fn (Builder $query) => $query->whereKeyNot($this->getKey()))
+            ->when($to !== null, fn (Builder $query) => $query->whereDate('effective_from', '<=', $to))
+            ->where(function (Builder $query) use ($from): void {
+                $query->whereNull('effective_to')
+                    ->orWhereDate('effective_to', '>=', $from);
+            })
+            ->exists();
+    }
+
     protected static function newFactory(): PasiRuleFactory
     {
         return PasiRuleFactory::new();
@@ -66,6 +84,14 @@ class PasiRule extends Model
 
         static::creating(function (self $rule): void {
             $rule->creator_id ??= Auth::id();
+        });
+
+        static::saving(function (self $rule): void {
+            if ($rule->overlapsAnotherRule()) {
+                throw ValidationException::withMessages([
+                    'effective_from' => __('payroll::payroll.pasi.overlap'),
+                ]);
+            }
         });
     }
 }

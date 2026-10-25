@@ -281,4 +281,8 @@ return [
         'footer'   => 'This is an automated message from the payroll system.',
     ],
 
+    'pasi' => [
+        'overlap' => 'This rate overlaps another PASI rule of the same category. A new rate must start after the current one.',
+    ],
+
 ];
