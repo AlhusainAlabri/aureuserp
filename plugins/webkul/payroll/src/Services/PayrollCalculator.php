@@ -20,11 +20,15 @@ use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Models\SalaryComponent;
+use Webkul\Payroll\Settings\PayrollAttendanceSettings;
 use Webkul\TimeOff\Models\Leave;
 
 class PayrollCalculator
 {
-    private const float WORKING_DAYS = 22.0;
+    /**
+     * Working days of a month when attendance cannot tell (plugin not installed or no work schedule).
+     */
+    private const float LEGACY_WORKING_DAYS = 22.0;
 
     public function calculatePayslip(Employee $employee, int $year, int $month): Payslip
     {
@@ -111,8 +115,13 @@ class PayrollCalculator
 
         $contractualBasic = $this->resolveContractualBasic($assignments);
         $unpaidLeaveDays = $this->resolveUnpaidLeaveDays($employee, $year, $month, $periodStart, $periodEnd);
-        $workedDays = max(self::WORKING_DAYS - $unpaidLeaveDays, 0);
-        $basicSalary = $this->prorateBasic($contractualBasic, $workedDays);
+        $attendance = app(AttendanceBridge::class)->summary($employee, $year, $month);
+        $workingDays = $attendance === null ? self::LEGACY_WORKING_DAYS : (float) $attendance['working_days'];
+        $absentDays = $attendance !== null && app(PayrollAttendanceSettings::class)->deduct_absence
+            ? (float) $attendance['absent_days']
+            : 0.0;
+        $workedDays = max($workingDays - $unpaidLeaveDays - $absentDays, 0);
+        $basicSalary = $this->prorateBasic($contractualBasic, $workedDays, $workingDays);
 
         $employee->loadMissing('bankAccount.bank');
 
@@ -124,9 +133,12 @@ class PayrollCalculator
         $payslip->fill([
             'period_year'         => $year,
             'period_month'        => $month,
-            'working_days'        => self::WORKING_DAYS,
+            'working_days'        => $workingDays,
             'worked_days'         => $workedDays,
             'unpaid_leave_days'   => $unpaidLeaveDays,
+            'absent_days'         => $attendance['absent_days'] ?? null,
+            'late_minutes'        => $attendance['late_minutes'] ?? null,
+            'overtime_hours'      => $attendance === null ? null : round(array_sum($attendance['overtime_hours']), 2),
             'pasi_base'           => null,
             'basic_salary'        => $basicSalary,
             'payment_method'      => PaymentMethod::BankTransfer,
@@ -180,6 +192,8 @@ class PayrollCalculator
 
         $this->appendLoanDeductions($payslip, $employee, $year, $month);
 
+        $this->appendAttendanceLines($payslip, $attendance, $contractualBasic, $workingDays);
+
         $payslip->recalculate();
 
         return $payslip->fresh(['lines']);
@@ -217,14 +231,14 @@ class PayrollCalculator
         return 0.0;
     }
 
-    protected function prorateBasic(float $contractualBasic, float $workedDays): float
+    protected function prorateBasic(float $contractualBasic, float $workedDays, float $workingDays): float
     {
-        if ($workedDays >= self::WORKING_DAYS) {
+        if ($workedDays >= $workingDays) {
             return round($contractualBasic, 3);
         }
 
         return round(
-            $contractualBasic * ($workedDays / self::WORKING_DAYS),
+            $contractualBasic * ($workedDays / $workingDays),
             3,
         );
     }
@@ -343,6 +357,63 @@ class PayrollCalculator
             }
 
             $payslip->addLine($component, $amount);
+        }
+    }
+
+    /**
+     * Lateness deduction and approved-overtime pay, each behind its own switch. Both lines have no salary
+     * component, so they never count toward PASI, and they are added after the component pass, so
+     * percent-of-gross components do not include overtime. The hourly rate uses the contractual basic.
+     *
+     * @param  array{has_schedule: bool, working_days: int, absent_days: int, late_minutes: int, daily_hours: float, overtime_hours: array<string, float>}|null  $attendance
+     */
+    protected function appendAttendanceLines(Payslip $payslip, ?array $attendance, float $contractualBasic, float $workingDays): void
+    {
+        if ($attendance === null || $workingDays <= 0 || $attendance['daily_hours'] <= 0) {
+            return;
+        }
+
+        $settings = app(PayrollAttendanceSettings::class);
+        $hourlyRate = $contractualBasic / $workingDays / $attendance['daily_hours'];
+
+        if ($settings->deduct_lateness) {
+            $lateAmount = round($attendance['late_minutes'] / 60 * $hourlyRate, 3);
+
+            if ($lateAmount > 0) {
+                $payslip->lines()->create([
+                    'component_id' => null,
+                    'type'         => SalaryComponentType::Deduction->value,
+                    'code'         => 'LATE',
+                    'name'         => __('payroll::payslip.late_deduction'),
+                    'quantity'     => 1,
+                    'rate'         => 0,
+                    'amount'       => $lateAmount,
+                    'sort_order'   => 920,
+                ]);
+            }
+        }
+
+        if ($settings->pay_overtime) {
+            $overtimeAmount = 0.0;
+
+            foreach ($attendance['overtime_hours'] as $multiplier => $hours) {
+                $overtimeAmount += $hours * $hourlyRate * (float) $multiplier;
+            }
+
+            $overtimeAmount = round($overtimeAmount, 3);
+
+            if ($overtimeAmount > 0) {
+                $payslip->lines()->create([
+                    'component_id' => null,
+                    'type'         => SalaryComponentType::Earning->value,
+                    'code'         => 'OVERTIME',
+                    'name'         => __('payroll::payslip.overtime_pay'),
+                    'quantity'     => 1,
+                    'rate'         => 0,
+                    'amount'       => $overtimeAmount,
+                    'sort_order'   => 150,
+                ]);
+            }
         }
     }
 

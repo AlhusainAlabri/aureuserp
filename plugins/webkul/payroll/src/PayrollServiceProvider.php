@@ -51,6 +51,7 @@ class PayrollServiceProvider extends PackageServiceProvider
                 '2026_10_26_200001_create_payroll_end_of_service_settlements_table',
                 '2026_10_26_200004_add_live_employee_id_to_payroll_end_of_service_settlements_table',
                 '2026_10_26_200002_add_pays_gratuity_to_employees_departure_reasons_table',
+                '2026_10_27_100000_add_attendance_columns_to_payroll_payslips_table',
             ])
             ->hasDependencies([
                 'employees',
@@ -58,6 +59,7 @@ class PayrollServiceProvider extends PackageServiceProvider
             ->runsMigrations()
             ->hasSettings([
                 '2026_10_26_200003_create_gratuity_settings',
+                '2026_10_27_100001_create_payroll_attendance_settings',
             ])
             ->runsSettings()
             ->hasSeeders(

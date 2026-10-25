@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\PasiFixtures;
+use Tests\Helpers\PayrollWithoutAttendance;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Enums\CalculationType;
 use Webkul\Payroll\Enums\PasiCategory;
@@ -205,6 +206,7 @@ it('PasiCalculationTest: computes PASI on the pro-rated basic after unpaid leave
         $this->markTestSkipped('Time Off is not installed in the test database.');
     }
 
+    PayrollWithoutAttendance::use();
     pasiOmaniDefaults();
     $employee = PasiFixtures::employee(PasiFixtures::company('OM'), 'OM');
 

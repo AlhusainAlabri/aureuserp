@@ -141,6 +141,15 @@ class PayslipResource extends Resource
                     TextEntry::make('working_days')->label(__('payroll::payroll.fields.working_days')),
                     TextEntry::make('worked_days')->label(__('payroll::payroll.fields.worked_days')),
                     TextEntry::make('unpaid_leave_days')->label(__('payroll::payroll.fields.unpaid_leave_days')),
+                    TextEntry::make('absent_days')
+                        ->label(__('payroll::payroll.fields.absent_days'))
+                        ->visible(fn (Payslip $record): bool => $record->absent_days !== null),
+                    TextEntry::make('late_minutes')
+                        ->label(__('payroll::payroll.fields.late_minutes'))
+                        ->visible(fn (Payslip $record): bool => $record->late_minutes !== null),
+                    TextEntry::make('overtime_hours')
+                        ->label(__('payroll::payroll.fields.overtime_hours'))
+                        ->visible(fn (Payslip $record): bool => $record->overtime_hours !== null),
                     TextEntry::make('payment_method')->label(__('payroll::payroll.fields.payment_method'))->badge(),
                     TextEntry::make('bank_name')->label(__('payroll::payroll.fields.bank_name'))->placeholder('-'),
                     TextEntry::make('bank_account_number')->label(__('payroll::payroll.fields.bank_account_number'))->placeholder('-'),

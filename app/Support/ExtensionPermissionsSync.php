@@ -247,7 +247,8 @@ class ExtensionPermissionsSync
 
     /**
      * PASI rules arrived after payroll roles were created: whoever can already update salary
-     * components may also manage PASI rules and read the contribution schedule.
+     * components may also manage PASI rules and read the contribution schedule. The same roles manage the
+     * gratuity tiers and settings, end-of-service settlements and the attendance-in-payroll switches.
      */
     public function syncPayroll(): void
     {
@@ -272,6 +273,7 @@ class ExtensionPermissionsSync
             'create_payroll_gratuity::tier',
             'update_payroll_gratuity::tier',
             'page_payroll_manage_gratuity_settings',
+            'page_payroll_manage_payroll_attendance_settings',
             'view_any_payroll_end::of::service::settlement',
             'view_payroll_end::of::service::settlement',
             'create_payroll_end::of::service::settlement',
