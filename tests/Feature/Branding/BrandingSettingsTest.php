@@ -102,7 +102,7 @@ it('falls back to the bundled logos when no upload is saved', function (): void 
         ->and(Branding::fullLogoUrl(dark: true))->toBe(asset(config('branding.default_logo')))
         ->and(Branding::compactLogoUrl())->toBe(asset(config('branding.default_logo_compact')))
         ->and(Branding::compactLogoUrl(dark: true))->toBe(asset(config('branding.default_logo_compact')))
-        ->and(Branding::faviconUrl())->toBe(asset('images/favicon.ico'))
+        ->and(Branding::faviconUrl())->toBe(asset(config('branding.default_favicon')))
         ->and(Branding::fullLogoDataUri())->toStartWith('data:image/');
 });
 

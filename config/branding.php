@@ -29,6 +29,9 @@ return [
 
     'default_logo_compact' => env('BRANDING_DEFAULT_LOGO_COMPACT', 'images/brand/default-mark.svg'),
 
+    // Browser tab icon until one is uploaded under Settings > Branding (path relative to public/).
+    'default_favicon' => env('BRANDING_DEFAULT_FAVICON', 'images/brand/favicon.ico'),
+
     /*
     |--------------------------------------------------------------------------
     | Primary Color Presets

@@ -222,8 +222,10 @@ class Branding
             return $uploaded;
         }
 
-        if (is_file(public_path('images/favicon.ico'))) {
-            return asset('images/favicon.ico');
+        $bundled = (string) config('branding.default_favicon');
+
+        if ($bundled !== '' && is_file(public_path($bundled))) {
+            return asset($bundled);
         }
 
         return asset('favicon.ico');
