@@ -38,6 +38,7 @@ class Payslip extends Model
         'deductions_amount',
         'net_amount',
         'employer_cost',
+        'pasi_base',
         'payment_method',
         'bank_account_number',
         'bank_name',
@@ -60,6 +61,7 @@ class Payslip extends Model
             'deductions_amount'  => 'decimal:3',
             'net_amount'         => 'decimal:3',
             'employer_cost'      => 'decimal:3',
+            'pasi_base'          => 'decimal:3',
         ];
     }
 

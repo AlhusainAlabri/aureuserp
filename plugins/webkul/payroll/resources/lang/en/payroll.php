@@ -312,6 +312,7 @@ return [
         'salary_cap_hint'    => 'Leave empty for no cap.',
         'effective_to_hint'  => 'Set automatically when a newer rate is added.',
         'insurable_hint'     => 'Earnings marked here form the PASI salary base.',
+        'cap_positive'       => 'The salary cap must be greater than zero. Leave it empty for no cap.',
         'no_cap'             => 'No cap',
         'open_ended'         => 'Current',
         'current'            => 'Current',

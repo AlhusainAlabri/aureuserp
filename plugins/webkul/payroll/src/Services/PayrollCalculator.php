@@ -127,6 +127,7 @@ class PayrollCalculator
             'working_days'        => self::WORKING_DAYS,
             'worked_days'         => $workedDays,
             'unpaid_leave_days'   => $unpaidLeaveDays,
+            'pasi_base'           => null,
             'basic_salary'        => $basicSalary,
             'payment_method'      => PaymentMethod::BankTransfer,
             'bank_account_number' => $employee->bankAccount?->account_number,
@@ -327,6 +328,8 @@ class PayrollCalculator
         }
 
         $pasi = app(PasiCalculator::class);
+
+        $payslip->update(['pasi_base' => $pasi->base($payslip, $rule)]);
 
         foreach ($pasiAssignments as $assignment) {
             $component = $assignment->component;

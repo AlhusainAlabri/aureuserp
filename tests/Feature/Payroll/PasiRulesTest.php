@@ -112,3 +112,22 @@ it('PasiRulesTest: refuses to edit a rule into an overlap', function (): void {
 
     expect((float) $later->fresh()->employee_rate)->toBe(8.5);
 });
+
+it('PasiRulesTest: refuses a zero or negative salary cap because it would remove all PASI', function (float $cap): void {
+    try {
+        PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, $cap, '2026-01-01');
+        $this->fail('A non-positive salary cap was accepted.');
+    } catch (ValidationException $exception) {
+        expect($exception->errors())->toHaveKey('salary_cap');
+    }
+
+    expect(PasiRule::query()->count())->toBe(0);
+})->with([0.0, -5.0]);
+
+it('PasiRulesTest: accepts an empty or positive salary cap', function (): void {
+    $uncapped = PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, null, '2026-01-01', '2026-12-31');
+    $capped = PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, 3000, '2027-01-01');
+
+    expect($uncapped->salary_cap)->toBeNull()
+        ->and((float) $capped->salary_cap)->toBe(3000.0);
+});

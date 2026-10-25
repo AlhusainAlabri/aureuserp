@@ -25,9 +25,11 @@ class CreatePasiRule extends CreateRecord
                 Carbon::parse($data['effective_from']),
             );
         } catch (ValidationException $exception) {
-            throw ValidationException::withMessages([
-                'data.effective_from' => $exception->errors()['effective_from'] ?? [__('payroll::payroll.pasi.overlap')],
-            ]);
+            throw ValidationException::withMessages(
+                collect($exception->errors())
+                    ->mapWithKeys(fn (array $messages, string $key): array => ['data.'.$key => $messages])
+                    ->all(),
+            );
         }
     }
 }

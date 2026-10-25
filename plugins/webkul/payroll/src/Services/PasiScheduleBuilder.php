@@ -40,13 +40,12 @@ class PasiScheduleBuilder
                 }
 
                 $category = $this->resolver->categoryFor($payslip->employee);
-                $rule = $this->resolver->ruleFor($payslip->employee, $periodEnd);
 
                 return [
                     'employee'         => (string) $payslip->employee->name,
                     'civil_id'         => $payslip->employee->civil_id,
                     'category'         => $category?->getLabel() ?? '-',
-                    'insurable_salary' => $rule === null ? 0.0 : $this->calculator->base($payslip, $rule),
+                    'insurable_salary' => $this->insurableSalary($payslip, $periodEnd),
                     'employee_share'   => $employeeShare,
                     'employer_share'   => $employerShare,
                 ];
@@ -90,6 +89,20 @@ class PasiScheduleBuilder
         ])->all();
 
         return Utf8Csv::fromRows([$header, ...$lines]);
+    }
+
+    /**
+     * The base stored when the payslip was calculated; payslips from before it was stored fall back to today's rule.
+     */
+    protected function insurableSalary(Payslip $payslip, Carbon $periodEnd): float
+    {
+        if ($payslip->pasi_base !== null) {
+            return (float) $payslip->pasi_base;
+        }
+
+        $rule = $this->resolver->ruleFor($payslip->employee, $periodEnd);
+
+        return $rule === null ? 0.0 : $this->calculator->base($payslip, $rule);
     }
 
     protected function shareOf(Payslip $payslip, CalculationType $type): float

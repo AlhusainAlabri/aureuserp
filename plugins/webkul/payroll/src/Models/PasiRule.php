@@ -88,6 +88,12 @@ class PasiRule extends Model
         });
 
         static::saving(function (self $rule): void {
+            if ($rule->salary_cap !== null && (float) $rule->salary_cap <= 0) {
+                throw ValidationException::withMessages([
+                    'salary_cap' => __('payroll::payroll.pasi.cap_positive'),
+                ]);
+            }
+
             if ($rule->overlapsAnotherRule()) {
                 throw ValidationException::withMessages([
                     'effective_from' => __('payroll::payroll.pasi.overlap'),

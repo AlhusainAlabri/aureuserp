@@ -142,3 +142,36 @@ it('PasiScheduleTest: forbids the page without its permission', function (): voi
 
     Livewire::test(PasiContributionSchedule::class)->assertForbidden();
 });
+
+it('PasiScheduleTest: keeps the insurable salary the payslip was calculated with after rules or flags change', function (): void {
+    $rule = PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, 800, '2000-01-01');
+    $company = PasiFixtures::company('OM');
+
+    $payslip = pasiSchedulePayslip($company, 'OM', 1000, PayslipStatus::Validated, '11111111');
+
+    expect((float) $payslip->fresh()->pasi_base)->toBe(800.0);
+
+    $rule->update(['salary_cap' => 900]);
+    PasiFixtures::components()['basic']->update(['is_pasi_insurable' => false]);
+
+    $row = app(PasiScheduleBuilder::class)->rows(2027, 3)->firstOrFail();
+
+    expect($row['insurable_salary'])->toBe(800.0)
+        ->and($row['employee_share'])->toBe(56.0)
+        ->and($row['employer_share'])->toBe(92.0);
+});
+
+it('PasiScheduleTest: clears the stored base when a recalculation finds no PASI', function (): void {
+    PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, null, '2000-01-01');
+    $company = PasiFixtures::company('OM');
+    $employee = PasiFixtures::employee($company, 'OM', 1000);
+
+    $calculator = app(PayrollCalculator::class);
+    $payslip = $calculator->calculatePayslip($employee, 2027, 3);
+    expect((float) $payslip->fresh()->pasi_base)->toBe(1000.0);
+
+    $employee->update(['country_id' => null]);
+    $calculator->recalculatePayslip($payslip->fresh());
+
+    expect($payslip->fresh()->pasi_base)->toBeNull();
+});

@@ -73,7 +73,7 @@ class PasiRuleResource extends Resource
                             ->label(__('payroll::payroll.fields.salary_cap'))
                             ->helperText(__('payroll::payroll.pasi.salary_cap_hint'))
                             ->numeric()
-                            ->minValue(0)
+                            ->minValue(0.001)
                             ->columnSpan(1),
                         TextInput::make('employee_rate')
                             ->label(__('payroll::payroll.fields.employee_rate'))

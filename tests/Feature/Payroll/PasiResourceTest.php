@@ -165,3 +165,20 @@ it('PasiResourceTest: the salary component form saves the insurable flag', funct
 
     expect($components['basic']->fresh()->is_pasi_insurable)->toBeFalse();
 });
+
+it('PasiResourceTest: rejects a zero salary cap in the form', function (): void {
+    pasiAdmin();
+
+    Livewire::test(CreatePasiRule::class)
+        ->fillForm([
+            'category'       => PasiCategory::Omani->value,
+            'employee_rate'  => 7,
+            'employer_rate'  => 11.5,
+            'salary_cap'     => 0,
+            'effective_from' => '2027-01-01',
+        ])
+        ->call('create')
+        ->assertHasFormErrors(['salary_cap']);
+
+    expect(PasiRule::query()->count())->toBe(0);
+});
