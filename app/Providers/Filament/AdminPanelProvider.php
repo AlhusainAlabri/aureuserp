@@ -26,6 +26,7 @@ use App\Filament\Pages\MyEmployeeSubmissions;
 use App\Filament\Pages\MyRequests;
 use App\Filament\Pages\MySelfAssessment;
 use App\Filament\Pages\MyWarnings;
+use App\Filament\Pages\Settings\ManageLockDate;
 use App\Filament\Pages\Settings\ManageNotificationPreferences;
 use App\Filament\Projects\Pages\OperationsCalendar;
 use App\Filament\Projects\Pages\TaskKanban;
@@ -287,6 +288,7 @@ class AdminPanelProvider extends PanelProvider
                 RecordConsumption::class,
                 ProductPurchaseHistoryPage::class,
                 ManageNotificationPreferences::class,
+                ManageLockDate::class,
             ])
             ->widgets([
                 PendingApprovalsWidget::class,

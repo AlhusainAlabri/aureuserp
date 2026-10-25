@@ -44,6 +44,21 @@ return [
         'date_in_future' => 'The lock date cannot be later than today.',
     ],
 
+    'lock_page' => [
+        'navigation'     => 'Lock date',
+        'title'          => 'Accounting lock date',
+        'subheading'     => 'Close a period so posted entries in it can no longer be changed.',
+        'section'        => 'Lock date by company',
+        'help'           => 'Everything dated on or before the lock date is closed: posted invoices, bills, credit notes, payments, journal entries and bank statements in that period cannot be edited, reset to draft, cancelled or deleted, and nothing can be posted or moved into it. Drafts are still allowed, and an old invoice can still be paid or reconciled with a payment dated after the lock date. Moving the date back unlocks the period again, and every change of the date is recorded in the audit log. Users with the "post in locked period" permission can still post in a closed period; each such change is logged.',
+        'company'        => 'Company',
+        'lock_date'      => 'Locked up to (and including)',
+        'lock_date_help' => 'Leave empty for no lock. The date cannot be later than today.',
+        'save'           => 'Save',
+        'saved_title'    => 'Lock date saved',
+        'saved_locked'   => 'Accounting is locked up to :date.',
+        'saved_cleared'  => 'The lock was removed. No period is locked.',
+    ],
+
     'permissions' => [
         'added'   => 'Permissions added',
         'removed' => 'Permissions removed',

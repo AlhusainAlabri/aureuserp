@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Filament\Pages\Settings\ManageLockDate;
+use App\Support\Accounting\PeriodLock;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -26,6 +28,7 @@ class ExtensionPermissionsSync
         $this->syncAttendance();
         $this->syncOperations();
         $this->syncAudit();
+        $this->syncAccounting();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
@@ -350,6 +353,25 @@ class ExtensionPermissionsSync
                 'view_filament_audit::log',
             ],
             ['Admin', 'super_admin', 'general_manager'],
+        );
+    }
+
+    /**
+     * The lock date page and the right to post in a closed period go to the finance roles only. The override
+     * is granted on purpose: every use of it is written to the audit log.
+     */
+    public function syncAccounting(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles(
+            [
+                ManageLockDate::PERMISSION,
+                PeriodLock::OVERRIDE_PERMISSION,
+            ],
+            ['Admin', 'super_admin', 'finance_manager'],
         );
     }
 }
