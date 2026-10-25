@@ -23,10 +23,11 @@ class AttendanceDayCalculator
      * Computes the employee's attendance for the local date (only `$date->toDateString()` is used) from
      * that day's punches and work calendar, stores it and syncs the pending overtime request.
      *
-     * Returns without saving anything — an existing row as it is, otherwise a new unsaved row — when:
-     * the stored row is a manual override; the employee is inactive or left before the date; or it is a
-     * day without punches, leave or holiday that is not a rest day (absences are written by the
-     * nightly close, which receives such a row with the `absent` status when the day was a working day).
+     * Returns without saving anything — an existing row as it is, otherwise a new unsaved row — when
+     * the stored row is a manual override, or the employee is inactive or left before the date.
+     *
+     * A day without punches, leave or holiday that is not a rest day has no basis of its own; see
+     * withoutBasis() for how it is returned and how a stale stored row is reset.
      */
     public function calculate(Employee $employee, CarbonInterface $date): AttendanceDay
     {
@@ -59,12 +60,7 @@ class AttendanceDayCalculator
             };
 
             if ($status === null) {
-                return $existing ?? new AttendanceDay([
-                    'employee_id'      => $employee->id,
-                    'date'             => $dateString,
-                    'expected_minutes' => $workDay->expectedMinutes,
-                    'status'           => $workDay->isWorkingDay ? DayStatus::Absent : null,
-                ]);
+                return $this->withoutBasis($employee, $workDay, $dateString, $zone, $existing);
             }
 
             return $this->store($employee, $dateString, [
@@ -106,8 +102,16 @@ class AttendanceDayCalculator
         // cover part of the shift, so they are not charged either.
         $timeRules = $workDay->hasSchedule && $workDay->isWorkingDay && ! $isFlexible && $leaveId === null;
 
-        $late = $timeRules
-            ? max(0, $inMinute - ($workDay->startMinute + $this->settings->grace_minutes))
+        // A lone punch at or after the shift midpoint is a check-out with a missing check-in, not lateness.
+        $isMissingCheckIn = $outMinute === null
+            && $timeRules
+            && $inMinute * 2 >= $workDay->startMinute + $workDay->endMinute;
+
+        $late = $timeRules && ! $isMissingCheckIn
+            ? min(
+                $workDay->expectedMinutes,
+                max(0, $inMinute - ($workDay->startMinute + $this->settings->grace_minutes)),
+            )
             : 0;
 
         $earlyLeave = $timeRules && $outMinute !== null
@@ -190,6 +194,53 @@ class AttendanceDayCalculator
         }
 
         return Carbon::parse($employee->departure_date)->toDateString() >= $dateString;
+    }
+
+    /**
+     * A day without punches, leave or holiday that is not a rest day. Absences are written by the nightly
+     * close, so nothing new is stored: the result is a new unsaved row (status `absent` on a scheduled
+     * working day, null otherwise). A stored row left from an earlier basis (cancelled leave, deleted
+     * holiday, removed punches) never keeps that stale data:
+     * - on a scheduled working day that is already closed (before today in the employee's zone), or when
+     *   the row is already `absent`, it is reset in place to an `absent` day with zero minutes;
+     * - otherwise (an open day, or no schedule) it is deleted and the nightly close decides.
+     * Either way the pending overtime request is synced away; a decided one stays.
+     */
+    protected function withoutBasis(Employee $employee, WorkDay $workDay, string $dateString, string $zone, ?AttendanceDay $existing): AttendanceDay
+    {
+        $unsaved = new AttendanceDay([
+            'employee_id'      => $employee->id,
+            'date'             => $dateString,
+            'expected_minutes' => $workDay->expectedMinutes,
+            'status'           => $workDay->isWorkingDay ? DayStatus::Absent : null,
+        ]);
+        $unsaved->setRelation('employee', $employee);
+
+        if ($existing === null) {
+            return $unsaved;
+        }
+
+        $isClosedDay = $dateString < Carbon::now($zone)->toDateString();
+
+        if ($workDay->isWorkingDay && ($isClosedDay || $existing->status === DayStatus::Absent)) {
+            return $this->store($employee, $dateString, [
+                'first_in'            => null,
+                'last_out'            => null,
+                'worked_minutes'      => 0,
+                'expected_minutes'    => $workDay->expectedMinutes,
+                'late_minutes'        => 0,
+                'early_leave_minutes' => 0,
+                'overtime_minutes'    => 0,
+                'status'              => DayStatus::Absent,
+                'leave_id'            => null,
+            ]);
+        }
+
+        $existing->delete();
+
+        $this->overtimeRequestSync->sync($unsaved);
+
+        return $unsaved;
     }
 
     /**
