@@ -3,6 +3,8 @@
 namespace Webkul\Payroll\Filament\Resources\EndOfServiceSettlementResource\Pages;
 
 use App\Filament\Traits\HasApprovalActions;
+use App\Support\Pdf\Documents\EndOfServiceSettlementDocument;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Notifications\Notification;
@@ -20,6 +22,20 @@ class ViewEndOfServiceSettlement extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('downloadStatement')
+                ->label(__('payroll::payroll.settlement.actions.download_statement'))
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('gray')
+                ->visible(fn (EndOfServiceSettlement $record): bool => auth()->user()?->can('view', $record) ?? false)
+                ->action(function (EndOfServiceSettlement $record) {
+                    $output = Pdf::loadView('pdf.trade-document', ['docs' => [EndOfServiceSettlementDocument::make($record)]])
+                        ->setPaper('a4')
+                        ->output();
+
+                    return response()->streamDownload(function () use ($output): void {
+                        echo $output;
+                    }, 'end-of-service-'.$record->id.'.pdf', ['Content-Type' => 'application/pdf']);
+                }),
             ...$this->getApprovalActions(),
             Action::make('markPaid')
                 ->label(__('payroll::payroll.settlement.actions.mark_paid'))

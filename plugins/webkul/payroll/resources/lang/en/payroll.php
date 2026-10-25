@@ -304,6 +304,20 @@ return [
     ],
 
     'settlement' => [
+        'pdf' => [
+            'title'         => 'End-of-Service Settlement',
+            'employee'      => 'Employee',
+            'civil_id'      => 'Civil ID',
+            'service'       => 'Length of service',
+            'service_value' => ':years years (:days days)',
+            'band'          => 'Years :from to :to',
+            'columns'       => [
+                'band'   => 'Service band',
+                'years'  => 'Years',
+                'days'   => 'Days of basic',
+                'amount' => 'Amount',
+            ],
+        ],
         'sections' => [
             'service'     => 'Service',
             'gratuity'    => 'Gratuity calculation',
@@ -331,11 +345,12 @@ return [
         'final_salary_hint'        => 'Basic salary pro-rated by calendar day for the departure month (0 if that month was already paid).',
         'other_adjustment_hint'    => 'Positive adds to the net, negative deducts from it.',
         'actions'                  => [
-            'create'           => 'End-of-service settlement',
-            'create_helper'    => 'Creates a draft settlement from the contract dates, tiers, leave balance and active loans.',
-            'mark_paid'        => 'Mark as paid',
-            'mark_paid_helper' => 'Paying clears the employee\'s active loans (the offset was taken from the settlement) and locks it.',
-            'cancel'           => 'Cancel settlement',
+            'create'             => 'End-of-service settlement',
+            'create_helper'      => 'Creates a draft settlement from the contract dates, tiers, leave balance and active loans.',
+            'mark_paid'          => 'Mark as paid',
+            'mark_paid_helper'   => 'Paying clears the employee\'s active loans (the offset was taken from the settlement) and locks it.',
+            'cancel'             => 'Cancel settlement',
+            'download_statement' => 'Download statement',
         ],
         'notifications' => [
             'created'   => 'Settlement created as a draft',
