@@ -124,8 +124,6 @@ class RoleResource extends ShieldRoleResource
                     ->schema([
                         TextEntry::make('name')
                             ->label(__('filament-shield::filament-shield.field.name')),
-                        TextEntry::make('guard_name')
-                            ->label(__('filament-shield::filament-shield.field.guard_name')),
                         TextEntry::make('permissions_count')
                             ->label(__('role-management.view.permissions_count'))
                             ->state(fn (Role $record): int => $record->permissions()->count()),
@@ -249,16 +247,8 @@ class RoleResource extends ShieldRoleResource
                 ->maxLength(255)
                 ->disabled(fn (?Model $record): bool => $record instanceof Role && $record->isSystemRole())
                 ->dehydrated(),
-            Select::make('guard_name')
-                ->label(__('filament-shield::filament-shield.field.guard_name'))
-                ->native(false)
-                ->selectablePlaceholder(false)
-                ->options([
-                    'web'     => __('security::filament/resources/role.form.fields.web'),
-                    'sanctum' => __('security::filament/resources/role.form.fields.sanctum'),
-                ])
-                ->default(Utils::getFilamentAuthGuard())
-                ->disabled(fn (?Model $record): bool => $record instanceof Role && $record->isSystemRole())
+            Hidden::make('guard_name')
+                ->default('web')
                 ->dehydrated(),
             Select::make(config('permission.column_names.team_foreign_key'))
                 ->label(__('filament-shield::filament-shield.field.team'))
@@ -414,9 +404,6 @@ class RoleResource extends ShieldRoleResource
                     ->formatStateUsing(fn ($state): string => Str::headline($state))
                     ->colors(['primary'])
                     ->searchable(),
-                TextColumn::make('guard_name')
-                    ->badge()
-                    ->label(__('filament-shield::filament-shield.column.guard_name')),
                 TextColumn::make('permissions_count')
                     ->badge()
                     ->label(__('filament-shield::filament-shield.column.permissions'))
@@ -798,7 +785,6 @@ class RoleResource extends ShieldRoleResource
         ]));
 
         $name = e($data['name'] ?? '');
-        $guard = e($data['guard_name'] ?? 'web');
 
         $table = $moduleRows !== ''
             ? '<table class="mt-4 w-full text-sm"><thead><tr><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.module')).'</th><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.level')).'</th><th class="px-3 py-2 text-start">'.e(__('role-management.summary.table.permissions'))."</th></tr></thead><tbody>{$moduleRows}</tbody></table>"
@@ -807,7 +793,6 @@ class RoleResource extends ShieldRoleResource
         return new HtmlString(
             '<div class="space-y-2 rounded-xl border border-gray-200 p-4 dark:border-gray-700">
                 <p class="text-sm"><strong>'.e(__('filament-shield::filament-shield.field.name')).":</strong> {$name}</p>
-                <p class=\"text-sm\"><strong>".e(__('filament-shield::filament-shield.field.guard_name')).":</strong> {$guard}</p>
                 <p class=\"text-sm\">{$permissionsLine}</p>
                 <p class=\"text-sm\">{$modulesLine}</p>
                 {$table}

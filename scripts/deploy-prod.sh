@@ -418,8 +418,8 @@ RSYNC_EXCLUDES=(
   --exclude '.env.deploy.*'
   --exclude '.env.deploy.example'
   --exclude '.env.example'
-  --exclude 'vendor/'
-  --exclude 'node_modules/'
+  --exclude '/vendor/'
+  --exclude '/node_modules/'
   --exclude '.git/'
   --exclude '.idea/'
   --exclude '.vscode/'
@@ -433,9 +433,9 @@ RSYNC_EXCLUDES=(
   --exclude '.gemini/'
   --exclude '.github/'
   --exclude '.scribe/'
-  --exclude 'docs/'
+  --exclude '/docs/'
   --exclude 'dogfood-output/'
-  --exclude 'scripts/'
+  --exclude '/scripts/'
   --exclude 'AGENTS.md'
   --exclude 'CHANGELOG.md'
   --exclude 'CLAUDE.md'
@@ -469,7 +469,7 @@ RSYNC_EXCLUDES=(
   --exclude 'bootstrap/cache/*.php'
   --exclude 'public/storage'
   --exclude 'public/hot'
-  --exclude 'tests/'
+  --exclude '/tests/'
   --exclude 'plugins/webkul/*/tests/'
   --exclude '/database/factories/'
   --exclude '.phpunit.result.cache'
@@ -687,6 +687,9 @@ if [[ $DO_MIGRATE -eq 1 ]]; then
   REMOTE_CMDS+=" && ${ARTISAN} migrate --force && ${ARTISAN} erp:ensure-extension-schema"
 fi
 
+# rsync keeps source mtimes, so compiled views can look newer than the files that replaced them.
+REMOTE_CMDS+=" && ${ARTISAN} view:clear"
+
 REMOTE_CMDS+=" && ${ARTISAN} permissions:sync-extensions"
 
 if [[ $DO_SHIELD -eq 1 ]]; then
@@ -699,7 +702,7 @@ if [[ $DO_OPTIMIZE -eq 1 ]]; then
 fi
 
 REMOTE_CMDS+=" && ${ARTISAN} queue:restart"
-REMOTE_CMDS+=" && if [ ! -L public/storage ]; then ${ARTISAN} storage:link || true; fi"
+REMOTE_CMDS+=" && if [ \"\$(readlink public/storage 2>/dev/null)\" != \"\$(pwd)/storage/app/public\" ]; then rm -f public/storage && ${ARTISAN} storage:link || true; fi"
 
 # Dompdf writes Amiri .ufm metrics into storage/fonts on first Arabic PDF export.
 REMOTE_CMDS+=" && mkdir -p storage/fonts storage/app/private"
