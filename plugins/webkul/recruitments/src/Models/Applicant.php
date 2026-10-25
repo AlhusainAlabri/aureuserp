@@ -239,6 +239,12 @@ class Applicant extends Model
         $this->creator_id ??= $authUser->id;
 
         $this->company_id ??= $authUser?->default_company_id;
+
+        $this->stage_id ??= Stage::query()
+            ->orderByDesc('is_default')
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->value('id');
     }
 
     public function handleApplicationUpdation(): void

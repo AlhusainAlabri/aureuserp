@@ -26,6 +26,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Webkul\Timesheet\Filament\Resources\TimesheetResource\Pages\ManageTimesheets;
 use Webkul\Timesheet\Models\Timesheet;
 
@@ -73,11 +74,13 @@ class TimesheetResource extends Resource
                 DatePicker::make('date')
                     ->label(__('timesheets::filament/resources/timesheet.form.date'))
                     ->required()
+                    ->default(fn () => now()->toDateString())
                     ->native(false),
                 Select::make('user_id')
                     ->label(__('timesheets::filament/resources/timesheet.form.employee'))
                     ->required()
                     ->relationship('user', 'name')
+                    ->default(fn () => Auth::id())
                     ->searchable()
                     ->preload(),
                 Select::make('project_id')

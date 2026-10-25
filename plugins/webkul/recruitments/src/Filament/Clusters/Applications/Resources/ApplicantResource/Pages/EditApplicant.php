@@ -145,7 +145,7 @@ class EditApplicant extends EditRecord
                         ->body(__('recruitments::filament/clusters/applications/resources/applicant/pages/edit-applicant.header-actions.restore.notification.body'))
                 ),
             Action::make('refuse')
-                ->modalIcon('heroicon-s-bug-ant')
+                ->modalIcon('heroicon-s-no-symbol')
                 ->hidden(fn ($record) => $record->refuse_reason_id || $record->application_status->value === ApplicationStatus::ARCHIVED->value)
                 ->modalHeading(__('recruitments::filament/clusters/applications/resources/applicant/pages/edit-applicant.header-actions.refuse.title'))
                 ->schema(function (Schema $schema, $record) {

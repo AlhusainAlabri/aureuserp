@@ -4,7 +4,7 @@ return [
 
     'AccountResource'          => ['singular' => 'حساب', 'plural' => 'الحسابات'],
     'ActivityPlanResource'     => ['singular' => 'خطة أنشطة', 'plural' => 'خطط الأنشطة'],
-    'ActivityTypeResource'     => ['singular' => 'نوع نشاط', 'plural' => 'أنواع الأنشطة'],
+    'ActivityTypeResource'     => ['singular' => 'نوع النشاط', 'plural' => 'أنواع الأنشطة'],
     'BankAccountResource'      => ['singular' => 'حساب بنكي', 'plural' => 'الحسابات البنكية'],
     'BillResource'             => ['singular' => 'فاتورة مورد', 'plural' => 'فواتير الموردين'],
     'CashRoundingResource'     => ['singular' => 'تقريب نقدي', 'plural' => 'التقريب النقدي'],
@@ -76,7 +76,7 @@ return [
     'EmploymentTypeResource'     => ['singular' => 'نوع توظيف', 'plural' => 'أنواع التوظيف'],
     'FieldResource'              => ['singular' => 'حقل مخصص', 'plural' => 'الحقول المخصصة'],
     'InternalResource'           => ['singular' => 'تحويل داخلي', 'plural' => 'التحويلات الداخلية'],
-    'JobPositionResource'        => ['singular' => 'منصب وظيفي', 'plural' => 'المناصب الوظيفية'],
+    'JobPositionResource'        => ['singular' => 'المنصب الوظيفي', 'plural' => 'المناصب الوظيفية'],
     'JournalEntryResource'       => ['singular' => 'قيد يومية', 'plural' => 'القيود اليومية'],
     'JournalItemResource'        => ['singular' => 'بند يومية', 'plural' => 'بنود اليومية'],
     'MandatoryDayResource'       => ['singular' => 'يوم إلزامي', 'plural' => 'الأيام الإلزامية'],

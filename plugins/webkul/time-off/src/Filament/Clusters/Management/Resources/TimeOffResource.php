@@ -90,18 +90,22 @@ class TimeOffResource extends Resource
                     ->searchable(),
                 TextColumn::make('private_name')
                     ->label(__('time-off::filament/clusters/management/resources/time-off.table.columns.description'))
+                    ->placeholder('—')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('date_from')
                     ->label(__('time-off::filament/clusters/management/resources/time-off.table.columns.date-from'))
+                    ->date()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('date_to')
                     ->label(__('time-off::filament/clusters/management/resources/time-off.table.columns.date-to'))
+                    ->date()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('duration_display')
                     ->label(__('time-off::filament/clusters/management/resources/time-off.table.columns.duration'))
+                    ->wrap()
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('state')
@@ -201,6 +205,14 @@ class TimeOffResource extends Resource
                     ->schema([
                         Group::make()
                             ->schema([
+                                TextEntry::make('employee.name')
+                                    ->label(__('Employee'))
+                                    ->icon('heroicon-o-user'),
+
+                                TextEntry::make('state')
+                                    ->label(__('State'))
+                                    ->badge(),
+
                                 TextEntry::make('holidayStatus.name')
                                     ->label(__('time-off::filament/clusters/my-time/resources/my-time-off.infolist.entries.time-off-type'))
                                     ->icon('heroicon-o-calendar'),

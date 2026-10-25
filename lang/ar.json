@@ -384,5 +384,9 @@
     "Work orders": "أوامر العمل",
     "Move byproducts": "حركات المنتجات الثانوية",
     "By products process note": "ملاحظة عملية المنتجات الثانوية",
-    "Rendered display from": "العرض من"
+    "Rendered display from": "العرض من",
+    "Refuse": "رفض",
+    "Restore": "استعادة",
+    "Manufacturing Operation": "عملية تصنيع",
+    "Manufacturing Operations": "عمليات التصنيع"
 }

@@ -9,7 +9,9 @@ use Wezlo\FilamentApproval\Models\ApprovalFlow;
 
 trait HasApprovalWorkflow
 {
-    use HasApprovals;
+    use HasApprovals {
+        canBeSubmittedForApproval as canBeSubmittedForApprovalIgnoringFlows;
+    }
 
     public function approvalStatusLabel(): string
     {
@@ -25,6 +27,15 @@ trait HasApprovalWorkflow
             ApprovalStatus::Rejected  => __('approval.status.rejected'),
             ApprovalStatus::Cancelled => __('approval.status.cancelled'),
         };
+    }
+
+    /**
+     * Submitting needs an active flow; without one the submit action would fail with a 404.
+     */
+    public function canBeSubmittedForApproval(?int $userId = null): bool
+    {
+        return $this->hasActiveApprovalFlow()
+            && $this->canBeSubmittedForApprovalIgnoringFlows($userId);
     }
 
     public function hasActiveApprovalFlow(): bool

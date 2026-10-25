@@ -48,12 +48,12 @@ class DepartmentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return static::translatedResourceLabel('singular') ?? __('correspondence::correspondence.departments.model');
+        return __('correspondence::correspondence.departments.model');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return static::translatedResourceLabel('plural') ?? __('correspondence::correspondence.departments.plural');
+        return __('correspondence::correspondence.departments.plural');
     }
 
     public static function form(Schema $schema): Schema

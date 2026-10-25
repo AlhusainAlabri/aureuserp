@@ -113,7 +113,7 @@ class ViewApplicant extends ViewRecord
                         ->body(__('recruitments::filament/clusters/applications/resources/applicant/pages/view-applicant.header-actions.delete.notification.body'))
                 ),
             Action::make('Refuse')
-                ->modalIcon('heroicon-s-bug-ant')
+                ->modalIcon('heroicon-s-no-symbol')
                 ->hidden(fn ($record) => $record->refuse_reason_id || $record->application_status->value === ApplicationStatus::ARCHIVED->value)
                 ->modalHeading(__('Refuse Reason'))
                 ->schema(function (Schema $schema, $record) {

@@ -22,6 +22,7 @@ use App\Support\Livewire\KeepUnsavedChangesAlertAccurate;
 use App\Support\Pdf\ArabicAwarePdf;
 use App\Support\Rtl\LtrValueFormatter;
 use App\Support\Translation\SafeTranslator;
+use Filament\Actions\Action;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
@@ -132,6 +133,7 @@ class AppServiceProvider extends ServiceProvider
         Field::configureUsing(fn (Field $field) => $field->translateLabel());
         Entry::configureUsing(fn (Entry $entry) => $entry->translateLabel());
         Column::configureUsing(fn (Column $column) => $column->translateLabel());
+        Action::configureUsing(fn (Action $action) => $action->translateLabel());
 
         // "uom.name" would be labelled "Name" (the last segment); it is the unit, not a name.
         Entry::configureUsing(function (Entry $entry): void {
@@ -144,6 +146,12 @@ class AppServiceProvider extends ServiceProvider
                 $column->label(fn (): string => __($label));
             }
         });
+
+        // Rich-text fields (notes, descriptions…) are stored as HTML; show them formatted, not as raw tags.
+        TextEntry::configureUsing(fn (TextEntry $entry) => $entry->html(
+            fn (mixed $state): bool => is_string($state)
+                && preg_match('/^\s*<(p|ul|ol|h[1-6]|div|table|blockquote|br)[\s>\/]/i', $state) === 1,
+        ));
 
         TextEntry::configureUsing(function (TextEntry $entry): void {
             if (LtrValueFormatter::appliesTo($entry->getName())) {

@@ -12,6 +12,7 @@
         .header { width: 100%; margin-bottom: 16px; }
         .muted { color: #6b7280; }
         .summary td { font-weight: bold; }
+        .page-number:after { content: counter(page); }
         .footer { position: fixed; bottom: -24px; left: 0; right: 0; text-align: center; font-size: 10px; color: #6b7280; }
     </style>
 </head>
@@ -108,6 +109,6 @@
         </tr>
     </table>
 
-    <div class="footer">{{ __('payroll::payroll.pdf.payslip.footer', ['reference' => $payslip->reference_number, 'page' => '{PAGE_NUM}']) }}</div>
+    <div class="footer">{!! __('payroll::payroll.pdf.payslip.footer', ['reference' => e($payslip->reference_number), 'page' => '<span class="page-number"></span>']) !!}</div>
 </body>
 </html>

@@ -18,6 +18,7 @@ use Webkul\Recruitment\Enums\RecruitmentState;
 use Webkul\Recruitment\Filament\Clusters\Applications\Resources\ApplicantResource;
 use Webkul\Recruitment\Filament\Clusters\Applications\Resources\CandidateResource;
 use Webkul\Recruitment\Filament\Widgets\JobPositionStatsWidget;
+use Webkul\Recruitment\Models\JobPosition;
 use Webkul\TableViews\Filament\Components\PresetView;
 use Webkul\TableViews\Filament\Concerns\HasTableViews;
 
@@ -155,6 +156,11 @@ class ListApplicants extends ListRecords
                                         ->modalIcon('heroicon-s-user-plus')
                                         ->modalWidth(Width::SixExtraLarge);
                                 }),
+                            Select::make('job_id')
+                                ->relationship('job', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->label(__('recruitments::filament/clusters/applications/resources/applicant.form.sections.general-information.fields.job-position')),
                         ])->columns(2),
                 ])
                 ->mutateDataUsing(function (array $data): array {
@@ -162,6 +168,10 @@ class ListApplicants extends ListRecords
                     $data['company_id'] = Auth::user()->default_company_id;
                     $data['create_date'] = now();
                     $data['is_active'] = true;
+
+                    if (! empty($data['job_id'])) {
+                        $data['department_id'] ??= JobPosition::query()->whereKey($data['job_id'])->value('department_id');
+                    }
 
                     return $data;
                 })

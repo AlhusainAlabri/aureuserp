@@ -13,6 +13,15 @@ use Webkul\TimeOff\Models\Leave;
 
 class TimeOffResourceExtensions
 {
+    /**
+     * A substitute is only asked for when the policy is on and there is someone else who could cover.
+     */
+    public static function substituteRequired(): bool
+    {
+        return (bool) config('hr-extensions.require_substitute', true)
+            && Employee::query()->where('is_active', true)->count() > 1;
+    }
+
     /** @return array<int, mixed> */
     public static function substituteFormSection(): array
     {
@@ -36,7 +45,7 @@ class TimeOffResourceExtensions
                         ->searchable()
                         ->preload()
                         ->nullable()
-                        ->required(fn (): bool => (bool) config('hr-extensions.require_substitute', true)),
+                        ->required(fn (): bool => self::substituteRequired()),
                     Textarea::make('substitute_notes')
                         ->label(__('hr-extensions::leave.handover_notes'))
                         ->helperText(__('hr-extensions::leave.handover_helper'))
@@ -46,7 +55,7 @@ class TimeOffResourceExtensions
                 ])
                 ->columns(1)
                 ->columnSpanFull()
-                ->visible(fn (): bool => config('hr-extensions.require_substitute', true)),
+                ->visible(fn (): bool => self::substituteRequired()),
         ];
     }
 

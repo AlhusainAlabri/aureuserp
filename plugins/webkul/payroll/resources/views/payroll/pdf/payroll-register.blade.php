@@ -9,6 +9,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 6px; }
         th, td { border: 1px solid #d1d5db; padding: 6px; vertical-align: top; }
         th { background: #f3f4f6; }
+        .page-number:after { content: counter(page); }
         .footer { position: fixed; bottom: -24px; left: 0; right: 0; text-align: center; font-size: 10px; color: #6b7280; }
     </style>
 </head>
@@ -77,6 +78,6 @@
         </tbody>
     </table>
 
-    <div class="footer">{{ __('payroll::payroll.pdf.register.footer', ['reference' => $batch->reference_number, 'page' => '{PAGE_NUM}']) }}</div>
+    <div class="footer">{!! __('payroll::payroll.pdf.register.footer', ['reference' => e($batch->reference_number), 'page' => '<span class="page-number"></span>']) !!}</div>
 </body>
 </html>

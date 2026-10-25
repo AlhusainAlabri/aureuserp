@@ -52,6 +52,8 @@ class BorrowAction
                     $data['notes'] ?? null,
                 );
 
+                $record->refresh();
+
                 Notification::make()
                     ->success()
                     ->title(__('assets::assets.notifications.borrowed.title'))

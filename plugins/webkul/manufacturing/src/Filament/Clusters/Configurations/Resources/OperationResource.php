@@ -82,7 +82,12 @@ class OperationResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return static::translatedResourceLabel('singular') ?? __('manufacturing::models/operation.title');
+        return __('Manufacturing Operation');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Manufacturing Operations');
     }
 
     public static function getNavigationGroup(): string

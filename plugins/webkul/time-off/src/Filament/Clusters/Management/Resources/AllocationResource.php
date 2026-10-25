@@ -324,6 +324,8 @@ class AllocationResource extends Resource
                                             ->placeholder('—'),
                                         TextEntry::make('notes')
                                             ->label(__('time-off::filament/clusters/management/resources/allocation.infolist.sections.validity-period.entries.reason'))
+                                            ->html()
+                                            ->state(fn ($record): ?string => filled(strip_tags((string) $record->notes)) ? $record->notes : null)
                                             ->placeholder('—')
                                             ->columnSpanFull(),
                                     ]),
