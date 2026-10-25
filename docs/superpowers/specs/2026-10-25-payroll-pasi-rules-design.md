@@ -8,7 +8,7 @@ Payroll deducts and accrues social insurance (PASI) the way Omani HR expects: by
 ## Today
 - `DefaultSalaryComponentsSeeder` seeds `PASI_EMP` (deduction, 7% of basic) and `PASI_EMR` (employer cost, 11.5% of basic) as `percent_of_basic`.
 - `PayrollCalculator::resolveComponentAmount` has no nationality, cap, or date-awareness. Every employee pays the same flat rate on basic.
-- `Employee.country_id` is the nationality. The company's country is the Omani reference (to be confirmed against the `Company` model's country column when the implementation plan is written; if absent, a `home_country_id` setting is used instead).
+- `Employee.country_id` is the nationality. The employee's company country (`Company.country_id`, confirmed to exist) is the Omani reference; if either side is null the category is unknown and the missing-nationality warning applies.
 
 ## Assumptions (to be verified by the customer's accountant before go-live)
 - Default rates are today's seeded values: Omani 7% employee / 11.5% employer, no cap. Expat 0% / 0%.
