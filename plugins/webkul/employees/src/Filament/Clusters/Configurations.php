@@ -3,10 +3,13 @@
 namespace Webkul\Employee\Filament\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Panel;
 
 class Configurations extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?int $navigationSort = 4;
 
     public static function getSlug(?Panel $panel = null): string

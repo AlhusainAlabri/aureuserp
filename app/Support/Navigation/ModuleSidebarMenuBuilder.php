@@ -41,12 +41,14 @@ class ModuleSidebarMenuBuilder
             ->filter(fn (NavigationGroup $group): bool => filled($group->getIcon()) && filled($group->getLabel()))
             ->map(function (NavigationGroup $registered) use ($navigation, $clustersByPath): ?NavigationGroup {
                 $matchedGroup = static::matchNavigationGroup($registered, $navigation);
+                $aliasedItems = static::aliasedGroupItems($registered, $navigation);
 
-                if ($matchedGroup === null) {
+                if ($matchedGroup === null && $aliasedItems === []) {
                     return null;
                 }
 
-                $items = collect($matchedGroup->getItems())
+                $items = collect($matchedGroup?->getItems() ?? [])
+                    ->concat($aliasedItems)
                     ->filter(fn (NavigationItem $item): bool => $item->isVisible())
                     ->when(
                         $registered->getIcon() === 'icon-dashboard',
@@ -82,6 +84,46 @@ class ModuleSidebarMenuBuilder
         }
 
         return $groups->all();
+    }
+
+    /**
+     * Plugins register some items (each module's "Settings", approvals) under an English group
+     * name that is not a registered group; they belong to the module group with the same meaning.
+     *
+     * @var array<string, string>
+     */
+    private const GROUP_ALIASES = [
+        'project'       => 'admin.navigation.project',
+        'inventory'     => 'admin.navigation.inventory',
+        'invoices'      => 'admin.navigation.invoice',
+        'manufacturing' => 'admin.navigation.manufacturing',
+        'sales'         => 'admin.navigation.sale',
+        'purchases'     => 'admin.navigation.purchase',
+        'approvals'     => 'admin.navigation.approvals',
+    ];
+
+    private static function aliasKey(NavigationGroup $group): ?string
+    {
+        $label = strtolower((string) $group->getLabel());
+
+        return array_key_exists($label, self::GROUP_ALIASES) && blank($group->getIcon()) ? $label : null;
+    }
+
+    /**
+     * @param  array<NavigationGroup>  $navigation
+     * @return array<int, NavigationItem>
+     */
+    private static function aliasedGroupItems(NavigationGroup $registered, array $navigation): array
+    {
+        return collect($navigation)
+            ->filter(function (NavigationGroup $group) use ($registered): bool {
+                $key = static::aliasKey($group);
+
+                return $key !== null && __(self::GROUP_ALIASES[$key]) === $registered->getLabel();
+            })
+            ->flatMap(fn (NavigationGroup $group) => $group->getItems())
+            ->values()
+            ->all();
     }
 
     /**
@@ -173,6 +215,7 @@ class ModuleSidebarMenuBuilder
     {
         $items = collect($navigation)
             ->filter(fn (NavigationGroup $group): bool => blank($group->getLabel()) || blank($group->getIcon()))
+            ->reject(fn (NavigationGroup $group): bool => static::aliasKey($group) !== null)
             ->flatMap(fn (NavigationGroup $group) => collect($group->getItems()))
             ->filter(fn (NavigationItem $item): bool => $item->isVisible())
             ->flatMap(fn (NavigationItem $item): array => static::flattenNavigationItem($item, $clustersByPath))

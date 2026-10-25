@@ -3,6 +3,7 @@
 namespace Webkul\Contact\Filament\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 
 /**
  * Overrides the contacts plugin cluster to keep configurations accessible
@@ -10,6 +11,8 @@ use Filament\Clusters\Cluster;
  */
 class Configurations extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?string $slug = 'contact/configurations';
 
     protected static ?int $navigationSort = 0;

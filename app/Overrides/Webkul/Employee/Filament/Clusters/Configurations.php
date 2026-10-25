@@ -3,6 +3,7 @@
 namespace Webkul\Employee\Filament\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Panel;
 
 /**
@@ -11,6 +12,8 @@ use Filament\Panel;
  */
 class Configurations extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?int $navigationSort = 4;
 
     protected static bool $shouldRegisterNavigation = false;

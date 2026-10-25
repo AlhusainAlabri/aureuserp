@@ -18,4 +18,20 @@ return [
 
     'access_key' => (string) env('PLUGINS_UI_SECRET', ''),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Plugins Skipped By Default
+    |--------------------------------------------------------------------------
+    |
+    | plugins:install --all (and the non-interactive install) leave these out,
+    | together with any plugin that depends on them. Install one on purpose with
+    | php artisan plugins:install --only=website
+    |
+    */
+
+    'skip_by_default' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('PLUGINS_SKIP_BY_DEFAULT', 'website,blogs')),
+    ))),
+
 ];

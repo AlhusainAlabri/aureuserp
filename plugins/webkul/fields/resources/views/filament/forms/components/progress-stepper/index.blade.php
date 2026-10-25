@@ -140,5 +140,31 @@
         .dark input:checked + .stage-button:hover:after {
             background-color: var(--color-500);
         }
+        [dir="rtl"] .state-container {
+            justify-content: flex-start;
+        }
+
+        [dir="rtl"] .stage-button {
+            padding-left: 20px;
+            padding-right: 30px;
+        }
+
+        [dir="rtl"] .stage-button:after {
+            right: auto;
+            left: -14px;
+            transform: translateY(-50%) rotate(-135deg);
+        }
+
+        [dir="rtl"] .state-container .state:first-child .stage-button {
+            border-radius: 0 8px 8px 0;
+        }
+
+        [dir="rtl"] .state-container .state:last-child .stage-button {
+            border-radius: 8px 0 0 8px;
+        }
+
+        [dir="rtl"] .state-container .state:first-child:last-child .stage-button {
+            border-radius: 8px;
+        }
     </style>
 @endpush

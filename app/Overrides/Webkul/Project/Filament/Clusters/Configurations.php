@@ -3,6 +3,7 @@
 namespace Webkul\Project\Filament\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 
 /**
  * Overrides the projects plugin configurations cluster to keep it reachable
@@ -10,6 +11,8 @@ use Filament\Clusters\Cluster;
  */
 class Configurations extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?string $slug = 'project/configurations';
 
     protected static ?int $navigationSort = 0;

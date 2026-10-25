@@ -3,9 +3,12 @@
 namespace Webkul\Support\Filament\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 
 class Settings extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?int $navigationSort = 1000;
 
     public static function getNavigationLabel(): string

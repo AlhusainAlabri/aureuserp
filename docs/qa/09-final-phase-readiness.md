@@ -11,6 +11,10 @@ Date: 2026-10-25 · Env: local QA DB + a scratch database for the clean install.
 | F-05 | U | Team singular label differed between plugins ("فريق" vs "الفريق"). | **fixed** |
 | F-06 | V | Clean install in production mode (`APP_ENV=production`, debug off, no override flag) on an empty database: `erp:install` then `plugins:install --all --include-core` succeed. Result checked: OMR with 3 decimals, the 11 Omani governorates, default VAT 5% taxes, Arabic journals and 6 neutral departments, starter roles, no demo data, 292 of 400 admin pages answer 200 (88 are optional modules switched off, 19 redirects), the only 500 is the known email-verification prompt. | verified |
 | F-07 | V | Full test suite under `APP_TIMEZONE=Asia/Muscat`: 1609 passed, 3 skipped, 0 failed. | verified |
+| F-11 | G | Website and Blogs plugins are not needed on customer sites. | **fixed** — `plugins:install --all` skips them (and anything depending on them); `PLUGINS_SKIP_BY_DEFAULT` env overrides; `--only=website` still works; test |
+| F-12 | U | Side-menu mode: settings pages of a module shown as an overflowing row of tabs. | **fixed** — Settings/Configuration clusters use the vertical page list |
+| F-13 | U | Side menu "مساحتي" showed one "الإعدادات" per module plus approvals (plugins register them under English group names). | **fixed** — folded into their module groups |
+| F-14 | U | Progress steppers (مسودة ← مرحّل) were drawn left-to-right in RTL; employee card clipped the e-mail. | **fixed** |
 | F-08 | note | Approval-flow list prints model class names ("PurchaseOrder") and the module title "Approvals" in English; both come from the vendor package. | open (cosmetic) |
 | F-09 | note | `/admin/email-verification/prompt` answers 500 (the user model does not implement email verification and the feature is off). Not linked anywhere. | open (low) |
 | F-10 | note | Page load costs 60–105 queries and 200–250 ms on this machine in debug mode; no slow query (>30 ms) seen on the main lists. | ok |

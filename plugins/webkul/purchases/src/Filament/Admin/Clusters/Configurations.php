@@ -3,9 +3,12 @@
 namespace Webkul\Purchase\Filament\Admin\Clusters;
 
 use Filament\Clusters\Cluster;
+use Filament\Pages\Enums\SubNavigationPosition;
 
 class Configurations extends Cluster
 {
+    protected static ?SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+
     protected static ?string $slug = 'purchase/configurations';
 
     protected static ?int $navigationSort = 3;

@@ -211,8 +211,12 @@ class InstallPlugins extends Command
             return $onlyPluginNames;
         }
 
+        $skippedByDefault = (array) config('plugin-manager.skip_by_default', []);
+
         $default = $installablePlugins
             ->reject(fn (array $plugin): bool => $plugin['is_installed'])
+            ->reject(fn (array $plugin): bool => in_array($plugin['name'], $skippedByDefault, true)
+                || array_intersect($plugin['dependencies'], $skippedByDefault) !== [])
             ->pluck('name')
             ->values()
             ->all();

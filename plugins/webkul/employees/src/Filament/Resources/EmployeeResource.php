@@ -913,7 +913,8 @@ class EmployeeResource extends Resource
                             ->sortable()
                             ->label(__('employees::filament/resources/employee.table.columns.work-email'))
                             ->color('gray')
-                            ->limit(20),
+                            ->wrap()
+                            ->extraAttributes(['class' => 'break-all']),
                     ])
                         ->visible(fn ($record) => filled($record->work_email)),
                     Stack::make([
@@ -922,7 +923,7 @@ class EmployeeResource extends Resource
                             ->searchable()
                             ->label(__('employees::filament/resources/employee.table.columns.work-phone'))
                             ->color('gray')
-                            ->limit(30)
+                            ->wrap()
                             ->sortable(),
                     ])
                         ->visible(fn ($record) => filled($record->work_phone)),
