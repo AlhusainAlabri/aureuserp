@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use App\Listeners\Audit\RecordSignIn;
+use App\Models\Audit\AuditEntry;
+use App\Policies\AuditEntryPolicy;
 use App\Support\Audit\AuditEntryGuard;
 use App\Support\Audit\AuditRecorder;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AuditServiceProvider extends ServiceProvider
@@ -20,6 +23,8 @@ class AuditServiceProvider extends ServiceProvider
     {
         AuditRecorder::register();
         AuditEntryGuard::register();
+
+        Gate::policy(AuditEntry::class, AuditEntryPolicy::class);
 
         Event::listen([Login::class, Failed::class], RecordSignIn::class);
     }

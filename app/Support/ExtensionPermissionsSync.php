@@ -25,6 +25,7 @@ class ExtensionPermissionsSync
         $this->syncPayroll();
         $this->syncAttendance();
         $this->syncOperations();
+        $this->syncAudit();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
@@ -329,6 +330,24 @@ class ExtensionPermissionsSync
                 'download_system_backup',
                 'delete_system_backup',
                 'restore_system_backup',
+            ],
+            ['Admin', 'super_admin', 'general_manager'],
+        );
+    }
+
+    /**
+     * The audit log is read-only, so there is nothing to grant beyond reading it.
+     */
+    public function syncAudit(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady()) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles(
+            [
+                'view_any_filament_audit::log',
+                'view_filament_audit::log',
             ],
             ['Admin', 'super_admin', 'general_manager'],
         );
