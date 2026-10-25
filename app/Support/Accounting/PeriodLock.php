@@ -9,6 +9,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 use Webkul\Support\Models\Company;
@@ -34,6 +35,11 @@ class PeriodLock
      */
     protected static array $memo = [];
 
+    /**
+     * Whether the lock date column exists, checked once per process and again after forget(); null means not checked yet.
+     */
+    protected static ?bool $columnExists = null;
+
     public static function lockDateFor(?int $companyId): ?CarbonImmutable
     {
         if ($companyId === null) {
@@ -42,6 +48,10 @@ class PeriodLock
 
         if (array_key_exists($companyId, static::$memo)) {
             return static::$memo[$companyId];
+        }
+
+        if (! static::columnExists()) {
+            return null;
         }
 
         $value = DB::table('companies')->where('id', $companyId)->value(static::COLUMN);
@@ -113,6 +123,15 @@ class PeriodLock
     public static function forget(): void
     {
         static::$memo = [];
+        static::$columnExists = null;
+    }
+
+    /**
+     * A lock cannot exist without its column, so until the migration has run nothing is locked and accounting works as before.
+     */
+    protected static function columnExists(): bool
+    {
+        return static::$columnExists ??= Schema::hasColumn('companies', static::COLUMN);
     }
 
     public static function userMayOverride(?Authenticatable $user): bool

@@ -8,10 +8,12 @@ use Illuminate\Console\Scheduling\CacheEventMutex;
 use Illuminate\Console\Scheduling\Event as SchedulingEvent;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Permission;
 use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Account\Enums\MoveState;
+use Webkul\Account\Models\Move;
 use Webkul\Chatter\Models\Message;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
@@ -204,4 +206,25 @@ it('PeriodLockRuleTest: forgets a stale lock date when a scheduled task starts',
     event(new ScheduledTaskStarting(new SchedulingEvent(new CacheEventMutex(app('cache')), 'inspire')));
 
     expect(PeriodLock::lockDateFor($this->company->id))->toBeNull();
+});
+
+it('PeriodLockRuleTest: leaves accounting unlocked while the lock date column does not exist yet', function (): void {
+    lockCompanyAt($this->company, '2026-06-30');
+
+    Schema::partialMock()
+        ->shouldReceive('hasColumn')
+        ->with('companies', 'accounting_lock_date')
+        ->andReturn(false);
+
+    PeriodLock::forget();
+
+    $this->actingAs($this->actor);
+
+    $move = Move::factory()->create(['company_id' => $this->company->id, 'date' => '2026-06-10']);
+
+    $move->update(['narration' => 'edited while the column is missing']);
+
+    expect(PeriodLock::lockDateFor($this->company->id))->toBeNull()
+        ->and(PeriodLock::blocks($this->company->id, '2026-06-10', 'posted', '2026-06-10', 'posted'))->toBeFalse()
+        ->and($move->fresh()->narration)->toBe('edited while the column is missing');
 });
