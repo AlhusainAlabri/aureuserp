@@ -11,6 +11,7 @@ use Spatie\Permission\PermissionRegistrar;
 use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\GratuityFixtures;
 use Tests\Helpers\PasiFixtures;
+use Webkul\Payroll\Filament\Resources\EndOfServiceSettlementResource;
 use Webkul\Payroll\Filament\Resources\EndOfServiceSettlementResource\Pages\ViewEndOfServiceSettlement;
 use Webkul\Payroll\Models\EndOfServiceSettlement;
 use Webkul\Payroll\Models\Loan;
@@ -100,4 +101,25 @@ it('GratuityPdfTest: the statement can be downloaded from the view page', functi
         ->assertActionVisible('downloadStatement')
         ->callAction('downloadStatement')
         ->assertFileDownloaded('end-of-service-'.$settlement->id.'.pdf');
+});
+
+it('GratuityPdfTest: the open-ended band reads "and above" instead of "to and above"', function (): void {
+    $settlement = pdfSettlement();
+    $document = EndOfServiceSettlementDocument::make($settlement);
+
+    expect($document['rows'][0]['band'])->toBe(__('payroll::payroll.settlement.pdf.band', ['from' => '0', 'to' => '3']))
+        ->and($document['rows'][1]['band'])->toBe(__('payroll::payroll.settlement.pdf.band_open', ['from' => '3']))
+        ->and($document['rows'][1]['band'])->toContain('فما فوق')
+        ->and($document['rows'][1]['band'])->not->toContain('إلى وما فوق');
+
+    $lines = EndOfServiceSettlementResource::breakdownLines($settlement);
+
+    expect($lines[1])->toContain('فما فوق')->and($lines[1])->not->toContain('إلى وما فوق');
+});
+
+it('GratuityPdfTest: the service length has no parentheses that the text direction would scramble', function (): void {
+    $document = EndOfServiceSettlementDocument::make(pdfSettlement());
+    $service = collect($document['meta'])->firstWhere(0, __('payroll::payroll.settlement.pdf.service'))[1];
+
+    expect($service)->not->toContain('(')->and($service)->not->toContain(')')->and($service)->toContain('يوماً');
 });

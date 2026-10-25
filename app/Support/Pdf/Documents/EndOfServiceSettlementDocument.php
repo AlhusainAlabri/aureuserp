@@ -23,10 +23,9 @@ class EndOfServiceSettlementDocument
         $reason = $breakdown['reason'] ?? null;
 
         $rows = collect($breakdown['rows'] ?? [])->map(fn (array $row): array => [
-            'band'   => __('payroll::payroll.settlement.pdf.band', [
-                'from' => static::trim($row['from']),
-                'to'   => $row['to'] === null ? __('payroll::payroll.gratuity.open_ended') : static::trim($row['to']),
-            ]),
+            'band'   => $row['to'] === null
+                ? __('payroll::payroll.settlement.pdf.band_open', ['from' => static::trim($row['from'])])
+                : __('payroll::payroll.settlement.pdf.band', ['from' => static::trim($row['from']), 'to' => static::trim($row['to'])]),
             'years'  => number_format((float) $row['years'], 2),
             'days'   => number_format((float) $row['days'], 2),
             'amount' => $money->number($row['amount']),

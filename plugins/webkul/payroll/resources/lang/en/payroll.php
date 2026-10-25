@@ -309,8 +309,9 @@ return [
             'employee'      => 'Employee',
             'civil_id'      => 'Civil ID',
             'service'       => 'Length of service',
-            'service_value' => ':years years (:days days)',
+            'service_value' => ':years years, :days days',
             'band'          => 'Years :from to :to',
+            'band_open'     => 'Years :from and above',
             'columns'       => [
                 'band'   => 'Service band',
                 'years'  => 'Years',
@@ -341,6 +342,7 @@ return [
             'adjustment_note'     => 'Adjustment note',
         ],
         'breakdown_row'            => 'Years :from to :to: :years years × tier rate = :days days of basic = :amount',
+        'breakdown_row_open'       => 'Years :from and above: :years years × tier rate = :days days of basic = :amount',
         'unused_leave_days_hint'   => 'Changing the days recalculates the leave payout.',
         'final_salary_hint'        => 'Basic salary pro-rated by calendar day for the departure month (0 if that month was already paid).',
         'other_adjustment_hint'    => 'Positive adds to the net, negative deducts from it.',

@@ -189,13 +189,16 @@ class EndOfServiceSettlementResource extends Resource
         }
 
         return collect($breakdown['rows'] ?? [])
-            ->map(fn (array $row): string => __('payroll::payroll.settlement.breakdown_row', [
-                'from'   => rtrim(rtrim(number_format((float) $row['from'], 2, '.', ''), '0'), '.'),
-                'to'     => $row['to'] === null ? __('payroll::payroll.gratuity.open_ended') : rtrim(rtrim(number_format((float) $row['to'], 2, '.', ''), '0'), '.'),
-                'years'  => number_format((float) $row['years'], 4),
-                'days'   => number_format((float) $row['days'], 2),
-                'amount' => SalaryComponentResource::formatMoney((float) $row['amount']),
-            ]))
+            ->map(fn (array $row): string => __(
+                $row['to'] === null ? 'payroll::payroll.settlement.breakdown_row_open' : 'payroll::payroll.settlement.breakdown_row',
+                [
+                    'from'   => rtrim(rtrim(number_format((float) $row['from'], 2, '.', ''), '0'), '.'),
+                    'to'     => $row['to'] === null ? '' : rtrim(rtrim(number_format((float) $row['to'], 2, '.', ''), '0'), '.'),
+                    'years'  => number_format((float) $row['years'], 4),
+                    'days'   => number_format((float) $row['days'], 2),
+                    'amount' => SalaryComponentResource::formatMoney((float) $row['amount']),
+                ],
+            ))
             ->all();
     }
 

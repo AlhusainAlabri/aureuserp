@@ -309,8 +309,9 @@ return [
             'employee'      => 'الموظف',
             'civil_id'      => 'الرقم المدني',
             'service'       => 'مدة الخدمة',
-            'service_value' => ':years سنة (:days يوماً)',
+            'service_value' => ':years سنة، :days يوماً',
             'band'          => 'السنوات :from إلى :to',
+            'band_open'     => 'السنوات :from فما فوق',
             'columns'       => [
                 'band'   => 'شريحة الخدمة',
                 'years'  => 'السنوات',
@@ -341,6 +342,7 @@ return [
             'adjustment_note'     => 'ملاحظة التعديل',
         ],
         'breakdown_row'            => 'السنوات :from إلى :to: :years سنة × معدل الشريحة = :days يوم من الأساسي = :amount',
+        'breakdown_row_open'       => 'السنوات :from فما فوق: :years سنة × معدل الشريحة = :days يوم من الأساسي = :amount',
         'unused_leave_days_hint'   => 'تغيير عدد الأيام يعيد احتساب بدل الإجازات.',
         'final_salary_hint'        => 'الراتب الأساسي موزعاً بالأيام لشهر المغادرة (صفر إذا دُفع ذلك الشهر).',
         'other_adjustment_hint'    => 'الموجب يزيد الصافي والسالب ينقصه.',
