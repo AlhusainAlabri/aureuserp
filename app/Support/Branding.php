@@ -36,6 +36,18 @@ class Branding
     public const MIN_CONTRAST_WITH_WHITE = 3.0;
 
     /**
+     * Logos shipped with the application (paths relative to public/).
+     *
+     * @var array<string, string>
+     */
+    protected const BUNDLED = [
+        'default_logo'              => 'images/brand/default-logo.png',
+        'default_logo_dark'         => 'images/brand/default-logo-dark.png',
+        'default_logo_compact'      => 'images/brand/default-mark.png',
+        'default_logo_compact_dark' => 'images/brand/default-mark-dark.png',
+    ];
+
+    /**
      * The site's primary colour as "#rrggbb", or null to keep the default.
      */
     public static function primaryColor(): ?string
@@ -181,7 +193,7 @@ class Branding
         if ($dark) {
             return self::resolvePublicUrl(
                 ['logo_full_dark', 'logo_full'],
-                [self::defaultLogoPath()],
+                [self::defaultLogoPath(dark: true)],
             );
         }
 
@@ -205,7 +217,7 @@ class Branding
             return $uploaded;
         }
 
-        $compactPath = (string) config('branding.default_logo_compact');
+        $compactPath = self::defaultCompactLogoPath($dark);
 
         if ($compactPath !== '' && is_file(public_path($compactPath))) {
             return asset($compactPath);
@@ -383,9 +395,36 @@ class Branding
      * Bundled logo shown until an administrator uploads one. Sites can point it
      * at their own file with BRANDING_DEFAULT_LOGO.
      */
-    protected static function defaultLogoPath(): string
+    protected static function defaultLogoPath(bool $dark = false): string
     {
-        return (string) config('branding.default_logo');
+        return self::bundledOrConfigured('default_logo', 'default_logo_dark', $dark);
+    }
+
+    protected static function defaultCompactLogoPath(bool $dark = false): string
+    {
+        return self::bundledOrConfigured('default_logo_compact', 'default_logo_compact_dark', $dark);
+    }
+
+    /**
+     * The dark variant is the bundled white logo only while the light logo is also the bundled
+     * one. A site that points BRANDING_DEFAULT_LOGO at its own file keeps that file in dark mode
+     * unless it also sets the matching *_DARK variable.
+     */
+    protected static function bundledOrConfigured(string $lightKey, string $darkKey, bool $dark): string
+    {
+        $light = (string) config("branding.{$lightKey}");
+
+        if (! $dark) {
+            return $light;
+        }
+
+        $explicitDark = (string) config("branding.{$darkKey}");
+
+        if ($explicitDark !== '') {
+            return $explicitDark;
+        }
+
+        return $light === self::BUNDLED[$lightKey] ? self::BUNDLED[$darkKey] : $light;
     }
 
     protected static function uploadedPublicUrl(string $settingKey): ?string

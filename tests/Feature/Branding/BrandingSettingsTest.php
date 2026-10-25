@@ -99,9 +99,9 @@ it('falls back to the company name when the display name is empty', function ():
 
 it('falls back to the bundled logos when no upload is saved', function (): void {
     expect(Branding::fullLogoUrl())->toBe(asset(config('branding.default_logo')))
-        ->and(Branding::fullLogoUrl(dark: true))->toBe(asset(config('branding.default_logo')))
+        ->and(Branding::fullLogoUrl(dark: true))->toBe(asset('images/brand/default-logo-dark.png'))
         ->and(Branding::compactLogoUrl())->toBe(asset(config('branding.default_logo_compact')))
-        ->and(Branding::compactLogoUrl(dark: true))->toBe(asset(config('branding.default_logo_compact')))
+        ->and(Branding::compactLogoUrl(dark: true))->toBe(asset('images/brand/default-mark-dark.png'))
         ->and(Branding::faviconUrl())->toBe(asset(config('branding.default_favicon')))
         ->and(Branding::fullLogoDataUri())->toStartWith('data:image/');
 });

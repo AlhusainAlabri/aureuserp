@@ -22,7 +22,7 @@ Date: 2026-10-25 · Env: local QA DB + a scratch database for the clean install.
 | F-10 | note | Page load costs 60–105 queries and 200–250 ms on this machine in debug mode; no slow query (>30 ms) seen on the main lists. | ok |
 
 ## Production checklist for a customer server
-1. `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL`, `APP_TIMEZONE=Asia/Muscat`, `APP_LOCALE=ar`, database, mail (not `log`), `DEBUGBAR_ENABLED=false`; for the Zakat site also `BRANDING_DEFAULT_LOGO=images/logo_2.png` and `BRANDING_DEFAULT_LOGO_COMPACT=images/logo.png`.
+1. `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL`, `APP_TIMEZONE=Asia/Muscat`, `APP_LOCALE=ar`, database, mail (not `log`), `DEBUGBAR_ENABLED=false`.
 2. `php artisan erp:install --admin-name=… --admin-email=… --admin-password=… --company-name=… --company-country=OM --company-currency=OMR` then `php artisan plugins:install --all --include-core`.
 3. `php artisan config:cache route:cache view:cache event:cache`, `npm run build`, storage link.
 4. Cron `* * * * * php artisan schedule:run` and a queue worker (supervisor) — the health page shows "scheduler unknown" until the first run.

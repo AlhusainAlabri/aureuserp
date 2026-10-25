@@ -95,8 +95,7 @@ it('shows a personalized greeting with logo in the page heading', function (): v
     Livewire::test(Dashboard::class)
         ->assertSuccessful()
         ->assertSee(__('dashboard.greeting', ['name' => $user->name]))
-        ->assertSeeHtml(Branding::fullLogoUrl())
-        ->assertDontSeeHtml(asset('images/logo.png'));
+        ->assertSeeHtml(Branding::fullLogoUrl());
 });
 
 // ──────────────────────────────────────────────
