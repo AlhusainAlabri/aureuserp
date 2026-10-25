@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Tests\Helpers\AttendanceFixtures;
 use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Attendance\Enums\DayStatus;
@@ -170,4 +172,101 @@ it('AttendanceSummaryTest: the summary exposes exactly the documented read-only 
 
     expect((new ReflectionClass(AttendanceMonthSummary::class))->isReadOnly())->toBeTrue()
         ->and($properties)->toBe(['absentDays', 'dailyHours', 'hasSchedule', 'lateMinutes', 'overtimeHours', 'workingDays']);
+});
+
+/**
+ * Approved (or other state) Time Off covering the dates, of a paid or unpaid leave type.
+ */
+function summaryLeave(Employee $employee, string $from, string $to, bool $unpaid, string $state = 'validate_two'): void
+{
+    $leaveType = ['name' => 'Summary leave '.uniqid(), 'created_at' => now(), 'updated_at' => now()];
+
+    if (Schema::hasColumn('time_off_leave_types', 'unpaid')) {
+        $leaveType['unpaid'] = $unpaid;
+    }
+
+    DB::table('time_off_leaves')->insert([
+        'employee_id'       => $employee->id,
+        'holiday_status_id' => DB::table('time_off_leave_types')->insertGetId($leaveType),
+        'state'             => $state,
+        'date_from'         => $from.' 00:00:00',
+        'date_to'           => $to.' 23:59:59',
+        'number_of_days'    => 1,
+        'created_at'        => now(),
+        'updated_at'        => now(),
+    ]);
+}
+
+it('AttendanceSummaryTest: an absent row later covered by approved leave is not counted', function (bool $unpaid, string $state): void {
+    if (! Schema::hasTable('time_off_leaves') || ! Schema::hasTable('time_off_leave_types')) {
+        $this->markTestSkipped('Time Off is not installed in the test database.');
+    }
+
+    $employee = summaryEmployee();
+
+    // Closed as absent first; the leave covering the 2nd-3rd was approved afterwards (rows not recalculated).
+    summaryDay($employee, '2026-11-02', DayStatus::Absent);
+    summaryDay($employee, '2026-11-03', DayStatus::Absent);
+    summaryDay($employee, '2026-11-04', DayStatus::Absent);
+    summaryLeave($employee, '2026-11-02', '2026-11-03', $unpaid, $state);
+
+    expect(app(AttendanceSummary::class)->forMonth($employee, 2026, 11)->absentDays)->toBe(1);
+})->with([
+    'unpaid, second approval' => [true, 'validate_two'],
+    'paid, second approval'   => [false, 'validate_two'],
+    'unpaid, first approval'  => [true, 'validate_one'],
+]);
+
+it('AttendanceSummaryTest: leave that is not approved does not hide an absence', function (): void {
+    if (! Schema::hasTable('time_off_leaves') || ! Schema::hasTable('time_off_leave_types')) {
+        $this->markTestSkipped('Time Off is not installed in the test database.');
+    }
+
+    $employee = summaryEmployee();
+    summaryDay($employee, '2026-11-02', DayStatus::Absent);
+    summaryLeave($employee, '2026-11-02', '2026-11-02', true, 'refuse');
+
+    expect(app(AttendanceSummary::class)->forMonth($employee, 2026, 11)->absentDays)->toBe(1);
+});
+
+it('AttendanceSummaryTest: another employee\'s leave does not hide an absence', function (): void {
+    if (! Schema::hasTable('time_off_leaves') || ! Schema::hasTable('time_off_leave_types')) {
+        $this->markTestSkipped('Time Off is not installed in the test database.');
+    }
+
+    $employee = summaryEmployee();
+    summaryDay($employee, '2026-11-02', DayStatus::Absent);
+    summaryLeave(summaryEmployee(), '2026-11-02', '2026-11-02', true);
+
+    expect(app(AttendanceSummary::class)->forMonth($employee, 2026, 11)->absentDays)->toBe(1);
+});
+
+it('AttendanceSummaryTest: absence and lateness on a holiday added later are not counted', function (): void {
+    $employee = summaryEmployee();
+
+    summaryDay($employee, '2026-11-09', DayStatus::Absent);
+    summaryDay($employee, '2026-11-10', DayStatus::Absent);
+    summaryDay($employee, '2026-11-11', DayStatus::Present, ['late_minutes' => 45]);
+    summaryDay($employee, '2026-11-12', DayStatus::Present, ['late_minutes' => 20]);
+    AttendanceFixtures::holiday('2026-11-10', '2026-11-11', $employee->calendar_id);
+
+    $summary = app(AttendanceSummary::class)->forMonth($employee, 2026, 11);
+
+    expect($summary->workingDays)->toBe(19)
+        ->and($summary->absentDays)->toBe(1)
+        ->and($summary->lateMinutes)->toBe(20);
+});
+
+it('AttendanceSummaryTest: absence and lateness on a rest day are not counted', function (): void {
+    $employee = summaryEmployee();
+
+    // Saturday 7 and Sunday 8 November 2026 are rest days of the Monday-Friday calendar.
+    summaryDay($employee, '2026-11-07', DayStatus::Absent, ['late_minutes' => 30]);
+    summaryDay($employee, '2026-11-08', DayStatus::Absent);
+    summaryDay($employee, '2026-11-09', DayStatus::Absent, ['late_minutes' => 10]);
+
+    $summary = app(AttendanceSummary::class)->forMonth($employee, 2026, 11);
+
+    expect($summary->absentDays)->toBe(1)
+        ->and($summary->lateMinutes)->toBe(10);
 });

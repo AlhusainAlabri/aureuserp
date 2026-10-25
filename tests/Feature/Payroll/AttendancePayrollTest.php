@@ -250,6 +250,53 @@ it('AttendancePayrollTest: deducting absence alone pro-rates basic by the absent
         ->and(attendanceLine($payslip, 'PASI_EMP'))->toBe(53.2);
 });
 
+it('AttendancePayrollTest: an absence under leave approved later is deducted once, through the unpaid leave', function (): void {
+    if (! Schema::hasTable('time_off_leaves') || ! Schema::hasColumn('time_off_leave_types', 'unpaid')) {
+        $this->markTestSkipped('Time Off is not installed in the test database.');
+    }
+
+    attendancePayrollToggles(absence: true);
+    $employee = attendancePayrollEmployee();
+    attendancePayrollMonth($employee);
+
+    // The 1st and 2nd were closed as absent; unpaid leave for those two days was approved afterwards.
+    DB::table('time_off_leaves')->insert([
+        'employee_id'       => $employee->id,
+        'holiday_status_id' => DB::table('time_off_leave_types')->insertGetId([
+            'name' => 'Unpaid late approval '.uniqid(), 'unpaid' => true, 'created_at' => now(), 'updated_at' => now(),
+        ]),
+        'state'          => 'validate_two',
+        'date_from'      => '2026-10-01 00:00:00',
+        'date_to'        => '2026-10-02 23:59:59',
+        'number_of_days' => 2,
+        'created_at'     => now(),
+        'updated_at'     => now(),
+    ]);
+
+    $payslip = attendancePayslip($employee);
+
+    expect((float) $payslip->unpaid_leave_days)->toBe(2.0)
+        ->and((float) $payslip->absent_days)->toBe(0.0)
+        ->and((float) $payslip->worked_days)->toBe(19.0)
+        ->and((float) $payslip->basic_salary)->toBe(760.0);
+});
+
+it('AttendancePayrollTest: an absence on a holiday added later costs nothing', function (): void {
+    attendancePayrollToggles(absence: true);
+    $employee = attendancePayrollEmployee();
+    attendancePayrollMonth($employee);
+
+    // Thursday 1 October was closed as absent, then declared a public holiday: 20 working days remain.
+    AttendanceFixtures::holiday('2026-10-01', '2026-10-01', $employee->calendar_id);
+
+    $payslip = attendancePayslip($employee);
+
+    expect((float) $payslip->working_days)->toBe(20.0)
+        ->and((float) $payslip->absent_days)->toBe(1.0)
+        ->and((float) $payslip->worked_days)->toBe(19.0)
+        ->and((float) $payslip->basic_salary)->toBe(round(840 * 19 / 20, 3));
+});
+
 it('AttendancePayrollTest: deducting lateness alone adds one LATE deduction at the hourly rate', function (): void {
     attendancePayrollToggles(lateness: true);
     $employee = attendancePayrollEmployee();
