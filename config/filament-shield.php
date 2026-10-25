@@ -267,6 +267,7 @@ return [
         'download_system_backup',
         'delete_system_backup',
         'restore_system_backup',
+        'post_in_locked_period',
     ],
 
     /*
