@@ -292,6 +292,22 @@ return [
     ],
 
     'pasi' => [
+        'schedule' => [
+            'navigation' => 'PASI Contribution Schedule',
+            'title'      => 'PASI Contribution Schedule',
+            'period'     => 'Pay period',
+            'export'     => 'Export CSV',
+            'totals'     => 'Totals',
+            'empty'      => 'No validated or paid payslips with PASI for this month.',
+            'columns'    => [
+                'employee'         => 'Employee',
+                'civil_id'         => 'Civil ID',
+                'category'         => 'Category',
+                'insurable_salary' => 'Insurable salary',
+                'employee_share'   => 'Employee share',
+                'employer_share'   => 'Employer share',
+            ],
+        ],
         'add_rate'           => 'Add new rate',
         'salary_cap_hint'    => 'Leave empty for no cap.',
         'effective_to_hint'  => 'Set automatically when a newer rate is added.',
