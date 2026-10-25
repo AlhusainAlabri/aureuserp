@@ -266,6 +266,15 @@ class ExtensionPermissionsSync
             'create_payroll_pasi::rule',
             'update_payroll_pasi::rule',
             'page_payroll_pasi_contribution_schedule',
+            'view_any_payroll_gratuity::tier',
+            'view_payroll_gratuity::tier',
+            'create_payroll_gratuity::tier',
+            'update_payroll_gratuity::tier',
+            'page_payroll_manage_gratuity_settings',
+            'view_any_payroll_end::of::service::settlement',
+            'view_payroll_end::of::service::settlement',
+            'create_payroll_end::of::service::settlement',
+            'update_payroll_end::of::service::settlement',
         ], $roleNames);
     }
 

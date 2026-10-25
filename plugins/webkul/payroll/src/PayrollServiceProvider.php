@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Models\EmployeeComponent;
+use Webkul\Payroll\Models\EndOfServiceSettlement;
 use Webkul\Payroll\Models\GratuityTier;
 use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PasiRule;
 use Webkul\Payroll\Models\Payslip;
 use Webkul\Payroll\Models\SalaryComponent;
+use Webkul\Payroll\Policies\EndOfServiceSettlementPolicy;
 use Webkul\Payroll\Policies\GratuityTierPolicy;
 use Webkul\Payroll\Policies\LoanPolicy;
 use Webkul\Payroll\Policies\PasiRulePolicy;
@@ -76,6 +78,7 @@ class PayrollServiceProvider extends PackageServiceProvider
                             'LoanResource',
                             'PasiRuleResource',
                             'GratuityTierResource',
+                            'EndOfServiceSettlementResource',
                         ] as $resource) {
                             $command->call('shield:generate', [
                                 '--resource' => $resource,
@@ -126,6 +129,7 @@ class PayrollServiceProvider extends PackageServiceProvider
 
         Gate::policy(PasiRule::class, PasiRulePolicy::class);
         Gate::policy(GratuityTier::class, GratuityTierPolicy::class);
+        Gate::policy(EndOfServiceSettlement::class, EndOfServiceSettlementPolicy::class);
 
         if (class_exists(Employee::class) && Schema::hasTable('payroll_employee_components')) {
             Employee::resolveRelationUsing(
