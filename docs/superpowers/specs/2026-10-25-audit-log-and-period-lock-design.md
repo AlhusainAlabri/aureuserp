@@ -24,7 +24,7 @@ No new audit table. Entries are `chatter_messages` rows (`type = notification`, 
 ### Components (all in the `app/` layer; no plugin file is edited)
 - `App\Support\Audit\AuditedModels` — the list of extra model classes to cover, in one place. A class that already uses `HasLogActivity` is skipped (no duplicate entries).
 - `App\Support\Audit\AuditRecorder` — attaches `created`, `updated`, `deleted`/`soft deleted`, `restored` listeners to each listed class (and writes the same message shape). Logs every dirty attribute except noise (`updated_at`, `created_at`, `remember_token`, `sort`); sensitive attributes (`password`, tokens) are logged as "changed" without values. Skips when nobody is signed in (same rule as Chatter). Never throws into the caller (report and continue).
-- Initial coverage list: payroll `Payslip`, `PayslipLine`, `SalaryComponent`, `PasiRule`, `GratuityTier`, `EndOfServiceSettlement`; employees `Contract`; attendance `AttendanceDay`, `OvertimeRequest` (approver and manual HR edits visible), `AttendanceImportBatch`; accounting setup `BankStatement`, `BankStatementLine`, `Journal`, `Account`, `Tax`; security `User`, `Role` and role↔permission changes.
+- Initial coverage list: payroll `Payslip`, `PayslipLine`, `SalaryComponent`, `PasiRule`, `GratuityTier`, `EndOfServiceSettlement`; employees `EmployeeComponent` (there is no contract model; salary data lives here); attendance `AttendanceDay`, `OvertimeRequest` (approver and manual HR edits visible), `AttendanceImportBatch`; accounting setup `BankStatement`, `BankStatementLine`, `Journal`, `Account`, `Tax`; security `User`, `Role` and role↔permission changes.
 - Model names in this list are by domain; the plan fixes the exact classes by reading the plugins before the list is written.
 - Sign-in events: a listener on `Login` and `Failed` writes an entry on the `User` (`event = login | login_failed`); a failed attempt is recorded only when the email belongs to an existing user.
 - `App\Filament\Resources\AuditLogResource` (Settings group) — read-only list over `chatter_messages where event is not null`: when, who, record type (friendly name), link to the record when it still exists, event, readable "old → new" summary; filters by user, record type, event, date range; search; no create/edit/delete actions; scoped to the user's allowed companies. Permission from Shield (`view_any` only), granted to Admin/super_admin through `ExtensionPermissionsSync`.
@@ -38,7 +38,7 @@ No new audit table. Entries are `chatter_messages` rows (`type = notification`, 
 ## Part 2 — Accounting period lock
 
 ### Data
-- `companies.accounting_lock_date` (nullable date) — one app migration. The company already logs its changes, so moving the date is audited by existing code once the field has a label.
+- `companies.accounting_lock_date` (nullable date) — one app migration. Moving the date is recorded explicitly as a `lock_date_changed` audit entry by the code that sets it (the plugin `Company` model is not edited).
 
 ### Components
 - `App\Support\Accounting\PeriodLock` — `lockDateFor(companyId)`, and a guard called from model events with the model and the operation. Rule: a change is **locked** when (the original date ≤ lock date and the original state is not draft) or (the new date ≤ lock date and the new state is not draft). So posted/cancelled documents in the period cannot be edited, reset, cancelled or deleted, and nothing can be posted or moved into the period; drafts may exist there.
