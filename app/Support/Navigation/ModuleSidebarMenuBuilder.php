@@ -278,7 +278,8 @@ class ModuleSidebarMenuBuilder
         $stripped = NavigationItem::make($item->getLabel())
             ->url($item->getUrl())
             ->badge($item->getBadge(), $item->getBadgeColor())
-            ->sort($item->getSort());
+            ->sort($item->getSort())
+            ->isActiveWhen(fn (): bool => $item->isActive());
 
         if ($item->shouldOpenUrlInNewTab()) {
             $stripped->openUrlInNewTab();

@@ -4,6 +4,7 @@ use App\Support\Navigation\ModuleSidebarMenuBuilder;
 use Filament\Events\ServingFilament;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Navigation\NavigationManager;
 use Webkul\Security\Models\User;
 
@@ -70,4 +71,14 @@ it('flattens sales cluster pages under the sales module group', function (): voi
         ->all();
 
     expect($labels)->toContain('Quotations');
+});
+
+it('keeps the active state of stripped navigation items', function (): void {
+    $strip = new ReflectionMethod(ModuleSidebarMenuBuilder::class, 'stripItemIcons');
+
+    $active = NavigationItem::make('Current')->url('/admin/current')->isActiveWhen(fn (): bool => true);
+    $inactive = NavigationItem::make('Other')->url('/admin/other')->isActiveWhen(fn (): bool => false);
+
+    expect($strip->invoke(null, $active)->isActive())->toBeTrue()
+        ->and($strip->invoke(null, $inactive)->isActive())->toBeFalse();
 });
