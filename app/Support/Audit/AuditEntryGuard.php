@@ -21,6 +21,14 @@ class AuditEntryGuard
      */
     public const MUTABLE_ATTRIBUTES = ['is_read', 'updated_at'];
 
+    /**
+     * Chatter stamps the signed-in user as causer on every update of a message; on a log row that stamp is ignored
+     * (and undone afterwards) so reading a row never changes who the log says made the change.
+     *
+     * @var array<int, string>
+     */
+    public const CAUSER_ATTRIBUTES = ['causer_type', 'causer_id'];
+
     protected static ?WeakReference $registeredOn = null;
 
     public static function register(): void
@@ -35,6 +43,7 @@ class AuditEntryGuard
 
         foreach ([Message::class, AuditEntry::class] as $class) {
             $class::updating(fn (Message $message) => static::guardUpdate($message));
+            $class::updated(fn (Message $message) => static::restoreCauser($message));
             $class::deleting(fn (Message $message) => static::guardDelete($message));
         }
     }
@@ -50,11 +59,42 @@ class AuditEntryGuard
             return;
         }
 
-        if (array_diff(array_keys($message->getDirty()), static::MUTABLE_ATTRIBUTES) === []) {
+        $dirty = array_keys($message->getDirty());
+
+        $others = array_diff($dirty, static::MUTABLE_ATTRIBUTES, static::CAUSER_ATTRIBUTES);
+        $changesCauser = array_intersect($dirty, static::CAUSER_ATTRIBUTES) !== [];
+
+        if ($others === [] && (! $changesCauser || in_array('is_read', $dirty, true))) {
             return;
         }
 
         throw new AuthorizationException(__('audit.entry_is_read_only'));
+    }
+
+    /**
+     * Put the original causer back after an allowed update, with a query that fires no model events.
+     */
+    protected static function restoreCauser(Message $message): void
+    {
+        if (! static::isAuditRow($message)) {
+            return;
+        }
+
+        $changes = array_intersect_key($message->getChanges(), array_flip(static::CAUSER_ATTRIBUTES));
+
+        if ($changes === []) {
+            return;
+        }
+
+        $original = [];
+
+        foreach (array_keys($changes) as $attribute) {
+            $original[$attribute] = $message->getRawOriginal($attribute);
+        }
+
+        $message->newQueryWithoutScopes()->whereKey($message->getKey())->toBase()->update($original);
+
+        $message->forceFill($original);
     }
 
     protected static function guardDelete(Message $message): void

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Audit\AuditEntry;
+use App\Support\Audit\AuditEntryGuard;
 use App\Support\Audit\AuditRecorder;
 use Illuminate\Auth\Access\AuthorizationException;
 use Tests\Helpers\FeatureTestBootstrap;
@@ -93,4 +94,74 @@ it('AuditEntryProtectionTest: the chatter panel does not offer to pin a log row'
 
     expect($path)->toBe(resource_path('views/vendor/chatter/filament/infolists/components/messages/title-text-entry.blade.php'))
         ->and(file_get_contents($path))->toContain('@if (blank($getRecord()->event))');
+});
+
+it('AuditEntryProtectionTest: marking a log row read as another user keeps the original causer', function (): void {
+    $row = makeAuditRow();
+    $originalCauser = [$row->causer_type, $row->causer_id];
+
+    $reader = User::factory()->create();
+    $this->actingAs($reader);
+
+    foreach ([Message::class, AuditEntry::class] as $class) {
+        $entry = $class::find($row->id);
+        $entry->is_read = true;
+
+        expect($entry->save())->toBeTrue();
+
+        $saved = Message::find($row->id);
+
+        expect((bool) $saved->is_read)->toBeTrue()
+            ->and([$saved->causer_type, $saved->causer_id])->toBe($originalCauser)
+            ->and($entry->causer_id)->toBe($originalCauser[1]);
+
+        $saved->is_read = false;
+        $saved->saveQuietly();
+    }
+});
+
+it('AuditEntryProtectionTest: the causer is kept when Message was booted by another user before the guard listened', function (): void {
+    $row = makeAuditRow();
+    $originalCauser = [$row->causer_type, $row->causer_id];
+
+    $third = User::factory()->create();
+    $reader = User::factory()->create();
+
+    Message::flushEventListeners();
+    AuditEntry::flushEventListeners();
+    Message::clearBootedModels();
+
+    $this->actingAs($third);
+    new Message;
+
+    $registeredOn = new ReflectionProperty(AuditEntryGuard::class, 'registeredOn');
+    $registeredOn->setValue(null, null);
+    AuditEntryGuard::register();
+
+    $this->actingAs($reader);
+
+    $entry = Message::find($row->id);
+    $entry->is_read = true;
+
+    expect($entry->save())->toBeTrue();
+
+    $saved = Message::find($row->id);
+
+    expect((bool) $saved->is_read)->toBeTrue()
+        ->and([$saved->causer_type, $saved->causer_id])->toBe($originalCauser)
+        ->and($saved->causer_id)->not->toBe($third->id)
+        ->and($saved->causer_id)->not->toBe($reader->id);
+});
+
+it('AuditEntryProtectionTest: refuses a change that only touches the causer of a log row', function (): void {
+    $row = makeAuditRow();
+    $other = User::factory()->create();
+
+    foreach ([Message::find($row->id), AuditEntry::find($row->id)] as $entry) {
+        $entry->causer_id = $other->id;
+
+        expect(fn () => $entry->save())->toThrow(AuthorizationException::class);
+    }
+
+    expect(Message::find($row->id)->causer_id)->toBe($row->causer_id);
 });
