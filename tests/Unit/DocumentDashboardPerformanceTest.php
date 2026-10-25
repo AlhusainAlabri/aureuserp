@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Webkul\DocumentArchive\Filament\Widgets\DocumentStatsWidget;
@@ -9,6 +10,9 @@ use Webkul\DocumentArchive\Services\DocumentTagService;
 use Webkul\DocumentArchive\Support\DocumentDashboardCache;
 use Webkul\DocumentArchive\Support\DocumentDashboardMetrics;
 use Webkul\Security\Models\User;
+
+// Unit tests are not transactional by default; these tests create files and folders that must not outlive them.
+uses(DatabaseTransactions::class);
 
 it('caches and flushes document dashboard metrics via cache version bump', function (): void {
     Cache::flush();
