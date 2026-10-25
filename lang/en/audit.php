@@ -39,6 +39,7 @@ return [
     ],
 
     'lock' => [
+        'refused_title'  => 'Period locked',
         'refused'        => 'Accounting is locked up to :date. Changes dated on or before that day are not allowed.',
         'date_in_future' => 'The lock date cannot be later than today.',
     ],
@@ -68,6 +69,8 @@ return [
 
     'attributes' => [
         'accounting_lock_date' => 'Accounting lock date',
+        'operation'            => 'Operation',
+        'line_id'              => 'Line',
         'name'                 => 'Name',
         'email'                => 'Email',
         'password'             => 'Password',
