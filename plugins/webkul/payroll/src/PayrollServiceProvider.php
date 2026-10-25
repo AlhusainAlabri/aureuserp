@@ -49,6 +49,7 @@ class PayrollServiceProvider extends PackageServiceProvider
                 '2026_10_26_100002_add_pasi_base_to_payroll_payslips_table',
                 '2026_10_26_200000_create_payroll_gratuity_tiers_table',
                 '2026_10_26_200001_create_payroll_end_of_service_settlements_table',
+                '2026_10_26_200004_add_live_employee_id_to_payroll_end_of_service_settlements_table',
                 '2026_10_26_200002_add_pays_gratuity_to_employees_departure_reasons_table',
             ])
             ->hasDependencies([

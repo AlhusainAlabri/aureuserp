@@ -14,8 +14,13 @@ class GratuityCalculator
         protected BasicSalaryResolver $basics,
     ) {}
 
-    public function calculate(Employee $employee, CarbonInterface $start, CarbonInterface $end): GratuityResult
+    /**
+     * @param  CarbonInterface|null  $asOf  the date the tiers and the basic salary are looked up on (defaults to $end)
+     */
+    public function calculate(Employee $employee, CarbonInterface $start, CarbonInterface $end, ?CarbonInterface $asOf = null): GratuityResult
     {
+        $asOf ??= $end;
+
         $settings = app(GratuitySettings::class);
 
         $serviceDays = (int) abs($start->copy()->startOfDay()->diffInDays($end->copy()->startOfDay()));
@@ -27,11 +32,11 @@ class GratuityCalculator
             return new GratuityResult(0.0, [], $reason, $serviceYears, $serviceDays);
         }
 
-        $dailyRate = $this->basics->forDate($employee, $end) / max($settings->leave_payout_divisor, 1);
+        $dailyRate = $this->basics->forDate($employee, $asOf) / max($settings->leave_payout_divisor, 1);
 
         $rows = [];
 
-        foreach (GratuityTier::query()->inForce($end)->orderBy('from_year')->get() as $tier) {
+        foreach (GratuityTier::query()->inForce($asOf)->orderBy('from_year')->get() as $tier) {
             $from = (float) $tier->from_year;
             $to = $tier->to_year === null ? null : (float) $tier->to_year;
             $years = max(0.0, min($serviceYears, $to ?? $serviceYears) - $from);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Hr\HrExtensionSchemaService;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +21,8 @@ use Webkul\Payroll\Services\LeaveBalanceResolver;
 use Webkul\Payroll\Services\PayrollCalculator;
 use Webkul\Security\Models\User;
 use Wezlo\FilamentApproval\ApproverResolvers\UserResolver;
+use Wezlo\FilamentApproval\Enums\ApprovalStatus;
+use Wezlo\FilamentApproval\Models\Approval;
 use Wezlo\FilamentApproval\Models\ApprovalFlow;
 use Wezlo\FilamentApproval\Services\ApprovalEngine;
 
@@ -80,13 +83,13 @@ it('GratuitySettlementTest: builds a draft settlement with every component', fun
 
     $settlement = app(FinalSettlementBuilder::class)->build($employee);
 
-    $expectedGratuity = round(1350 + round((15 / 365) * 900, 3), 3);
+    $expectedGratuity = round(1350 + round((16 / 365) * 900, 3), 3);
     $expectedFinalSalary = round(900 * 16 / 31, 3);
 
     expect($settlement->status)->toBe(SettlementStatus::Draft)
         ->and($settlement->join_date->toDateString())->toBe('2020-01-01')
         ->and($settlement->departure_date->toDateString())->toBe('2023-01-16')
-        ->and($settlement->service_days)->toBe((int) Carbon::parse('2020-01-01')->diffInDays(Carbon::parse('2023-01-16')))
+        ->and($settlement->service_days)->toBe((int) Carbon::parse('2020-01-01')->diffInDays(Carbon::parse('2023-01-17')))
         ->and((float) $settlement->last_basic)->toBe(900.0)
         ->and((float) $settlement->gratuity_amount)->toBe($expectedGratuity)
         ->and($settlement->gratuity_breakdown['reason'])->toBeNull()
@@ -304,4 +307,119 @@ it('GratuitySettlementTest: seeds one inactive approval flow, once', function ()
     expect($flows)->toHaveCount(1)
         ->and($flows->first()->is_active)->toBeFalse()
         ->and($flows->first()->steps)->toHaveCount(3);
+});
+
+it('GratuitySettlementTest: the departure date is the last working day and counts as service', function (): void {
+    $settlement = app(FinalSettlementBuilder::class)->build(settlementEmployee(departed: '2022-12-31'));
+
+    expect((float) $settlement->gratuity_amount)->toBe(1350.0)
+        ->and($settlement->gratuity_breakdown['rows'])->toHaveCount(1)
+        ->and($settlement->service_days)->toBe(1096)
+        ->and((float) $settlement->final_salary_amount)->toBe(900.0);
+});
+
+it('GratuitySettlementTest: a paid or cancelled settlement cannot be sent back into the approval workflow', function (): void {
+    $builder = app(FinalSettlementBuilder::class);
+    $draft = $builder->build(settlementEmployee());
+    $paid = $builder->build(settlementEmployee());
+    $paid->markAsPaid();
+    $cancelled = $builder->build(settlementEmployee());
+    $cancelled->cancel();
+
+    gratuityFlow(User::withoutEvents(fn (): User => User::factory()->create()));
+
+    expect($draft->canBeSubmittedForApproval())->toBeTrue();
+
+    foreach ([$paid->fresh(), $cancelled->fresh()] as $settlement) {
+        $status = $settlement->status;
+
+        expect($settlement->canBeSubmittedForApproval())->toBeFalse();
+
+        foreach (['onApprovalSubmitted', 'onApprovalApproved', 'onApprovalRejected'] as $hook) {
+            $settlement->$hook(new Approval);
+            expect($settlement->fresh()->status)->toBe($status);
+        }
+    }
+});
+
+it('GratuitySettlementTest: cancelling a settlement cancels its pending approval', function (): void {
+    $approver = User::withoutEvents(fn (): User => User::factory()->create());
+    $flow = gratuityFlow($approver);
+    $settlement = app(FinalSettlementBuilder::class)->build(settlementEmployee());
+    $approval = $settlement->submitForApproval($flow, $approver->id);
+
+    $settlement->fresh()->cancel();
+
+    expect($settlement->fresh()->status)->toBe(SettlementStatus::Cancelled)
+        ->and($approval->fresh()->status)->toBe(ApprovalStatus::Cancelled)
+        ->and($settlement->fresh()->isPendingApproval())->toBeFalse();
+});
+
+it('GratuitySettlementTest: remembers which loans were offset and clears only those', function (): void {
+    $employee = settlementEmployee();
+    $offset = settlementLoan($employee, 200);
+    $settlement = app(FinalSettlementBuilder::class)->build($employee);
+
+    expect($settlement->gratuity_breakdown['loan_ids'])->toBe([$offset->id]);
+
+    $settlement->markAsPaid();
+
+    expect($offset->fresh()->status)->toBe(LoanStatus::Completed);
+});
+
+it('GratuitySettlementTest: refuses to pay when loans changed since the draft was built', function (string $change): void {
+    $employee = settlementEmployee();
+    $loan = settlementLoan($employee, 200);
+    $settlement = app(FinalSettlementBuilder::class)->build($employee);
+
+    $other = match ($change) {
+        'new active loan'     => settlementLoan($employee, 100),
+        'balance changed'     => tap($loan)->update(['amount_remaining' => 150]),
+        'loan no longer live' => tap($loan)->update(['status' => LoanStatus::Completed]),
+    };
+
+    expect(fn () => $settlement->markAsPaid())->toThrow(RuntimeException::class, __('payroll::exceptions.settlement_changed'))
+        ->and($settlement->fresh()->status)->toBe(SettlementStatus::Draft)
+        ->and($settlement->fresh()->paid_at)->toBeNull()
+        ->and($other->fresh()->status)->not->toBe(LoanStatus::Cancelled);
+})->with(['new active loan', 'balance changed', 'loan no longer live']);
+
+it('GratuitySettlementTest: refuses to pay when the departure month was paid after the draft was built', function (): void {
+    $employee = settlementEmployee(departed: '2023-01-16');
+    $settlement = app(FinalSettlementBuilder::class)->build($employee);
+
+    expect((float) $settlement->final_salary_amount)->toBeGreaterThan(0.0);
+
+    $payslip = app(PayrollCalculator::class)->calculatePayslip($employee, 2023, 1);
+    $payslip->update(['status' => PayslipStatus::Validated]);
+
+    expect(fn () => $settlement->markAsPaid())->toThrow(RuntimeException::class, __('payroll::exceptions.settlement_changed'));
+});
+
+it('GratuitySettlementTest: a stale copy cannot pay a settlement that was already paid', function (): void {
+    $settlement = app(FinalSettlementBuilder::class)->build(settlementEmployee());
+    $stale = EndOfServiceSettlement::query()->findOrFail($settlement->id);
+
+    $settlement->markAsPaid();
+    $paidAt = $settlement->fresh()->paid_at;
+
+    expect(fn () => $stale->markAsPaid())->toThrow(RuntimeException::class)
+        ->and($settlement->fresh()->paid_at->equalTo($paidAt))->toBeTrue();
+});
+
+it('GratuitySettlementTest: the database allows one live settlement per employee', function (): void {
+    $employee = settlementEmployee();
+    $first = app(FinalSettlementBuilder::class)->build($employee);
+    $attributes = collect($first->getAttributes())->except(['id', 'live_employee_id'])->all();
+
+    expect($first->fresh()->live_employee_id)->toBe($employee->id)
+        ->and(fn () => EndOfServiceSettlement::query()->create($attributes))->toThrow(QueryException::class);
+
+    $first->fresh()->cancel();
+
+    expect($first->fresh()->live_employee_id)->toBeNull();
+
+    $second = EndOfServiceSettlement::query()->create($attributes);
+
+    expect($second->live_employee_id)->toBe($employee->id);
 });

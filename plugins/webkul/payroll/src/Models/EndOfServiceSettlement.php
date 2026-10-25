@@ -3,6 +3,7 @@
 namespace Webkul\Payroll\Models;
 
 use App\Traits\HasApprovalWorkflow;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,11 +13,13 @@ use RuntimeException;
 use Webkul\Employee\Models\Employee;
 use Webkul\Payroll\Enums\LoanInstallmentStatus;
 use Webkul\Payroll\Enums\LoanStatus;
+use Webkul\Payroll\Enums\PayslipStatus;
 use Webkul\Payroll\Enums\SettlementStatus;
 use Webkul\Payroll\Settings\GratuitySettings;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 use Wezlo\FilamentApproval\Models\Approval;
+use Wezlo\FilamentApproval\Services\ApprovalEngine;
 
 class EndOfServiceSettlement extends Model
 {
@@ -90,6 +93,29 @@ class EndOfServiceSettlement extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    /**
+     * Only a draft can be sent to approval; a paid or cancelled settlement must never re-enter the workflow.
+     */
+    public function canSubmitForApproval(?int $userId = null): bool
+    {
+        return $this->status === SettlementStatus::Draft;
+    }
+
+    public function isClosed(): bool
+    {
+        return in_array($this->status, [SettlementStatus::Paid, SettlementStatus::Cancelled], true);
+    }
+
+    /**
+     * @return Builder<Loan>
+     */
+    public static function activeLoansOf(int $employeeId): Builder
+    {
+        return Loan::query()
+            ->where('employee_id', $employeeId)
+            ->where('status', LoanStatus::Active->value);
+    }
+
     public function isEditable(): bool
     {
         return $this->status === SettlementStatus::Draft;
@@ -111,22 +137,40 @@ class EndOfServiceSettlement extends Model
         }
 
         DB::transaction(function (): void {
-            $this->update([
+            $current = static::query()->lockForUpdate()->findOrFail($this->getKey());
+
+            if (! $current->canBePaid()) {
+                throw new RuntimeException(__('payroll::exceptions.settlement_cannot_be_paid'));
+            }
+
+            $current->assertBuiltFromCurrentData();
+
+            $current->update([
                 'status'  => SettlementStatus::Paid,
                 'paid_at' => now(),
             ]);
 
-            $this->settleLoans();
+            $current->settleLoans();
         });
+
+        $this->refresh();
     }
 
     public function cancel(): void
     {
-        if (in_array($this->status, [SettlementStatus::Paid, SettlementStatus::Cancelled], true)) {
+        if ($this->isClosed()) {
             throw new RuntimeException(__('payroll::exceptions.settlement_cannot_be_cancelled'));
         }
 
-        $this->update(['status' => SettlementStatus::Cancelled]);
+        DB::transaction(function (): void {
+            $approval = $this->currentApproval();
+
+            if ($approval !== null) {
+                app(ApprovalEngine::class)->cancel($approval);
+            }
+
+            $this->update(['status' => SettlementStatus::Cancelled]);
+        });
     }
 
     public function recalculateNet(): void
@@ -143,11 +187,19 @@ class EndOfServiceSettlement extends Model
 
     public function onApprovalSubmitted(Approval $approval): void
     {
+        if ($this->isClosed()) {
+            return;
+        }
+
         $this->updateQuietly(['status' => SettlementStatus::PendingApproval]);
     }
 
     public function onApprovalApproved(Approval $approval): void
     {
+        if ($this->isClosed()) {
+            return;
+        }
+
         $this->updateQuietly([
             'status'      => SettlementStatus::Approved,
             'approved_at' => now(),
@@ -157,17 +209,53 @@ class EndOfServiceSettlement extends Model
 
     public function onApprovalRejected(Approval $approval): void
     {
+        if ($this->isClosed()) {
+            return;
+        }
+
         $this->updateQuietly(['status' => SettlementStatus::Draft]);
     }
 
     /**
-     * Paying the settlement clears the employee's active loans: the offset has been taken from what is owed.
+     * The offset and the final salary were taken when the draft was built; refuse to pay if the loans or the
+     * departure-month payslip changed since, so nothing is deducted or paid twice.
+     *
+     * @throws RuntimeException
+     */
+    protected function assertBuiltFromCurrentData(): void
+    {
+        $storedIds = $this->gratuity_breakdown['loan_ids'] ?? null;
+
+        if ($storedIds !== null) {
+            $active = static::activeLoansOf($this->employee_id)->get(['id', 'amount_remaining']);
+
+            $sameLoans = $active->pluck('id')->sort()->values()->all() === collect($storedIds)->sort()->values()->all();
+            $sameBalance = round((float) $active->sum('amount_remaining'), 3) === round((float) $this->loan_offset_amount, 3);
+
+            if (! $sameLoans || ! $sameBalance) {
+                throw new RuntimeException(__('payroll::exceptions.settlement_changed'));
+            }
+        }
+
+        if ((float) $this->final_salary_amount > 0 && Payslip::query()
+            ->where('employee_id', $this->employee_id)
+            ->where('period_year', $this->departure_date->year)
+            ->where('period_month', $this->departure_date->month)
+            ->whereIn('status', [PayslipStatus::Validated->value, PayslipStatus::Paid->value])
+            ->exists()) {
+            throw new RuntimeException(__('payroll::exceptions.settlement_changed'));
+        }
+    }
+
+    /**
+     * Paying the settlement clears the loans that were offset: the offset has been taken from what is owed.
      */
     protected function settleLoans(): void
     {
-        Loan::query()
-            ->where('employee_id', $this->employee_id)
-            ->where('status', LoanStatus::Active->value)
+        $offsetIds = $this->gratuity_breakdown['loan_ids'] ?? null;
+
+        static::activeLoansOf($this->employee_id)
+            ->when($offsetIds !== null, fn (Builder $query) => $query->whereKey($offsetIds))
             ->each(function (Loan $loan): void {
                 $loan->installments()
                     ->where('status', LoanInstallmentStatus::Scheduled->value)
@@ -200,6 +288,8 @@ class EndOfServiceSettlement extends Model
 
                 $settlement->leave_payout_amount = round((float) $settlement->unused_leave_days * (float) $settlement->last_basic / $divisor, 3);
             }
+
+            $settlement->live_employee_id = $settlement->status === SettlementStatus::Cancelled ? null : $settlement->employee_id;
 
             $settlement->recalculateNet();
         });
