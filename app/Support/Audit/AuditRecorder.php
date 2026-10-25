@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schema;
 use Throwable;
 use WeakReference;
 use Webkul\Chatter\Models\Message;
+use Webkul\Security\Models\Role;
 
 /**
  * Writes audit entries to Chatter's message table and listens to the models in AuditedModels.
@@ -20,6 +21,10 @@ class AuditRecorder
     public const LOG_NAME = 'audit';
 
     public const MASK = '***';
+
+    public const PERMISSIONS_ADDED = 'Permissions added';
+
+    public const PERMISSIONS_REMOVED = 'Permissions removed';
 
     /**
      * Attributes that are never logged, because they only add noise.
@@ -108,6 +113,48 @@ class AuditRecorder
             report($exception);
 
             return null;
+        }
+    }
+
+    /**
+     * Record the permissions a role gained and lost in one `permissions_changed` entry; nothing is written when the
+     * two lists hold the same names.
+     *
+     * @param  iterable<int, string>  $before
+     * @param  iterable<int, string>  $after
+     */
+    public static function recordRolePermissions(Role $role, iterable $before, iterable $after): void
+    {
+        try {
+            $before = collect($before)->unique()->values();
+            $after = collect($after)->unique()->values();
+
+            $added = $after->diff($before)->sort()->values();
+            $removed = $before->diff($after)->sort()->values();
+
+            $changes = [];
+
+            if ($added->isNotEmpty()) {
+                $changes[static::PERMISSIONS_ADDED] = [
+                    'type'      => 'added',
+                    'old_value' => null,
+                    'new_value' => $added->implode(', '),
+                ];
+            }
+
+            if ($removed->isNotEmpty()) {
+                $changes[static::PERMISSIONS_REMOVED] = [
+                    'type'      => 'removed',
+                    'old_value' => $removed->implode(', '),
+                    'new_value' => null,
+                ];
+            }
+
+            if ($changes !== []) {
+                static::record($role, 'permissions_changed', $changes);
+            }
+        } catch (Throwable $exception) {
+            report($exception);
         }
     }
 

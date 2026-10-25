@@ -8,6 +8,8 @@ return [
 
     'title' => 'Audit Log',
 
+    'entry_is_read_only' => 'Audit entries cannot be edited or deleted.',
+
     'events' => [
         'created'             => 'Created :model',
         'updated'             => 'Updated :model',

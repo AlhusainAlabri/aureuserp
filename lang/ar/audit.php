@@ -8,6 +8,8 @@ return [
 
     'title' => 'سجل التدقيق',
 
+    'entry_is_read_only' => 'لا يمكن تعديل مدخلات سجل التدقيق أو حذفها.',
+
     'events' => [
         'created'             => 'إنشاء :model',
         'updated'             => 'تعديل :model',
