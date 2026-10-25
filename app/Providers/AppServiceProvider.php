@@ -201,10 +201,6 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Resources whose models had no policy, which left them open to every
-     * signed-in user. They are now guarded by their Shield permissions.
-     */
     protected static function relationNameLabel(?string $name): ?string
     {
         if ($name === null || ! str_ends_with($name, '.name') || $name === 'name') {
@@ -214,6 +210,10 @@ class AppServiceProvider extends ServiceProvider
         return str($name)->beforeLast('.name')->afterLast('.')->headline()->toString();
     }
 
+    /**
+     * Resources whose models had no policy, which left them open to every
+     * signed-in user. They are now guarded by their Shield permissions.
+     */
     protected function registerShieldPolicies(): void
     {
         $policies = [

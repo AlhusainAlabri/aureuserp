@@ -37,9 +37,10 @@ return [
             'backup'            => 'النسخ الاحتياطي',
         ],
         'application' => [
-            'maintenance'      => 'التطبيق في وضع الصيانة',
-            'running'          => 'التطبيق يعمل',
-            'maintenance_hint' => 'وضع الصيانة مفعّل.',
+            'maintenance'         => 'التطبيق في وضع الصيانة',
+            'running'             => 'التطبيق يعمل',
+            'maintenance_hint'    => 'وضع الصيانة مفعّل.',
+            'debug_in_production' => 'وضع التصحيح (APP_DEBUG) مفعّل في بيئة الإنتاج؛ عطّله لأنه يكشف تفاصيل داخلية عند حدوث الأخطاء.',
         ],
         'database' => [
             'connected'       => 'متصل (:ms مللي ثانية)',

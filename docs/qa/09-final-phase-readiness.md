@@ -1,0 +1,23 @@
+# QA Ledger — Final phase: deployment readiness, roles, install re-verification
+
+Date: 2026-10-25 · Env: local QA DB + a scratch database for the clean install.
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| F-01 | G | `.env.example` shipped `APP_TIMEZONE=UTC`; dates entered late in the evening in Oman land on the next/previous day (letter PDF date vs created date). | **fixed** — `Asia/Muscat` |
+| F-02 | G | Scheduler had a leftover hourly `inspire` command. | **fixed** — removed |
+| F-03 | G | Nothing warned when a production site runs with `APP_DEBUG=true`. | **fixed** — the system health check shows a warning; test |
+| F-04 | S | Starter role `employee` was given Payroll "view" (all payslips, loans, batches, salary components of every colleague). Employees read their own slips on "My payslips", which needs no permission. | **fixed** — Payroll removed from the template; test. Roles already created on existing sites are not changed (the seeder only adds) — review them in Roles. |
+| F-05 | U | Team singular label differed between plugins ("فريق" vs "الفريق"). | **fixed** |
+| F-06 | V | Clean install in production mode (`APP_ENV=production`, debug off, no override flag) on an empty database: `erp:install` then `plugins:install --all --include-core` succeed. Result checked: OMR with 3 decimals, the 11 Omani governorates, default VAT 5% taxes, Arabic journals and 6 neutral departments, starter roles, no demo data, 292 of 400 admin pages answer 200 (88 are optional modules switched off, 19 redirects), the only 500 is the known email-verification prompt. | verified |
+| F-07 | V | Full test suite under `APP_TIMEZONE=Asia/Muscat`: 1609 passed, 3 skipped, 0 failed. | verified |
+| F-08 | note | Approval-flow list prints model class names ("PurchaseOrder") and the module title "Approvals" in English; both come from the vendor package. | open (cosmetic) |
+| F-09 | note | `/admin/email-verification/prompt` answers 500 (the user model does not implement email verification and the feature is off). Not linked anywhere. | open (low) |
+| F-10 | note | Page load costs 60–105 queries and 200–250 ms on this machine in debug mode; no slow query (>30 ms) seen on the main lists. | ok |
+
+## Production checklist for a customer server
+1. `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL`, `APP_TIMEZONE=Asia/Muscat`, `APP_LOCALE=ar`, database, mail (not `log`), `DEBUGBAR_ENABLED=false`; for the Zakat site also `BRANDING_DEFAULT_LOGO=images/logo_2.png` and `BRANDING_DEFAULT_LOGO_COMPACT=images/logo.png`.
+2. `php artisan erp:install --admin-name=… --admin-email=… --admin-password=… --company-name=… --company-country=OM --company-currency=OMR` then `php artisan plugins:install --all --include-core`.
+3. `php artisan config:cache route:cache view:cache event:cache`, `npm run build`, storage link.
+4. Cron `* * * * * php artisan schedule:run` and a queue worker (supervisor) — the health page shows "scheduler unknown" until the first run.
+5. Switch on the optional modules the customer needs in Settings (work orders, lots, packages, …); activate the approval flows they want (all start inactive).

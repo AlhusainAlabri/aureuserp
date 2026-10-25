@@ -37,9 +37,10 @@ return [
             'backup'            => 'Backups',
         ],
         'application' => [
-            'maintenance'      => 'Application is in maintenance mode',
-            'running'          => 'Application is running',
-            'maintenance_hint' => 'Maintenance mode is enabled.',
+            'maintenance'         => 'Application is in maintenance mode',
+            'running'             => 'Application is running',
+            'maintenance_hint'    => 'Maintenance mode is enabled.',
+            'debug_in_production' => 'Debug mode (APP_DEBUG) is on in production; turn it off because it exposes internal details when errors occur.',
         ],
         'database' => [
             'connected'       => 'Connected (:ms ms)',

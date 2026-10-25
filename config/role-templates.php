@@ -18,7 +18,7 @@ return [
         'modules'     => [
             'Employee'  => 'view',
             'TimeOff'   => 'view',
-            'Payroll'   => 'view',
+            'Payroll'   => 'none',
             'Assets'    => 'view',
             'MyNotes'   => 'view',
             'Meetings'  => 'none',

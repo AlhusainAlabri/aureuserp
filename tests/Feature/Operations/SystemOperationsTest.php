@@ -30,6 +30,22 @@ it('runs application health check', function (): void {
         ->and($result->key)->toBe('application');
 });
 
+it('warns when debug mode is on in production', function (): void {
+    app()->detectEnvironment(fn (): string => 'production');
+    config(['app.debug' => true]);
+
+    $result = (new ApplicationHealthCheck)->run();
+
+    expect($result->status)->toBe(HealthStatus::Warning)
+        ->and($result->message)->toBe(__('operations.health.application.debug_in_production'));
+
+    config(['app.debug' => false]);
+
+    expect((new ApplicationHealthCheck)->run()->status)->toBe(HealthStatus::Healthy);
+
+    app()->detectEnvironment(fn (): string => 'testing');
+});
+
 it('stores a health snapshot when running the health check service', function (): void {
     Cache::forget(config('operations.cache.latest_snapshot'));
 

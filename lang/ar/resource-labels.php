@@ -99,6 +99,6 @@ return [
     'WorkLocationResource'       => ['singular' => 'موقع عمل', 'plural' => 'مواقع العمل'],
     'WorkOrderResource'          => ['singular' => 'أمر عمل', 'plural' => 'أوامر العمل'],
     'DocFolderResource'          => ['singular' => 'مجلد', 'plural' => 'المجلدات'],
-    'TeamResource'               => ['singular' => 'فريق', 'plural' => 'الفرق'],
+    'TeamResource'               => ['singular' => 'الفريق', 'plural' => 'الفرق'],
 
 ];

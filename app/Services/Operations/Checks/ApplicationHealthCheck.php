@@ -21,7 +21,9 @@ class ApplicationHealthCheck implements HealthCheckContract
     {
         $maintenance = App::isDownForMaintenance();
 
-        $status = $maintenance ? HealthStatus::Warning : HealthStatus::Healthy;
+        $debugInProduction = App::isProduction() && (bool) config('app.debug');
+
+        $status = $maintenance || $debugInProduction ? HealthStatus::Warning : HealthStatus::Healthy;
 
         return new HealthCheckResult(
             key: $this->key(),
@@ -41,7 +43,11 @@ class ApplicationHealthCheck implements HealthCheckContract
                 'session_driver'   => (string) config('session.driver'),
                 'server_time'      => now()->toDateTimeString(),
             ],
-            message: $maintenance ? __('operations.health.application.maintenance_hint') : null,
+            message: match (true) {
+                $maintenance       => __('operations.health.application.maintenance_hint'),
+                $debugInProduction => __('operations.health.application.debug_in_production'),
+                default            => null,
+            },
         );
     }
 }
