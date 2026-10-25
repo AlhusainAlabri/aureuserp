@@ -4,6 +4,7 @@ use App\Support\AdminNavigationMenu;
 use Filament\Events\ServingFilament;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationManager;
+use Spatie\Permission\Models\Role;
 use Webkul\Security\Models\User;
 
 /**
@@ -13,7 +14,10 @@ function adminPrimaryMenuForLocale(string $locale): array
 {
     app()->setLocale($locale);
 
-    auth()->login(User::where('email', 'nodhumtech@gmail.com')->first());
+    $admin = User::where('email', 'nodhumtech@gmail.com')->first() ?? User::factory()->create();
+    $admin->assignRole(Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']));
+
+    auth()->login($admin);
 
     app()->forgetInstance(NavigationManager::class);
 

@@ -112,11 +112,10 @@ class AppServiceProvider extends ServiceProvider
 
         config(['app.name' => brand_name()]);
 
-        FileUpload::configureUsing(function (FileUpload $component): void {
-            if ($component->getVisibility() === 'public') {
-                $component->disk('public');
-            }
-        });
+        // Visibility is set after make(), so the disk is resolved lazily: public uploads live on the public disk.
+        FileUpload::configureUsing(fn (FileUpload $component) => $component->disk(
+            fn (FileUpload $upload): ?string => $upload->getVisibility() === 'public' ? 'public' : null,
+        ));
 
         Table::configureUsing(fn (Table $table) => $table
             ->defaultCurrency(fn (): string => DefaultCurrency::code())

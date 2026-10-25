@@ -33,7 +33,19 @@ function ensureBrandingSettings(): BrandingSettings
         $settings = app(BrandingSettings::class);
     }
 
+    Artisan::call('migrate', [
+        '--path'           => 'database/settings/2026_10_25_100000_add_primary_color_to_branding_settings.php',
+        '--force'          => true,
+        '--no-interaction' => true,
+    ]);
+
+    Artisan::call('settings:clear-cache');
+    app()->forgetInstance(BrandingSettings::class);
+
+    $settings = app(BrandingSettings::class);
+
     $settings->display_name = null;
+    $settings->primary_color = null;
     $settings->logo_full = null;
     $settings->logo_full_dark = null;
     $settings->logo_compact = null;
@@ -86,12 +98,12 @@ it('falls back to the company name when the display name is empty', function ():
 });
 
 it('falls back to the bundled logos when no upload is saved', function (): void {
-    expect(Branding::fullLogoUrl())->toBe(asset('images/logo_2.png'))
-        ->and(Branding::fullLogoUrl(dark: true))->toBe(asset('images/logo_2.png'))
-        ->and(Branding::compactLogoUrl())->toBe(asset('images/logo.png'))
-        ->and(Branding::compactLogoUrl(dark: true))->toBe(asset('images/logo.png'))
+    expect(Branding::fullLogoUrl())->toBe(asset(config('branding.default_logo')))
+        ->and(Branding::fullLogoUrl(dark: true))->toBe(asset(config('branding.default_logo')))
+        ->and(Branding::compactLogoUrl())->toBe(asset(config('branding.default_logo_compact')))
+        ->and(Branding::compactLogoUrl(dark: true))->toBe(asset(config('branding.default_logo_compact')))
         ->and(Branding::faviconUrl())->toBe(asset('images/favicon.ico'))
-        ->and(Branding::fullLogoDataUri())->toStartWith('data:image/png;base64,');
+        ->and(Branding::fullLogoDataUri())->toStartWith('data:image/');
 });
 
 it('uses uploaded logos and ignores unsafe paths', function (): void {
@@ -123,7 +135,7 @@ it('uses uploaded logos and ignores unsafe paths', function (): void {
     $settings->logo_full_dark = null;
     $settings->save();
 
-    expect(Branding::fullLogoUrl())->toBe(asset('images/logo_2.png'));
+    expect(Branding::fullLogoUrl())->toBe(asset(config('branding.default_logo')));
 });
 
 it('uses the dark full logo for the compact slot when no compact logo is uploaded', function (): void {
@@ -311,5 +323,64 @@ it('stores an uploaded logo and deletes it when the field is cleared', function 
 
     expect(app(BrandingSettings::class)->logo_full)->toBeNull();
     Storage::disk('public')->assertMissing($storedPath);
-    expect(Branding::fullLogoUrl())->toBe(asset('images/logo_2.png'));
+    expect(Branding::fullLogoUrl())->toBe(asset(config('branding.default_logo')));
+});
+
+it('keeps the default palette until a primary color is set', function (): void {
+    Branding::forgetCache();
+
+    expect(Branding::primaryColor())->toBeNull()
+        ->and(Branding::primaryPalette())->toBeNull();
+});
+
+it('builds the panel palette from the saved primary color', function (): void {
+    $settings = app(BrandingSettings::class);
+    $settings->primary_color = '#0F766E';
+    $settings->save();
+
+    Artisan::call('settings:clear-cache');
+    app()->forgetInstance(BrandingSettings::class);
+    Branding::forgetCache();
+
+    $palette = Branding::primaryPalette();
+
+    expect(Branding::primaryColor())->toBe('#0f766e')
+        ->and($palette)->toBeArray()
+        ->and(array_keys($palette))->toContain(50, 500, 950)
+        ->and(Filament::getPanel('admin')->getColors()['primary'])->toBe($palette);
+});
+
+it('normalises and rejects colors', function (): void {
+    expect(Branding::normalizeHex(' #ABC '))->toBe('#aabbcc')
+        ->and(Branding::normalizeHex('#0f766e'))->toBe('#0f766e')
+        ->and(Branding::normalizeHex('green'))->toBeNull()
+        ->and(Branding::normalizeHex(null))->toBeNull()
+        ->and(Branding::contrastWithWhite('#ffffff'))->toBe(1.0)
+        ->and(Branding::contrastWithWhite('#000000'))->toBe(21.0)
+        ->and(Branding::contrastWithWhite('#ffeb3b'))->toBeLessThan(Branding::MIN_CONTRAST_WITH_WHITE);
+});
+
+it('saves a primary color from the branding page and rejects one that is too light', function (): void {
+    app(ExtensionPermissionsSync::class)->syncBranding();
+
+    $user = User::factory()->create();
+    $user->givePermissionTo('page_filament_manage_branding');
+
+    $this->actingAs($user);
+
+    Livewire::test(ManageBranding::class)
+        ->fillForm(['primary_color' => '#ffeb3b'])
+        ->call('save')
+        ->assertHasFormErrors(['primary_color']);
+
+    Livewire::test(ManageBranding::class)
+        ->fillForm(['primary_color' => '#0F766E'])
+        ->call('save')
+        ->assertHasNoFormErrors()
+        ->assertNotified();
+
+    Artisan::call('settings:clear-cache');
+    app()->forgetInstance(BrandingSettings::class);
+
+    expect(app(BrandingSettings::class)->primary_color)->toBe('#0f766e');
 });

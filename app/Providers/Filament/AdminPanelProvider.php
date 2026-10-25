@@ -200,8 +200,8 @@ class AdminPanelProvider extends PanelProvider
             ->emailVerification()
             ->profile()
             ->viteTheme('resources/css/filament/admin/theme.css')
+            ->colors(fn (): array => ['primary' => Branding::primaryPalette() ?? Color::Green])
             ->colors([
-                'primary' => Color::Green,
                 'danger'  => Color::Rose,
                 'gray'    => Color::Gray,
                 'info'    => Color::Blue,

@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Settings\BrandingSettings;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -14,6 +15,91 @@ use Webkul\Support\Models\Company;
 
 class Branding
 {
+    /**
+     * Per-request memo of the primary palette (null = no custom color), so the panel
+     * resolves it once however many times Filament asks for its colours.
+     *
+     * @var array{palette: array<int|string, string>|null}|null
+     */
+    protected static ?array $paletteMemo = null;
+
+    /**
+     * Lowest contrast against white that still keeps white button text readable.
+     */
+    public const MIN_CONTRAST_WITH_WHITE = 3.0;
+
+    /**
+     * The site's primary colour as "#rrggbb", or null to keep the default.
+     */
+    public static function primaryColor(): ?string
+    {
+        try {
+            $color = self::settings()?->primary_color;
+        } catch (Throwable) {
+            return null;
+        }
+
+        return self::normalizeHex($color);
+    }
+
+    /**
+     * Filament palette (50–950) generated from the site's primary colour. The palette is
+     * cached by colour, so changing the colour needs no cache clearing.
+     *
+     * @return array<int|string, string>|null
+     */
+    public static function primaryPalette(): ?array
+    {
+        if (self::$paletteMemo !== null) {
+            return self::$paletteMemo['palette'];
+        }
+
+        $hex = self::primaryColor();
+
+        $palette = match (true) {
+            $hex === null          => null,
+            self::canUseCache()    => Cache::rememberForever("branding.palette.{$hex}", fn (): array => Color::hex($hex)),
+            default                => Color::hex($hex),
+        };
+
+        self::$paletteMemo = ['palette' => $palette];
+
+        return $palette;
+    }
+
+    public static function normalizeHex(mixed $value): ?string
+    {
+        if (! is_string($value)) {
+            return null;
+        }
+
+        $value = strtolower(trim($value));
+
+        if (preg_match('/^#([0-9a-f]{3})$/', $value, $short) === 1) {
+            $value = '#'.preg_replace('/(.)/', '$1$1', $short[1]);
+        }
+
+        return preg_match('/^#[0-9a-f]{6}$/', $value) === 1 ? $value : null;
+    }
+
+    /**
+     * WCAG contrast ratio between the colour and white (1 to 21).
+     */
+    public static function contrastWithWhite(string $hex): float
+    {
+        $hex = self::normalizeHex($hex) ?? '#ffffff';
+
+        $channels = array_map(function (string $part): float {
+            $value = hexdec($part) / 255;
+
+            return $value <= 0.03928 ? $value / 12.92 : (($value + 0.055) / 1.055) ** 2.4;
+        }, str_split(substr($hex, 1), 2));
+
+        $luminance = 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
+
+        return round(1.05 / ($luminance + 0.05), 2);
+    }
+
     public static function displayName(?int $companyId = null): string
     {
         if ($companyId === null) {
@@ -146,6 +232,8 @@ class Branding
 
     public static function forgetCache(?int $companyId = null): void
     {
+        self::$paletteMemo = null;
+
         if (! self::canUseCache()) {
             return;
         }

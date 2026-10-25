@@ -9,10 +9,17 @@ return [
 
     'sections' => [
         'identity' => 'System name',
+        'colors'   => 'Colors',
         'logos'    => 'Logos',
     ],
 
     'form' => [
+        'primary_color' => [
+            'label'     => 'Primary color',
+            'helper'    => 'Colors buttons, links and active items across the system. Leave empty to keep the default green.',
+            'invalid'   => 'Invalid color; use a format like #0f766e.',
+            'too_light' => 'This color is too light for white text to stay readable; pick a darker one.',
+        ],
         'display_name' => [
             'label'  => 'Display name',
             'helper' => 'Shown in the panel, emails, and PDFs. Leave empty to use the active company name.',

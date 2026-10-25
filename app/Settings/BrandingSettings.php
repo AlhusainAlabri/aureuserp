@@ -18,6 +18,8 @@ class BrandingSettings extends Settings
 
     public ?string $favicon;
 
+    public ?string $primary_color = null;
+
     public static function group(): string
     {
         return 'branding';

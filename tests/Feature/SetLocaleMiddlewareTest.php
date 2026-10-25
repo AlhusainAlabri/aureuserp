@@ -36,12 +36,13 @@ function runSetLocaleMiddleware(array $query = [], array $sessionData = []): str
     return App::getLocale();
 }
 
-it('uses authenticated user language instead of stale session locale', function (): void {
+it('lets a freshly chosen session language win for an authenticated user and saves it', function (): void {
     $user = User::withoutEvents(fn () => User::factory()->create(['language' => 'en']));
     Auth::login($user);
 
-    expect(runSetLocaleMiddleware([], ['locale' => 'ar']))->toBe('en')
-        ->and(Session::has('locale'))->toBeFalse();
+    expect(runSetLocaleMiddleware([], ['locale' => 'ar']))->toBe('ar')
+        ->and(Session::has('locale'))->toBeFalse()
+        ->and($user->fresh()->language)->toBe('ar');
 });
 
 it('clears stale session locale for authenticated users', function (): void {

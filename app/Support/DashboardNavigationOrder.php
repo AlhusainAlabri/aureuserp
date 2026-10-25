@@ -31,10 +31,15 @@ class DashboardNavigationOrder
      */
     public static function sort(iterable $items): Collection
     {
+        // A module that is not installed has no route; it simply takes no part in the ordering.
         $sortByUrl = collect(self::ORDER_BY_PAGE)
-            ->mapWithKeys(fn (int $sort, string $pageClass): array => [
-                rtrim(parse_url($pageClass::getUrl(), PHP_URL_PATH) ?? '', '/') => $sort,
-            ]);
+            ->mapWithKeys(function (int $sort, string $pageClass): array {
+                try {
+                    return [rtrim(parse_url($pageClass::getUrl(), PHP_URL_PATH) ?? '', '/') => $sort];
+                } catch (\Throwable) {
+                    return [];
+                }
+            });
 
         return collect($items)
             ->sortBy(function (NavigationItem $item) use ($sortByUrl): int {

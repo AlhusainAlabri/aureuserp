@@ -5,6 +5,8 @@ namespace App\Filament\Clusters\Settings\Pages;
 use App\Settings\BrandingSettings;
 use App\Support\Branding;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Closure;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
@@ -61,6 +63,30 @@ class ManageBranding extends SettingsPage
                             ->columnSpanFull(),
                     ])
                     ->columnSpanFull(),
+                Section::make(__('branding-settings.sections.colors'))
+                    ->schema([
+                        ColorPicker::make('primary_color')
+                            ->label(__('branding-settings.form.primary_color.label'))
+                            ->helperText(__('branding-settings.form.primary_color.helper'))
+                            ->rules([
+                                fn (): Closure => function (string $attribute, mixed $value, Closure $fail): void {
+                                    $hex = Branding::normalizeHex($value);
+
+                                    if ($hex === null) {
+                                        if (filled($value)) {
+                                            $fail(__('branding-settings.form.primary_color.invalid'));
+                                        }
+
+                                        return;
+                                    }
+
+                                    if (Branding::contrastWithWhite($hex) < Branding::MIN_CONTRAST_WITH_WHITE) {
+                                        $fail(__('branding-settings.form.primary_color.too_light'));
+                                    }
+                                },
+                            ]),
+                    ])
+                    ->columnSpanFull(),
                 Section::make(__('branding-settings.sections.logos'))
                     ->schema([
                         Grid::make(2)->schema([
@@ -90,6 +116,10 @@ class ManageBranding extends SettingsPage
             }
 
             $data[$slot] = self::normalizeStoredPath($data[$slot]);
+        }
+
+        if (array_key_exists('primary_color', $data)) {
+            $data['primary_color'] = Branding::normalizeHex($data['primary_color']);
         }
 
         if (array_key_exists('display_name', $data)) {

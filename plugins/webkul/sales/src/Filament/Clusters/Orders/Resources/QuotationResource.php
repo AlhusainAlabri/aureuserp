@@ -309,7 +309,7 @@ class QuotationResource extends Resource
                                             })
                                             ->reactive()
                                             ->afterStateUpdated(fn (callable $set, $state) => $set('currency_id', Company::find($state)?->currency_id))
-                                            ->default(Auth::user()->default_company_id),
+                                            ->default(Auth::user()?->default_company_id),
                                         Select::make('currency_id')
                                             ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.other-information.fieldset.additional-information.fields.currency'))
                                             ->relationship(

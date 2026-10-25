@@ -2,6 +2,7 @@
 
 use Filament\Facades\Filament;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Route;
 use Webkul\Contact\Filament\Clusters\Configurations;
 use Webkul\Contact\Filament\Clusters\Configurations\Resources\TagResource;
 use Webkul\Contact\Filament\Clusters\Configurations\Resources\TagResource\Pages\ManageTags;
@@ -27,6 +28,10 @@ it('keeps the contacts resource visible in main navigation', function (): void {
 it('shows breadcrumbs linking back to contacts on configuration pages', function (): void {
     if (! class_exists(ManageTags::class)) {
         $this->markTestSkipped('Contacts plugin is not installed.');
+    }
+
+    if (! Route::has('filament.admin.resources.contact.contacts.index')) {
+        $this->markTestSkipped('Contacts plugin routes are not registered in the test database.');
     }
 
     Filament::setCurrentPanel(Filament::getPanel('admin'));
