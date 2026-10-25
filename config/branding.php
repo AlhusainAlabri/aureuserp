@@ -29,4 +29,28 @@ return [
 
     'default_logo_compact' => env('BRANDING_DEFAULT_LOGO_COMPACT', 'images/brand/default-mark.svg'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Primary Color Presets
+    |--------------------------------------------------------------------------
+    |
+    | Ready-made choices on Settings > Branding. The key is the translation key
+    | under branding-settings.presets; every colour keeps white text readable
+    | (a test checks the contrast). The first entry is the built-in default and
+    | is saved as "no custom colour".
+    |
+    */
+
+    'color_presets' => [
+        'green'  => '#16a34a',
+        'teal'   => '#0f766e',
+        'blue'   => '#1d4ed8',
+        'indigo' => '#4338ca',
+        'purple' => '#7e22ce',
+        'rose'   => '#be123c',
+        'orange' => '#c2410c',
+        'brown'  => '#92400e',
+        'slate'  => '#334155',
+    ],
+
 ];

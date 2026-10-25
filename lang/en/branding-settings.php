@@ -13,7 +13,22 @@ return [
         'logos'    => 'Logos',
     ],
 
+    'presets' => [
+        'green'  => 'Green (default)',
+        'teal'   => 'Teal',
+        'blue'   => 'Blue',
+        'indigo' => 'Indigo',
+        'purple' => 'Purple',
+        'rose'   => 'Rose',
+        'orange' => 'Orange',
+        'brown'  => 'Brown',
+        'slate'  => 'Slate',
+    ],
+
     'form' => [
+        'presets' => [
+            'label' => 'Ready-made colors',
+        ],
         'primary_color' => [
             'label'     => 'Primary color',
             'helper'    => 'Colors buttons, links and active items across the system. Leave empty to keep the default green.',

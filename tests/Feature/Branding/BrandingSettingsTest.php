@@ -384,3 +384,32 @@ it('saves a primary color from the branding page and rejects one that is too lig
 
     expect(app(BrandingSettings::class)->primary_color)->toBe('#0f766e');
 });
+
+it('only offers preset colors that keep white text readable and are translated', function (): void {
+    $presets = config('branding.color_presets');
+
+    expect($presets)->not->toBeEmpty();
+
+    foreach ($presets as $key => $hex) {
+        expect(Branding::normalizeHex($hex))->toBe($hex)
+            ->and(Branding::contrastWithWhite($hex))->toBeGreaterThanOrEqual(Branding::MIN_CONTRAST_WITH_WHITE);
+
+        foreach (['ar', 'en'] as $locale) {
+            expect(__('branding-settings.presets.'.$key, [], $locale))->not->toBe('branding-settings.presets.'.$key);
+        }
+    }
+});
+
+it('renders the preset swatches on the branding page', function (): void {
+    app(ExtensionPermissionsSync::class)->syncBranding();
+    app()->setLocale('ar');
+
+    $user = User::factory()->create();
+    $user->givePermissionTo('page_filament_manage_branding');
+
+    $this->actingAs($user);
+
+    Livewire::test(ManageBranding::class)
+        ->assertSee(__('branding-settings.presets.teal'))
+        ->assertSee('#0f766e');
+});

@@ -9,6 +9,7 @@ use Closure;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ViewField;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -65,6 +66,12 @@ class ManageBranding extends SettingsPage
                     ->columnSpanFull(),
                 Section::make(__('branding-settings.sections.colors'))
                     ->schema([
+                        ViewField::make('color_presets')
+                            ->label(__('branding-settings.form.presets.label'))
+                            ->view('filament.forms.branding-color-presets')
+                            ->viewData(['presets' => (array) config('branding.color_presets', [])])
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
                         ColorPicker::make('primary_color')
                             ->label(__('branding-settings.form.primary_color.label'))
                             ->helperText(__('branding-settings.form.primary_color.helper'))
