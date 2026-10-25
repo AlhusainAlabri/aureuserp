@@ -3,6 +3,7 @@
 namespace Webkul\Attendance\Services;
 
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -24,48 +25,49 @@ class WorkScheduleResolver
         $calendar = $this->calendarFor($employee);
         $holiday = $this->holidayFor($employee, $calendar, $dateString);
 
-        if ($calendar === null) {
-            return new WorkDay(
-                isWorkingDay: false,
-                hasSchedule: false,
-                startMinute: null,
-                endMinute: null,
-                expectedMinutes: 0,
-                lunch: [],
-                holidayName: $holiday?->name,
-                isHoliday: $holiday !== null,
-                isRestDay: false,
+        return $this->buildWorkDay(
+            $calendar,
+            $holiday,
+            $calendar === null ? collect() : $this->rowsFor($calendar, $dateString),
+        );
+    }
+
+    /**
+     * Every day of the month, keyed by `Y-m-d`: the same values as `forEmployee` for each date, but the
+     * calendar, its weekday rows and the holidays overlapping the month are loaded once (a handful of
+     * queries) and each day is built in memory. Approved leave is not part of a `WorkDay`, so it is not
+     * loaded here (see `approvedLeaveId`).
+     *
+     * @return array<string, WorkDay>
+     */
+    public function forEmployeeMonth(Employee $employee, int $year, int $month): array
+    {
+        $first = Carbon::create($year, $month, 1, 0, 0, 0, 'UTC');
+        $last = $first->copy()->endOfMonth();
+
+        $calendar = $this->calendarFor($employee);
+        $holidays = $this->holidaysBetween($employee, $calendar, $first->toDateString(), $last->toDateString());
+        $rows = $calendar === null
+            ? collect()
+            : CalendarAttendance::query()
+                ->where('calendar_id', $calendar->id)
+                ->whereNull('display_type')
+                ->whereNull('resource_id')
+                ->get();
+
+        $workDays = [];
+
+        for ($day = $first->copy(); $day->lessThanOrEqualTo($last); $day->addDay()) {
+            $dateString = $day->toDateString();
+
+            $workDays[$dateString] = $this->buildWorkDay(
+                $calendar,
+                $holidays->first(fn (CalendarLeave $holiday): bool => $this->holidayCovers($holiday, $dateString)),
+                $calendar === null ? collect() : $this->filterRowsForDay($rows, $calendar, $day),
             );
         }
 
-        $rows = $this->rowsFor($calendar, $dateString);
-        $counted = $rows->reject(fn (CalendarAttendance $row): bool => $row->day_period === 'lunch');
-        $lunch = $rows
-            ->filter(fn (CalendarAttendance $row): bool => $row->day_period === 'lunch')
-            ->map(fn (CalendarAttendance $row): array => [
-                'from' => $this->toMinute($row->hour_from),
-                'to'   => $this->toMinute($row->hour_to),
-            ])
-            ->sortBy('from')
-            ->values()
-            ->all();
-
-        $isRestDay = $counted->isEmpty();
-        $isWorkingDay = ! $isRestDay && $holiday === null;
-
-        return new WorkDay(
-            isWorkingDay: $isWorkingDay,
-            hasSchedule: true,
-            startMinute: $isRestDay ? null : $counted->min(fn (CalendarAttendance $row): int => $this->toMinute($row->hour_from)),
-            endMinute: $isRestDay ? null : $counted->max(fn (CalendarAttendance $row): int => $this->toMinute($row->hour_to)),
-            expectedMinutes: $isWorkingDay
-                ? (int) $counted->sum(fn (CalendarAttendance $row): int => max(0, $this->toMinute($row->hour_to) - $this->toMinute($row->hour_from)))
-                : 0,
-            lunch: $lunch,
-            holidayName: $holiday?->name,
-            isHoliday: $holiday !== null,
-            isRestDay: $isRestDay,
-        );
+        return $workDays;
     }
 
     /**
@@ -130,11 +132,30 @@ class WorkScheduleResolver
      */
     protected function holidayFor(Employee $employee, ?Calendar $calendar, string $dateString): ?CalendarLeave
     {
+        return $this->holidayQuery($employee, $calendar, $dateString, $dateString)->first();
+    }
+
+    /**
+     * Holidays that overlap any date of the range, oldest first, so the first one covering a date is the
+     * same row `holidayFor` returns for it.
+     *
+     * @return Collection<int, CalendarLeave>
+     */
+    protected function holidaysBetween(Employee $employee, ?Calendar $calendar, string $fromDate, string $toDate): Collection
+    {
+        return $this->holidayQuery($employee, $calendar, $fromDate, $toDate)->get();
+    }
+
+    /**
+     * @return Builder<CalendarLeave>
+     */
+    protected function holidayQuery(Employee $employee, ?Calendar $calendar, string $fromDate, string $toDate): Builder
+    {
         return CalendarLeave::query()
             ->where('time_type', 'leave')
             ->whereNull('resource_id')
-            ->where('date_from', '<=', $dateString.' 23:59:59')
-            ->where('date_to', '>=', $dateString)
+            ->where('date_from', '<=', $toDate.' 23:59:59')
+            ->where('date_to', '>=', $fromDate)
             ->where(function ($query) use ($calendar): void {
                 $query->whereNull('calendar_id');
 
@@ -149,8 +170,85 @@ class WorkScheduleResolver
                     $query->orWhere('company_id', $employee->company_id);
                 }
             })
-            ->orderBy('id')
-            ->first();
+            ->orderBy('id');
+    }
+
+    /**
+     * The same string comparison the holiday query makes, for holidays already in memory.
+     */
+    protected function holidayCovers(CalendarLeave $holiday, string $dateString): bool
+    {
+        return strcmp((string) $holiday->date_from, $dateString.' 23:59:59') <= 0
+            && strcmp((string) $holiday->date_to, $dateString) >= 0;
+    }
+
+    /**
+     * The single place a `WorkDay` is built, from the calendar (null = no schedule), the holiday covering
+     * the date and the calendar rows of the date's weekday.
+     *
+     * @param  Collection<int, CalendarAttendance>  $rows
+     */
+    protected function buildWorkDay(?Calendar $calendar, ?CalendarLeave $holiday, Collection $rows): WorkDay
+    {
+        if ($calendar === null) {
+            return new WorkDay(
+                isWorkingDay: false,
+                hasSchedule: false,
+                startMinute: null,
+                endMinute: null,
+                expectedMinutes: 0,
+                lunch: [],
+                holidayName: $holiday?->name,
+                isHoliday: $holiday !== null,
+                isRestDay: false,
+            );
+        }
+
+        $counted = $rows->reject(fn (CalendarAttendance $row): bool => $row->day_period === 'lunch');
+        $lunch = $rows
+            ->filter(fn (CalendarAttendance $row): bool => $row->day_period === 'lunch')
+            ->map(fn (CalendarAttendance $row): array => [
+                'from' => $this->toMinute($row->hour_from),
+                'to'   => $this->toMinute($row->hour_to),
+            ])
+            ->sortBy('from')
+            ->values()
+            ->all();
+
+        $isRestDay = $counted->isEmpty();
+        $isWorkingDay = ! $isRestDay && $holiday === null;
+
+        return new WorkDay(
+            isWorkingDay: $isWorkingDay,
+            hasSchedule: true,
+            startMinute: $isRestDay ? null : $counted->min(fn (CalendarAttendance $row): int => $this->toMinute($row->hour_from)),
+            endMinute: $isRestDay ? null : $counted->max(fn (CalendarAttendance $row): int => $this->toMinute($row->hour_to)),
+            expectedMinutes: $isWorkingDay
+                ? (int) $counted->sum(fn (CalendarAttendance $row): int => max(0, $this->toMinute($row->hour_to) - $this->toMinute($row->hour_from)))
+                : 0,
+            lunch: $lunch,
+            holidayName: $holiday?->name,
+            isHoliday: $holiday !== null,
+            isRestDay: $isRestDay,
+        );
+    }
+
+    /**
+     * In-memory twin of the `rowsFor` query: the calendar's rows of the day's weekday and, on two-week
+     * calendars, of the day's week type.
+     *
+     * @param  Collection<int, CalendarAttendance>  $rows
+     * @return Collection<int, CalendarAttendance>
+     */
+    protected function filterRowsForDay(Collection $rows, Calendar $calendar, Carbon $day): Collection
+    {
+        $weekday = strtolower($day->englishDayOfWeek);
+        $weekType = (string) CalendarAttendance::getWeekType($day);
+
+        return $rows
+            ->filter(fn (CalendarAttendance $row): bool => strtolower((string) $row->day_of_week) === $weekday
+                && (! $calendar->two_weeks_calendar || $row->week_type === null || (string) $row->week_type === $weekType))
+            ->values();
     }
 
     /**

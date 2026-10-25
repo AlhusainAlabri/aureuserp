@@ -282,7 +282,8 @@ class ExtensionPermissionsSync
     /**
      * Attendance arrived after the HR roles were created. Team leads and HR read the day and overtime
      * lists (the plugin narrows what each of them sees to their own team); only HR and admins edit days,
-     * decide overtime and import from the device. Adds, never removes.
+     * decide overtime, import from the device and change the attendance settings. The monthly summary page is
+     * read-only and follows the day list: it narrows what each user sees to their own team. Adds, never removes.
      */
     public function syncAttendance(): void
     {
@@ -295,6 +296,7 @@ class ExtensionPermissionsSync
             'view_attendance_attendance::day',
             'view_any_attendance_overtime::request',
             'view_attendance_overtime::request',
+            'page_attendance_monthly_attendance_summary',
         ], ['manager', 'department_manager', 'hr_manager', 'Admin', 'super_admin']);
 
         $this->grantPermissionsToRoles([
@@ -303,6 +305,7 @@ class ExtensionPermissionsSync
             'create_attendance_overtime::request',
             'update_attendance_overtime::request',
             'page_attendance_import_attendance',
+            'page_attendance_manage_attendance_settings',
         ], ['hr_manager', 'Admin', 'super_admin']);
     }
 

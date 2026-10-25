@@ -22,6 +22,8 @@ use Webkul\Attendance\Enums\OvertimeStatus;
 use Webkul\Attendance\Enums\PunchSource;
 use Webkul\Attendance\Exceptions\AttendanceException;
 use Webkul\Attendance\Filament\Pages\ImportAttendance;
+use Webkul\Attendance\Filament\Pages\ManageAttendanceSettings;
+use Webkul\Attendance\Filament\Pages\MonthlyAttendanceSummary;
 use Webkul\Attendance\Filament\Resources\AttendanceDayResource;
 use Webkul\Attendance\Filament\Resources\AttendanceDayResource\Pages\CreateAttendanceDay;
 use Webkul\Attendance\Filament\Resources\AttendanceDayResource\Pages\EditAttendanceDay;
@@ -862,12 +864,17 @@ it('AttendanceResourcesTest: syncAttendance grants read to team roles and write 
     $read = [
         ...attendanceDayKeys('view_any', 'view'),
         ...attendanceOvertimeKeys('view_any', 'view'),
+        array_key_first(FilamentShield::getPages()[MonthlyAttendanceSummary::class]['permissions']),
     ];
     $write = [
         ...attendanceDayKeys('create', 'update'),
         ...attendanceOvertimeKeys('create', 'update'),
         'page_attendance_import_attendance',
+        array_key_first(FilamentShield::getPages()[ManageAttendanceSettings::class]['permissions']),
     ];
+
+    expect($read)->toContain('page_attendance_monthly_attendance_summary')
+        ->and($write)->toContain('page_attendance_manage_attendance_settings');
 
     foreach (['manager', 'department_manager', 'hr_manager', 'Admin', 'super_admin'] as $name) {
         foreach ($read as $permission) {

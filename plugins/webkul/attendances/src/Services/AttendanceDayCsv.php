@@ -46,7 +46,7 @@ class AttendanceDayCsv
         }
 
         return Utf8Csv::fromRows(array_map(
-            fn (array $row): array => array_map($this->neutralise(...), $row),
+            fn (array $row): array => array_map(self::neutralise(...), $row),
             $rows,
         ));
     }
@@ -64,7 +64,7 @@ class AttendanceDayCsv
     /**
      * A text cell starting with = + - @ (or a control character) would be run as a formula by spreadsheets.
      */
-    protected function neutralise(mixed $cell): mixed
+    public static function neutralise(mixed $cell): mixed
     {
         if (is_string($cell) && $cell !== '' && in_array($cell[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
             return "'".$cell;

@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Tests\Helpers\AttendanceFixtures;
 use Tests\Helpers\FeatureTestBootstrap;
+use Webkul\Attendance\Services\AttendanceSummary;
 use Webkul\Attendance\Services\WorkScheduleResolver;
 use Webkul\Support\Models\Calendar;
 use Webkul\Support\Models\CalendarAttendance;
@@ -227,4 +229,74 @@ it('AttendanceScheduleTest: a holiday stored as bare dates covers its last day',
     expect(attendanceWorkDay($employee, '2026-12-14')->isHoliday)->toBeTrue()
         ->and(attendanceWorkDay($employee, '2026-12-15')->isHoliday)->toBeTrue()
         ->and(attendanceWorkDay($employee, '2026-12-16')->isHoliday)->toBeFalse();
+});
+
+it('AttendanceScheduleTest: the month in memory equals the per-date resolution for every date', function (): void {
+    $company = AttendanceFixtures::company();
+    $weekdays = attendanceOmaniWeek();
+    // A two-week calendar: one extra Friday row on odd weeks only and a Thursday that is half a day on week 1.
+    $weekdays['friday'] = [['morning', '9', '12']];
+    $calendar = AttendanceFixtures::calendar($company, $weekdays, twoWeeks: true);
+    CalendarAttendance::query()->where('calendar_id', $calendar->id)->where('day_of_week', 'friday')->update(['week_type' => '1']);
+    CalendarAttendance::query()->where('calendar_id', $calendar->id)->where('day_of_week', 'thursday')->where('day_period', 'afternoon')->update(['week_type' => '0']);
+
+    $employee = AttendanceFixtures::employee($company, $calendar);
+
+    // Holidays: a range for the employee's calendar, one for every calendar, one for another company
+    // and one for another calendar (the last two must be ignored).
+    AttendanceFixtures::holiday('2026-11-10', '2026-11-11', $calendar->id);
+    AttendanceFixtures::holiday('2026-11-15', '2026-11-15');
+    AttendanceFixtures::holiday('2026-11-18', '2026-11-18', AttendanceFixtures::calendar($company)->id);
+    CalendarLeave::query()->where('date_from', '2026-11-15 00:00:00')->update(['company_id' => AttendanceFixtures::company()->id]);
+    AttendanceFixtures::holiday('2026-10-30', '2026-11-02');
+    AttendanceFixtures::holiday('2026-11-30', '2026-12-03');
+
+    $resolver = app(WorkScheduleResolver::class);
+    $month = $resolver->forEmployeeMonth($employee, 2026, 11);
+
+    expect($month)->toHaveCount(30)
+        ->and(array_keys($month)[0])->toBe('2026-11-01')
+        ->and(array_key_last($month))->toBe('2026-11-30');
+
+    foreach ($month as $date => $workDay) {
+        expect($workDay)->toEqual($resolver->forEmployee($employee, Carbon::parse($date, 'Asia/Muscat')), $date);
+    }
+
+    // The fixture really exercises the branches: holidays, rest days and both week types.
+    expect(collect($month)->where('isHoliday', true))->not->toBeEmpty()
+        ->and(collect($month)->where('isRestDay', true))->not->toBeEmpty()
+        ->and(collect($month)->pluck('expectedMinutes')->unique()->count())->toBeGreaterThan(2);
+});
+
+it('AttendanceScheduleTest: the month in memory equals the per-date resolution without a schedule', function (): void {
+    Calendar::query()->update(['is_active' => false]);
+    $employee = AttendanceFixtures::employee(AttendanceFixtures::company(), null);
+    AttendanceFixtures::holiday('2026-11-10', '2026-11-11');
+
+    $resolver = app(WorkScheduleResolver::class);
+
+    foreach ($resolver->forEmployeeMonth($employee, 2026, 11) as $date => $workDay) {
+        expect($workDay)->toEqual($resolver->forEmployee($employee, Carbon::parse($date, 'Asia/Muscat')), $date)
+            ->and($workDay->hasSchedule)->toBeFalse();
+    }
+});
+
+it('AttendanceScheduleTest: a month costs a small constant number of queries', function (): void {
+    $company = AttendanceFixtures::company();
+    $employee = AttendanceFixtures::employee($company, AttendanceFixtures::calendar($company));
+    AttendanceFixtures::holiday('2026-11-10', '2026-11-11', $employee->calendar_id);
+
+    DB::flushQueryLog();
+    DB::enableQueryLog();
+    app(WorkScheduleResolver::class)->forEmployeeMonth($employee, 2026, 11);
+    $resolverQueries = count(DB::getQueryLog());
+
+    DB::flushQueryLog();
+    $summary = app(AttendanceSummary::class)->forMonth($employee, 2026, 11);
+    $summaryQueries = count(DB::getQueryLog());
+    DB::disableQueryLog();
+
+    expect($summary->workingDays)->toBe(19)
+        ->and($resolverQueries)->toBeLessThanOrEqual(6)
+        ->and($summaryQueries)->toBeLessThanOrEqual(12);
 });

@@ -194,6 +194,60 @@ return [
         ],
     ],
 
+    'monthly' => [
+        'navigation'        => 'Monthly summary',
+        'title'             => 'Monthly attendance summary',
+        'period'            => 'Period',
+        'year'              => 'Year',
+        'month'             => 'Month',
+        'export'            => 'Export CSV',
+        'empty'             => 'No employees to show for this month.',
+        'totals'            => 'Total',
+        'no_schedule'       => 'This employee has no work schedule, so there are no figures.',
+        'capped'            => 'Showing the first :shown of :total employees. Narrow the list or export per team to see the rest.',
+        'employees_counted' => 'The total covers :count employees with a work schedule. Overtime counts approved requests only.',
+        'columns'           => [
+            'employee'       => 'Employee',
+            'working_days'   => 'Working days',
+            'absent_days'    => 'Absent days',
+            'late_minutes'   => 'Late (min)',
+            'overtime_hours' => 'Approved overtime (h)',
+        ],
+    ],
+
+    'settings' => [
+        'navigation' => 'Attendance settings',
+        'title'      => 'Attendance settings',
+        'sections'   => [
+            'rules'        => 'Lateness and overtime',
+            'self_checkin' => 'Self check-in',
+            'geofence'     => 'Location',
+        ],
+        'fields' => [
+            'grace_minutes'               => 'Grace period (minutes)',
+            'grace_minutes_hint'          => 'Arrivals within this many minutes of the shift start are not late.',
+            'overtime_multiplier_normal'  => 'Overtime rate: working day',
+            'overtime_multiplier_rest'    => 'Overtime rate: weekly rest day',
+            'overtime_multiplier_holiday' => 'Overtime rate: public holiday',
+            'multiplier_hint'             => 'Between 1 and 5, up to two decimals. Applies to new overtime requests only.',
+            'minimum_overtime_minutes'    => 'Minimum overtime (minutes)',
+            'minimum_overtime_hint'       => 'Shorter overtime does not create a request.',
+            'workday_close_time'          => 'Day closing time',
+            'workday_close_time_hint'     => 'The time of day at which a workday is considered closed (HH:MM).',
+            'allow_self_checkin'          => 'Allow self check-in',
+            'allowed_ip_ranges'           => 'Allowed IP addresses or ranges',
+            'allowed_ip_ranges_hint'      => 'Leave empty to allow any address. Examples: 203.0.113.7, 10.0.0.0/24. These rules only work when the application sees the real address of the employee, because no trusted proxy is configured.',
+            'geofence_enabled'            => 'Restrict by location',
+            'geofence_hint'               => 'Self check-in is allowed only within the radius of this point.',
+            'latitude'                    => 'Latitude',
+            'longitude'                   => 'Longitude',
+            'radius_metres'               => 'Radius (metres)',
+        ],
+        'errors' => [
+            'invalid_ip' => '":value" is not a valid IP address or CIDR range.',
+        ],
+    ],
+
     'console' => [
         'close_day' => [
             'invalid_date' => 'The date must be a valid date in the format Y-m-d.',

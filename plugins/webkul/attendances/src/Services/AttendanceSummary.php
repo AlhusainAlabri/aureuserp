@@ -28,9 +28,7 @@ class AttendanceSummary
         $expectedMinutes = 0;
         $hasSchedule = false;
 
-        for ($day = $first->copy(); $day->toDateString() <= $to; $day->addDay()) {
-            $workDay = $this->resolver->forEmployee($employee, $day);
-
+        foreach ($this->resolver->forEmployeeMonth($employee, $year, $month) as $workDay) {
             $hasSchedule = $workDay->hasSchedule;
 
             if ($workDay->isWorkingDay) {
