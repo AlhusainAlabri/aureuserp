@@ -3,6 +3,7 @@
 namespace Webkul\Attendance;
 
 use Filament\Panel;
+use Webkul\Attendance\Console\CloseDayCommand;
 use Webkul\PluginManager\Console\Commands\InstallCommand;
 use Webkul\PluginManager\Console\Commands\UninstallCommand;
 use Webkul\PluginManager\Package;
@@ -33,6 +34,9 @@ class AttendanceServiceProvider extends PackageServiceProvider
                 '2026_10_27_000005_create_attendance_settings',
             ])
             ->runsSettings()
+            ->hasCommands([
+                CloseDayCommand::class,
+            ])
             ->hasInstallCommand(function (InstallCommand $command): void {
                 $command
                     ->installDependencies()

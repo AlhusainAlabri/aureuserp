@@ -22,4 +22,12 @@ return [
         'overtime_request'  => 'Overtime Requests',
         'import_batch'      => 'Import Batches',
     ],
+
+    'console' => [
+        'close_day' => [
+            'invalid_date' => 'The date must be a valid date in the format Y-m-d.',
+            'summary'      => 'Attendance closed for :date: :processed employees processed, :absent absences recorded.',
+            'failed'       => 'Could not close the day of :employee: :message',
+        ],
+    ],
 ];
