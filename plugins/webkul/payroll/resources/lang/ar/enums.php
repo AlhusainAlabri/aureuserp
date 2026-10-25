@@ -15,6 +15,13 @@ return [
         'pasi_employee'     => 'حصة الموظف في التأمينات',
         'pasi_employer'     => 'حصة صاحب العمل في التأمينات',
     ],
+    'settlement_status' => [
+        'draft'            => 'مسودة',
+        'pending_approval' => 'بانتظار الموافقة',
+        'approved'         => 'معتمدة',
+        'paid'             => 'مدفوعة',
+        'cancelled'        => 'ملغاة',
+    ],
     'pasi_category' => [
         'omani' => 'عماني',
         'expat' => 'وافد',

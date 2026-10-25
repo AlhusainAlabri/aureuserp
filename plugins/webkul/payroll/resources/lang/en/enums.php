@@ -15,6 +15,13 @@ return [
         'pasi_employee'     => 'PASI Employee Share',
         'pasi_employer'     => 'PASI Employer Share',
     ],
+    'settlement_status' => [
+        'draft'            => 'Draft',
+        'pending_approval' => 'Pending Approval',
+        'approved'         => 'Approved',
+        'paid'             => 'Paid',
+        'cancelled'        => 'Cancelled',
+    ],
     'pasi_category' => [
         'omani' => 'Omani',
         'expat' => 'Expat',

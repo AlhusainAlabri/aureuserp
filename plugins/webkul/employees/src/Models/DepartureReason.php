@@ -23,6 +23,11 @@ class DepartureReason extends Model implements Sortable
         'reason_code',
         'creator_id',
         'name',
+        'pays_gratuity',
+    ];
+
+    protected $casts = [
+        'pays_gratuity' => 'boolean',
     ];
 
     public $sortable = [

@@ -43,11 +43,18 @@ class PayrollServiceProvider extends PackageServiceProvider
                 '2026_10_26_100000_create_payroll_pasi_rules_table',
                 '2026_10_26_100001_add_is_pasi_insurable_to_payroll_salary_components_table',
                 '2026_10_26_100002_add_pasi_base_to_payroll_payslips_table',
+                '2026_10_26_200000_create_payroll_gratuity_tiers_table',
+                '2026_10_26_200001_create_payroll_end_of_service_settlements_table',
+                '2026_10_26_200002_add_pays_gratuity_to_employees_departure_reasons_table',
             ])
             ->hasDependencies([
                 'employees',
             ])
             ->runsMigrations()
+            ->hasSettings([
+                '2026_10_26_200003_create_gratuity_settings',
+            ])
+            ->runsSettings()
             ->hasSeeders(
                 'Webkul\\Payroll\\Database\\Seeders\\DefaultSalaryComponentsSeeder',
                 'Webkul\\Payroll\\Database\\Seeders\\PayrollBatchApprovalFlowSeeder',
