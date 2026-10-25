@@ -59,6 +59,7 @@ class PayrollServiceProvider extends PackageServiceProvider
                 'Webkul\\Payroll\\Database\\Seeders\\DefaultSalaryComponentsSeeder',
                 'Webkul\\Payroll\\Database\\Seeders\\PayrollBatchApprovalFlowSeeder',
                 'Webkul\\Payroll\\Database\\Seeders\\LoanApprovalFlowSeeder',
+                'Webkul\\Payroll\\Database\\Seeders\\EndOfServiceApprovalFlowSeeder',
             )
             ->hasInstallCommand(function (InstallCommand $command): void {
                 $command

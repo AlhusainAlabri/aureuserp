@@ -9,6 +9,14 @@ return [
             'general_manager' => 'المدير العام',
         ],
     ],
+    'settlement_approval' => [
+        'flow_name' => 'اعتماد تسوية نهاية الخدمة',
+        'steps'     => [
+            'hr_manager'      => 'مدير الموارد البشرية',
+            'finance_manager' => 'مدير المالية',
+            'general_manager' => 'المدير العام',
+        ],
+    ],
     'loan_approval' => [
         'flow_name' => 'اعتماد قرض الموظف',
         'steps'     => [

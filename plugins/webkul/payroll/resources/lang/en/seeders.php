@@ -9,6 +9,14 @@ return [
             'general_manager' => 'General Manager',
         ],
     ],
+    'settlement_approval' => [
+        'flow_name' => 'End-of-Service Settlement Approval',
+        'steps'     => [
+            'hr_manager'      => 'HR Manager',
+            'finance_manager' => 'Finance Manager',
+            'general_manager' => 'General Manager',
+        ],
+    ],
     'loan_approval' => [
         'flow_name' => 'Employee Loan Approval',
         'steps'     => [
