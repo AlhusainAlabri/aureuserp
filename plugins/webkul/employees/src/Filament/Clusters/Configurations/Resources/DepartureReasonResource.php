@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -21,6 +22,7 @@ use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint;
 use Filament\Tables\Filters\QueryBuilder\Constraints\RelationshipConstraint\Operators\IsRelatedToOperator;
 use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Employee\Filament\Clusters\Configurations;
 use Webkul\Employee\Filament\Clusters\Configurations\Resources\DepartureReasonResource\Pages\ListDepartureReasons;
 use Webkul\Employee\Models\DepartureReason;
@@ -57,6 +59,11 @@ class DepartureReasonResource extends Resource
                 TextInput::make('name')
                     ->label(__('employees::filament/clusters/configurations/resources/departure-reason.form.fields.name'))
                     ->required(),
+                Toggle::make('pays_gratuity')
+                    ->label(__('payroll::payroll.fields.pays_gratuity'))
+                    ->helperText(__('payroll::payroll.gratuity.pays_gratuity_hint'))
+                    ->default(true)
+                    ->visible(fn (): bool => DbSchema::hasColumn('employees_departure_reasons', 'pays_gratuity')),
             ])->columns(1);
     }
 
