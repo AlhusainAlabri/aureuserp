@@ -40,6 +40,7 @@ class AdminNavigationMenu
         'icon-assets'           => ['/admin/assets/dashboard'],
         'icon-employees'        => ['/admin/employees/employees'],
         'icon-payroll'          => ['/admin/payroll/employee-components'],
+        'icon-attendance'       => ['/admin/attendances/my-attendance', '/admin/attendances/days'],
         'icon-time-offs'        => ['/admin/time-off/dashboard'],
         'icon-recruitments'     => ['/admin/recruitments/applications'],
         'icon-website'          => ['/admin/website'],

@@ -149,6 +149,9 @@ class AdminPanelProvider extends PanelProvider
                 ->label(fn (): string => __('payroll::payroll.navigation.group'))
                 ->icon('icon-payroll'),
             NavigationGroup::make()
+                ->label(fn (): string => __('attendances::attendances.navigation.group'))
+                ->icon('icon-attendance'),
+            NavigationGroup::make()
                 ->label(fn (): string => __('admin.navigation.time-off'))
                 ->icon('icon-time-offs'),
             NavigationGroup::make()

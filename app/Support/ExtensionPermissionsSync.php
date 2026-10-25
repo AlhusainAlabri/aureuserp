@@ -23,6 +23,7 @@ class ExtensionPermissionsSync
         $this->syncNavigation();
         $this->syncBranding();
         $this->syncPayroll();
+        $this->syncAttendance();
         $this->syncOperations();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
@@ -246,7 +247,8 @@ class ExtensionPermissionsSync
 
     /**
      * PASI rules arrived after payroll roles were created: whoever can already update salary
-     * components may also manage PASI rules and read the contribution schedule.
+     * components may also manage PASI rules and read the contribution schedule. The same roles manage the
+     * gratuity tiers and settings, end-of-service settlements and the attendance-in-payroll switches.
      */
     public function syncPayroll(): void
     {
@@ -271,11 +273,42 @@ class ExtensionPermissionsSync
             'create_payroll_gratuity::tier',
             'update_payroll_gratuity::tier',
             'page_payroll_manage_gratuity_settings',
+            'page_payroll_manage_payroll_attendance_settings',
             'view_any_payroll_end::of::service::settlement',
             'view_payroll_end::of::service::settlement',
             'create_payroll_end::of::service::settlement',
             'update_payroll_end::of::service::settlement',
         ], $roleNames);
+    }
+
+    /**
+     * Attendance arrived after the HR roles were created. Team leads and HR read the day and overtime
+     * lists (the plugin narrows what each of them sees to their own team); only HR and admins edit days,
+     * decide overtime, import from the device and change the attendance settings. The monthly summary page is
+     * read-only and follows the day list: it narrows what each user sees to their own team. Adds, never removes.
+     */
+    public function syncAttendance(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady() || ! Schema::hasTable('attendance_days')) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles([
+            'view_any_attendance_attendance::day',
+            'view_attendance_attendance::day',
+            'view_any_attendance_overtime::request',
+            'view_attendance_overtime::request',
+            'page_attendance_monthly_attendance_summary',
+        ], ['manager', 'department_manager', 'hr_manager', 'Admin', 'super_admin']);
+
+        $this->grantPermissionsToRoles([
+            'create_attendance_attendance::day',
+            'update_attendance_attendance::day',
+            'create_attendance_overtime::request',
+            'update_attendance_overtime::request',
+            'page_attendance_import_attendance',
+            'page_attendance_manage_attendance_settings',
+        ], ['hr_manager', 'Admin', 'super_admin']);
     }
 
     public function syncOperations(): void

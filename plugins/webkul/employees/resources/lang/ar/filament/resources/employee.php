@@ -164,6 +164,7 @@ return [
                     'notes'                          => 'ملاحظات',
                     'attendance-point-of-sale'       => 'الحضور/نقطة البيع',
                     'badge-id'                       => 'رقم البطاقة',
+                    'badge-id-helper'                => 'رقم المستخدم في جهاز الحضور',
                     'pin'                            => 'رمز PIN',
                 ],
             ],

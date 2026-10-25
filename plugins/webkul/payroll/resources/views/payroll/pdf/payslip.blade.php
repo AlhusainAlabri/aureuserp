@@ -46,6 +46,24 @@
         </tr>
     </table>
 
+    @if ($payslip->absent_days !== null || $payslip->late_minutes !== null || $payslip->overtime_hours !== null)
+        <h2>{{ __('payroll::payroll.pdf.payslip.attendance') }}</h2>
+        <table>
+            <tr>
+                <th>{{ __('payroll::payroll.fields.working_days') }}</th>
+                <td>{{ $payslip->working_days }}</td>
+                <th>{{ __('payroll::payroll.fields.absent_days') }}</th>
+                <td>{{ $payslip->absent_days ?? '-' }}</td>
+            </tr>
+            <tr>
+                <th>{{ __('payroll::payroll.fields.late_minutes') }}</th>
+                <td>{{ $payslip->late_minutes ?? '-' }}</td>
+                <th>{{ __('payroll::payroll.fields.overtime_hours') }}</th>
+                <td>{{ $payslip->overtime_hours ?? '-' }}</td>
+            </tr>
+        </table>
+    @endif
+
     @php
         $symbol = app()->getLocale() === 'ar' ? __('payroll::payroll.currency.symbol_ar') : __('payroll::payroll.currency.symbol_en');
         $format = fn ($amount) => $symbol.' '.number_format((float) $amount, 3);

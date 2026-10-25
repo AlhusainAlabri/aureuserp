@@ -90,6 +90,12 @@ return [
         'working_days'           => 'Working Days',
         'worked_days'            => 'Worked Days',
         'unpaid_leave_days'      => 'Unpaid Leave Days',
+        'absent_days'            => 'Absent Days',
+        'late_minutes'           => 'Late Minutes',
+        'overtime_hours'         => 'Approved Overtime Hours',
+        'deduct_absence'         => 'Deduct absent days',
+        'deduct_lateness'        => 'Deduct lateness',
+        'pay_overtime'           => 'Pay approved overtime',
         'basic_salary'           => 'Basic Salary',
         'gross_amount'           => 'Gross',
         'deductions_amount'      => 'Deductions',
@@ -269,6 +275,7 @@ return [
             'deductions'       => 'Deductions',
             'employer_costs'   => 'Employer Costs',
             'summary'          => 'Summary',
+            'attendance'       => 'Attendance',
             'footer'           => 'Reference: :reference — Page :page',
         ],
         'register' => [
@@ -379,6 +386,16 @@ return [
             'minimum_service_hint'      => 'Employees with less service than this receive no gratuity.',
             'eligible_category_hint'    => 'Omani staff are covered by PASI; the default is expatriates only.',
             'divisor_hint'              => 'Daily rate = basic salary divided by this number (used for gratuity and leave payout).',
+        ],
+    ],
+
+    'attendance' => [
+        'settings' => [
+            'title'                => 'Attendance in payroll',
+            'description'          => 'While the attendance module is installed, the working days of each payslip follow the employee\'s work calendar and public holidays instead of a fixed 22 days. These switches only decide what is deducted or paid.',
+            'deduct_absence_hint'  => 'Absent days are added to unpaid days: the basic salary is reduced by absent days ÷ working days.',
+            'deduct_lateness_hint' => 'Adds a "Lateness deduction" line: late minutes ÷ 60 × hourly rate (basic ÷ working days ÷ daily shift hours).',
+            'pay_overtime_hint'    => 'Adds an "Overtime pay" line for approved overtime requests only: hours × hourly rate × the request\'s multiplier.',
         ],
     ],
 

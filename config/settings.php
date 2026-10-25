@@ -12,6 +12,7 @@ use Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository;
 use Webkul\Account\Settings\CustomerInvoiceSettings;
 use Webkul\Account\Settings\DefaultAccountSettings;
 use Webkul\Account\Settings\TaxesSettings;
+use Webkul\Attendance\Settings\AttendanceSettings;
 use Webkul\Inventory\Settings\LogisticSettings;
 use Webkul\Inventory\Settings\OperationSettings as InventoryOperationSettings;
 use Webkul\Inventory\Settings\TraceabilitySettings;
@@ -19,6 +20,7 @@ use Webkul\Inventory\Settings\WarehouseSettings;
 use Webkul\Manufacturing\Settings\OperationSettings as ManufacturingOperationSettings;
 use Webkul\Manufacturing\Settings\PlanningSettings;
 use Webkul\Payroll\Settings\GratuitySettings;
+use Webkul\Payroll\Settings\PayrollAttendanceSettings;
 use Webkul\Product\Settings\ProductSettings as CoreProductSettings;
 use Webkul\Project\Settings\TaskSettings;
 use Webkul\Project\Settings\TimeSettings;
@@ -64,6 +66,8 @@ return [
         BrandingSettings::class,
         OperationsSettings::class,
         GratuitySettings::class,
+        PayrollAttendanceSettings::class,
+        AttendanceSettings::class,
     ],
 
     /*

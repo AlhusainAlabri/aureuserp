@@ -47,6 +47,9 @@
         <testsuite name="PayrollFeature">
             <directory>tests/Feature/Payroll</directory>
         </testsuite>
+        <testsuite name="AttendanceFeature">
+            <directory>tests/Feature/Attendance</directory>
+        </testsuite>
         <testsuite name="HrExtensionsFeature">
             <directory>tests/Feature/Hr</directory>
         </testsuite>

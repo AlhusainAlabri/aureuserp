@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Schema;
+use Webkul\Attendance\Settings\AttendanceSettings;
+use Webkul\PluginManager\Package;
 
 Schedule::command('system:scheduler-heartbeat')->everyMinute();
 Schedule::command('system:health-check')->everyFifteenMinutes();
@@ -33,3 +36,13 @@ Schedule::command('accounting:notify-overdue-invoices')->dailyAt('09:00');
 Schedule::command('inventory:run-replenishment')->dailyAt('08:45');
 Schedule::command('inventory:movement-report')->weeklyOn(1, '09:00');
 Schedule::command('notifications:report-daily --notify')->dailyAt('07:00');
+
+if (Package::isPluginInstalled('attendances') && Schema::hasTable('attendance_days')) {
+    $attendanceCloseTime = rescue(
+        fn (): string => app(AttendanceSettings::class)->workday_close_time,
+        '23:30',
+        false,
+    );
+
+    Schedule::command('attendance:close-day')->dailyAt($attendanceCloseTime)->withoutOverlapping();
+}
