@@ -278,13 +278,13 @@ class AttendanceDayResource extends Resource
     }
 
     /**
-     * Employees the signed-in user may pick or filter by.
+     * Employees the signed-in user may pick or filter by, archived ones included (their rows still list).
      *
      * @return Builder<Employee>
      */
     public static function employeeQuery(): Builder
     {
-        return AttendanceScope::applyTo(Employee::query()->orderBy('name'), Auth::user(), 'id');
+        return AttendanceScope::applyTo(Employee::query()->withTrashed()->orderBy('name'), Auth::user(), 'id');
     }
 
     protected static function localTime(AttendanceDay $record, ?Carbon $moment): string

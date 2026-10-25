@@ -34,7 +34,7 @@ class ManualDayEntry
      */
     public function create(array $data, User $by): AttendanceDay
     {
-        $employee = Employee::query()->find($data['employee_id'] ?? null);
+        $employee = Employee::query()->withTrashed()->find($data['employee_id'] ?? null);
 
         if ($employee === null || ! AttendanceScope::includes($by, $employee->id)) {
             throw ValidationException::withMessages([

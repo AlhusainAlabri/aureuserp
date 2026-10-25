@@ -49,7 +49,9 @@ class OvertimeDecision
                 throw new AttendanceException(__('attendances::attendances.overtime.errors.already_decided'));
             }
 
-            if ($locked->employee->user_id !== null && (int) $locked->employee->user_id === (int) $by->getKey()) {
+            $employeeUserId = $locked->employee?->user_id;
+
+            if ($employeeUserId !== null && (int) $employeeUserId === (int) $by->getKey()) {
                 throw new AttendanceException(__('attendances::attendances.overtime.errors.own_request'));
             }
 

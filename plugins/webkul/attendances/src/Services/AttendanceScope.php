@@ -19,7 +19,8 @@ class AttendanceScope
     public const ALL_EMPLOYEES_PERMISSION = 'update_attendance_attendance::day';
 
     /**
-     * Employee ids the user may see; null means all employees.
+     * Employee ids the user may see; null means all employees. Archived employees count: the relationship
+     * (own record, attendance manager) does not end when they leave, and their last days still need handling.
      *
      * @return Collection<int, int>|null
      */
@@ -30,6 +31,7 @@ class AttendanceScope
         }
 
         return Employee::query()
+            ->withTrashed()
             ->where(function (Builder $query) use ($user): void {
                 $query->where('user_id', $user->getKey())
                     ->orWhere('attendance_manager_id', $user->getKey());
@@ -47,6 +49,7 @@ class AttendanceScope
         }
 
         return Employee::query()
+            ->withTrashed()
             ->whereKey($employeeId)
             ->where(function (Builder $query) use ($user): void {
                 $query->where('user_id', $user->getKey())

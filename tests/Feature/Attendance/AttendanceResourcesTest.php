@@ -6,6 +6,7 @@ use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use Filament\Facades\Filament;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -38,6 +39,7 @@ use Webkul\Attendance\Services\AttendanceScope;
 use Webkul\Attendance\Services\AttendanceSummary;
 use Webkul\Attendance\Services\ManualDayEntry;
 use Webkul\Attendance\Services\OvertimeDecision;
+use Webkul\Attendance\Services\OvertimeRequestSync;
 use Webkul\Attendance\Services\PunchRecorder;
 use Webkul\Attendance\Settings\AttendanceSettings;
 use Webkul\Employee\Models\Employee;
@@ -900,4 +902,207 @@ it('AttendanceResourcesTest: syncAll includes the attendance step', function ():
     app(ExtensionPermissionsSync::class)->syncAll();
 
     expect(attendanceRoleHas($role, attendanceKey(AttendanceDayResource::class, 'update')))->toBeTrue();
+});
+
+// ---------------------------------------------------------------- archived employees
+
+/**
+ * @return array<string, mixed>
+ */
+function attendanceArchivedWorld(): array
+{
+    $world = attendanceWorld();
+
+    $world['leaver'] = AttendanceFixtures::employee($world['company'], $world['calendar'], [
+        'name'                  => 'Leaver Team Member',
+        'time_zone'             => 'Asia/Riyadh',
+        'attendance_manager_id' => $world['manager']->user_id,
+    ]);
+    $world['stranger'] = AttendanceFixtures::employee($world['company'], $world['calendar'], ['name' => 'Leaver Stranger']);
+
+    foreach (['leaver', 'stranger'] as $key) {
+        $world['days'][$key] = AttendanceDay::factory()->create([
+            'employee_id'      => $world[$key]->id,
+            'date'             => '2026-11-03',
+            'first_in'         => Carbon::parse('2026-11-03 05:00:00', 'UTC'),
+            'last_out'         => Carbon::parse('2026-11-03 14:00:00', 'UTC'),
+            'worked_minutes'   => 540,
+            'expected_minutes' => 480,
+        ]);
+        $world['requests'][$key] = attendanceRequest($world[$key]);
+        $world[$key]->delete();
+    }
+
+    return $world;
+}
+
+it('AttendanceResourcesTest: an archived employee overtime request can be approved and rejected from the list', function (): void {
+    $world = attendanceArchivedWorld();
+    $hr = attendanceHr($world['hr']);
+    $other = attendanceRequest($world['member'], ['date' => '2026-11-04']);
+    $second = attendanceRequest($world['leaver'], ['date' => '2026-11-05']);
+
+    expect($world['requests']['leaver']->fresh()->employee->name)->toBe('Leaver Team Member');
+
+    Livewire::test(ListOvertimeRequests::class)
+        ->assertCanSeeTableRecords([$world['requests']['leaver'], $world['requests']['stranger']])
+        ->assertSee('Leaver Team Member')
+        ->callTableAction('approve', $world['requests']['leaver'], ['note' => 'Last month'])
+        ->callTableAction('reject', $world['requests']['stranger'])
+        ->callTableBulkAction('approve', [$second, $other])
+        ->assertNotified();
+
+    expect($world['requests']['leaver']->fresh()->status)->toBe(OvertimeStatus::Approved)
+        ->and($world['requests']['leaver']->fresh()->decided_by)->toBe($hr->id)
+        ->and($world['requests']['stranger']->fresh()->status)->toBe(OvertimeStatus::Rejected)
+        ->and($second->fresh()->status)->toBe(OvertimeStatus::Approved)
+        ->and($other->fresh()->status)->toBe(OvertimeStatus::Approved);
+});
+
+it('AttendanceResourcesTest: a bulk approve is not aborted by an archived employee request', function (): void {
+    $world = attendanceArchivedWorld();
+    attendanceHr($world['hr']);
+    $active = attendanceRequest($world['member'], ['date' => '2026-11-04']);
+
+    Livewire::test(ListOvertimeRequests::class)
+        ->callTableBulkAction('approve', [$world['requests']['leaver'], $active, $world['requests']['stranger']])
+        ->assertNotified();
+
+    expect(OvertimeRequest::query()->whereIn('id', [$world['requests']['leaver']->id, $active->id, $world['requests']['stranger']->id])
+        ->where('status', OvertimeStatus::Approved->value)->count())->toBe(3);
+});
+
+it('AttendanceResourcesTest: an archived employee day lists, exports and can be corrected by hand', function (): void {
+    $world = attendanceArchivedWorld();
+    $hr = attendanceHr($world['hr']);
+    $day = $world['days']['leaver'];
+
+    Livewire::test(ListAttendanceDays::class)
+        ->assertCanSeeTableRecords([$day])
+        ->assertSee('Leaver Team Member');
+
+    $csv = app(AttendanceDayCsv::class)->build(collect([$day->fresh()->load('employee')]));
+
+    expect($csv)->toContain('Leaver Team Member')->toContain('08:00');
+
+    Livewire::test(EditAttendanceDay::class, ['record' => $day->id])
+        ->assertFormSet(['first_in' => '2026-11-03 08:00', 'last_out' => '2026-11-03 17:00'])
+        ->fillForm(['late_minutes' => 5, 'override_note' => 'Leaver correction'])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $day->refresh();
+
+    expect($day->is_manual_override)->toBeTrue()
+        ->and($day->edited_by)->toBe($hr->id)
+        ->and($day->late_minutes)->toBe(5)
+        ->and($day->first_in->format('H:i'))->toBe('05:00');
+});
+
+it('AttendanceResourcesTest: a manager sees an archived team member but not an archived stranger', function (): void {
+    $world = attendanceArchivedWorld();
+    $user = attendanceGrant($world['manager']->user, [
+        ...attendanceDayKeys('view_any', 'view'),
+        ...attendanceOvertimeKeys('view_any', 'view'),
+    ]);
+    attendanceActingAs($user);
+
+    expect(AttendanceScope::employeeIdsFor($user)->all())->toContain($world['leaver']->id)->not->toContain($world['stranger']->id);
+
+    Livewire::test(ListAttendanceDays::class)
+        ->assertCanSeeTableRecords([$world['days']['leaver']])
+        ->assertCanNotSeeTableRecords([$world['days']['stranger']]);
+
+    Livewire::test(ListOvertimeRequests::class)
+        ->assertCanSeeTableRecords([$world['requests']['leaver']])
+        ->assertCanNotSeeTableRecords([$world['requests']['stranger']]);
+
+    expect(Gate::forUser($user)->allows('view', $world['days']['leaver']))->toBeTrue()
+        ->and(Gate::forUser($user)->allows('view', $world['days']['stranger']))->toBeFalse();
+});
+
+// ---------------------------------------------------------------- overtime sync concurrency
+
+it('AttendanceResourcesTest: the overtime sync locks the request row and writes only to pending rows', function (): void {
+    $world = attendanceWorld();
+    $day = $world['days']['member'];
+    $day->update(['overtime_minutes' => 90]);
+    attendanceRequest($world['member'], ['minutes' => 60]);
+
+    DB::enableQueryLog();
+    app(OvertimeRequestSync::class)->sync($day->fresh());
+    $queries = collect(DB::getQueryLog())->pluck('query')->filter(fn (string $sql): bool => str_contains($sql, 'attendance_overtime_requests'));
+
+    $day->update(['overtime_minutes' => 0]);
+    DB::flushQueryLog();
+    app(OvertimeRequestSync::class)->sync($day->fresh());
+    $deleteQueries = collect(DB::getQueryLog())->pluck('query')->filter(fn (string $sql): bool => str_contains($sql, 'attendance_overtime_requests'));
+    DB::disableQueryLog();
+
+    expect($queries->first(fn (string $sql): bool => str_starts_with($sql, 'select')))->toContain('for update');
+
+    foreach ($queries->concat($deleteQueries)->filter(fn (string $sql): bool => str_starts_with($sql, 'update') || str_starts_with($sql, 'delete')) as $sql) {
+        expect(Str::after($sql, ' where '))->toContain('`status`');
+    }
+
+    expect($queries->contains(fn (string $sql): bool => str_starts_with($sql, 'update')))->toBeTrue()
+        ->and($deleteQueries->contains(fn (string $sql): bool => str_starts_with($sql, 'delete')))->toBeTrue();
+});
+
+/**
+ * Runs $action while a listener approves the request straight after the sync has read it, as a concurrent
+ * decision would; returns the request as the other session left it and as it is afterwards.
+ *
+ * @return array{0: array<string, mixed>, 1: array<string, mixed>}
+ */
+function attendanceDecideDuringSync(OvertimeRequest $request, Closure $action): array
+{
+    $flipped = false;
+
+    DB::listen(function ($query) use (&$flipped, $request): void {
+        if ($flipped || ! str_starts_with($query->sql, 'select') || ! str_contains($query->sql, 'attendance_overtime_requests')) {
+            return;
+        }
+
+        $flipped = true;
+        DB::table('attendance_overtime_requests')->where('id', $request->id)->update([
+            'status'     => OvertimeStatus::Approved->value,
+            'decided_by' => 1,
+            'decided_at' => '2026-11-10 09:00:00',
+            'note'       => 'Decided elsewhere',
+        ]);
+    });
+
+    $action();
+
+    return [(array) DB::table('attendance_overtime_requests')->where('id', $request->id)->first(), ['flipped' => $flipped]];
+}
+
+it('AttendanceResourcesTest: a request approved between the sync read and its update is left untouched', function (): void {
+    $world = attendanceWorld();
+    $day = $world['days']['member'];
+    $day->update(['overtime_minutes' => 150]);
+    $request = attendanceRequest($world['member'], ['minutes' => 60, 'multiplier' => 1.25]);
+
+    [$row, $meta] = attendanceDecideDuringSync($request, fn () => app(OvertimeRequestSync::class)->sync($day->fresh()));
+
+    expect($meta['flipped'])->toBeTrue()
+        ->and($row['status'])->toBe('approved')
+        ->and((int) $row['minutes'])->toBe(60)
+        ->and($row['note'])->toBe('Decided elsewhere')
+        ->and($row['decided_at'])->toBe('2026-11-10 09:00:00');
+});
+
+it('AttendanceResourcesTest: a request approved between the sync read and its delete is not removed', function (): void {
+    $world = attendanceWorld();
+    $day = $world['days']['member'];
+    $day->update(['overtime_minutes' => 0]);
+    $request = attendanceRequest($world['member'], ['minutes' => 60]);
+
+    [$row, $meta] = attendanceDecideDuringSync($request, fn () => app(OvertimeRequestSync::class)->sync($day->fresh()));
+
+    expect($meta['flipped'])->toBeTrue()
+        ->and($row)->not->toBe([])
+        ->and($row['status'])->toBe('approved')
+        ->and((int) $row['minutes'])->toBe(60);
 });

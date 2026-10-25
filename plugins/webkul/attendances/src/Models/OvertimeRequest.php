@@ -45,9 +45,12 @@ class OvertimeRequest extends Model
         ];
     }
 
+    /**
+     * Archived (soft-deleted) employees keep their attendance, and it still has to be decided and corrected.
+     */
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id')->withTrashed();
     }
 
     public function decider(): BelongsTo
