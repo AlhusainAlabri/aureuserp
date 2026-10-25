@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -21,6 +22,7 @@ class ExtensionPermissionsSync
         $this->syncPurchase();
         $this->syncNavigation();
         $this->syncBranding();
+        $this->syncPayroll();
         $this->syncOperations();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
@@ -240,6 +242,31 @@ class ExtensionPermissionsSync
             ['page_filament_manage_branding'],
             ['Admin', 'admin_manager', 'super_admin', 'general_manager'],
         );
+    }
+
+    /**
+     * PASI rules arrived after payroll roles were created: whoever can already update salary
+     * components may also manage PASI rules and read the contribution schedule.
+     */
+    public function syncPayroll(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady() || ! Schema::hasTable('payroll_pasi_rules')) {
+            return;
+        }
+
+        $roleNames = Role::query()
+            ->where('guard_name', 'web')
+            ->whereHas('permissions', fn ($query) => $query->where('name', 'update_payroll_salary::component'))
+            ->pluck('name')
+            ->all();
+
+        $this->grantPermissionsToRoles([
+            'view_any_payroll_pasi::rule',
+            'view_payroll_pasi::rule',
+            'create_payroll_pasi::rule',
+            'update_payroll_pasi::rule',
+            'page_payroll_pasi_contribution_schedule',
+        ], $roleNames);
     }
 
     public function syncOperations(): void

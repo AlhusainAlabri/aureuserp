@@ -24,6 +24,13 @@ class Branding
     protected static ?array $paletteMemo = null;
 
     /**
+     * Per-request memo of the saved colour (also "no colour").
+     *
+     * @var array{hex: string|null}|null
+     */
+    protected static ?array $colorMemo = null;
+
+    /**
      * Lowest contrast against white that still keeps white button text readable.
      */
     public const MIN_CONTRAST_WITH_WHITE = 3.0;
@@ -33,13 +40,32 @@ class Branding
      */
     public static function primaryColor(): ?string
     {
+        if (self::$colorMemo !== null) {
+            return self::$colorMemo['hex'];
+        }
+
         try {
             $color = self::settings()?->primary_color;
         } catch (Throwable) {
-            return null;
+            $color = null;
         }
 
-        return self::normalizeHex($color);
+        self::$colorMemo = ['hex' => self::normalizeHex($color)];
+
+        return self::$colorMemo['hex'];
+    }
+
+    /**
+     * Tiny stylesheet that makes the module icons follow a custom primary colour. Empty on
+     * sites that keep the default colour, so the bundled icons keep their own green.
+     */
+    public static function iconColorStyle(): string
+    {
+        if (self::primaryColor() === null) {
+            return '';
+        }
+
+        return '<style>:root{--brand-icon:var(--primary-600);--brand-icon-soft:var(--primary-200)}</style>';
     }
 
     /**
@@ -233,6 +259,7 @@ class Branding
     public static function forgetCache(?int $companyId = null): void
     {
         self::$paletteMemo = null;
+        self::$colorMemo = null;
 
         if (! self::canUseCache()) {
             return;

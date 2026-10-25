@@ -413,3 +413,19 @@ it('renders the preset swatches on the branding page', function (): void {
         ->assertSee(__('branding-settings.presets.teal'))
         ->assertSee('#0f766e');
 });
+
+it('only recolours the module icons when a custom primary color is saved', function (): void {
+    Branding::forgetCache();
+
+    expect(Branding::iconColorStyle())->toBe('');
+
+    $settings = app(BrandingSettings::class);
+    $settings->primary_color = '#7e22ce';
+    $settings->save();
+
+    Artisan::call('settings:clear-cache');
+    app()->forgetInstance(BrandingSettings::class);
+    Branding::forgetCache();
+
+    expect(Branding::iconColorStyle())->toContain('--brand-icon:var(--primary-600)');
+});

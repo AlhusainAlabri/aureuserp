@@ -1,7 +1,7 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="0.5" y="0.5" width="63" height="63" rx="12.5" fill="white"/>
-<rect x="0.5" y="0.5" width="63" height="63" rx="12.5" stroke="#B8D4B4"/>
-<path d="M35 50L40 47L44 50V33.3805V12L40 15L35.0476 12L30 15L25 12L20 15L16 12V50.0952L20 47L25 50L30 47L35 50Z" fill="#4A9B3E"/>
+<rect x="0.5" y="0.5" width="63" height="63" rx="12.5" stroke="var(--brand-icon-soft,#B8D4B4)"/>
+<path d="M35 50L40 47L44 50V33.3805V12L40 15L35.0476 12L30 15L25 12L20 15L16 12V50.0952L20 47L25 50L30 47L35 50Z" fill="var(--brand-icon,#4A9B3E)"/>
 <path d="M19.9999 20H39.9999" stroke="#E5A00D" stroke-width="1.90476" stroke-linecap="round"/>
 <path d="M20 27H40" stroke="#E5A00D" stroke-width="1.90476" stroke-linecap="round"/>
 <path d="M19.9999 34H35.9999" stroke="#E5A00D" stroke-width="1.90476" stroke-linecap="round"/>

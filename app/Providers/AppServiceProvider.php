@@ -89,6 +89,11 @@ class AppServiceProvider extends ServiceProvider
         $this->registerShieldPolicies();
 
         FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_END,
+            fn (): string => Branding::iconColorStyle(),
+        );
+
+        FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
             fn (): string => view('filament.components.ltr-values-script')->render(),
         );
