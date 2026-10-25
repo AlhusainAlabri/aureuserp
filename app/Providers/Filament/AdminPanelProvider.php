@@ -30,6 +30,7 @@ use App\Filament\Pages\Settings\ManageNotificationPreferences;
 use App\Filament\Projects\Pages\OperationsCalendar;
 use App\Filament\Projects\Pages\TaskKanban;
 use App\Filament\Projects\Pages\TaskOperationsHub;
+use App\Filament\Resources\AuditLogResource;
 use App\Filament\Resources\DashboardShortcutResource;
 use App\Filament\Resources\SystemBackupResource;
 use App\Filament\Widgets\Dashboard\ActiveLoansWidget;
@@ -255,6 +256,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->resources([
                 AssetBorrowingResource::class,
+                AuditLogResource::class,
                 DashboardShortcutResource::class,
                 SystemBackupResource::class,
             ])

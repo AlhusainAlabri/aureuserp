@@ -4,6 +4,7 @@ namespace Webkul\Security\Filament\Resources\RoleResource\Pages;
 
 use App\Services\Security\ModulePermissionResolver;
 use App\Services\Security\RolePermissionResolver;
+use App\Support\Audit\AuditRecorder;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
@@ -91,7 +92,15 @@ class EditRole extends EditRecord
 
     protected function afterSave(): void
     {
-        $this->record->syncPermissionsByNames($this->permissions);
+        /** @var Role $record */
+        $record = $this->record;
+
+        $before = $record->permissions()->pluck('name');
+
+        $record->syncPermissionsByNames($this->permissions);
+
+        AuditRecorder::recordRolePermissions($record, $before, $record->permissions()->pluck('name'));
+
         $this->permissions = collect();
     }
 

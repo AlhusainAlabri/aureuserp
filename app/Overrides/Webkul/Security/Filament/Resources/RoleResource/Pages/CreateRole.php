@@ -3,11 +3,13 @@
 namespace Webkul\Security\Filament\Resources\RoleResource\Pages;
 
 use App\Services\Security\RolePermissionResolver;
+use App\Support\Audit\AuditRecorder;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Collection;
 use Webkul\Security\Filament\Resources\RoleResource;
+use Webkul\Security\Models\Role;
 
 class CreateRole extends CreateRecord
 {
@@ -50,7 +52,15 @@ class CreateRole extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $this->record->syncPermissionsByNames($this->permissions);
+        /** @var Role $record */
+        $record = $this->record;
+
+        $before = $record->permissions()->pluck('name');
+
+        $record->syncPermissionsByNames($this->permissions);
+
+        AuditRecorder::recordRolePermissions($record, $before, $record->permissions()->pluck('name'));
+
         $this->permissions = collect();
     }
 
