@@ -427,6 +427,8 @@ RSYNC_EXCLUDES=(
   --exclude '.cursor/'
   --exclude '.claude/'
   --exclude '.agents/'
+  --exclude '.playwright-mcp/'
+  --exclude '.superpowers/'
   --exclude '.codex/'
   --exclude '.gemini/'
   --exclude '.github/'
@@ -707,7 +709,7 @@ REMOTE_CMDS+=" && chmod 2775 storage/fonts 2>/dev/null || chmod 775 storage/font
 
 # Remove test and developer artifacts (never needed to run the app).
 REMOTE_CMDS+=" && rm -rf tests phpunit.xml .phpunit.cache .phpunit.result.cache .env.testing.example .env.example .env.deploy .env.deploy.zseeb database/factories"
-REMOTE_CMDS+=" && rm -rf .agents .claude .codex .cursor .fleet .gemini .github .idea .scribe .vscode docs dogfood-output scripts"
+REMOTE_CMDS+=" && rm -rf .agents .playwright-mcp .superpowers .claude .codex .cursor .fleet .gemini .github .idea .scribe .vscode docs dogfood-output scripts"
 REMOTE_CMDS+=" && rm -f AGENTS.md CHANGELOG.md CLAUDE.md CODE_OF_CONDUCT.md GEMINI.md GitHub-Setup.md README.md LICENSE"
 REMOTE_CMDS+=" && rm -f .editorconfig .gitattributes .gitignore .mcp.json boost.json opencode.json skills-lock.json build"
 REMOTE_CMDS+=" && rm -f package.json package-lock.json pint.json postcss.config.js tailwind.config.js vite.config.js"
