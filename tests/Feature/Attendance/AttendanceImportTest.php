@@ -5,6 +5,7 @@ use Carbon\CarbonInterface;
 use Filament\Facades\Filament;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -207,25 +208,35 @@ it('AttendanceImportTest: maps columns with and without a header row', function 
         ->and($swapped->matched)->toHaveCount(1);
 });
 
-it('AttendanceImportTest: reads timestamps in the employee zone and keeps UTC', function (): void {
+it('AttendanceImportTest: reads device times in the company zone for every employee and keeps UTC', function (): void {
     $muscat = importEmployee('1001');
     $kolkata = importEmployee('1002', ['time_zone' => 'Asia/Kolkata']);
 
     $preview = app(AttendanceImporter::class)->preview([
         ['1001', '2026-11-02 08:00:00'],
         ['1002', '2026-11-02 08:00:00'],
+        // 23:30 on the office clock is 01:00 the next day in Kolkata.
+        ['1001', '2026-11-02 23:30:00'],
+        ['1002', '2026-11-02 23:30:00'],
     ], importMapping(), false);
 
-    $byEmployee = collect($preview->matched)->keyBy('employee_id');
+    $byEmployee = collect($preview->matched)->groupBy('employee_id');
 
-    expect($byEmployee[$muscat->id]['at']->format('Y-m-d H:i:s'))->toBe('2026-11-02 04:00:00')
-        ->and($byEmployee[$muscat->id]['at']->timezoneName)->toBe('UTC')
-        ->and($byEmployee[$kolkata->id]['at']->format('Y-m-d H:i:s'))->toBe('2026-11-02 02:30:00');
+    // The same cell gives the same instant whatever time zone the employee has.
+    expect($byEmployee[$muscat->id][0]['at']->format('Y-m-d H:i:s'))->toBe('2026-11-02 04:00:00')
+        ->and($byEmployee[$muscat->id][0]['at']->timezoneName)->toBe('UTC')
+        ->and($byEmployee[$kolkata->id][0]['at']->format('Y-m-d H:i:s'))->toBe('2026-11-02 04:00:00');
 
     app(AttendanceImporter::class)->commit($preview, importUser(), 'zones.csv');
 
-    expect(importPunchesOf($muscat))->toBe(['2026-11-02 04:00:00'])
-        ->and(importPunchesOf($kolkata))->toBe(['2026-11-02 02:30:00']);
+    expect(importPunchesOf($muscat))->toBe(['2026-11-02 04:00:00', '2026-11-02 19:30:00'])
+        ->and(importPunchesOf($kolkata))->toBe(['2026-11-02 04:00:00', '2026-11-02 19:30:00']);
+
+    // The employee's own zone still decides the local day of each punch.
+    expect(AttendanceDay::query()->where('employee_id', $muscat->id)->orderBy('date')->get()->map(fn (AttendanceDay $day): string => $day->date->toDateString())->all())
+        ->toBe(['2026-11-02'])
+        ->and(AttendanceDay::query()->where('employee_id', $kolkata->id)->orderBy('date')->get()->map(fn (AttendanceDay $day): string => $day->date->toDateString())->all())
+        ->toBe(['2026-11-02', '2026-11-03']);
 });
 
 it('AttendanceImportTest: reads Excel serial dates as local time', function (): void {
@@ -637,8 +648,9 @@ it('AttendanceImportTest: commit recalculates each affected day once, however ma
     $rows[] = ['1001', '2026-11-02 17:00:00'];
     $rows[] = ['1001', '2026-11-03 08:00:00'];
     // Two local days for the Kolkata employee around local midnight.
-    $rows[] = ['1002', '2026-11-02 23:50:00'];
-    $rows[] = ['1002', '2026-11-03 00:10:00'];
+    // (22:30 on the office clock is local midnight in Kolkata.)
+    $rows[] = ['1002', '2026-11-02 22:20:00'];
+    $rows[] = ['1002', '2026-11-02 22:40:00'];
 
     $importer = app(AttendanceImporter::class);
     $batch = $importer->commit($importer->preview($rows, importMapping(), false), importUser(), 'many.csv');
@@ -668,7 +680,7 @@ it('AttendanceImportTest: bulk commit gives the same days as recording the punch
             $fileRows[] = [$bulk[1]->barcode, "{$date} {$time}:00"];
 
             $recorder->record($single[0], Carbon::parse("{$date} {$time}:00", 'Asia/Muscat'), PunchSource::Device);
-            $recorder->record($single[1], Carbon::parse("{$date} {$time}:00", 'Asia/Kolkata'), PunchSource::Device);
+            $recorder->record($single[1], Carbon::parse("{$date} {$time}:00", 'Asia/Muscat'), PunchSource::Device);
         }
     }
 
@@ -831,4 +843,98 @@ it('AttendanceImportTest: a tampered path is refused with a message, not read', 
         ->assertSet('step', 1);
 
     expect(Storage::disk('local')->exists('attendance-imports/'.($user->id + 1).'/theirs.csv'))->toBeTrue();
+});
+
+it('AttendanceImportTest: bulk commit writes the same punch rows as PunchRecorder::store', function (): void {
+    $bulk = importEmployee('4001');
+    $single = importEmployee('4002');
+    $admin = importUser();
+    $at = Carbon::parse('2026-11-02 08:00:00', 'Asia/Muscat');
+
+    $importer = app(AttendanceImporter::class);
+    $batch = $importer->commit($importer->preview([['4001', '2026-11-02 08:00:00', 'out']], importMapping(2), false), $admin, 'a.csv');
+
+    $stored = app(PunchRecorder::class)->store($single, $at, PunchSource::Device, PunchDirection::Out, [
+        'device_ref'      => '4002',
+        'import_batch_id' => $batch->id,
+        'creator_id'      => $admin->id,
+    ]);
+
+    $keys = ['source', 'direction', 'ip', 'latitude', 'longitude', 'creator_id', 'import_batch_id'];
+    $bulkPunch = AttendancePunch::query()->where('employee_id', $bulk->id)->firstOrFail();
+
+    expect($bulkPunch->only($keys))->toEqual($stored->only($keys))
+        ->and($bulkPunch->device_ref)->toBe('4001')
+        ->and($bulkPunch->punched_at->format('Y-m-d H:i:s'))->toBe($stored->punched_at->format('Y-m-d H:i:s'))
+        ->and($bulkPunch->created_at)->not->toBeNull()
+        ->and($bulkPunch->updated_at)->not->toBeNull();
+});
+
+it('AttendanceImportTest: a large commit costs a handful of insert queries, not one per punch', function (): void {
+    $employee = importEmployee('1001');
+    $rows = [];
+
+    foreach (range(0, 2) as $day) {
+        foreach (range(0, 399) as $second) {
+            $rows[] = ['1001', Carbon::parse('2026-11-02 08:00:00', 'Asia/Muscat')->addDays($day)->addSeconds($second * 20)->format('Y-m-d H:i:s')];
+        }
+    }
+
+    $importer = app(AttendanceImporter::class);
+    $preview = $importer->preview($rows, importMapping(), false);
+    $spy = importCalculatorSpy();
+
+    DB::enableQueryLog();
+    DB::flushQueryLog();
+    $batch = $importer->commit($preview, importUser(), 'big.csv');
+    $queries = collect(DB::getQueryLog())->pluck('query');
+    DB::disableQueryLog();
+
+    $punchInserts = $queries->filter(fn (string $sql): bool => str_contains($sql, 'attendance_punches') && str_starts_with(strtolower($sql), 'insert'));
+    $punchLookups = $queries->filter(fn (string $sql): bool => str_starts_with(strtolower($sql), 'select') && str_contains($sql, 'attendance_punches') && preg_match('/employee_id.\s+in\s*\(/i', $sql) === 1);
+
+    expect($batch->matched_rows)->toBe(1200)
+        ->and($batch->duplicate_rows)->toBe(0)
+        ->and(AttendancePunch::query()->where('employee_id', $employee->id)->count())->toBe(1200)
+        ->and($punchInserts->count())->toBeLessThanOrEqual((int) ceil(1200 / 500) + 1)
+        ->and($punchInserts->every(fn (string $sql): bool => str_starts_with(strtolower($sql), 'insert ignore') || str_starts_with(strtolower($sql), 'insert or ignore')))->toBeTrue()
+        ->and($punchLookups->count())->toBeLessThanOrEqual((int) ceil(1200 / 500) + 1)
+        ->and($spy->calls)->toHaveCount(3);
+});
+
+it('AttendanceImportTest: a day that already had a punch is recalculated once with the new ones', function (): void {
+    $employee = importEmployee('1001');
+    AttendanceFixtures::punch($employee, '2026-11-02 08:00:00', PunchSource::Device);
+    $importer = app(AttendanceImporter::class);
+
+    $preview = $importer->preview([
+        ['1001', '2026-11-02 08:00:00'],
+        ['1001', '2026-11-02 12:00:00'],
+        ['1001', '2026-11-02 17:00:00'],
+    ], importMapping(), false);
+
+    $spy = importCalculatorSpy();
+    $batch = $importer->commit($preview, importUser(), 'mixed.csv');
+
+    expect($batch->matched_rows)->toBe(2)
+        ->and($batch->duplicate_rows)->toBe(1)
+        ->and($spy->calls)->toBe([$employee->id.'|2026-11-02'])
+        ->and(AttendanceDay::query()->where('employee_id', $employee->id)->firstOrFail()->worked_minutes)->toBe(480);
+});
+
+it('AttendanceImportTest: punches stored after the preview count as duplicates and trigger no recalculation', function (): void {
+    $employee = importEmployee('1001');
+    $importer = app(AttendanceImporter::class);
+    $preview = $importer->preview([['1001', '2026-11-02 08:00:00'], ['1001', '2026-11-02 17:00:00']], importMapping(), false);
+
+    AttendanceFixtures::punch($employee, '2026-11-02 08:00:00', PunchSource::Device);
+    AttendanceFixtures::punch($employee, '2026-11-02 17:00:00', PunchSource::Device);
+
+    $spy = importCalculatorSpy();
+    $batch = $importer->commit($preview, importUser(), 'stale.csv');
+
+    expect($batch->matched_rows)->toBe(0)
+        ->and($batch->duplicate_rows)->toBe(2)
+        ->and($spy->calls)->toBe([])
+        ->and(AttendancePunch::query()->where('employee_id', $employee->id)->count())->toBe(2);
 });

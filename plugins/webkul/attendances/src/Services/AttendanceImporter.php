@@ -34,6 +34,11 @@ class AttendanceImporter
     protected const LOOKUP_CHUNK = 500;
 
     /**
+     * Punches inserted per query when committing.
+     */
+    protected const INSERT_CHUNK = 500;
+
+    /**
      * Reads every row of a CSV or XLSX file. The first row is returned as `headers` too (stringified) so a
      * caller can offer it as column names; whether it is data is decided later by `preview()`.
      *
@@ -91,7 +96,9 @@ class AttendanceImporter
     public function preview(array $rows, array $mapping, bool $hasHeader): ImportPreview
     {
         $employees = $this->employeesByBarcode();
-        $fallbackZone = (string) config('app.timezone');
+        // The file holds the office device's clock, so every time is read in the application (company) zone;
+        // the employee's own zone only decides which local day a punch belongs to, later, when days are recalculated.
+        $zone = (string) config('app.timezone');
 
         $matched = [];
         $seen = [];
@@ -118,7 +125,6 @@ class AttendanceImporter
 
             $deviceId = $this->text($row[$mapping['device_user_id']] ?? null);
             $candidates = $employees[$deviceId] ?? [];
-            $zone = count($candidates) === 1 ? $candidates[0]['zone'] : $fallbackZone;
             $at = $deviceId === '' ? null : $this->parseTimestamp($row[$mapping['timestamp']] ?? null, $zone);
 
             if ($at === null) {
@@ -181,9 +187,11 @@ class AttendanceImporter
     }
 
     /**
-     * Stores the batch and its punches. Punches are stored oldest first without touching the days; once
-     * they are all in, every affected employee-day is recalculated exactly once. Anything stored since the
-     * preview was computed counts as a duplicate, and only newly created punches mark a day as affected.
+     * Stores the batch and its punches in one transaction. Punches are inserted in chunks (one lookup of the
+     * existing keys and one `insert or ignore` per chunk, never a query per punch) and the days are left
+     * alone until every chunk is in; then each employee-day that received a NEW punch is recalculated
+     * exactly once. Punches stored since the preview was computed count as duplicates, and the unique index
+     * on (employee, instant, source) stays the backstop.
      *
      * @throws AttendanceException
      */
@@ -212,43 +220,73 @@ class AttendanceImporter
                 ->get()
                 ->keyBy('id');
 
-            // Oldest first, so punch ids and the day rows created below follow time whatever the file order.
-            $rows = $preview->matched;
-            usort($rows, fn (array $a, array $b): int => [$a['at']->getTimestamp(), $a['employee_id']] <=> [$b['at']->getTimestamp(), $b['employee_id']]);
-
             $created = 0;
             $duplicates = $preview->duplicates;
             $invalid = $preview->invalidRows;
-            $affectedDays = [];
 
-            foreach ($rows as $row) {
-                $employee = $employees->get($row['employee_id']);
+            // Oldest first, so punch ids and the day rows created below follow time whatever the file order.
+            $rows = [];
 
-                if (! $employee instanceof Employee) {
+            foreach ($preview->matched as $row) {
+                if ($employees->has($row['employee_id'])) {
+                    $rows[] = $row;
+                } else {
                     $invalid++;
-
-                    continue;
                 }
-
-                $punch = $recorder->store($employee, $row['at'], PunchSource::Device, $row['direction'], [
-                    'device_ref'      => $row['device_ref'],
-                    'import_batch_id' => $batch->id,
-                    'creator_id'      => $by->id,
-                ]);
-
-                if (! $punch->wasRecentlyCreated) {
-                    $duplicates++;
-
-                    continue;
-                }
-
-                $created++;
-                $localMoment = $recorder->localMoment($employee, $row['at']);
-                $affectedDays[$employee->id.'|'.$localMoment->toDateString()] ??= [$employee, $localMoment];
             }
 
-            foreach ($affectedDays as [$employee, $localMoment]) {
-                $calculator->calculate($employee, $localMoment);
+            usort($rows, fn (array $a, array $b): int => [$a['at']->getTimestamp(), $a['employee_id']] <=> [$b['at']->getTimestamp(), $b['employee_id']]);
+
+            $now = now()->format('Y-m-d H:i:s');
+            $handled = [];
+            $affectedDays = [];
+
+            foreach (array_chunk($rows, self::INSERT_CHUNK) as $chunk) {
+                $stored = $this->storedDevicePunches($chunk);
+                $insert = [];
+
+                foreach ($chunk as $row) {
+                    $key = $row['employee_id'].'|'.$row['at']->format('Y-m-d H:i:s');
+
+                    if (isset($stored[$key]) || isset($handled[$key])) {
+                        $duplicates++;
+
+                        continue;
+                    }
+
+                    $handled[$key] = true;
+                    $insert[] = [
+                        'employee_id'     => $row['employee_id'],
+                        'punched_at'      => $row['at']->format('Y-m-d H:i:s'),
+                        'source'          => PunchSource::Device->value,
+                        'direction'       => $row['direction']?->value,
+                        'device_ref'      => $row['device_ref'],
+                        'import_batch_id' => $batch->id,
+                        'ip'              => null,
+                        'latitude'        => null,
+                        'longitude'       => null,
+                        'creator_id'      => $by->id,
+                        'created_at'      => $now,
+                        'updated_at'      => $now,
+                    ];
+
+                    $localMoment = $recorder->localMoment($employees->get($row['employee_id']), $row['at']);
+                    $affectedDays[$row['employee_id'].'|'.$localMoment->toDateString()] ??= [$row['employee_id'], $localMoment];
+                }
+
+                if ($insert === []) {
+                    continue;
+                }
+
+                // Rows another request stored in the meantime are ignored by the unique index and counted as duplicates.
+                $inserted = AttendancePunch::query()->insertOrIgnore($insert);
+
+                $created += $inserted;
+                $duplicates += count($insert) - $inserted;
+            }
+
+            foreach ($affectedDays as [$employeeId, $localMoment]) {
+                $calculator->calculate($employees->get($employeeId), $localMoment);
             }
 
             $batch->update([
@@ -271,7 +309,7 @@ class AttendanceImporter
      * the id ambiguous. The comparison happens here, as case-sensitive text, because the database collation
      * would treat "AB1" and "ab1" as the same value.
      *
-     * @return array<string, list<array{id: int, zone: string}>>
+     * @return array<string, list<array{id: int}>>
      */
     protected function employeesByBarcode(): array
     {
@@ -279,15 +317,12 @@ class AttendanceImporter
 
         Employee::query()
             ->whereNotNull('barcode')
-            ->get(['id', 'barcode', 'time_zone'])
+            ->get(['id', 'barcode'])
             ->each(function (Employee $employee) use (&$map): void {
                 $barcode = trim((string) $employee->barcode);
 
                 if ($barcode !== '') {
-                    $map[$barcode][] = [
-                        'id'   => $employee->id,
-                        'zone' => $employee->time_zone ?: (string) config('app.timezone'),
-                    ];
+                    $map[$barcode][] = ['id' => $employee->id];
                 }
             });
 
@@ -300,26 +335,20 @@ class AttendanceImporter
      */
     protected function storedDevicePunches(array $rows): array
     {
-        $instantsByEmployee = [];
-
-        foreach ($rows as $row) {
-            $instantsByEmployee[$row['employee_id']][] = $row['at']->format('Y-m-d H:i:s');
-        }
-
         $stored = [];
 
-        foreach ($instantsByEmployee as $employeeId => $instants) {
-            foreach (array_chunk($instants, self::LOOKUP_CHUNK) as $chunk) {
-                AttendancePunch::query()
-                    ->toBase()
-                    ->where('employee_id', $employeeId)
-                    ->where('source', PunchSource::Device->value)
-                    ->whereIn('punched_at', $chunk)
-                    ->pluck('punched_at')
-                    ->each(function (mixed $instant) use (&$stored, $employeeId): void {
-                        $stored[$employeeId.'|'.(string) $instant] = true;
-                    });
-            }
+        // One query per chunk: the employee and instant lists give a superset of pairs, and the exact
+        // pairs are told apart by the returned keys.
+        foreach (array_chunk($rows, self::LOOKUP_CHUNK) as $chunk) {
+            AttendancePunch::query()
+                ->toBase()
+                ->where('source', PunchSource::Device->value)
+                ->whereIn('employee_id', array_unique(array_column($chunk, 'employee_id')))
+                ->whereIn('punched_at', array_unique(array_map(fn (array $row): string => $row['at']->format('Y-m-d H:i:s'), $chunk)))
+                ->get(['employee_id', 'punched_at'])
+                ->each(function (object $punch) use (&$stored): void {
+                    $stored[$punch->employee_id.'|'.$punch->punched_at] = true;
+                });
         }
 
         return $stored;
