@@ -23,6 +23,7 @@ class ExtensionPermissionsSync
         $this->syncNavigation();
         $this->syncBranding();
         $this->syncPayroll();
+        $this->syncAttendance();
         $this->syncOperations();
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
@@ -276,6 +277,33 @@ class ExtensionPermissionsSync
             'create_payroll_end::of::service::settlement',
             'update_payroll_end::of::service::settlement',
         ], $roleNames);
+    }
+
+    /**
+     * Attendance arrived after the HR roles were created. Team leads and HR read the day and overtime
+     * lists (the plugin narrows what each of them sees to their own team); only HR and admins edit days,
+     * decide overtime and import from the device. Adds, never removes.
+     */
+    public function syncAttendance(): void
+    {
+        if (! class_exists(Permission::class) || ! PermissionTables::areReady() || ! Schema::hasTable('attendance_days')) {
+            return;
+        }
+
+        $this->grantPermissionsToRoles([
+            'view_any_attendance_attendance::day',
+            'view_attendance_attendance::day',
+            'view_any_attendance_overtime::request',
+            'view_attendance_overtime::request',
+        ], ['manager', 'department_manager', 'hr_manager', 'Admin', 'super_admin']);
+
+        $this->grantPermissionsToRoles([
+            'create_attendance_attendance::day',
+            'update_attendance_attendance::day',
+            'create_attendance_overtime::request',
+            'update_attendance_overtime::request',
+            'page_attendance_import_attendance',
+        ], ['hr_manager', 'Admin', 'super_admin']);
     }
 
     public function syncOperations(): void

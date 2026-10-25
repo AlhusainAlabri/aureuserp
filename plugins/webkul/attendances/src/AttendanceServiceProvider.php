@@ -3,7 +3,12 @@
 namespace Webkul\Attendance;
 
 use Filament\Panel;
+use Illuminate\Support\Facades\Gate;
 use Webkul\Attendance\Console\CloseDayCommand;
+use Webkul\Attendance\Models\AttendanceDay;
+use Webkul\Attendance\Models\OvertimeRequest;
+use Webkul\Attendance\Policies\AttendanceDayPolicy;
+use Webkul\Attendance\Policies\OvertimeRequestPolicy;
 use Webkul\PluginManager\Console\Commands\InstallCommand;
 use Webkul\PluginManager\Console\Commands\UninstallCommand;
 use Webkul\PluginManager\Package;
@@ -42,10 +47,7 @@ class AttendanceServiceProvider extends PackageServiceProvider
                     ->installDependencies()
                     ->runsMigrations()
                     ->endWith(function (InstallCommand $command): void {
-                        /** @var list<string> $resources */
-                        $resources = [];
-
-                        foreach ($resources as $resource) {
+                        foreach (['AttendanceDayResource', 'OvertimeRequestResource'] as $resource) {
                             $command->call('shield:generate', [
                                 '--resource' => $resource,
                                 '--panel'    => 'admin',
@@ -66,6 +68,12 @@ class AttendanceServiceProvider extends PackageServiceProvider
             })
             ->hasUninstallCommand(function (UninstallCommand $command): void {})
             ->icon('attendance');
+    }
+
+    public function packageBooted(): void
+    {
+        Gate::policy(AttendanceDay::class, AttendanceDayPolicy::class);
+        Gate::policy(OvertimeRequest::class, OvertimeRequestPolicy::class);
     }
 
     public function packageRegistered(): void

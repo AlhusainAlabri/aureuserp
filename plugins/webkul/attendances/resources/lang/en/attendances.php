@@ -115,6 +115,85 @@ return [
         ],
     ],
 
+    'day' => [
+        'sections' => [
+            'entry' => 'Manual entry',
+        ],
+        'entry_hint'      => 'Use this to add or correct a day by hand. The punches the employee recorded stay as they are; the figures below replace the calculated ones and the day is no longer recalculated.',
+        'local_time_hint' => 'Enter the time as shown on the clock in the employee time zone.',
+        'overtime_hint'   => 'Overtime of at least the minimum creates a pending overtime request for approval.',
+        'note_hint'       => 'Say why the day was entered or changed. It is kept with the record.',
+        'columns'         => [
+            'employee'           => 'Employee',
+            'date'               => 'Date',
+            'first_in'           => 'First in',
+            'last_out'           => 'Last out',
+            'worked'             => 'Worked (h:mm)',
+            'late'               => 'Late (min)',
+            'early_leave'        => 'Early leave (min)',
+            'overtime'           => 'Overtime (min)',
+            'status'             => 'Status',
+            'override_note'      => 'Reason',
+            'is_manual_override' => 'Entered by hand',
+        ],
+        'tabs' => [
+            'all'      => 'All',
+            'late'     => 'Late',
+            'absent'   => 'Absent',
+            'overtime' => 'Overtime',
+        ],
+        'filters' => [
+            'month'    => 'Month',
+            'employee' => 'Employee',
+        ],
+        'actions' => [
+            'export_csv' => 'Export CSV',
+            'add_entry'  => 'Add a day',
+        ],
+        'errors' => [
+            'duplicate'            => 'This employee already has a record for this date. Edit that record instead.',
+            'employee_not_allowed' => 'You cannot enter attendance for this employee.',
+        ],
+    ],
+
+    'overtime' => [
+        'columns' => [
+            'employee'   => 'Employee',
+            'date'       => 'Date',
+            'hours'      => 'Overtime (h:mm)',
+            'day_type'   => 'Day type',
+            'multiplier' => 'Rate',
+            'status'     => 'Status',
+            'decided_by' => 'Decided by',
+            'decided_at' => 'Decided at',
+            'note'       => 'Note',
+        ],
+        'tabs' => [
+            'all' => 'All',
+        ],
+        'fields' => [
+            'note'      => 'Note',
+            'note_hint' => 'Optional. Kept with the decision.',
+        ],
+        'actions' => [
+            'approve'          => 'Approve',
+            'reject'           => 'Reject',
+            'approve_heading'  => 'Approve overtime',
+            'reject_heading'   => 'Reject overtime',
+            'approve_selected' => 'Approve selected',
+        ],
+        'notifications' => [
+            'approved'      => 'Overtime approved',
+            'rejected'      => 'Overtime rejected',
+            'bulk_approved' => ':count requests approved',
+            'bulk_skipped'  => ':count requests were left as they are because they were already decided or are your own.',
+        ],
+        'errors' => [
+            'already_decided' => 'This overtime request has already been decided.',
+            'own_request'     => 'You cannot decide your own overtime request. Ask another manager or HR.',
+        ],
+    ],
+
     'console' => [
         'close_day' => [
             'invalid_date' => 'The date must be a valid date in the format Y-m-d.',
