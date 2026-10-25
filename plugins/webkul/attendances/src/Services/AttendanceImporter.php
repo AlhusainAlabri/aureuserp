@@ -5,6 +5,7 @@ namespace Webkul\Attendance\Services;
 use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Excel as ExcelReader;
 use Maatwebsite\Excel\Facades\Excel;
@@ -70,8 +71,9 @@ class AttendanceImporter
             throw new AttendanceException(__('attendances::attendances.import.errors.empty'));
         }
 
+        // Coarse guard: the first row may be a header, so only `preview()` can tell the data rows exactly.
         if (count($rows) > self::MAX_ROWS + 1) {
-            throw new AttendanceException(__('attendances::attendances.import.errors.too_many_rows', ['max' => self::MAX_ROWS]));
+            throw $this->tooManyRows();
         }
 
         return [
@@ -109,6 +111,10 @@ class AttendanceImporter
             }
 
             $total++;
+
+            if ($total > self::MAX_ROWS) {
+                throw $this->tooManyRows();
+            }
 
             $deviceId = $this->text($row[$mapping['device_user_id']] ?? null);
             $candidates = $employees[$deviceId] ?? [];
@@ -175,16 +181,24 @@ class AttendanceImporter
     }
 
     /**
-     * Stores the batch and its punches. Punches go through `PunchRecorder` oldest first so each recalculated
-     * day is deterministic, and anything stored since the preview was computed counts as a duplicate.
+     * Stores the batch and its punches. Punches are stored oldest first without touching the days; once
+     * they are all in, every affected employee-day is recalculated exactly once. Anything stored since the
+     * preview was computed counts as a duplicate, and only newly created punches mark a day as affected.
+     *
+     * @throws AttendanceException
      */
     public function commit(ImportPreview $preview, User $by, string $fileName): ImportBatch
     {
-        $recorder = app(PunchRecorder::class);
+        if ($preview->totalRows > self::MAX_ROWS) {
+            throw $this->tooManyRows();
+        }
 
-        return DB::transaction(function () use ($preview, $by, $fileName, $recorder): ImportBatch {
+        $recorder = app(PunchRecorder::class);
+        $calculator = app(AttendanceDayCalculator::class);
+
+        return DB::transaction(function () use ($preview, $by, $fileName, $recorder, $calculator): ImportBatch {
             $batch = ImportBatch::query()->create([
-                'file_name'            => $fileName,
+                'file_name'            => Str::limit($fileName, 190, ''),
                 'total_rows'           => $preview->totalRows,
                 'matched_rows'         => 0,
                 'duplicate_rows'       => $preview->duplicates,
@@ -198,12 +212,14 @@ class AttendanceImporter
                 ->get()
                 ->keyBy('id');
 
+            // Oldest first, so punch ids and the day rows created below follow time whatever the file order.
             $rows = $preview->matched;
             usort($rows, fn (array $a, array $b): int => [$a['at']->getTimestamp(), $a['employee_id']] <=> [$b['at']->getTimestamp(), $b['employee_id']]);
 
             $created = 0;
             $duplicates = $preview->duplicates;
             $invalid = $preview->invalidRows;
+            $affectedDays = [];
 
             foreach ($rows as $row) {
                 $employee = $employees->get($row['employee_id']);
@@ -214,17 +230,25 @@ class AttendanceImporter
                     continue;
                 }
 
-                $punch = $recorder->record($employee, $row['at'], PunchSource::Device, $row['direction'], [
+                $punch = $recorder->store($employee, $row['at'], PunchSource::Device, $row['direction'], [
                     'device_ref'      => $row['device_ref'],
                     'import_batch_id' => $batch->id,
                     'creator_id'      => $by->id,
                 ]);
 
-                if ($punch->wasRecentlyCreated) {
-                    $created++;
-                } else {
+                if (! $punch->wasRecentlyCreated) {
                     $duplicates++;
+
+                    continue;
                 }
+
+                $created++;
+                $localMoment = $recorder->localMoment($employee, $row['at']);
+                $affectedDays[$employee->id.'|'.$localMoment->toDateString()] ??= [$employee, $localMoment];
+            }
+
+            foreach ($affectedDays as [$employee, $localMoment]) {
+                $calculator->calculate($employee, $localMoment);
             }
 
             $batch->update([
@@ -235,6 +259,11 @@ class AttendanceImporter
 
             return $batch;
         });
+    }
+
+    protected function tooManyRows(): AttendanceException
+    {
+        return new AttendanceException(__('attendances::attendances.import.errors.too_many_rows', ['max' => self::MAX_ROWS]));
     }
 
     /**

@@ -111,6 +111,7 @@ return [
             'too_many_rows'    => 'The file has more than :max rows. Split it into smaller files.',
             'same_column'      => 'Choose a different column for each field.',
             'file_missing'     => 'The uploaded file is no longer available. Upload it again.',
+            'invalid_upload'   => 'The uploaded file could not be used. Upload it again.',
         ],
     ],
 

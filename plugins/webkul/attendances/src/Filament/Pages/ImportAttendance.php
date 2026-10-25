@@ -93,6 +93,14 @@ class ImportAttendance extends Page implements HasForms
     #[Locked]
     public array $summary = [];
 
+    /**
+     * The file stored by this request's upload and its client file name. Set only while saving a real
+     * upload: the form state is client-controlled and is never used to locate the file.
+     */
+    protected ?string $uploadedPath = null;
+
+    protected string $uploadedName = '';
+
     public static function getNavigationLabel(): string
     {
         return __('attendances::attendances.import.navigation');
@@ -123,7 +131,6 @@ class ImportAttendance extends Page implements HasForms
                             ->label(__('attendances::attendances.import.fields.file'))
                             ->helperText(__('attendances::attendances.import.fields.file_help'))
                             ->disk(self::DISK)
-                            ->directory(self::DIRECTORY)
                             ->visibility('private')
                             ->acceptedFileTypes([
                                 'text/csv',
@@ -137,10 +144,7 @@ class ImportAttendance extends Page implements HasForms
                             ])
                             ->rules(['extensions:'.implode(',', self::ALLOWED_EXTENSIONS)])
                             ->maxSize(5120)
-                            ->storeFileNamesIn('original_name')
-                            ->getUploadedFileNameForStorageUsing(
-                                fn (TemporaryUploadedFile $file): string => Str::random(40).'.'.strtolower($file->getClientOriginalExtension())
-                            )
+                            ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file): ?string => $this->storeUpload($file))
                             ->required(),
                     ])
                     ->visible(fn (): bool => $this->step === 1),
@@ -177,21 +181,29 @@ class ImportAttendance extends Page implements HasForms
     {
         abort_unless(static::canAccess(), 403);
 
-        $state = $this->form->getState();
-        $path = is_string($state['file'] ?? null) ? $state['file'] : null;
+        $this->uploadedPath = null;
+        $this->uploadedName = '';
+
+        // The upload state is an array keyed by upload id; anything else is not a browser upload.
+        if (isset($this->data['file']) && ! is_array($this->data['file'])) {
+            $this->data['file'] = null;
+        }
+
+        $this->form->getState();
+
+        // Only a file this request received and stored itself counts; a path sent in the state is ignored.
+        $path = $this->ownUploadPath($this->uploadedPath);
 
         if ($path === null) {
+            $this->form->fill(['has_header' => true]);
+
+            Notification::make()->danger()->title(__('attendances::attendances.import.errors.invalid_upload'))->send();
+
             return;
         }
 
-        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
         try {
-            if (! in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
-                throw new AttendanceException(__('attendances::attendances.import.errors.unsupported_type'));
-            }
-
-            $file = app(AttendanceImporter::class)->read(Storage::disk(self::DISK)->path($path), $extension);
+            $file = app(AttendanceImporter::class)->read(Storage::disk(self::DISK)->path($path), strtolower(pathinfo($path, PATHINFO_EXTENSION)));
         } catch (AttendanceException $exception) {
             Storage::disk(self::DISK)->delete($path);
             $this->form->fill(['has_header' => true]);
@@ -201,10 +213,15 @@ class ImportAttendance extends Page implements HasForms
             return;
         }
 
-        $this->discardFile();
+        // A user has one pending upload: starting a new one drops the previous (and any abandoned) file.
+        foreach (Storage::disk(self::DISK)->files($this->uploadDirectory()) as $existing) {
+            if ($existing !== $path) {
+                Storage::disk(self::DISK)->delete($existing);
+            }
+        }
 
         $this->storedPath = $path;
-        $this->fileName = (string) ($state['original_name'] ?? basename($path));
+        $this->fileName = Str::limit($this->uploadedName, 190, '');
         $this->headers = $file['headers'];
         $this->step = 2;
 
@@ -353,13 +370,13 @@ class ImportAttendance extends Page implements HasForms
     protected function buildPreview(array $mapping, bool $hasHeader): ImportPreview
     {
         $importer = app(AttendanceImporter::class);
-        $extension = strtolower(pathinfo((string) $this->storedPath, PATHINFO_EXTENSION));
+        $path = $this->ownUploadPath($this->storedPath);
 
-        if (! in_array($extension, self::ALLOWED_EXTENSIONS, true) || ! Storage::disk(self::DISK)->exists((string) $this->storedPath)) {
+        if ($path === null || ! Storage::disk(self::DISK)->exists($path)) {
             throw new AttendanceException(__('attendances::attendances.import.errors.file_missing'));
         }
 
-        $file = $importer->read(Storage::disk(self::DISK)->path((string) $this->storedPath), $extension);
+        $file = $importer->read(Storage::disk(self::DISK)->path($path), strtolower(pathinfo($path, PATHINFO_EXTENSION)));
 
         return $importer->preview($file['rows'], $mapping, $hasHeader);
     }
@@ -399,8 +416,68 @@ class ImportAttendance extends Page implements HasForms
 
     protected function discardFile(): void
     {
-        if ($this->storedPath !== null) {
-            Storage::disk(self::DISK)->delete($this->storedPath);
+        $path = $this->ownUploadPath($this->storedPath);
+
+        if ($path !== null) {
+            Storage::disk(self::DISK)->delete($path);
         }
+    }
+
+    /**
+     * Saves a real browser upload in the signed-in user's own folder under a random name.
+     */
+    protected function storeUpload(TemporaryUploadedFile $file): ?string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (Auth::id() === null || ! in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+            return null;
+        }
+
+        // One upload per request: should the state carry several files, only the last stays.
+        if ($this->uploadedPath !== null) {
+            Storage::disk(self::DISK)->delete($this->uploadedPath);
+        }
+
+        $path = $file->storeAs($this->uploadDirectory(), Str::random(40).'.'.$extension, self::DISK);
+
+        $this->uploadedPath = $path ?: null;
+        $this->uploadedName = $file->getClientOriginalName();
+
+        return $this->uploadedPath;
+    }
+
+    protected function uploadDirectory(): string
+    {
+        return self::DIRECTORY.'/'.Auth::id();
+    }
+
+    /**
+     * The path when it is a file directly inside the signed-in user's upload folder with an allowed
+     * extension, otherwise null. Nothing is read or deleted unless this passes.
+     */
+    protected function ownUploadPath(?string $path): ?string
+    {
+        if (! is_string($path) || Auth::id() === null) {
+            return null;
+        }
+
+        if (str_contains($path, '..') || str_contains($path, '\\') || str_contains($path, "\0")) {
+            return null;
+        }
+
+        $prefix = $this->uploadDirectory().'/';
+
+        if (! str_starts_with($path, $prefix)) {
+            return null;
+        }
+
+        $name = substr($path, strlen($prefix));
+
+        if ($name === '' || str_contains($name, '/')) {
+            return null;
+        }
+
+        return in_array(strtolower(pathinfo($name, PATHINFO_EXTENSION)), self::ALLOWED_EXTENSIONS, true) ? $path : null;
     }
 }

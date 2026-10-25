@@ -1,9 +1,12 @@
 <?php
 
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
+use Carbon\CarbonInterface;
 use Filament\Facades\Filament;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Excel as ExcelWriter;
@@ -21,8 +24,14 @@ use Webkul\Attendance\Filament\Pages\ImportAttendance;
 use Webkul\Attendance\Models\AttendanceDay;
 use Webkul\Attendance\Models\AttendancePunch;
 use Webkul\Attendance\Models\ImportBatch;
+use Webkul\Attendance\Models\OvertimeRequest;
+use Webkul\Attendance\Services\AttendanceDayCalculator;
 use Webkul\Attendance\Services\AttendanceImporter;
 use Webkul\Attendance\Services\ImportPreview;
+use Webkul\Attendance\Services\OvertimeRequestSync;
+use Webkul\Attendance\Services\PunchRecorder;
+use Webkul\Attendance\Services\WorkScheduleResolver;
+use Webkul\Attendance\Settings\AttendanceSettings;
 use Webkul\Employee\Models\Employee;
 use Webkul\Security\Models\User;
 
@@ -564,4 +573,262 @@ it('AttendanceImportTest: the employee form explains what the barcode is for', f
 
     expect(file_get_contents(base_path('plugins/webkul/employees/src/Filament/Resources/EmployeeResource.php')))
         ->toContain("fields.badge-id-helper'");
+});
+
+/**
+ * Counts every day recalculation while delegating to the real calculator.
+ */
+function importCalculatorSpy(): object
+{
+    $spy = new class(app(WorkScheduleResolver::class), app(OvertimeRequestSync::class), app(AttendanceSettings::class)) extends AttendanceDayCalculator
+    {
+        /**
+         * @var list<string>
+         */
+        public array $calls = [];
+
+        public function calculate(Employee $employee, CarbonInterface $date): AttendanceDay
+        {
+            $this->calls[] = $employee->id.'|'.$date->toDateString();
+
+            return parent::calculate($employee, $date);
+        }
+    };
+
+    app()->instance(AttendanceDayCalculator::class, $spy);
+
+    return $spy;
+}
+
+/**
+ * @return list<array<string, mixed>>
+ */
+function importDaySnapshot(Employee $employee): array
+{
+    return AttendanceDay::query()
+        ->where('employee_id', $employee->id)
+        ->orderBy('date')
+        ->get()
+        ->map(fn (AttendanceDay $day): array => [
+            'date'     => $day->date->toDateString(),
+            'first_in' => $day->first_in?->format('Y-m-d H:i:s'),
+            'last_out' => $day->last_out?->format('Y-m-d H:i:s'),
+            'worked'   => $day->worked_minutes,
+            'late'     => $day->late_minutes,
+            'early'    => $day->early_leave_minutes,
+            'overtime' => $day->overtime_minutes,
+            'status'   => $day->status->value,
+            'requests' => OvertimeRequest::query()->where('employee_id', $employee->id)->whereDate('date', $day->date->toDateString())->count(),
+        ])
+        ->all();
+}
+
+it('AttendanceImportTest: commit recalculates each affected day once, however many punches it holds', function (): void {
+    $employee = importEmployee('1001');
+    $kolkata = importEmployee('1002', ['time_zone' => 'Asia/Kolkata']);
+    $spy = importCalculatorSpy();
+
+    $rows = [];
+
+    foreach (range(0, 11) as $minute) {
+        $rows[] = ['1001', sprintf('2026-11-02 08:%02d:00', $minute * 5)];
+    }
+
+    $rows[] = ['1001', '2026-11-02 17:00:00'];
+    $rows[] = ['1001', '2026-11-03 08:00:00'];
+    // Two local days for the Kolkata employee around local midnight.
+    $rows[] = ['1002', '2026-11-02 23:50:00'];
+    $rows[] = ['1002', '2026-11-03 00:10:00'];
+
+    $importer = app(AttendanceImporter::class);
+    $batch = $importer->commit($importer->preview($rows, importMapping(), false), importUser(), 'many.csv');
+
+    expect($batch->matched_rows)->toBe(16)
+        ->and($spy->calls)->toHaveCount(4)
+        ->and(array_unique($spy->calls))->toHaveCount(4)
+        ->and($spy->calls)->toContain($employee->id.'|2026-11-02', $employee->id.'|2026-11-03', $kolkata->id.'|2026-11-02', $kolkata->id.'|2026-11-03');
+});
+
+it('AttendanceImportTest: bulk commit gives the same days as recording the punches one by one', function (): void {
+    $bulk = [importEmployee('2001'), importEmployee('2002', ['time_zone' => 'Asia/Kolkata'])];
+    $single = [importEmployee('3001'), importEmployee('3002', ['time_zone' => 'Asia/Kolkata'])];
+
+    $lines = [
+        // Monday: on time, with overtime; Tuesday: late and a single punch; Wednesday: a rest-day style short day.
+        ['08:00', '17:00'], ['08:30', '18:30'], ['09:15'], ['08:05', '12:00', '13:00', '16:00'],
+    ];
+    $dates = ['2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05'];
+
+    $fileRows = [];
+    $recorder = app(PunchRecorder::class);
+
+    foreach ($dates as $index => $date) {
+        foreach ($lines[$index] as $time) {
+            $fileRows[] = [$bulk[0]->barcode, "{$date} {$time}:00"];
+            $fileRows[] = [$bulk[1]->barcode, "{$date} {$time}:00"];
+
+            $recorder->record($single[0], Carbon::parse("{$date} {$time}:00", 'Asia/Muscat'), PunchSource::Device);
+            $recorder->record($single[1], Carbon::parse("{$date} {$time}:00", 'Asia/Kolkata'), PunchSource::Device);
+        }
+    }
+
+    shuffle($fileRows);
+    $importer = app(AttendanceImporter::class);
+    $importer->commit($importer->preview($fileRows, importMapping(), false), importUser(), 'compare.csv');
+
+    expect(importDaySnapshot($bulk[0]))->not->toBe([])
+        ->and(importDaySnapshot($bulk[0]))->toBe(importDaySnapshot($single[0]))
+        ->and(importDaySnapshot($bulk[1]))->toBe(importDaySnapshot($single[1]));
+});
+
+it('AttendanceImportTest: a re-import that creates nothing recalculates nothing', function (): void {
+    importEmployee('1001');
+    $rows = [['1001', '2026-11-02 08:00:00'], ['1001', '2026-11-02 17:00:00']];
+    $importer = app(AttendanceImporter::class);
+
+    $importer->commit($importer->preview($rows, importMapping(), false), importUser(), 'first.csv');
+
+    $spy = importCalculatorSpy();
+    $batch = $importer->commit($importer->preview($rows, importMapping(), false), importUser(), 'again.csv');
+
+    expect($batch->matched_rows)->toBe(0)
+        ->and($spy->calls)->toBe([]);
+});
+
+it('AttendanceImportTest: punches are stored oldest first whatever the file order', function (): void {
+    $employee = importEmployee('1001');
+    $rows = [['1001', '2026-11-03 08:00:00'], ['1001', '2026-11-02 17:00:00'], ['1001', '2026-11-02 08:00:00']];
+    $importer = app(AttendanceImporter::class);
+
+    $importer->commit($importer->preview($rows, importMapping(), false), importUser(), 'order.csv');
+
+    $ids = AttendancePunch::query()->where('employee_id', $employee->id)->orderBy('punched_at')->pluck('id')->all();
+
+    expect($ids)->toBe(collect($ids)->sort()->values()->all());
+});
+
+it('AttendanceImportTest: PunchRecorder::store keeps the punch but not the day', function (): void {
+    $employee = importEmployee('1001');
+    $recorder = app(PunchRecorder::class);
+    $at = Carbon::parse('2026-11-02 08:00:00', 'Asia/Muscat');
+
+    $first = $recorder->store($employee, $at, PunchSource::Device);
+    $again = $recorder->store($employee, $at, PunchSource::Device);
+
+    expect($first->wasRecentlyCreated)->toBeTrue()
+        ->and($again->wasRecentlyCreated)->toBeFalse()
+        ->and($again->id)->toBe($first->id)
+        ->and(AttendanceDay::query()->where('employee_id', $employee->id)->count())->toBe(0);
+
+    $recorder->record($employee, $at, PunchSource::Device);
+
+    expect(AttendanceDay::query()->where('employee_id', $employee->id)->count())->toBe(1);
+});
+
+it('AttendanceImportTest: the row limit counts data rows, with or without a header', function (): void {
+    importEmployee('1001');
+    $importer = app(AttendanceImporter::class);
+    $row = ['5555', '2026-11-02 08:00:00'];
+    $message = __('attendances::attendances.import.errors.too_many_rows', ['max' => AttendanceImporter::MAX_ROWS]);
+
+    $atLimit = array_fill(0, AttendanceImporter::MAX_ROWS, $row);
+    $over = array_fill(0, AttendanceImporter::MAX_ROWS + 1, $row);
+
+    expect($importer->preview($atLimit, importMapping(), false)->totalRows)->toBe(AttendanceImporter::MAX_ROWS)
+        ->and($importer->preview([['User', 'Time'], ...$atLimit], importMapping(), true)->totalRows)->toBe(AttendanceImporter::MAX_ROWS)
+        ->and(fn () => $importer->preview($over, importMapping(), false))->toThrow(AttendanceException::class, $message)
+        ->and(fn () => $importer->preview([['User', 'Time'], ...$over], importMapping(), true))->toThrow(AttendanceException::class, $message);
+
+    // A file of 20001 rows still reads (the first row may be a header) and is refused once the header toggle says it is data.
+    $file = $importer->read(importTempFile(importCsv($over), 'csv'), 'csv');
+
+    expect($file['rows'])->toHaveCount(AttendanceImporter::MAX_ROWS + 1)
+        ->and($importer->preview($file['rows'], importMapping(), true)->totalRows)->toBe(AttendanceImporter::MAX_ROWS)
+        ->and(fn () => $importer->preview($file['rows'], importMapping(), false))->toThrow(AttendanceException::class, $message);
+});
+
+it('AttendanceImportTest: commit refuses a preview that is over the row limit', function (): void {
+    $preview = new ImportPreview(totalRows: AttendanceImporter::MAX_ROWS + 1);
+
+    expect(fn () => app(AttendanceImporter::class)->commit($preview, importUser(), 'big.csv'))
+        ->toThrow(AttendanceException::class)
+        ->and(ImportBatch::query()->count())->toBe(0);
+});
+
+it('AttendanceImportTest: the page keeps uploads under a per-user folder and drops the previous pending one', function (): void {
+    Storage::fake('local');
+    importEmployee('1001');
+    $user = importPageUser(true);
+    $folder = 'attendance-imports/'.$user->id;
+    Storage::disk('local')->put($folder.'/stale.csv', "1001,2026-11-02 08:00:00\n");
+    Storage::disk('local')->put('attendance-imports/'.($user->id + 1).'/theirs.csv', "1001,2026-11-02 08:00:00\n");
+
+    $component = Livewire::test(ImportAttendance::class)
+        ->fillForm(['file' => UploadedFile::fake()->createWithContent(str_repeat('a', 250).'.csv', "1001,2026-11-02 08:00:00\n")])
+        ->call('uploadFile')
+        ->assertSet('step', 2);
+
+    $files = Storage::disk('local')->allFiles($folder);
+
+    expect($files)->toHaveCount(1)
+        ->and($files[0])->not->toContain('stale')
+        ->and(Storage::disk('local')->exists('attendance-imports/'.($user->id + 1).'/theirs.csv'))->toBeTrue()
+        ->and(mb_strlen($component->get('fileName')))->toBeLessThanOrEqual(190);
+
+    $component->fillForm(['has_header' => false, 'device_user_id' => 0, 'timestamp' => 1])
+        ->call('showPreview')
+        ->call('confirm');
+
+    expect(ImportBatch::query()->firstOrFail()->file_name)->toHaveLength(190);
+});
+
+it('AttendanceImportTest: a tampered file path is never read or deleted', function (string $kind): void {
+    Storage::fake('local');
+    importEmployee('1001');
+    $user = importPageUser(true);
+    $disk = Storage::disk('local');
+    $csv = "1001,2026-11-02 08:00:00\n";
+
+    $paths = [
+        'other user'       => 'attendance-imports/'.($user->id + 1).'/theirs.csv',
+        'dot dot'          => 'attendance-imports/'.$user->id.'/../'.($user->id + 1).'/theirs.csv',
+        'outside csv'      => 'reports/payroll.csv',
+        'outside pdf'      => 'docs/manual.pdf',
+        'prefix lookalike' => 'attendance-imports/'.$user->id.'0/theirs.csv',
+        'nested'           => 'attendance-imports/'.$user->id.'/sub/deep.csv',
+        'backslash'        => 'attendance-imports/'.$user->id.'\\..\\reports\\payroll.csv',
+    ];
+
+    foreach (['attendance-imports/'.$user->id.'0/theirs.csv', 'attendance-imports/'.$user->id.'/sub/deep.csv'] as $path) {
+        $disk->put($path, $csv);
+    }
+
+    $disk->put('attendance-imports/'.($user->id + 1).'/theirs.csv', $csv);
+    $disk->put('reports/payroll.csv', $csv);
+    $disk->put('docs/manual.pdf', '%PDF-1.4');
+
+    $before = collect($disk->allFiles())->sort()->values()->all();
+
+    Livewire::test(ImportAttendance::class)
+        ->set('data.file', [(string) Str::uuid() => $paths[$kind]])
+        ->call('uploadFile')
+        ->assertSet('step', 1)
+        ->assertSet('storedPath', null);
+
+    expect(collect($disk->allFiles())->sort()->values()->all())->toBe($before)
+        ->and(ImportBatch::query()->count())->toBe(0);
+})->with(['other user', 'dot dot', 'outside csv', 'outside pdf', 'prefix lookalike', 'nested', 'backslash']);
+
+it('AttendanceImportTest: a tampered path is refused with a message, not read', function (): void {
+    Storage::fake('local');
+    $user = importPageUser(true);
+    Storage::disk('local')->put('attendance-imports/'.($user->id + 1).'/theirs.csv', "1001,2026-11-02 08:00:00\n");
+
+    Livewire::test(ImportAttendance::class)
+        ->set('data.file', [(string) Str::uuid() => 'attendance-imports/'.($user->id + 1).'/theirs.csv'])
+        ->call('uploadFile')
+        ->assertNotified(__('attendances::attendances.import.errors.invalid_upload'))
+        ->assertSet('step', 1);
+
+    expect(Storage::disk('local')->exists('attendance-imports/'.($user->id + 1).'/theirs.csv'))->toBeTrue();
 });

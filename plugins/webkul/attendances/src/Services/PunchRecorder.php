@@ -33,26 +33,50 @@ class PunchRecorder
         ?PunchDirection $direction = null,
         array $meta = [],
     ): AttendancePunch {
-        // The column holds whole seconds; truncate so the lookup and the insert agree.
-        $instant = Carbon::instance($at)->utc()->startOfSecond();
-        $zone = $employee->time_zone ?: config('app.timezone');
+        return DB::transaction(function () use ($employee, $at, $source, $direction, $meta): AttendancePunch {
+            $punch = $this->store($employee, $at, $source, $direction, $meta);
 
-        return DB::transaction(function () use ($employee, $instant, $source, $direction, $meta, $zone): AttendancePunch {
-            $punch = AttendancePunch::query()->firstOrCreate(
-                [
-                    'employee_id' => $employee->id,
-                    'punched_at'  => $instant->format('Y-m-d H:i:s'),
-                    'source'      => $source,
-                ],
-                array_merge(
-                    Arr::only($meta, self::META_ATTRIBUTES),
-                    ['direction' => $direction],
-                ),
-            );
-
-            $this->calculator->calculate($employee, $instant->copy()->setTimezone($zone));
+            $this->calculator->calculate($employee, $this->localMoment($employee, $at));
 
             return $punch;
         });
+    }
+
+    /**
+     * Stores the punch like `record()` (same lookup, same duplicate handling, `wasRecentlyCreated` tells a
+     * new punch from the identical one already stored) but leaves the day alone. Bulk callers use it and
+     * then recalculate each affected day once; everyone else wants `record()`.
+     *
+     * @param  array{device_ref?: ?string, import_batch_id?: ?int, ip?: ?string, latitude?: float|string|null, longitude?: float|string|null, creator_id?: ?int}  $meta
+     */
+    public function store(
+        Employee $employee,
+        CarbonInterface $at,
+        PunchSource $source,
+        ?PunchDirection $direction = null,
+        array $meta = [],
+    ): AttendancePunch {
+        // The column holds whole seconds; truncate so the lookup and the insert agree.
+        $instant = Carbon::instance($at)->utc()->startOfSecond();
+
+        return AttendancePunch::query()->firstOrCreate(
+            [
+                'employee_id' => $employee->id,
+                'punched_at'  => $instant->format('Y-m-d H:i:s'),
+                'source'      => $source,
+            ],
+            array_merge(
+                Arr::only($meta, self::META_ATTRIBUTES),
+                ['direction' => $direction],
+            ),
+        );
+    }
+
+    /**
+     * The instant in the employee's zone, which decides the attendance day the punch belongs to.
+     */
+    public function localMoment(Employee $employee, CarbonInterface $at): Carbon
+    {
+        return Carbon::instance($at)->utc()->startOfSecond()->setTimezone($employee->time_zone ?: config('app.timezone'));
     }
 }
