@@ -6,8 +6,13 @@ use App\Filament\Resources\AuditLogResource\Pages\ListAuditLogs;
 use App\Models\Audit\AuditEntry;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -98,7 +103,9 @@ class AuditLogResource extends Resource implements HasShieldPermissions
             : [];
 
         return parent::getEloquentQuery()
-            ->whereIn('company_id', $companyIds)
+            ->where(fn (Builder $query): Builder => $query
+                ->whereIn('company_id', $companyIds)
+                ->orWhereNull('company_id'))
             ->with(['causer', 'messageable']);
     }
 
@@ -165,8 +172,59 @@ class AuditLogResource extends Resource implements HasShieldPermissions
                         ($data['until'] ?? null) ? __('audit.table.until').': '.Carbon::parse($data['until'])->toFormattedDateString() : null,
                     ]))),
             ])
-            ->recordActions([])
+            ->recordActions([
+                ViewAction::make()
+                    ->slideOver()
+                    ->modalHeading(__('audit.table.details'))
+                    ->schema(static::detailsSchema()),
+            ])
             ->toolbarActions([]);
+    }
+
+    /**
+     * @return array<int, Component>
+     */
+    protected static function detailsSchema(): array
+    {
+        return [
+            Grid::make(2)->schema([
+                TextEntry::make('created_at')
+                    ->label(__('audit.table.when'))
+                    ->dateTime(),
+                TextEntry::make('causer_id')
+                    ->label(__('audit.table.who'))
+                    ->state(fn (AuditEntry $record): string => $record->causer?->name ?? __('audit.table.unknown')),
+                TextEntry::make('messageable_type')
+                    ->label(__('audit.table.record_type'))
+                    ->state(fn (AuditEntry $record): string => $record->subjectLabel()),
+                TextEntry::make('messageable_id')
+                    ->label(__('audit.table.record'))
+                    ->state(fn (AuditEntry $record): string => '#'.$record->messageable_id)
+                    ->url(fn (AuditEntry $record): ?string => $record->recordUrl()),
+                TextEntry::make('event')
+                    ->label(__('audit.table.event'))
+                    ->state(fn (AuditEntry $record): string => $record->eventLabel())
+                    ->columnSpanFull(),
+            ]),
+            RepeatableEntry::make('changes')
+                ->label(__('audit.table.summary'))
+                ->state(fn (AuditEntry $record): array => $record->changeRows())
+                ->placeholder(__('audit.table.empty'))
+                ->schema([
+                    TextEntry::make('label')
+                        ->label(__('audit.table.field'))
+                        ->columnSpanFull(),
+                    TextEntry::make('old')
+                        ->label(__('audit.table.old_value'))
+                        ->listWithLineBreaks()
+                        ->extraAttributes(['class' => 'break-all']),
+                    TextEntry::make('new')
+                        ->label(__('audit.table.new_value'))
+                        ->listWithLineBreaks()
+                        ->extraAttributes(['class' => 'break-all']),
+                ])
+                ->columns(2),
+        ];
     }
 
     public static function getPages(): array
@@ -177,14 +235,13 @@ class AuditLogResource extends Resource implements HasShieldPermissions
     }
 
     /**
-     * The summary is built from the stored values, so it is searched in the stored properties (as written and as
-     * JSON-escaped, which is how non-Latin text may be stored) and by event name.
+     * The summary is built from the stored values, so it is searched in the old and new values of the stored
+     * properties only (never in their JSON keys), as written and as JSON-escaped because MariaDB returns non-Latin
+     * text escaped, and by event name.
      */
     protected static function searchSummary(Builder $query, string $search): Builder
     {
-        $escapedSearch = substr((string) json_encode($search), 1, -1);
-
-        $patterns = collect([$search, $escapedSearch])
+        $patterns = collect([$search, substr((string) json_encode($search), 1, -1)])
             ->unique()
             ->map(fn (string $term): string => '%'.addcslashes($term, '\\%_').'%')
             ->all();
@@ -199,7 +256,7 @@ class AuditLogResource extends Resource implements HasShieldPermissions
 
         return $query->where(function (Builder $query) use ($patterns, $events): void {
             foreach ($patterns as $pattern) {
-                $query->orWhere('properties', 'like', $pattern);
+                $query->orWhereRaw("CAST(JSON_EXTRACT(properties, '$.*.old_value', '$.*.new_value') AS CHAR) LIKE ?", [$pattern]);
             }
 
             $query->orWhereIn('event', $events);

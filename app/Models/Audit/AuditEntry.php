@@ -126,6 +126,33 @@ class AuditEntry extends Message
         return $lines;
     }
 
+    /**
+     * Every changed field with its full old and new values, one entry per line (the permission lists hold one key
+     * per line); values stay plain text and are escaped where they are shown.
+     *
+     * @return array<int, array{label: string, old: array<int, string>, new: array<int, string>}>
+     */
+    public function changeRows(): array
+    {
+        $rows = [];
+
+        foreach ((array) $this->properties as $attribute => $change) {
+            if (! is_array($change)) {
+                continue;
+            }
+
+            $isList = in_array($attribute, [AuditRecorder::PERMISSIONS_ADDED, AuditRecorder::PERMISSIONS_REMOVED], true);
+
+            $rows[] = [
+                'label' => static::attributeLabel((string) $attribute),
+                'old'   => static::fullValueLines($change['old_value'] ?? null, $isList),
+                'new'   => static::fullValueLines($change['new_value'] ?? null, $isList),
+            ];
+        }
+
+        return $rows;
+    }
+
     public static function attributeLabel(string $attribute): string
     {
         $labels = [
@@ -140,6 +167,25 @@ class AuditEntry extends Message
 
     protected static function formatValue(mixed $value): string
     {
+        return Str::limit(static::valueAsText($value), static::MAX_VALUE_LENGTH);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected static function fullValueLines(mixed $value, bool $asList): array
+    {
+        $text = static::valueAsText($value);
+
+        if (! $asList || $text === __('audit.table.empty')) {
+            return [$text];
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', $text)), fn (string $line): bool => $line !== ''));
+    }
+
+    protected static function valueAsText(mixed $value): string
+    {
         if ($value === null || $value === '') {
             return __('audit.table.empty');
         }
@@ -152,6 +198,6 @@ class AuditEntry extends Message
             $value = json_encode($value, JSON_UNESCAPED_UNICODE);
         }
 
-        return Str::limit((string) $value, static::MAX_VALUE_LENGTH);
+        return (string) $value;
     }
 }

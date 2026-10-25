@@ -55,6 +55,10 @@ return [
         'unknown'     => 'Unknown',
         'system'      => 'System',
         'empty'       => '-',
+        'details'     => 'Audit entry',
+        'field'       => 'Field',
+        'old_value'   => 'Old value',
+        'new_value'   => 'New value',
     ],
 
     'attributes' => [

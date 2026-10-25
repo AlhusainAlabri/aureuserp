@@ -55,6 +55,10 @@ return [
         'unknown'     => 'غير معروف',
         'system'      => 'النظام',
         'empty'       => '-',
+        'details'     => 'مدخل التدقيق',
+        'field'       => 'الحقل',
+        'old_value'   => 'القيمة القديمة',
+        'new_value'   => 'القيمة الجديدة',
     ],
 
     'attributes' => [

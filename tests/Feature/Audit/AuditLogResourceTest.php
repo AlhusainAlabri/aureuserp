@@ -274,3 +274,100 @@ it('AuditLogResourceTest: shows who, the record type, the event and the readable
         ->assertSee('Updated')
         ->assertSee('Name: Before value → After value');
 });
+
+it('AuditLogResourceTest: shows entries without a company to every permitted user but still hides other companies', function (): void {
+    $otherCompany = Company::factory()->create();
+
+    $withoutCompany = auditEntryFor(overrides: ['company_id' => null]);
+    $mine = auditEntryFor(overrides: ['company_id' => $this->company->id]);
+    $foreign = auditEntryFor(overrides: ['company_id' => $otherCompany->id]);
+
+    Livewire::test(ListAuditLogs::class)
+        ->assertCanSeeTableRecords([$withoutCompany, $mine])
+        ->assertCanNotSeeTableRecords([$foreign])
+        ->filterTable('event', 'updated')
+        ->assertCanSeeTableRecords([$withoutCompany, $mine])
+        ->assertCanNotSeeTableRecords([$foreign]);
+});
+
+it('AuditLogResourceTest: search only looks at the changed values, not at the JSON keys', function (): void {
+    $first = auditEntryFor(changes: [
+        'name' => ['type' => 'modified', 'old_value' => 'Alpha', 'new_value' => 'Gamma'],
+    ], overrides: ['company_id' => $this->company->id]);
+    $second = auditEntryFor(changes: [
+        'name' => ['type' => 'added', 'old_value' => null, 'new_value' => 'Delta'],
+    ], overrides: ['company_id' => $this->company->id]);
+    $arabic = auditEntryFor(changes: [
+        'name' => ['type' => 'modified', 'old_value' => 'بدل', 'new_value' => 'بدل السكن'],
+    ], overrides: ['company_id' => $this->company->id]);
+    $number = auditEntryFor(changes: [
+        'amount' => ['type' => 'modified', 'old_value' => 100, 'new_value' => 4242],
+    ], overrides: ['company_id' => $this->company->id]);
+
+    foreach (['value', 'type', 'added', 'modified', 'old', 'new'] as $keyWord) {
+        Livewire::test(ListAuditLogs::class)
+            ->searchTable($keyWord)
+            ->assertCanNotSeeTableRecords([$first, $second, $arabic, $number]);
+    }
+
+    Livewire::test(ListAuditLogs::class)
+        ->searchTable('gamma')
+        ->assertCanSeeTableRecords([$first])
+        ->assertCanNotSeeTableRecords([$second, $arabic, $number])
+        ->searchTable('Alph')
+        ->assertCanSeeTableRecords([$first])
+        ->assertCanNotSeeTableRecords([$second, $arabic, $number])
+        ->searchTable('Delta')
+        ->assertCanSeeTableRecords([$second])
+        ->assertCanNotSeeTableRecords([$first, $arabic, $number])
+        ->searchTable('السكن')
+        ->assertCanSeeTableRecords([$arabic])
+        ->assertCanNotSeeTableRecords([$first, $second, $number])
+        ->searchTable('4242')
+        ->assertCanSeeTableRecords([$number])
+        ->assertCanNotSeeTableRecords([$first, $second, $arabic]);
+});
+
+it('AuditLogResourceTest: shows every changed value in full in the details view', function (): void {
+    $permissions = collect(range(1, 30))->map(fn (int $number): string => 'view_any_thing_number_'.$number)->implode(', ');
+
+    expect(strlen($permissions))->toBeGreaterThan(300);
+
+    $entry = auditEntryFor(changes: [
+        AuditRecorder::PERMISSIONS_ADDED => ['type' => 'added', 'old_value' => null, 'new_value' => $permissions],
+        'notes'                          => ['type' => 'modified', 'old_value' => '<script>alert(1)</script>', 'new_value' => str_repeat('x', 300)],
+    ], overrides: ['company_id' => $this->company->id]);
+
+    $test = Livewire::test(ListAuditLogs::class)
+        ->assertTableActionVisible('view', $entry)
+        ->mountTableAction('view', $entry);
+
+    $modal = $test->getMountedActionModalHtml();
+
+    expect($modal)->toContain('view_any_thing_number_1')
+        ->toContain('view_any_thing_number_30')
+        ->toContain(str_repeat('x', 300))
+        ->toContain(e('<script>alert(1)</script>'))
+        ->not->toContain('<script>alert(1)</script>')
+        ->toContain(e($this->actor->name))
+        ->toContain('Permissions added')
+        ->not->toContain('view_any_thing_number_29, ');
+
+    Livewire::test(ListAuditLogs::class)
+        ->assertSee('view_any_thing_number_1')
+        ->assertDontSee('view_any_thing_number_30');
+});
+
+it('AuditLogResourceTest: does not let a user without the view permission open the details', function (): void {
+    $entry = auditEntryFor(overrides: ['company_id' => $this->company->id]);
+
+    $this->viewer->revokePermissionTo(AUDIT_VIEW);
+    app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    Livewire::actingAs($this->viewer->fresh())
+        ->test(ListAuditLogs::class)
+        ->assertCanSeeTableRecords([$entry])
+        ->assertTableActionHidden('view', $entry)
+        ->assertTableActionDoesNotExist('edit', record: $entry)
+        ->assertTableActionDoesNotExist('delete', record: $entry);
+});
