@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Uploaded files: /storage/... is served from public/storage (a link to storage/app/public).
+    # Only that folder is reachable this way; the app's own storage/ directory stays blocked below.
+    RewriteRule ^storage/(.+)$ public/storage/$1 [L,NC]
+
     # Block web access to Laravel internals (repo root = public_html on Hostinger)
     RewriteRule ^(app|bootstrap|config|database|plugins|resources|routes|storage|tests|vendor|node_modules|\.github)(/|$) - [F,L,NC]
     RewriteRule ^(\.env|\.env\.|composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml|\.git|\.gitignore|README\.md|auth\.md)(/.*)?$ - [F,L,NC]

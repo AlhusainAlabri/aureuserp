@@ -699,7 +699,7 @@ if [[ $DO_OPTIMIZE -eq 1 ]]; then
 fi
 
 REMOTE_CMDS+=" && ${ARTISAN} queue:restart"
-REMOTE_CMDS+=" && if [ ! -L public/storage ]; then ${ARTISAN} storage:link || true; fi"
+REMOTE_CMDS+=" && if [ \"\$(readlink public/storage 2>/dev/null)\" != \"\$(pwd)/storage/app/public\" ]; then rm -f public/storage && ${ARTISAN} storage:link || true; fi"
 
 # Dompdf writes Amiri .ufm metrics into storage/fonts on first Arabic PDF export.
 REMOTE_CMDS+=" && mkdir -p storage/fonts storage/app/private"
