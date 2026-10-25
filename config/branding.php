@@ -25,9 +25,15 @@ return [
     |
     */
 
-    'default_logo' => env('BRANDING_DEFAULT_LOGO', 'images/brand/default-logo.svg'),
+    'default_logo' => env('BRANDING_DEFAULT_LOGO', 'images/brand/default-logo.png'),
 
-    'default_logo_compact' => env('BRANDING_DEFAULT_LOGO_COMPACT', 'images/brand/default-mark.svg'),
+    'default_logo_compact' => env('BRANDING_DEFAULT_LOGO_COMPACT', 'images/brand/default-mark.png'),
+
+    // Optional dark-mode variants. Leave empty to use the bundled white logos (or the light file
+    // when the light logo above is a site's own file).
+    'default_logo_dark' => env('BRANDING_DEFAULT_LOGO_DARK'),
+
+    'default_logo_compact_dark' => env('BRANDING_DEFAULT_LOGO_COMPACT_DARK'),
 
     // Browser tab icon until one is uploaded under Settings > Branding (path relative to public/).
     'default_favicon' => env('BRANDING_DEFAULT_FAVICON', 'images/brand/favicon.ico'),

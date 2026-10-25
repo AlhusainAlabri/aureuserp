@@ -134,7 +134,7 @@ html.dark .brand-logo--light {
     @apply mb-0;
 }
 
-/* Primary app menu — Zakat Committee brand (green + gold) */
+/* Primary app menu */
 .fi-topbar-item .fi-topbar-item-btn {
     @apply text-gray-700 transition-colors duration-150 dark:text-gray-300;
 }

@@ -89,27 +89,29 @@ it('returns branding without cache table during fresh install', function (): voi
     expect(Branding::displayName())->toBe('Install Fallback');
 });
 
-it('shows the neutral bundled logo when no full logo is uploaded', function (): void {
+it('shows the bundled Nodhum logos when no full logo is uploaded', function (): void {
     clearUploadedLogos();
 
-    expect(Branding::fullLogoUrl())->toEndWith('/images/brand/default-logo.svg')
-        ->and(Branding::fullLogoUrl(dark: true))->toEndWith('/images/brand/default-logo.svg')
-        ->and(Branding::compactLogoUrl())->toEndWith('/images/brand/default-mark.svg')
+    expect(Branding::fullLogoUrl())->toEndWith('/images/brand/default-logo.png')
+        ->and(Branding::fullLogoUrl(dark: true))->toEndWith('/images/brand/default-logo-dark.png')
+        ->and(Branding::compactLogoUrl())->toEndWith('/images/brand/default-mark.png')
+        ->and(Branding::compactLogoUrl(dark: true))->toEndWith('/images/brand/default-mark-dark.png')
         ->and(is_file(public_path('images/logo-full-light.svg')))->toBeFalse()
         ->and(is_file(public_path('images/logo-full-dark.svg')))->toBeFalse();
 });
 
-it('lets a site point the bundled logo at its own png wordmark', function (): void {
+it('lets a site point the bundled logo at its own file', function (): void {
     clearUploadedLogos();
 
     config([
-        'branding.default_logo'         => 'images/logo_2.png',
-        'branding.default_logo_compact' => 'images/logo.png',
+        'branding.default_logo'         => 'images/logo.svg',
+        'branding.default_logo_compact' => 'images/logo2.svg',
     ]);
 
-    expect(Branding::fullLogoUrl())->toEndWith('/images/logo_2.png')
-        ->and(Branding::fullLogoUrl(dark: true))->toEndWith('/images/logo_2.png')
-        ->and(Branding::compactLogoUrl())->toEndWith('/images/logo.png');
+    expect(Branding::fullLogoUrl())->toEndWith('/images/logo.svg')
+        ->and(Branding::fullLogoUrl(dark: true))->toEndWith('/images/logo.svg')
+        ->and(Branding::compactLogoUrl())->toEndWith('/images/logo2.svg')
+        ->and(Branding::compactLogoUrl(dark: true))->toEndWith('/images/logo2.svg');
 });
 
 it('refreshes the cached display name when the company is renamed', function (): void {

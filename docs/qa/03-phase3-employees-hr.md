@@ -12,7 +12,7 @@ Env: QA DB, locale `ar`. UI flows run: employee create (real form), employee ove
 | P3-06 | U | Dates displayed US-style in Arabic ("ديسمبر 31, 2027"). | **fixed** — global `d M Y` / `d M Y h:i A` for tables and infolists |
 | P3-07 | U | 19 clusters returned their class name as breadcrumb ("Configurations", "Configuration", "Operations"…), ~56 pages. | **fixed** |
 | P3-08 | F | Stale tests encoded old behavior: locale persistence (`?lang=` is per-request, the switcher route persists), mail asserted as sent instead of queued, Oman org seeder names, navigation-group icons, dashboard route, plugin locale middleware. 6 HR tests + 5 others were red. | **fixed** — tests updated to the current design (behavior verified in the browser) |
-| P3-09 | G | Upstream demo organisation still seeded: departments "Long Term Projects", "R&D USA"…; job positions are generic English tech roles (now Arabic names). | open → decide per customer (OmanOrgStructureSeeder exists for the Zakat structure) |
+| P3-09 | G | Upstream demo organisation still seeded: departments "Long Term Projects", "R&D USA"…; job positions are generic English tech roles (now Arabic names). | open → decide per customer (OmanOrgStructureSeeder exists for the a former customer structure) |
 | P3-10 | P | `PartnerTest` API list test fails on the shared test DB (22k leftover partner rows push new records off page 1). | open (test-data hygiene) |
 | P3-11 | T | Test infrastructure: a DDL test inside the transactional Feature suite polluted later tests. | **fixed** — moved to Unit |
 
