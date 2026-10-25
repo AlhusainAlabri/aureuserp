@@ -291,6 +291,10 @@ return [
         'footer'   => 'This is an automated message from the payroll system.',
     ],
 
+    'gratuity' => [
+        'tier_overlap' => 'This band overlaps another gratuity tier valid in the same period. Bands must not share years.',
+    ],
+
     'pasi' => [
         'schedule' => [
             'navigation' => 'PASI Contribution Schedule',

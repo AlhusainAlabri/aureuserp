@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Webkul\Payroll\Database\Factories\GratuityTierFactory;
 use Webkul\Security\Models\User;
 
@@ -52,6 +54,29 @@ class GratuityTier extends Model
             });
     }
 
+    /**
+     * Same-period tiers must not share years: bands are half-open (0-3 and 3-open are adjacent, not overlapping).
+     */
+    public function overlapsAnotherTier(): bool
+    {
+        $from = (float) $this->from_year;
+        $to = $this->to_year === null ? null : (float) $this->to_year;
+        $effectiveFrom = Carbon::parse($this->effective_from)->toDateString();
+        $effectiveTo = $this->effective_to === null ? null : Carbon::parse($this->effective_to)->toDateString();
+
+        return static::query()
+            ->when($this->exists, fn (Builder $query) => $query->whereKeyNot($this->getKey()))
+            ->when($effectiveTo !== null, fn (Builder $query) => $query->whereDate('effective_from', '<=', $effectiveTo))
+            ->where(function (Builder $query) use ($effectiveFrom): void {
+                $query->whereNull('effective_to')->orWhereDate('effective_to', '>=', $effectiveFrom);
+            })
+            ->when($to !== null, fn (Builder $query) => $query->where('from_year', '<', $to))
+            ->where(function (Builder $query) use ($from): void {
+                $query->whereNull('to_year')->orWhere('to_year', '>', $from);
+            })
+            ->exists();
+    }
+
     protected static function newFactory(): GratuityTierFactory
     {
         return GratuityTierFactory::new();
@@ -63,6 +88,14 @@ class GratuityTier extends Model
 
         static::creating(function (self $tier): void {
             $tier->creator_id ??= Auth::id();
+        });
+
+        static::saving(function (self $tier): void {
+            if ($tier->overlapsAnotherTier()) {
+                throw ValidationException::withMessages([
+                    'from_year' => __('payroll::payroll.gratuity.tier_overlap'),
+                ]);
+            }
         });
     }
 }
