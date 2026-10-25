@@ -57,6 +57,63 @@ return [
         ],
     ],
 
+    'import' => [
+        'navigation' => 'Import from device',
+        'title'      => 'Import attendance from the device',
+        'steps'      => [
+            'upload'  => 'Upload file',
+            'mapping' => 'Choose columns',
+            'preview' => 'Preview and confirm',
+        ],
+        'fields' => [
+            'file'           => 'Device export (CSV or XLSX)',
+            'file_help'      => 'Up to 5 MB and 20,000 rows. The file is kept privately only until you confirm or start over.',
+            'mapping_help'   => 'Employees are matched on the device user ID entered in the employee form. Times are read in the employee time zone.',
+            'has_header'     => 'The first row is a header',
+            'device_user_id' => 'Device user ID column',
+            'timestamp'      => 'Date and time column',
+            'direction'      => 'In/out column (optional)',
+            'direction_help' => 'Accepts in/out or 1/0. It is stored for reference only: the first punch of the day counts as in and the last as out.',
+            'column'         => 'Column :column',
+        ],
+        'actions' => [
+            'next'       => 'Next',
+            'back'       => 'Back',
+            'preview'    => 'Preview',
+            'confirm'    => 'Confirm import',
+            'start_over' => 'Start over',
+        ],
+        'preview' => [
+            'heading'        => 'Preview of :file',
+            'total'          => 'Rows read',
+            'new_punches'    => 'New punches',
+            'duplicates'     => 'Duplicates',
+            'invalid'        => 'Invalid rows',
+            'unmatched'      => 'Unmatched device IDs (:count)',
+            'unmatched_help' => 'No employee has these IDs as a device user ID. Their rows are skipped.',
+            'ambiguous'      => 'Ambiguous device IDs (:count)',
+            'ambiguous_help' => 'Several employees share these IDs, so their rows are skipped rather than guessed. Make the IDs unique and import again.',
+            'rows_heading'   => 'Punches to import (showing :shown of :total)',
+            'no_rows'        => 'Nothing new to import from this file.',
+            'columns'        => [
+                'employee'  => 'Employee',
+                'device_id' => 'Device ID',
+                'time'      => 'Time',
+                'direction' => 'Direction',
+            ],
+        ],
+        'imported'      => 'Import complete',
+        'imported_body' => ':created punches created, :duplicates duplicates, :invalid invalid rows, :unmatched unmatched device IDs.',
+        'errors'        => [
+            'unsupported_type' => 'Only CSV and XLSX files can be imported.',
+            'unreadable'       => 'The file could not be read. Check that it is a valid CSV or XLSX export.',
+            'empty'            => 'The file has no rows.',
+            'too_many_rows'    => 'The file has more than :max rows. Split it into smaller files.',
+            'same_column'      => 'Choose a different column for each field.',
+            'file_missing'     => 'The uploaded file is no longer available. Upload it again.',
+        ],
+    ],
+
     'console' => [
         'close_day' => [
             'invalid_date' => 'The date must be a valid date in the format Y-m-d.',

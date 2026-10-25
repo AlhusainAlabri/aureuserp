@@ -837,6 +837,7 @@ class EmployeeResource extends Resource
                                                     ->schema([
                                                         TextInput::make('barcode')
                                                             ->label(__('employees::filament/resources/employee.form.tabs.settings.fields.badge-id'))
+                                                            ->helperText(__('employees::filament/resources/employee.form.tabs.settings.fields.badge-id-helper'))
                                                             ->prefixIcon('heroicon-o-qr-code')
                                                             ->suffixAction(
                                                                 Action::make('generate_bar_code')

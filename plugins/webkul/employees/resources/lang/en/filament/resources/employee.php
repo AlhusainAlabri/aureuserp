@@ -164,6 +164,7 @@ return [
                     'notes'                          => 'Notes',
                     'attendance-point-of-sale'       => 'Attendance/Point of Sale',
                     'badge-id'                       => 'Badge ID',
+                    'badge-id-helper'                => 'Attendance device user ID',
                     'pin'                            => 'PIN',
                 ],
             ],
