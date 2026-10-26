@@ -51,6 +51,7 @@ class EmployeeResourceExtensions
                         )
                         ->getOptionLabelFromRecordUsing(fn (Department $record): string => $record->complete_name ?? $record->name)
                         ->searchable()
+                        ->preload()
                         ->live()
                         ->required()
                         ->dehydrated(false)

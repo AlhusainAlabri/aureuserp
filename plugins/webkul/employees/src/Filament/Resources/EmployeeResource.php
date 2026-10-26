@@ -76,12 +76,14 @@ use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageResume;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ManageSkill;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\OverviewEmployee;
 use Webkul\Employee\Models\Employee;
+use Webkul\Employee\Models\EmploymentType;
 use Webkul\Field\Filament\Traits\HasCustomFields;
 use Webkul\Partner\Enums\AccountType;
 use Webkul\Security\Filament\Resources\CompanyResource;
 use Webkul\Security\Filament\Resources\UserResource;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Calendar;
+use Webkul\Support\Models\Company;
 use Webkul\Support\Models\Country;
 
 class EmployeeResource extends Resource
@@ -382,12 +384,14 @@ class EmployeeResource extends Resource
                                                                     ->relationship('employmentType', 'name')
                                                                     ->searchable()
                                                                     ->preload()
+                                                                    ->default(fn (): ?int => EmploymentType::query()->where('code', 'Permanent')->value('id'))
                                                                     ->required()
                                                                     ->label(__('employees::filament/resources/employee.form.tabs.work-information.fields.employment-type')),
                                                                 Select::make('company_id')
                                                                     ->relationship('company', 'name')
                                                                     ->searchable()
                                                                     ->preload()
+                                                                    ->default(fn (): ?int => auth()->user()?->default_company_id ?? (Company::query()->count() === 1 ? Company::query()->value('id') : null))
                                                                     ->required()
                                                                     ->prefixIcon('heroicon-o-building-office')
                                                                     ->label(__('employees::filament/resources/employee.form.tabs.work-information.fields.company'))

@@ -185,6 +185,12 @@ return [
             'export_wps'         => 'Export WPS File',
             'export_pdf'         => 'Export Payroll Register',
         ],
+        'readiness' => [
+            'title'     => 'Check before approving the batch',
+            'no_basic'  => 'No basic salary is assigned to :count employees (their payslips are zero): :names. Use “Create assignments from contract” on Salary assignments.',
+            'no_pasi'   => 'No PASI assignment for :count employees: :names.',
+            'open_days' => 'Attendance is not closed for every day of the month for :count employees (:names): their absences and lateness are not counted. Generate again once the month is closed.',
+        ],
         'notifications' => [
             'generated' => [
                 'title' => 'Payslips generated',
@@ -427,4 +433,12 @@ return [
         'overlap'            => 'This rate overlaps another PASI rule of the same category. A new rate must start after the current one.',
     ],
 
+    'assign_from_contract' => [
+        'label'       => 'Create assignments from contract',
+        'employee'    => 'Employee',
+        'help'        => 'Creates the basic salary (the wage of the active contract) and the two PASI assignments when missing.',
+        'no_contract' => 'This employee has no active contract with a wage.',
+        'done'        => 'Assignments created: :codes',
+        'nothing'     => 'The assignments already exist, nothing to add.',
+    ],
 ];

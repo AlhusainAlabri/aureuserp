@@ -47,4 +47,16 @@ class AttendanceBridge
             'overtime_hours' => $summary->overtimeHours,
         ];
     }
+
+    /**
+     * Working days of the month the attendance close has not recorded yet; 0 when the plugin is absent.
+     */
+    public function openDays(Employee $employee, int $year, int $month): int
+    {
+        if (! $this->available()) {
+            return 0;
+        }
+
+        return app(AttendanceSummary::class)->openDays($employee, $year, $month);
+    }
 }

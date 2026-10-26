@@ -80,6 +80,33 @@ class AttendanceSummary
     }
 
     /**
+     * Working days of the month that have no stored attendance day yet: the nightly close has not
+     * reached them (still in the future, or the job was missed), so absences and lateness for them are
+     * not known and payroll built now would pay them in full.
+     */
+    public function openDays(Employee $employee, int $year, int $month): int
+    {
+        $first = Carbon::create($year, $month, 1, 0, 0, 0, 'UTC');
+
+        $workingDates = collect($this->resolver->forEmployeeMonth($employee, $year, $month))
+            ->filter(fn (WorkDay $workDay): bool => $workDay->isWorkingDay)
+            ->keys();
+
+        if ($workingDates->isEmpty()) {
+            return 0;
+        }
+
+        $stored = AttendanceDay::query()
+            ->where('employee_id', $employee->id)
+            ->whereBetween('date', [$first->toDateString(), $first->copy()->endOfMonth()->toDateString()])
+            ->get(['date'])
+            ->map(fn (AttendanceDay $day): string => $day->date->toDateString())
+            ->all();
+
+        return $workingDates->diff($stored)->count();
+    }
+
+    /**
      * Local dates between `$from` and `$to` covered by the employee's approved Time Off (one query for
      * the month; the same overlap rule as `WorkScheduleResolver::approvedLeaveId`).
      *

@@ -9,6 +9,7 @@ use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\EditEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\OverviewEmployee;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ViewEmployee;
 use Webkul\Employee\Models\Employee;
+use Webkul\Employee\Models\EmploymentType;
 
 require_once __DIR__.'/EmployeeTestHelpers.php';
 
@@ -58,10 +59,8 @@ it('creates an employee when optional schema columns are absent from the databas
 
 it('requires mandatory employee fields on create', function (): void {
     $expectedErrors = [
-        'mobile_phone'       => 'required',
-        'civil_id'           => 'required',
-        'employment_type_id' => 'required',
-        'company_id'         => 'required',
+        'mobile_phone' => 'required',
+        'civil_id'     => 'required',
     ];
 
     if (Schema::hasTable('department_employee')) {
@@ -78,6 +77,19 @@ it('requires mandatory employee fields on create', function (): void {
         ->call('create')
         ->assertHasFormErrors($expectedErrors)
         ->assertNotNotified();
+});
+
+it('prefills the company and the permanent employment type on the create form', function (): void {
+    $user = auth()->user();
+    $user->forceFill(['default_company_id' => $this->employee->company_id])->save();
+
+    $permanent = EmploymentType::query()->updateOrCreate(['code' => 'Permanent'], ['name' => 'Permanent']);
+
+    Livewire::test(CreateEmployee::class)
+        ->assertFormSet([
+            'company_id'         => $this->employee->company_id,
+            'employment_type_id' => $permanent->id,
+        ]);
 });
 
 it('completes the employee edit to overview flow', function (): void {

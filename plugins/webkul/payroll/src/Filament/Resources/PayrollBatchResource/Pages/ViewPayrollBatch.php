@@ -11,6 +11,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use RuntimeException;
 use Webkul\Account\Models\Move;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
@@ -21,6 +22,7 @@ use Webkul\Payroll\Models\Loan;
 use Webkul\Payroll\Models\PayrollBatch;
 use Webkul\Payroll\Services\PayrollAccountingService;
 use Webkul\Payroll\Services\PayrollCalculator;
+use Webkul\Payroll\Services\PayrollReadinessChecker;
 use Webkul\Payroll\Services\PayslipPdfService;
 use Webkul\Payroll\Services\WpsExportService;
 use Webkul\Payroll\Support\PayrollCalendar;
@@ -46,6 +48,9 @@ class ViewPayrollBatch extends ViewRecord
                 ->action(function (PayrollBatch $record): void {
                     $batch = app(PayrollCalculator::class)->generateForBatch($record);
 
+                    $readiness = app(PayrollReadinessChecker::class);
+                    $warnings = $readiness->messages($readiness->check($batch));
+
                     Notification::make()
                         ->success()
                         ->title(__('payroll::payroll.batch.notifications.generated.title'))
@@ -57,6 +62,15 @@ class ViewPayrollBatch extends ViewRecord
                             ),
                         ]))
                         ->send();
+
+                    if ($warnings !== []) {
+                        Notification::make()
+                            ->warning()
+                            ->persistent()
+                            ->title(__('payroll::payroll.batch.readiness.title'))
+                            ->body(new HtmlString(implode('<br><br>', array_map('e', $warnings))))
+                            ->send();
+                    }
                 }),
             Action::make('mark_paid')
                 ->label(__('payroll::payroll.batch.actions.mark_paid'))
