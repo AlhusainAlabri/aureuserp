@@ -3,6 +3,7 @@
 namespace Webkul\Payroll\Services;
 
 use Illuminate\Support\Facades\Auth;
+use RuntimeException;
 use Webkul\Account\AccountManager;
 use Webkul\Account\Enums\MoveState;
 use Webkul\Account\Enums\MoveType;
@@ -21,6 +22,8 @@ class PayrollAccountingService
         }
 
         $batch->loadMissing(['payslips.lines.component', 'company', 'journal']);
+
+        $this->assertPostable($batch);
 
         $move = Move::query()->create([
             'move_type'   => MoveType::ENTRY,
@@ -58,6 +61,38 @@ class PayrollAccountingService
         ]);
 
         return $move->fresh();
+    }
+
+    /**
+     * Refuses, with a message HR can act on, a batch whose entry could not be built or would not balance.
+     *
+     * @throws RuntimeException
+     */
+    protected function assertPostable(PayrollBatch $batch): void
+    {
+        if ($batch->journal === null) {
+            throw new RuntimeException(__('payroll::exceptions.posting_no_journal'));
+        }
+
+        if ($batch->journal->default_account_id === null) {
+            throw new RuntimeException(__('payroll::exceptions.posting_journal_no_account'));
+        }
+
+        $lines = $batch->payslips->flatMap->lines->filter(fn ($line): bool => (float) $line->amount > 0);
+
+        $unmapped = $lines
+            ->filter(fn ($line): bool => $line->component?->account_id === null)
+            ->map(fn ($line): string => (string) $line->code)
+            ->unique()
+            ->values();
+
+        if ($unmapped->isNotEmpty()) {
+            throw new RuntimeException(__('payroll::exceptions.posting_missing_accounts', ['codes' => $unmapped->implode('، ')]));
+        }
+
+        if ($lines->contains(fn ($line): bool => $line->type === SalaryComponentType::EmployerCost)) {
+            throw new RuntimeException(__('payroll::exceptions.posting_employer_cost_unsupported'));
+        }
     }
 
     /**
@@ -102,7 +137,7 @@ class PayrollAccountingService
 
         $this->pushCreditLine(
             $lines,
-            null,
+            $batch->journal?->default_account_id,
             $netTotal,
             __('payroll::accounting.bank_credit', ['reference' => $batch->reference_number]),
         );

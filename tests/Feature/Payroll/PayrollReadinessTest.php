@@ -5,11 +5,17 @@ use Illuminate\Support\Facades\DB;
 use Tests\Helpers\AttendanceFixtures;
 use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\PasiFixtures;
+use Webkul\Account\Models\Account;
+use Webkul\Account\Models\Journal;
+use Webkul\Account\Models\Move;
 use Webkul\Attendance\Enums\DayStatus;
 use Webkul\Attendance\Models\AttendanceDay;
 use Webkul\Attendance\Services\AttendanceSummary;
+use Webkul\Payroll\Enums\BatchStatus;
 use Webkul\Payroll\Models\EmployeeComponent;
 use Webkul\Payroll\Models\PayrollBatch;
+use Webkul\Payroll\Services\PayrollAccountingService;
+use Webkul\Payroll\Services\PayrollCalculator;
 use Webkul\Payroll\Services\PayrollReadinessChecker;
 use Webkul\Payroll\Services\SalaryStructureAssigner;
 use Webkul\Security\Models\User;
@@ -127,4 +133,46 @@ it('moves the seeded default calendar weekend to Friday and Saturday', function 
         ->toBe(['monday', 'sunday'])
         ->and(DB::table('calendar_attendances')->where('calendar_id', $calendarId)->where('day_of_week', 'sunday')->value('name'))
         ->toBe('Sunday Morning');
+});
+
+it('refuses to post a batch without a journal, a journal account or component accounts', function (): void {
+    $company = PasiFixtures::company('OM');
+    $employee = PasiFixtures::employee($company, 'OM', 600, withPasi: false);
+
+    $batch = PayrollBatch::query()->create([
+        'company_id'   => $company->id,
+        'period_year'  => 2026,
+        'period_month' => 10,
+        'pay_date'     => '2026-10-25',
+    ]);
+    app(PayrollCalculator::class)->generateForBatch($batch);
+
+    $service = app(PayrollAccountingService::class);
+
+    expect(fn () => $service->createDraftJournalEntry($batch->fresh()))
+        ->toThrow(RuntimeException::class, __('payroll::exceptions.posting_no_journal'));
+
+    $journal = Journal::factory()->create(['default_account_id' => null]);
+    $batch->update(['journal_id' => $journal->id]);
+
+    expect(fn () => $service->createDraftJournalEntry($batch->fresh()))
+        ->toThrow(RuntimeException::class, __('payroll::exceptions.posting_journal_no_account'));
+
+    $journal->update(['default_account_id' => Account::factory()->create()->id]);
+
+    expect(fn () => $service->createDraftJournalEntry($batch->fresh()))
+        ->toThrow(RuntimeException::class, 'BASIC')
+        ->and(Move::query()->where('reference', $batch->reference_number)->exists())->toBeFalse();
+});
+
+it('only offers approval submission while the batch is a draft', function (): void {
+    $batch = PayrollBatch::query()->create([
+        'company_id'   => PasiFixtures::company('OM')->id,
+        'period_year'  => 2026,
+        'period_month' => 9,
+        'pay_date'     => '2026-09-25',
+        'status'       => BatchStatus::Paid,
+    ]);
+
+    expect($batch->canBeSubmittedForApproval())->toBeFalse();
 });

@@ -110,7 +110,7 @@
                         <tbody class="divide-y divide-gray-100 dark:divide-white/10">
                             @foreach ($this->monthDays as $day)
                                 <tr wire:key="day-{{ $day->id }}">
-                                    <td class="px-3 py-2 tabular-nums">{{ $day->date->format('Y-m-d') }}</td>
+                                    <td class="px-3 py-2 tabular-nums">{{ $day->date->translatedFormat('d M Y') }}</td>
                                     <td class="px-3 py-2 tabular-nums">{{ $this->localTime($day->first_in) }}</td>
                                     <td class="px-3 py-2 tabular-nums">{{ $this->localTime($day->last_out) }}</td>
                                     <td class="px-3 py-2 tabular-nums">{{ $this->formatMinutes((int) $day->worked_minutes) }}</td>

@@ -87,7 +87,7 @@ class OvertimeRequestResource extends Resource
                     ->sortable(),
                 TextColumn::make('date')
                     ->label(__('attendances::attendances.overtime.columns.date'))
-                    ->formatStateUsing(fn (OvertimeRequest $record): string => $record->date->format('Y-m-d'))
+                    ->formatStateUsing(fn (OvertimeRequest $record): string => $record->date->translatedFormat('d M Y'))
                     ->sortable(),
                 TextColumn::make('minutes')
                     ->label(__('attendances::attendances.overtime.columns.hours'))
@@ -109,7 +109,7 @@ class OvertimeRequestResource extends Resource
                     ->placeholder('-'),
                 TextColumn::make('decided_at')
                     ->label(__('attendances::attendances.overtime.columns.decided_at'))
-                    ->dateTime('Y-m-d H:i')
+                    ->dateTime()
                     ->placeholder('-')
                     ->sortable(),
                 TextColumn::make('note')

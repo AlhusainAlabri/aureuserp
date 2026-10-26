@@ -407,7 +407,7 @@ class ImportAttendance extends Page implements HasForms
                 return [
                     'employee'  => (string) $employee?->name,
                     'device_id' => $row['device_ref'],
-                    'time'      => $row['at']->setTimezone($employee?->time_zone ?: config('app.timezone'))->format('Y-m-d H:i'),
+                    'time'      => $row['at']->setTimezone($employee?->time_zone ?: config('app.timezone'))->translatedFormat('d M Y H:i'),
                     'direction' => $row['direction']?->getLabel() ?? '-',
                 ];
             }, $shown),

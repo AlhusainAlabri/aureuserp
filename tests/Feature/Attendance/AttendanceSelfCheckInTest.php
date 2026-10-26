@@ -290,7 +290,7 @@ it('AttendanceSelfCheckInTest: the page shows the month days of the signed-in em
     ]);
     $this->actingAs($employee->user);
 
-    $page = Livewire::test(MyAttendance::class)->assertSee('2026-11-01');
+    $page = Livewire::test(MyAttendance::class)->assertSee(Carbon::parse('2026-11-01')->translatedFormat('d M Y'));
 
     expect($page->instance()->monthDays->pluck('employee_id')->unique()->all())->toBe([$employee->id])
         ->and($page->instance()->monthDays->map(fn (AttendanceDay $day): string => $day->date->toDateString())->all())->toBe(['2026-11-01']);

@@ -80,6 +80,38 @@ class AttendanceDayCalculator
     }
 
     /**
+     * Lateness, early leave and overtime the day's rules would charge for a check-in and check-out typed
+     * by hand, so the manual entry form can offer them as starting values. Nothing is stored.
+     *
+     * @param  string  $localIn  check-in, local to the employee's time zone
+     * @param  string  $localOut  check-out, local to the employee's time zone
+     * @return array{late_minutes: int, early_leave_minutes: int, overtime_minutes: int}
+     */
+    public function suggest(Employee $employee, CarbonInterface $date, string $localIn, string $localOut): array
+    {
+        $zone = $employee->time_zone ?: config('app.timezone');
+        $in = Carbon::parse($localIn, $zone)->utc();
+        $out = Carbon::parse($localOut, $zone)->utc();
+
+        if ($out->lessThanOrEqualTo($in)) {
+            return ['late_minutes' => 0, 'early_leave_minutes' => 0, 'overtime_minutes' => 0];
+        }
+
+        $punches = collect([$in, $out])->map(
+            fn (Carbon $instant): AttendancePunch => (new AttendancePunch)->forceFill(['punched_at' => $instant]),
+        );
+
+        $leaveId = $this->resolver->approvedLeaveId($employee, $date);
+        $values = $this->fromPunches($employee, $this->resolver->forEmployee($employee, $date), $punches, $zone, $leaveId);
+
+        return [
+            'late_minutes'        => (int) $values['late_minutes'],
+            'early_leave_minutes' => (int) $values['early_leave_minutes'],
+            'overtime_minutes'    => (int) $values['overtime_minutes'],
+        ];
+    }
+
+    /**
      * @param  Collection<int, AttendancePunch>  $punches  sorted by instant
      * @return array<string, mixed>
      */

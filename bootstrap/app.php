@@ -24,6 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
             SetLocale::class,
         ]);
 
+        $middleware->redirectGuestsTo(fn ($request) => $request->expectsJson() ? null : route('filament.admin.auth.login'));
+
         if (filter_var(env('SLOW_QUERY_LOG_ENABLED', false), FILTER_VALIDATE_BOOL)) {
             $middleware->web(append: [
                 RecordSlowQueries::class,

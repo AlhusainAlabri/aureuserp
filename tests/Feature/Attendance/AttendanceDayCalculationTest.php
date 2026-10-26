@@ -648,3 +648,16 @@ it('AttendanceDayCalculationTest: a manual override row without any basis is not
         ->and($day->overtime_minutes)->toBe(60)
         ->and(OvertimeRequest::query()->find($pending->id))->not->toBeNull();
 });
+
+it('suggests lateness, early leave and overtime for hand-typed times without storing anything', function (): void {
+    $employee = attendanceDayEmployee();
+    $calculator = app(AttendanceDayCalculator::class);
+
+    expect($calculator->suggest($employee, Carbon::parse('2026-10-20'), '2026-10-20 08:40:00', '2026-10-20 19:30:00'))
+        ->toBe(['late_minutes' => 30, 'early_leave_minutes' => 0, 'overtime_minutes' => 150])
+        ->and($calculator->suggest($employee, Carbon::parse('2026-10-20'), '2026-10-20 08:00:00', '2026-10-20 16:00:00'))
+        ->toBe(['late_minutes' => 0, 'early_leave_minutes' => 60, 'overtime_minutes' => 0])
+        ->and($calculator->suggest($employee, Carbon::parse('2026-10-20'), '2026-10-20 09:00:00', '2026-10-20 08:00:00'))
+        ->toBe(['late_minutes' => 0, 'early_leave_minutes' => 0, 'overtime_minutes' => 0])
+        ->and(AttendanceDay::query()->where('employee_id', $employee->id)->count())->toBe(0);
+});

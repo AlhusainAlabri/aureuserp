@@ -127,6 +127,14 @@ class PayrollBatch extends Model
         return $this->status === BatchStatus::Posted;
     }
 
+    /**
+     * Only a draft batch goes to approval; an approved, paid or posted one must not offer the action again.
+     */
+    public function canBeSubmittedForApproval(?int $userId = null): bool
+    {
+        return $this->isDraft() && $this->canBeSubmittedForApprovalIgnoringFlows($userId) && $this->hasActiveApprovalFlow();
+    }
+
     public function isFullyApproved(): bool
     {
         return $this->isWorkflowApproved();

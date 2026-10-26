@@ -12,6 +12,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -27,6 +29,7 @@ use Webkul\Attendance\Filament\Resources\AttendanceDayResource\Pages\CreateAtten
 use Webkul\Attendance\Filament\Resources\AttendanceDayResource\Pages\EditAttendanceDay;
 use Webkul\Attendance\Filament\Resources\AttendanceDayResource\Pages\ListAttendanceDays;
 use Webkul\Attendance\Models\AttendanceDay;
+use Webkul\Attendance\Services\AttendanceDayCalculator;
 use Webkul\Attendance\Services\AttendanceDayCsv;
 use Webkul\Attendance\Services\AttendanceScope;
 use Webkul\Employee\Models\Employee;
@@ -118,12 +121,16 @@ class AttendanceDayResource extends Resource
                             ->helperText(__('attendances::attendances.day.local_time_hint'))
                             ->timezone(fn (): string => (string) config('app.timezone'))
                             ->seconds(false)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Get $get, Set $set) => static::suggestMinutes($get, $set))
                             ->columnSpan(1),
                         DateTimePicker::make('last_out')
                             ->label(__('attendances::attendances.day.columns.last_out'))
                             ->helperText(__('attendances::attendances.day.local_time_hint'))
                             ->timezone(fn (): string => (string) config('app.timezone'))
                             ->seconds(false)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Get $get, Set $set) => static::suggestMinutes($get, $set))
                             ->after('first_in')
                             ->columnSpan(1),
                         TextInput::make('late_minutes')
@@ -166,6 +173,38 @@ class AttendanceDayResource extends Resource
         ]);
     }
 
+    /**
+     * Fills the lateness, early-leave and overtime fields from the typed times; HR can still overwrite them.
+     */
+    protected static function suggestMinutes(Get $get, Set $set): void
+    {
+        $employeeId = $get('employee_id');
+        $date = $get('date');
+        $in = $get('first_in');
+        $out = $get('last_out');
+
+        if (blank($employeeId) || blank($date) || blank($in) || blank($out)) {
+            return;
+        }
+
+        $employee = static::employeeQuery()->whereKey($employeeId)->first();
+
+        if ($employee === null) {
+            return;
+        }
+
+        $suggested = app(AttendanceDayCalculator::class)->suggest(
+            $employee,
+            Carbon::createFromFormat('Y-m-d', substr((string) $date, 0, 10), 'UTC')->startOfDay(),
+            (string) $in,
+            (string) $out,
+        );
+
+        foreach ($suggested as $field => $minutes) {
+            $set($field, $minutes);
+        }
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -176,7 +215,11 @@ class AttendanceDayResource extends Resource
                     ->sortable(),
                 TextColumn::make('date')
                     ->label(__('attendances::attendances.day.columns.date'))
-                    ->formatStateUsing(fn (AttendanceDay $record): string => $record->date->format('Y-m-d'))
+                    ->formatStateUsing(fn (AttendanceDay $record): string => $record->date->translatedFormat('d M Y'))
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->label(__('attendances::attendances.day.columns.status'))
+                    ->badge()
                     ->sortable(),
                 TextColumn::make('first_in')
                     ->label(__('attendances::attendances.day.columns.first_in'))
@@ -195,13 +238,10 @@ class AttendanceDayResource extends Resource
                     ->sortable(),
                 TextColumn::make('early_leave_minutes')
                     ->label(__('attendances::attendances.day.columns.early_leave'))
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('overtime_minutes')
                     ->label(__('attendances::attendances.day.columns.overtime'))
-                    ->sortable(),
-                TextColumn::make('status')
-                    ->label(__('attendances::attendances.day.columns.status'))
-                    ->badge()
                     ->sortable(),
                 IconColumn::make('is_manual_override')
                     ->label(__('attendances::attendances.day.columns.is_manual_override'))

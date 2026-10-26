@@ -54,22 +54,8 @@ class ViewPayslip extends ViewRecord
                         ->title(__('payroll::payroll.payslip.notifications.validated.title'))
                         ->send();
                 }),
-            Action::make('export_pdf')
-                ->label(__('payroll::payroll.payslip.actions.export_pdf'))
-                ->icon('heroicon-o-document-arrow-down')
-                ->color('gray')
-                ->visible(fn (Payslip $record): bool => auth()->user()?->can('exportPdf', $record) ?? false)
-                ->action(function (Payslip $record): void {
-                    $path = app(PayslipPdfService::class)->generate($record);
-
-                    Notification::make()
-                        ->success()
-                        ->title(__('payroll::payroll.payslip.notifications.exported.title'))
-                        ->body(basename($path))
-                        ->send();
-                }),
             Action::make('download_pdf')
-                ->label(__('payroll::payroll.actions.download'))
+                ->label(__('payroll::payroll.my_payslips.download'))
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('gray')
                 ->visible(fn (Payslip $record): bool => auth()->user()?->can('exportPdf', $record) ?? false)
