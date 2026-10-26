@@ -8,17 +8,21 @@ use Tests\Helpers\PasiFixtures;
 use Webkul\Account\Models\Account;
 use Webkul\Account\Models\Journal;
 use Webkul\Account\Models\Move;
+use Webkul\Account\Models\MoveLine;
 use Webkul\Attendance\Enums\DayStatus;
 use Webkul\Attendance\Models\AttendanceDay;
 use Webkul\Attendance\Services\AttendanceSummary;
 use Webkul\Payroll\Enums\BatchStatus;
+use Webkul\Payroll\Enums\PasiCategory;
 use Webkul\Payroll\Models\EmployeeComponent;
 use Webkul\Payroll\Models\PayrollBatch;
+use Webkul\Payroll\Models\SalaryComponent;
 use Webkul\Payroll\Services\PayrollAccountingService;
 use Webkul\Payroll\Services\PayrollCalculator;
 use Webkul\Payroll\Services\PayrollReadinessChecker;
 use Webkul\Payroll\Services\SalaryStructureAssigner;
 use Webkul\Security\Models\User;
+use Webkul\Support\Models\Currency;
 
 beforeEach(function (): void {
     FeatureTestBootstrap::bootstrap([
@@ -175,4 +179,88 @@ it('only offers approval submission while the batch is a draft', function (): vo
     ]);
 
     expect($batch->canBeSubmittedForApproval())->toBeFalse();
+});
+
+it('posts a balanced entry crediting the employer PASI share to its liability account', function (): void {
+    PasiFixtures::clearRules();
+    PasiFixtures::rule(PasiCategory::Omani, 7, 11.5, null, '2000-01-01');
+
+    $this->actingAs(User::factory()->create());
+
+    $company = PasiFixtures::company('OM');
+    $employee = PasiFixtures::employee($company, 'OM', 1000);
+    $company->update(['currency_id' => Currency::factory()->create()->id]);
+
+    $batch = PayrollBatch::query()->create([
+        'company_id'   => $company->id,
+        'period_year'  => 2026,
+        'period_month' => 10,
+        'pay_date'     => '2026-10-25',
+    ]);
+    app(PayrollCalculator::class)->generateForBatch($batch);
+
+    $account = fn (): int => Account::factory()->create()->id;
+    $journal = Journal::factory()->create(['default_account_id' => $account(), 'company_id' => $company->id]);
+    $batch->update(['journal_id' => $journal->id]);
+
+    foreach (['BASIC', 'PASI_EMP', 'PASI_EMR'] as $code) {
+        SalaryComponent::query()->where('code', $code)->update(['account_id' => $account()]);
+    }
+
+    $service = app(PayrollAccountingService::class);
+
+    expect(fn () => $service->createDraftJournalEntry($batch->fresh()))
+        ->toThrow(RuntimeException::class, 'PASI_EMR');
+
+    $liability = $account();
+    SalaryComponent::query()->where('code', 'PASI_EMR')->update(['liability_account_id' => $liability]);
+
+    $move = $service->createDraftJournalEntry($batch->fresh());
+    $lines = MoveLine::query()->where('move_id', $move->id)->get();
+
+    expect(round((float) $lines->sum('debit'), 3))->toBe(round((float) $lines->sum('credit'), 3))
+        ->and((float) $lines->where('account_id', $liability)->sum('credit'))->toBe(115.0)
+        ->and((float) $lines->sum('debit'))->toBeGreaterThan(0);
+});
+
+it('posts lateness lines through the system component of the same code', function (): void {
+    $this->actingAs(User::factory()->create());
+
+    $company = PasiFixtures::company('OM');
+    $company->update(['currency_id' => Currency::factory()->create()->id]);
+    $employee = PasiFixtures::employee($company, 'OM', 1000, withPasi: false);
+
+    $batch = PayrollBatch::query()->create([
+        'company_id'   => $company->id,
+        'period_year'  => 2026,
+        'period_month' => 10,
+        'pay_date'     => '2026-10-25',
+    ]);
+    app(PayrollCalculator::class)->generateForBatch($batch);
+
+    $payslip = $batch->payslips()->firstOrFail();
+    $payslip->lines()->create([
+        'component_id' => null,
+        'type'         => 'deduction',
+        'code'         => 'LATE',
+        'name'         => 'Lateness deduction',
+        'quantity'     => 1,
+        'rate'         => 0,
+        'amount'       => 10,
+        'sort_order'   => 920,
+    ]);
+
+    $account = fn (): int => Account::factory()->create()->id;
+    $batch->update(['journal_id' => Journal::factory()->create(['default_account_id' => $account(), 'company_id' => $company->id])->id]);
+    SalaryComponent::query()->where('code', 'BASIC')->update(['account_id' => $account()]);
+
+    $service = app(PayrollAccountingService::class);
+
+    expect(fn () => $service->createDraftJournalEntry($batch->fresh()))->toThrow(RuntimeException::class, 'LATE');
+
+    SalaryComponent::query()->firstOrCreate(['code' => 'LATE'], [
+        'name' => 'Lateness deduction', 'name_ar' => 'خصم التأخير', 'type' => 'deduction', 'calculation_type' => 'fixed', 'is_active' => false,
+    ])->update(['account_id' => $account()]);
+
+    expect($service->createDraftJournalEntry($batch->fresh())->id)->toBeInt();
 });

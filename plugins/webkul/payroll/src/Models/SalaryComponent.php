@@ -37,6 +37,7 @@ class SalaryComponent extends Model
         'is_active',
         'sort_order',
         'account_id',
+        'liability_account_id',
         'company_id',
         'creator_id',
     ];
@@ -61,6 +62,18 @@ class SalaryComponent extends Model
             : Model::class;
 
         return $this->belongsTo($related, 'account_id');
+    }
+
+    /**
+     * The payable account an employer cost is credited to when the batch is posted (the debit goes to `account`).
+     */
+    public function liabilityAccount(): BelongsTo
+    {
+        $related = class_exists(Account::class)
+            ? Account::class
+            : Model::class;
+
+        return $this->belongsTo($related, 'liability_account_id');
     }
 
     public function company(): BelongsTo

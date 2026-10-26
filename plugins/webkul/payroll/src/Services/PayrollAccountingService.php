@@ -5,6 +5,7 @@ namespace Webkul\Payroll\Services;
 use Illuminate\Support\Facades\Auth;
 use RuntimeException;
 use Webkul\Account\AccountManager;
+use Webkul\Account\Enums\DisplayType;
 use Webkul\Account\Enums\MoveState;
 use Webkul\Account\Enums\MoveType;
 use Webkul\Account\Facades\Account as AccountFacade;
@@ -12,9 +13,16 @@ use Webkul\Account\Models\Move;
 use Webkul\Account\Models\MoveLine;
 use Webkul\Payroll\Enums\SalaryComponentType;
 use Webkul\Payroll\Models\PayrollBatch;
+use Webkul\Payroll\Models\PayslipLine;
+use Webkul\Payroll\Models\SalaryComponent;
 
 class PayrollAccountingService
 {
+    /**
+     * @var array<string, SalaryComponent|null>
+     */
+    protected array $systemComponents = [];
+
     public function createDraftJournalEntry(PayrollBatch $batch): ?Move
     {
         if (! class_exists(Move::class)) {
@@ -22,6 +30,8 @@ class PayrollAccountingService
         }
 
         $batch->loadMissing(['payslips.lines.component', 'company', 'journal']);
+
+        $this->systemComponents = [];
 
         $this->assertPostable($batch);
 
@@ -33,7 +43,7 @@ class PayrollAccountingService
             'company_id'  => $batch->company_id,
             'reference'   => $batch->reference_number,
             'name'        => __('payroll::accounting.move_name', ['reference' => $batch->reference_number]),
-            'creator_id'  => Auth::id(),
+            'creator_id'  => Auth::id() ?? $batch->creator_id,
         ]);
 
         $linePayloads = $this->buildMoveLines($batch);
@@ -42,9 +52,11 @@ class PayrollAccountingService
             foreach ($linePayloads as $linePayload) {
                 MoveLine::query()->create($linePayload + [
                     'move_id'    => $move->id,
-                    'company_id' => $batch->company_id,
-                    'date'       => $batch->pay_date,
-                    'creator_id' => Auth::id(),
+                    // PRODUCT keeps the account set here; a line without a display type is reset to the journal's default account on save.
+                    'display_type' => DisplayType::PRODUCT,
+                    'company_id'   => $batch->company_id,
+                    'date'         => $batch->pay_date,
+                    'creator_id'   => Auth::id() ?? $batch->creator_id,
                 ]);
             }
         }
@@ -61,6 +73,19 @@ class PayrollAccountingService
         ]);
 
         return $move->fresh();
+    }
+
+    /**
+     * The salary component a payslip line posts through: its own, else the system component with the same code
+     * (lateness, overtime and loan lines are written by payroll and carry no component).
+     */
+    protected function componentFor(PayslipLine $line): ?SalaryComponent
+    {
+        if ($line->component !== null) {
+            return $line->component;
+        }
+
+        return $this->systemComponents[$line->code] ??= SalaryComponent::query()->where('code', $line->code)->first();
     }
 
     /**
@@ -81,7 +106,7 @@ class PayrollAccountingService
         $lines = $batch->payslips->flatMap->lines->filter(fn ($line): bool => (float) $line->amount > 0);
 
         $unmapped = $lines
-            ->filter(fn ($line): bool => $line->component?->account_id === null)
+            ->filter(fn ($line): bool => $this->componentFor($line)?->account_id === null)
             ->map(fn ($line): string => (string) $line->code)
             ->unique()
             ->values();
@@ -90,8 +115,14 @@ class PayrollAccountingService
             throw new RuntimeException(__('payroll::exceptions.posting_missing_accounts', ['codes' => $unmapped->implode('، ')]));
         }
 
-        if ($lines->contains(fn ($line): bool => $line->type === SalaryComponentType::EmployerCost)) {
-            throw new RuntimeException(__('payroll::exceptions.posting_employer_cost_unsupported'));
+        $noLiability = $lines
+            ->filter(fn ($line): bool => $line->type === SalaryComponentType::EmployerCost && $this->componentFor($line)?->liability_account_id === null)
+            ->map(fn ($line): string => (string) $line->code)
+            ->unique()
+            ->values();
+
+        if ($noLiability->isNotEmpty()) {
+            throw new RuntimeException(__('payroll::exceptions.posting_missing_liability_accounts', ['codes' => $noLiability->implode('، ')]));
         }
     }
 
@@ -115,12 +146,13 @@ class PayrollAccountingService
                     'name'  => $line->name,
                 ]);
 
-                $accountId = $line->component?->account_id;
+                $component = $this->componentFor($line);
+                $accountId = $component?->account_id;
 
                 match ($line->type) {
                     SalaryComponentType::Earning      => $this->pushDebitLine($lines, $accountId, $amount, $description),
                     SalaryComponentType::Deduction    => $this->pushCreditLine($lines, $accountId, $amount, $description),
-                    SalaryComponentType::EmployerCost => $this->pushDebitLine($lines, $accountId, $amount, $description),
+                    SalaryComponentType::EmployerCost => $this->pushEmployerCostLines($lines, $accountId, $component?->liability_account_id, $amount, $description),
                     default                           => null,
                 };
 
@@ -143,6 +175,17 @@ class PayrollAccountingService
         );
 
         return $lines;
+    }
+
+    /**
+     * An employer cost is an expense (debit) owed to a third party such as the PASI fund (credit).
+     *
+     * @param  array<int, array<string, mixed>>  $lines
+     */
+    protected function pushEmployerCostLines(array &$lines, ?int $expenseAccountId, ?int $liabilityAccountId, float $amount, string $description): void
+    {
+        $this->pushDebitLine($lines, $expenseAccountId, $amount, $description);
+        $this->pushCreditLine($lines, $liabilityAccountId, $amount, $description);
     }
 
     /**

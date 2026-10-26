@@ -65,6 +65,8 @@ return [
         'is_active'              => 'Active',
         'sort_order'             => 'Sort Order',
         'account'                => 'GL Account',
+        'liability_account'      => 'Liability account (credit)',
+        'liability_account_hint' => 'The account the employer share is credited to when posting (for example PASI payable). The account above is the expense account.',
         'company'                => 'Company',
         'employee'               => 'Employee',
         'component'              => 'Salary Component',

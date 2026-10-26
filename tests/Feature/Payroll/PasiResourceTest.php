@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\PasiFixtures;
+use Webkul\Account\Models\Account;
 use Webkul\Payroll\Enums\PasiCategory;
 use Webkul\Payroll\Filament\Resources\PasiRuleResource;
 use Webkul\Payroll\Filament\Resources\PasiRuleResource\Pages\CreatePasiRule;
@@ -181,4 +182,23 @@ it('PasiResourceTest: rejects a zero salary cap in the form', function (): void 
         ->assertHasFormErrors(['salary_cap']);
 
     expect(PasiRule::query()->count())->toBe(0);
+});
+
+it('PasiResourceTest: the employer-cost component form saves its liability account', function (): void {
+    $components = PasiFixtures::components();
+    pasiAdmin(['view_any_payroll_salary::component', 'view_payroll_salary::component', 'update_payroll_salary::component']);
+
+    $expense = Account::factory()->create();
+    $liability = Account::factory()->create();
+
+    Livewire::test(EditSalaryComponent::class, ['record' => $components['employer']->id])
+        ->assertFormFieldVisible('liability_account_id')
+        ->fillForm(['account_id' => $expense->id, 'liability_account_id' => $liability->id])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($components['employer']->fresh()->liability_account_id)->toBe($liability->id);
+
+    Livewire::test(EditSalaryComponent::class, ['record' => $components['basic']->id])
+        ->assertFormFieldHidden('liability_account_id');
 });

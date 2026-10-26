@@ -52,6 +52,8 @@ class PayrollServiceProvider extends PackageServiceProvider
                 '2026_10_26_200004_add_live_employee_id_to_payroll_end_of_service_settlements_table',
                 '2026_10_26_200002_add_pays_gratuity_to_employees_departure_reasons_table',
                 '2026_10_27_100000_add_attendance_columns_to_payroll_payslips_table',
+                '2026_10_29_110000_add_liability_account_to_payroll_salary_components_table',
+                '2026_10_29_110001_add_system_salary_components',
             ])
             ->hasDependencies([
                 'employees',

@@ -168,6 +168,16 @@ class SalaryComponentResource extends Resource
                         ->preload()
                         ->visible(fn (): bool => class_exists(Account::class) && DbSchema::hasTable('accounts_accounts'))
                         ->columnSpanFull(),
+                    Select::make('liability_account_id')
+                        ->label(__('payroll::payroll.fields.liability_account'))
+                        ->helperText(__('payroll::payroll.fields.liability_account_hint'))
+                        ->options(fn (): array => static::accountOptions())
+                        ->searchable()
+                        ->preload()
+                        ->visible(fn (Get $get): bool => SalaryComponentType::tryFrom((string) ($get('type') instanceof BackedEnum ? $get('type')->value : $get('type'))) === SalaryComponentType::EmployerCost
+                            && class_exists(Account::class)
+                            && DbSchema::hasTable('accounts_accounts'))
+                        ->columnSpanFull(),
                 ])
                 ->visible(fn (): bool => class_exists(Account::class) && DbSchema::hasTable('accounts_accounts')),
         ]);
