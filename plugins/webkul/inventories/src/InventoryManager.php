@@ -152,11 +152,20 @@ class InventoryManager
         return $record;
     }
 
-    public function returnTransfer(Operation $record, array $moveQuantities = []): Operation
+    public function returnTransfer(Operation $record, array $moveQuantities = [], bool $toRefund = false): Operation
     {
         $movesToReturn = Move::whereIn('id', array_keys($moveQuantities))
             ->where('operation_id', $record->id)
             ->get();
+
+        foreach ($movesToReturn as $move) {
+            if ((float) $moveQuantities[$move->id] > $move->returnableQuantity() + 0.00001) {
+                throw new \Exception(__('You cannot return more than what was received (:qty) for :product.', [
+                    'qty'     => $move->returnableQuantity(),
+                    'product' => $move->product->name,
+                ]));
+            }
+        }
 
         foreach ($movesToReturn as $move) {
             $movesToUnreserve = $move->moveDestinations->filter(fn ($mv) => ! in_array($mv->state, [MoveState::DONE, MoveState::CANCELED]));
@@ -171,6 +180,8 @@ class InventoryManager
 
         foreach ($movesToReturn as $move) {
             $values = $this->prepareReturnMoveValues($newOperation, $move, $moveQuantities[$move->id]);
+
+            $values['is_refund'] = $toRefund;
 
             $newMove = $move->replicate()
                 ->fill($values);
@@ -2192,7 +2203,7 @@ class InventoryManager
             'origin'                  => __('Return of :operation_name', ['operation_name' => $operation->name]),
             'operation_type_id'       => $returnType?->id ?? $operation->operation_type_id,
             'source_location_id'      => $sourceLocation->id,
-            'location_destination_id' => $destinationLocation->id,
+            'destination_location_id' => $destinationLocation->id,
             'return_id'               => $operation->id,
             'user_id'                 => null,
         ];

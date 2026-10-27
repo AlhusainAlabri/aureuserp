@@ -6,8 +6,10 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Livewire\Component;
@@ -17,6 +19,7 @@ use Webkul\Inventory\Enums\OperationState;
 use Webkul\Inventory\Facades\Inventory;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\OperationResource;
 use Webkul\Inventory\Models\Operation;
+use Webkul\PluginManager\Package;
 use Webkul\Support\Filament\Forms\Components\Repeater;
 use Webkul\Support\Filament\Forms\Components\Repeater\TableColumn as RepeaterTableColumn;
 
@@ -54,7 +57,8 @@ class ReturnAction extends Action
                     'return_moves' => $returnableMoves->map(fn ($move) => [
                         'move_id'      => $move->id,
                         'product_name' => $move->product?->name ?? '—',
-                        'qty'          => $move->product_uom_qty,
+                        'qty'          => $move->returnableQuantity(),
+                        'max_qty'      => $move->returnableQuantity(),
                         'uom_name'     => $move->uom?->name ?? '—',
                     ])->values()->all(),
                 ]);
@@ -75,14 +79,21 @@ class ReturnAction extends Action
                     ])
                     ->schema([
                         Hidden::make('move_id'),
+                        Hidden::make('max_qty'),
                         TextEntry::make('product_name')->hiddenLabel(),
                         TextInput::make('qty')
                             ->hiddenLabel()
                             ->numeric()
                             ->minValue(0)
+                            ->maxValue(fn (Get $get): float => (float) $get('max_qty'))
                             ->required(),
                         TextEntry::make('uom_name')->hiddenLabel(),
                     ]),
+                Toggle::make('to_refund')
+                    ->label(__('inventories::filament/clusters/operations/actions/return.modal.form.to-refund'))
+                    ->helperText(__('inventories::filament/clusters/operations/actions/return.modal.form.to-refund-help'))
+                    ->default(true)
+                    ->visible(fn (): bool => Package::isPluginInstalled('purchases') && $this->getRecord()->purchaseOrders()->exists()),
             ])
             ->action(function (Operation $record, array $data, Component $livewire): void {
                 $moveQuantities = collect($data['return_moves'] ?? [])
@@ -102,7 +113,7 @@ class ReturnAction extends Action
                 }
 
                 try {
-                    $newRecord = Inventory::returnTransfer($record, $moveQuantities);
+                    $newRecord = Inventory::returnTransfer($record, $moveQuantities, (bool) ($data['to_refund'] ?? false));
 
                     $livewire->updateForm();
 
@@ -122,7 +133,7 @@ class ReturnAction extends Action
     private function getReturnableMoves(Operation $record): Collection
     {
         return $record->moves->filter(
-            fn ($move) => $move->state === MoveState::DONE && ! $move->is_scraped
+            fn ($move) => $move->state === MoveState::DONE && ! $move->is_scraped && $move->returnableQuantity() > 0
         );
     }
 }

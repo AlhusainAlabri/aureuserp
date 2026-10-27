@@ -70,6 +70,10 @@ class PurchaseOrder
 
     public function confirmPurchaseOrder(Order $record): Order
     {
+        if (! $record->lines()->whereNull('display_type')->exists()) {
+            throw new \Exception(__('Add at least one product line before confirming the order.'));
+        }
+
         $user = Auth::user();
 
         $settings = static::getOrderSettings();
@@ -872,6 +876,11 @@ class PurchaseOrder
         $record->accountMoves()->attach($accountMove->id);
 
         foreach ($record->lines as $line) {
+            // Lines already billed in full would only add empty zero-quantity rows to the bill.
+            if (! $line->display_type && (float) $line->qty_to_invoice == 0.0) {
+                continue;
+            }
+
             $this->createAccountMoveLine($accountMove, $line);
         }
 

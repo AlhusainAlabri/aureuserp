@@ -10,6 +10,8 @@ return [
                 'quantity' => 'Quantity',
                 'uom'      => 'UOM',
             ],
+            'to-refund'      => 'Update received quantities on the purchase order',
+            'to-refund-help' => 'Turn on if the goods go back to the vendor and you expect a credit note: the received quantity goes down and what is left to bill is recomputed.',
         ],
     ],
 

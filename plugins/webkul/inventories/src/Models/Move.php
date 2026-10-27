@@ -100,6 +100,18 @@ class Move extends Model
         return $this;
     }
 
+    /**
+     * What can still be returned: the quantity done minus returns already created (cancelled ones do not count).
+     */
+    public function returnableQuantity(): float
+    {
+        $returned = $this->returnedMoves()
+            ->where('state', '!=', MoveState::CANCELED)
+            ->sum('product_uom_qty');
+
+        return max(0.0, (float) $this->quantity - (float) $returned);
+    }
+
     public function isPurchaseReturn()
     {
         return $this->destinationLocation->type === LocationType::SUPPLIER

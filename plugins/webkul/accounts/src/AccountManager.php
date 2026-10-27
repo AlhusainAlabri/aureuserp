@@ -62,6 +62,10 @@ class AccountManager
 
         $record->state = MoveState::POSTED;
 
+        if ($record->isInvoice(true) && ! $record->invoice_date_due && ! $record->invoice_payment_term_id) {
+            $record->invoice_date_due = $record->invoice_date;
+        }
+
         $record->posted_before = true;
 
         $record->save();
@@ -793,7 +797,8 @@ class AccountManager
             } else {
                 $key = [
                     'move_id'                  => $move->id,
-                    'date_maturity'            => $move->invoice_date_due?->toDateString(),
+                    // Without a payment term the amount is due on the invoice date, so aging reports still see it.
+                    'date_maturity'            => ($move->invoice_date_due ?? $move->invoice_date)?->toDateString(),
                     'discount_date'            => null,
                     'discount_balance'         => 0.0,
                     'discount_amount_currency' => 0.0,
