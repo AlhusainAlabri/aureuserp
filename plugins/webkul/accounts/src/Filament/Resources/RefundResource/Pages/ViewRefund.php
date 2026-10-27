@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\RefundResource\Pages;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Webkul\Account\Enums\MoveState;
@@ -24,13 +25,19 @@ class ViewRefund extends ViewRecord
             ChatterAction::make()
                 ->resource(static::$resource)
                 ->activityPlans($this->getRecord()->activityPlans()),
-            BaseActions\PreviewAction::make()
-                ->setTemplate('accounts::refund/actions/preview.index'),
             BaseActions\PayAction::make(),
             BaseActions\ConfirmAction::make(),
             BaseActions\CancelAction::make(),
-            BaseActions\SetAsCheckedAction::make(),
-            BaseActions\ResetToDraftAction::make(),
+            ActionGroup::make([
+                BaseActions\PreviewAction::make()
+                    ->setTemplate('accounts::refund/actions/preview.index'),
+                BaseActions\SetAsCheckedAction::make(),
+                BaseActions\ResetToDraftAction::make(),
+            ])
+                ->label(__('More actions'))
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->color('gray')
+                ->button(),
             DeleteAction::make()
                 ->hidden(fn (Move $record): bool => $record->state == MoveState::POSTED)
                 ->successNotification(

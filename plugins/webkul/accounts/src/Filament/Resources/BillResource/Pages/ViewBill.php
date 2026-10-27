@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\BillResource\Pages;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
@@ -36,16 +37,22 @@ class ViewBill extends ViewRecord
             ChatterAction::make()
                 ->resource($this->getResource())
                 ->activityPlans($this->getRecord()->activityPlans()),
-            BaseActions\PreviewAction::make()
-                ->setTemplate('accounts::bill/actions/preview.index'),
             BaseActions\PayAction::make(),
             BaseActions\ConfirmAction::make(),
             BaseActions\CancelAction::make(),
-            BaseActions\SetAsCheckedAction::make(),
-            BaseActions\ReverseAction::make()
-                ->label(__('accounts::filament/resources/bill/pages/view-bill.header-actions.reverse.label'))
-                ->modalHeading(__('accounts::filament/resources/bill/pages/view-bill.header-actions.reverse.modal-heading')),
-            BaseActions\ResetToDraftAction::make(),
+            ActionGroup::make([
+                BaseActions\PreviewAction::make()
+                    ->setTemplate('accounts::bill/actions/preview.index'),
+                BaseActions\SetAsCheckedAction::make(),
+                BaseActions\ReverseAction::make()
+                    ->label(__('accounts::filament/resources/bill/pages/view-bill.header-actions.reverse.label'))
+                    ->modalHeading(__('accounts::filament/resources/bill/pages/view-bill.header-actions.reverse.modal-heading')),
+                BaseActions\ResetToDraftAction::make(),
+            ])
+                ->label(__('More actions'))
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->color('gray')
+                ->button(),
             DeleteAction::make()
                 ->hidden(fn (Move $record): bool => $record->state == MoveState::POSTED)
                 ->successNotification(
