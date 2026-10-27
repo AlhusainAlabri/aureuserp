@@ -174,10 +174,10 @@ class QuotationResource extends Resource
                                             ->preload()
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(function (Set $set, $state) {
+                                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
                                                 $partner = $state ? Partner::find($state) : null;
 
-                                                $set('user_id', $partner?->user?->id);
+                                                $set('user_id', $partner?->user?->id ?? $get('user_id') ?? Auth::id());
                                                 if ($partner?->propertyPaymentTerm?->id) {
                                                     $set('payment_term_id', $partner->propertyPaymentTerm->id);
                                                 }
@@ -254,7 +254,13 @@ class QuotationResource extends Resource
                                             ->relationship('user', 'name')
                                             ->searchable()
                                             ->preload()
+                                            ->default(fn (): ?int => Auth::id())
                                             ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.other-information.fieldset.sales.fields.sales-person')),
+                                        Select::make('team_id')
+                                            ->relationship('team', 'name', modifyQueryUsing: fn (Builder $query) => $query->where('is_active', true))
+                                            ->searchable()
+                                            ->preload()
+                                            ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.other-information.fieldset.sales.fields.sales-team')),
                                         TextInput::make('client_order_ref')
                                             ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.other-information.fieldset.sales.fields.customer-reference')),
                                         Select::make('sales_order_tags')

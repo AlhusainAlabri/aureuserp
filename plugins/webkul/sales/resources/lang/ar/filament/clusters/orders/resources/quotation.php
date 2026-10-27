@@ -151,6 +151,7 @@ return [
 
                         'fields' => [
                             'sales-person'       => 'مندوب المبيعات',
+                            'sales-team'         => 'فريق المبيعات',
                             'customer-reference' => 'مرجع العميل',
                             'tags'               => 'الوسوم',
                         ],

@@ -65,7 +65,6 @@ class SaleManager
         $record->update([
             'state'          => OrderState::SALE,
             'invoice_status' => InvoiceStatus::TO_INVOICE,
-            'locked'         => $this->quotationAndOrderSettings->enable_lock_confirm_sales,
         ]);
 
         $this->applyInventoryRules($record->lines);
@@ -73,6 +72,9 @@ class SaleManager
         $record = $this->computeSaleOrder($record);
 
         OrderConfirmed::dispatch($record);
+
+        // Lock last: locked orders are skipped when the delivery is created.
+        $record->update(['locked' => $this->quotationAndOrderSettings->enable_lock_confirm_sales]);
 
         return $record;
     }
@@ -93,6 +95,8 @@ class SaleManager
 
     public function cancelSaleOrder(Order $record, array $data = []): Order
     {
+        $this->ensureOrderCanBeCancelled($record);
+
         $record->update([
             'state'          => OrderState::CANCEL,
             'invoice_status' => InvoiceStatus::NO,
@@ -102,9 +106,11 @@ class SaleManager
             $this->cancelAndSendEmail($record, $data);
         }
 
-        $record = $this->computeSaleOrder($record);
+        $this->cancelDraftInvoices($record);
 
         $this->cancelInventoryOperation($record);
+
+        $record = $this->computeSaleOrder($record->refresh());
 
         OrderCanceled::dispatch($record);
 
@@ -784,6 +790,35 @@ class SaleManager
             return;
         }
 
-        $record->operations->each(fn ($operation) => InventoryFacade::cancelOperation($operation));
+        $record->operations
+            ->reject(fn ($operation) => in_array($operation->state, [InventoryEnums\OperationState::DONE, InventoryEnums\OperationState::CANCELED], true))
+            ->each(fn ($operation) => InventoryFacade::cancelTransfer($operation));
+    }
+
+    /**
+     * An order with a posted invoice or delivered goods cannot simply be cancelled:
+     * the invoice needs a credit note and the goods a return first.
+     */
+    protected function ensureOrderCanBeCancelled(Order $record): void
+    {
+        if ($record->state !== OrderState::SALE) {
+            return;
+        }
+
+        if ($record->accountMoves()->where('state', AccountEnums\MoveState::POSTED)->exists()) {
+            throw new Exception(__('sales-extensions::messages.cancel-has-posted-invoice'));
+        }
+
+        if ($record->lines()->sum('qty_delivered') > 0) {
+            throw new Exception(__('sales-extensions::messages.cancel-has-delivered-goods'));
+        }
+    }
+
+    protected function cancelDraftInvoices(Order $record): void
+    {
+        $record->accountMoves()
+            ->where('state', AccountEnums\MoveState::DRAFT)
+            ->get()
+            ->each(fn (AccountMove $invoice) => AccountFacade::cancelMove($invoice));
     }
 }

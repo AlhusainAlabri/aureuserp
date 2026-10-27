@@ -37,7 +37,18 @@ class CancelQuotationAction extends Action
             ->modalDescription(__('sales::filament/clusters/orders/resources/quotation/actions/cancel-quotation.modal.description'))
             ->action(function (Order $record, array $data, array $arguments, Component $livewire) {
                 if ($arguments['cancel'] ?? false) {
-                    SaleManagerFacade::cancelSaleOrder($record);
+                    try {
+                        SaleManagerFacade::cancelSaleOrder($record);
+                    } catch (Exception $e) {
+                        Notification::make()
+                            ->danger()
+                            ->body($e->getMessage())
+                            ->send();
+
+                        $this->halt(shouldRollBackDatabaseTransaction: true);
+
+                        return;
+                    }
 
                     Notification::make()
                         ->success()

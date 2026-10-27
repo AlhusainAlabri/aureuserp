@@ -65,6 +65,10 @@ return [
             'label'       => 'Finance Manager',
             'description' => 'Accounting, invoicing, and financial reporting access.',
         ],
+        'sales_manager' => [
+            'label'       => 'Sales Manager',
+            'description' => 'Quotations, sales orders and customers, with read access to inventory and invoices.',
+        ],
         'general_manager' => [
             'label'       => 'General Manager',
             'description' => 'Broad cross-module access for executive oversight.',

@@ -13,15 +13,26 @@ class Bouncer
     protected static ?array $authorizedUserIdsCache = null;
 
     /**
+     * The user the cached IDs belong to, so they never leak to another user.
+     */
+    protected static ?int $authorizedUserIdsCacheFor = null;
+
+    /**
      * Return user IDs authorized for the current user.
      */
     public function getAuthorizedUserIds(): ?array
     {
+        $user = filament()->auth()->user();
+
+        if (static::$authorizedUserIdsCacheFor !== $user?->id) {
+            static::$authorizedUserIdsCache = null;
+        }
+
         if (static::$authorizedUserIdsCache !== null) {
             return static::$authorizedUserIdsCache;
         }
 
-        $user = filament()->auth()->user();
+        static::$authorizedUserIdsCacheFor = $user?->id;
 
         if ($user->resource_permission == PermissionType::GLOBAL) {
             static::$authorizedUserIdsCache = null;

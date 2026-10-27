@@ -151,6 +151,7 @@ return [
 
                         'fields' => [
                             'sales-person'       => 'Sales Person',
+                            'sales-team'         => 'Sales Team',
                             'customer-reference' => 'Customer Reference',
                             'tags'               => 'Tags',
                         ],

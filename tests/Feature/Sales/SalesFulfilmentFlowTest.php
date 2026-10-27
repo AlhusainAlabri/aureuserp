@@ -1,17 +1,12 @@
 <?php
 
 use Tests\Helpers\FeatureTestBootstrap;
+use Tests\Helpers\SalesFixtures;
 use Webkul\Inventory\Enums\MoveState;
 use Webkul\Inventory\Facades\Inventory;
 use Webkul\Inventory\Models\Move;
 use Webkul\Inventory\Models\ProductQuantity;
-use Webkul\Inventory\Models\Warehouse;
-use Webkul\Product\Enums\ProductType;
-use Webkul\Product\Models\Product;
-use Webkul\Sale\Enums\OrderState;
 use Webkul\Sale\Facades\SaleOrder;
-use Webkul\Sale\Models\Order;
-use Webkul\Sale\Models\OrderLine;
 use Webkul\Security\Models\User;
 
 beforeEach(function (): void {
@@ -23,74 +18,8 @@ beforeEach(function (): void {
     $this->actingAs(User::query()->firstOrFail());
 });
 
-/**
- * @return array{0: Order, 1: Product, 2: int}
- */
-function confirmedSaleWithStock(float $onHand, float $ordered, bool $withUnstockedLine = false): array
-{
-    $warehouse = Warehouse::query()->firstOrFail();
-
-    $stockLocationId = $warehouse->lot_stock_location_id;
-
-    $product = Product::factory()->create([
-        'type'        => ProductType::GOODS,
-        'is_storable' => true,
-        'tracking'    => 'qty',
-        'price'       => 2.35,
-    ]);
-
-    ProductQuantity::factory()->create([
-        'product_id'        => $product->id,
-        'location_id'       => $stockLocationId,
-        'quantity'          => $onHand,
-        'reserved_quantity' => 0,
-        'company_id'        => null,
-    ]);
-
-    $order = Order::factory()->create([
-        'state'        => OrderState::DRAFT,
-        'warehouse_id' => $warehouse->id,
-        'company_id'   => $warehouse->company_id,
-    ]);
-
-    OrderLine::factory()->create([
-        'order_id'        => $order->id,
-        'product_id'      => $product->id,
-        'product_uom_id'  => $product->uom_id,
-        'product_qty'     => $ordered,
-        'product_uom_qty' => $ordered,
-        'price_unit'      => 2.35,
-        'customer_lead'   => 0,
-        'company_id'      => $warehouse->company_id,
-    ]);
-
-    if ($withUnstockedLine) {
-        $other = Product::factory()->create([
-            'type'        => ProductType::GOODS,
-            'is_storable' => true,
-            'tracking'    => 'qty',
-            'price'       => 3.5,
-        ]);
-
-        OrderLine::factory()->create([
-            'order_id'        => $order->id,
-            'product_id'      => $other->id,
-            'product_uom_id'  => $other->uom_id,
-            'product_qty'     => 5,
-            'product_uom_qty' => 5,
-            'price_unit'      => 3.5,
-            'customer_lead'   => 0,
-            'company_id'      => $warehouse->company_id,
-        ]);
-    }
-
-    $order = SaleOrder::confirmSaleOrder($order->fresh());
-
-    return [$order, $product, $stockLocationId];
-}
-
 it('reserves no more than what is on hand when a sales order is confirmed', function (): void {
-    [$order, $product, $stockLocationId] = confirmedSaleWithStock(onHand: 10, ordered: 20);
+    [$order, $product, $stockLocationId] = SalesFixtures::confirmedSaleWithStock(onHand: 10, ordered: 20);
 
     $reserved = (float) ProductQuantity::query()
         ->where('product_id', $product->id)
@@ -105,7 +34,7 @@ it('reserves no more than what is on hand when a sales order is confirmed', func
 });
 
 it('still reserves only the stock on hand when another line of the order has none', function (): void {
-    [$order, $product, $stockLocationId] = confirmedSaleWithStock(onHand: 10, ordered: 20, withUnstockedLine: true);
+    [$order, $product, $stockLocationId] = SalesFixtures::confirmedSaleWithStock(onHand: 10, ordered: 20, withUnstockedLine: true);
 
     $reserved = (float) ProductQuantity::query()
         ->where('product_id', $product->id)
@@ -119,7 +48,7 @@ it('still reserves only the stock on hand when another line of the order has non
 });
 
 it('refuses to validate a delivery that would take more than is on hand', function (): void {
-    [$order, $product, $stockLocationId] = confirmedSaleWithStock(onHand: 10, ordered: 20);
+    [$order, $product, $stockLocationId] = SalesFixtures::confirmedSaleWithStock(onHand: 10, ordered: 20);
 
     $operation = $order->operations()->firstOrFail();
 
@@ -135,7 +64,7 @@ it('refuses to validate a delivery that would take more than is on hand', functi
 });
 
 it('validates a delivery that fits what is on hand', function (): void {
-    [$order, $product, $stockLocationId] = confirmedSaleWithStock(onHand: 30, ordered: 20);
+    [$order, $product, $stockLocationId] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
 
     $operation = Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
 
@@ -147,7 +76,7 @@ it('validates a delivery that fits what is on hand', function (): void {
 });
 
 it('leaves lines that have nothing delivered off the invoice and keeps the order open', function (): void {
-    [$order] = confirmedSaleWithStock(onHand: 30, ordered: 20, withUnstockedLine: true);
+    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20, withUnstockedLine: true);
 
     Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: false);
 
@@ -163,7 +92,7 @@ it('leaves lines that have nothing delivered off the invoice and keeps the order
 });
 
 it('keeps earlier invoices linked when a line is invoiced a second time', function (): void {
-    [$order] = confirmedSaleWithStock(onHand: 30, ordered: 20);
+    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
 
     $line = $order->lines()->firstOrFail();
 
@@ -179,7 +108,7 @@ it('keeps earlier invoices linked when a line is invoiced a second time', functi
 });
 
 it('lowers the delivered quantity when goods come back and the return updates the order', function (): void {
-    [$order] = confirmedSaleWithStock(onHand: 30, ordered: 20);
+    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
 
     $delivery = Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
 
@@ -196,7 +125,7 @@ it('lowers the delivered quantity when goods come back and the return updates th
 });
 
 it('leaves the delivered quantity alone when the return is not meant to update the order', function (): void {
-    [$order] = confirmedSaleWithStock(onHand: 30, ordered: 20);
+    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
 
     $delivery = Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
 

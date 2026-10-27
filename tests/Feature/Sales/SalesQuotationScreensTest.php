@@ -5,10 +5,12 @@ use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Sale\Enums\OrderState;
+use Webkul\Sale\Filament\Clusters\Configuration\Resources\TeamResource\Pages\CreateTeam;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\CreateQuotation;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\EditQuotation;
 use Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Pages\ListQuotations;
 use Webkul\Sale\Models\Order;
+use Webkul\Sale\Models\Team;
 use Webkul\Security\Models\User;
 use Webkul\Support\Models\Company;
 
@@ -65,4 +67,21 @@ it('shows a single total in the quotation list footer', function (): void {
     $table = Livewire::test(ListQuotations::class)->instance()->getTable();
 
     expect($table->getColumn('amount_total')->getSummarizers())->toHaveCount(1);
+});
+
+it('defaults the salesperson to the signed-in user and offers a sales team', function (): void {
+    Livewire::test(CreateQuotation::class)
+        ->assertFormSet(['user_id' => $this->user->id])
+        ->assertFormFieldExists('team_id');
+});
+
+it('creates a sales team that belongs to the signed-in user\'s company by default', function (): void {
+    Livewire::test(CreateTeam::class)
+        ->assertFormSet(['company_id' => $this->user->default_company_id])
+        ->fillForm(['name' => 'فريق مبيعات مسقط'])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    expect(Team::query()->where('name', 'فريق مبيعات مسقط')->value('company_id'))
+        ->toBe($this->user->default_company_id);
 });

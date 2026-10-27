@@ -85,14 +85,18 @@ class SaleManager extends BaseSaleManager
         $partners = Partner::whereIn('id', $data['partners'])->get();
 
         foreach ($partners as $partner) {
+            if (empty($partner->email)) {
+                continue;
+            }
+
             $payload = [
                 'record_name' => $record->name,
                 'model_name'  => $record->state->getLabel(),
                 'subject'     => $data['subject'],
                 'description' => $data['description'],
                 'to'          => [
-                    'address' => $partner?->email,
-                    'name'    => $partner?->name,
+                    'address' => $partner->email,
+                    'name'    => $partner->name,
                 ],
             ];
 

@@ -18,8 +18,16 @@ Severity: **B** blocker · **F** functional · **U** UI · **G** gap · **P** po
 | SL-11 | U | English text "No quantities are reserved" in the Arabic validate messages. | **fixed** |
 | SL-12 | F | SO/2 reserved 20 against 10 on hand during the live session. Not reproduced in a rolled-back replay of the same data, nor in tests (reserves 10, partially assigned). | **open** — SL-01 stops the damage at validation; report the steps if it recurs |
 | SL-13 | U | The tax chip is truncated ("ضر…") in the line table and invoice header buttons overflow at ~800px. | **open** — check at desktop width |
-| SL-14 | U | Create-customer page title is just "العملاء"; the create-quotation summary showed a stale total once (may be screenshot lag); the create-invoice dialog repeats its title. | **open** |
-| SL-15 | P | After creating a quotation the app opens the edit page, not the view page; line `sort` starts at 2; invoice view shows quantity as 20.0000. | **open** |
+| SL-14 | U | Create-customer page title was just "العملاء"; the create-quotation summary showed a stale total once (may be screenshot lag); the create-invoice dialog repeats its title. | **partly fixed** — title is "إضافة عميل"; the other two stay open |
+| SL-15 | P | After creating a quotation the app opens the edit page, not the view page; line `sort` starts at 2 (global max, invisible); invoice/bill view showed quantity as 20.0000. | **partly fixed** — quantity shows 20; the other two are by design / cosmetic |
+| SL-16 | B | Cancelling any confirmed sales order crashed: the sales code called `Inventory::cancelOperation()`, which does not exist (the method is `cancelTransfer`). | **fixed** — open deliveries are cancelled and their reservation freed; tests |
+| SL-17 | F | Cancel had no guards: an order with a posted invoice or delivered goods could be cancelled. | **fixed** — refused with an Arabic message (credit note / return first); draft invoices are cancelled with the order; the plain Cancel button shows the message instead of an error; tests |
+| SL-18 | B | With "lock confirmed orders" on, confirming created **no delivery** (the lock was set before the delivery step, which skips locked orders). | **fixed** — the lock is applied last; test |
+| SL-19 | F | Cancelling with "send email" crashed when the customer had no email address. | **fixed** — customers without an email are skipped; test |
+| SL-20 | G | No salesperson role: only Admin, finance_manager and general_manager held sales permissions. | **fixed** — `sales_manager` starter role (Sales and Contacts standard; Inventory and Invoices view-only), Arabic label; tests. Record scope is per user (`individual` by default); set `group`/`global` on the user for a sales manager. |
+| SL-21 | G | Sales teams could not be assigned to orders (no field); the salesperson field showed empty and was cleared by choosing a customer without a salesperson; a team's company was not defaulted. | **fixed** — team select on the quotation, salesperson defaults to the signed-in user and is kept, team company defaults; tests |
+| SL-22 | F | The authorized-user cache in `Bouncer` was static and not tied to a user, so one user's record scope could leak to another user in the same process (queue workers, tests). | **fixed** — keyed by user |
+| SL-23 | note | Quotation templates exist only as page stubs (no resource), so they are not reachable. Optional products are listed on the quotation but never turned into lines. The Standard access level also grants the Sales settings pages and the configuration screens. | **by design / not shipped** |
 
 ## Enhancements suggested
 - Validate phone numbers (junk was accepted); default the customer country to Oman.

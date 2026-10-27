@@ -98,6 +98,18 @@ return [
         ],
     ],
 
+    'sales_manager' => [
+        'label'       => 'role-management.templates.sales_manager.label',
+        'description' => 'role-management.templates.sales_manager.description',
+        'modules'     => [
+            'Sale'      => 'standard',
+            'Contact'   => 'standard',
+            'Inventory' => 'view',
+            'Invoice'   => 'view',
+        ],
+        'permissions' => [],
+    ],
+
     'general_manager' => [
         'label'       => 'role-management.templates.general_manager.label',
         'description' => 'role-management.templates.general_manager.description',

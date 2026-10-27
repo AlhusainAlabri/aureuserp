@@ -861,7 +861,8 @@ class BillResource extends Resource
                                         TextEntry::make('name')
                                             ->placeholder('-'),
                                         TextEntry::make('quantity')
-                                            ->placeholder('-'),
+                                            ->placeholder('-')
+                                            ->formatStateUsing(fn ($state) => filled($state) ? rtrim(rtrim(number_format((float) $state, 4, '.', ''), '0'), '.') : null),
                                         TextEntry::make('uom')
                                             ->formatStateUsing(fn ($state) => $state['name'])
                                             ->placeholder('-')
