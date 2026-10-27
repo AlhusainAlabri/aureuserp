@@ -54,6 +54,7 @@ class ReturnAction extends Action
                 }
 
                 $form->fill([
+                    'to_refund'    => true,
                     'return_moves' => $returnableMoves->map(fn ($move) => [
                         'move_id'      => $move->id,
                         'product_name' => $move->product?->name ?? '—',

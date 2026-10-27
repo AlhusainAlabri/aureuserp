@@ -8,6 +8,7 @@ use Tests\Helpers\FeatureTestBootstrap;
 use Webkul\Account\Enums\MoveState;
 use Webkul\Account\Filament\Resources\InvoiceResource\Actions\ResetToDraftAction;
 use Webkul\Account\Models\Move;
+use Webkul\Invoice\Filament\Clusters\Customers\Resources\CreditNoteResource\Pages\ViewCreditNote;
 use Webkul\Invoice\Filament\Clusters\Customers\Resources\InvoiceResource\Pages\ViewInvoice;
 use Webkul\Security\Models\User;
 
@@ -38,4 +39,21 @@ it('keeps the posted invoice header short by grouping the secondary actions unde
     $grouped = collect($group->getActions())->map(fn ($action) => $action->getName())->all();
 
     expect($grouped)->toContain(ResetToDraftAction::getDefaultName());
+});
+
+it('opens a posted credit note and a draft one without the invoice-only actions', function (): void {
+    foreach ([MoveState::POSTED, MoveState::DRAFT] as $state) {
+        $creditNote = Move::factory()->create(['move_type' => 'out_refund', 'state' => $state]);
+
+        $component = Livewire::test(ViewCreditNote::class, ['record' => $creditNote->id])
+            ->assertSuccessful();
+
+        $names = collect($component->instance()->getCachedHeaderActions())
+            ->flatMap(fn ($action) => $action instanceof ActionGroup ? $action->getActions() : [$action])
+            ->map(fn ($action) => $action->getName())
+            ->all();
+
+        expect($names)->not->toContain('customers.invoice.set-as-checked')
+            ->and($names)->not->toContain('customers.invoice.credit-note');
+    }
 });

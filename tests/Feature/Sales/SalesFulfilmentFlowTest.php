@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Gate;
 use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\SalesFixtures;
 use Webkul\Inventory\Enums\MoveState;
 use Webkul\Inventory\Facades\Inventory;
+use Webkul\Inventory\Filament\Clusters\Operations\Actions\ReturnAction;
+use Webkul\Inventory\Filament\Clusters\Operations\Resources\DeliveryResource\Pages\ViewDelivery;
 use Webkul\Inventory\Models\Move;
 use Webkul\Inventory\Models\ProductQuantity;
 use Webkul\Sale\Facades\SaleOrder;
@@ -134,4 +137,17 @@ it('leaves the delivered quantity alone when the return is not meant to update t
     Inventory::doneTransfer($return->fresh(), cancelBackOrder: true);
 
     expect((float) $order->fresh()->lines->first()->qty_delivered)->toBe(20.0);
+});
+
+it('opens the return dialog with the update-order toggle switched on and applies it', function (): void {
+    Filament\Facades\Filament::setCurrentPanel(Filament\Facades\Filament::getPanel('admin'));
+    Gate::before(fn (): bool => true);
+
+    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
+
+    $delivery = Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
+
+    Livewire\Livewire::test(ViewDelivery::class, ['record' => $delivery->id])
+        ->mountAction(ReturnAction::class)
+        ->assertActionDataSet(['to_refund' => true]);
 });
