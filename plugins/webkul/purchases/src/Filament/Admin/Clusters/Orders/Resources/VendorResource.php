@@ -2,8 +2,10 @@
 
 namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources;
 
+use App\Filament\Extensions\PartnerResourceExtensions;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\RelationManagers\RelationGroup;
+use Filament\Schemas\Schema;
 use Webkul\Field\Filament\Traits\HasCustomFields;
 use Webkul\Invoice\Filament\Clusters\Vendors\Resources\VendorResource as BaseVendorResource;
 use Webkul\Partner\Filament\Resources\PartnerResource\RelationManagers\AddressesRelationManager;
@@ -40,6 +42,11 @@ class VendorResource extends BaseVendorResource
     public static function getNavigationLabel(): string
     {
         return __('purchases::filament/admin/clusters/orders/resources/vendor.navigation.title');
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return PartnerResourceExtensions::localizeForm(parent::form($schema));
     }
 
     public static function getRecordSubNavigation(Page $page): array

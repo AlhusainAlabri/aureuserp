@@ -325,7 +325,7 @@ trait HasLogActivity
         }
 
         if (
-            ! is_array($value)
+            is_string($value)
             && json_decode($value, true)
         ) {
             $value = json_decode($value, true);

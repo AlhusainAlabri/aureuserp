@@ -74,11 +74,13 @@ use Webkul\Purchase\Models\Product;
 use Webkul\Purchase\Models\Requisition;
 use Webkul\Purchase\Settings\OrderSettings;
 use Webkul\Purchase\Settings\ProductSettings;
+use Webkul\Security\Models\User;
 use Webkul\Security\Traits\HasResourcePermissionQuery;
 use Webkul\Support\Filament\Forms\Components\Repeater;
 use Webkul\Support\Filament\Forms\Components\Repeater\TableColumn;
 use Webkul\Support\Filament\Infolists\Components\RepeatableEntry;
 use Webkul\Support\Filament\Infolists\Components\Repeater\TableColumn as InfolistTableColumn;
+use Webkul\Support\Models\Company;
 use Webkul\Support\Models\Currency;
 use Webkul\Support\Models\UOM;
 
@@ -196,7 +198,12 @@ class OrderResource extends Resource
                                     ->relationship(
                                         'partner',
                                         'name',
-                                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('id')->withTrashed()
+                                        modifyQueryUsing: fn (Builder $query) => $query
+                                            // Your own companies and user accounts are never vendors.
+                                            ->whereNotIn('id', Company::query()->whereNotNull('partner_id')->select('partner_id'))
+                                            ->whereNotIn('id', User::query()->whereNotNull('partner_id')->select('partner_id'))
+                                            ->orderBy('id')
+                                            ->withTrashed()
                                     )
                                     ->getOptionLabelFromRecordUsing(function ($record): string {
                                         return $record->name.($record->trashed() ? __(' (Deleted)') : '');
@@ -342,7 +349,7 @@ class OrderResource extends Resource
                                             ->searchable()
                                             ->preload()
                                             ->required()
-                                            ->default(Auth::user()->default_company_id)
+                                            ->default(fn (): ?int => Auth::user()->default_company_id ?? Company::query()->value('id'))
                                             ->disabled(fn ($record): bool => $record && ! in_array($record?->state, [OrderState::DRAFT, OrderState::SENT])),
                                         TextInput::make('origin')
                                             ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.additional.fields.source-document'))
@@ -1093,6 +1100,7 @@ class OrderResource extends Resource
                     ->required()
                     ->default(1)
                     ->numeric()
+                    ->minValue(0.0001)
                     ->maxValue(99999999999)
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Set $set, Get $get, $state, $record) {

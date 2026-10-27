@@ -391,5 +391,8 @@
     "Refuse": "رفض",
     "Restore": "استعادة",
     "Manufacturing Operation": "عملية تصنيع",
-    "Manufacturing Operations": "عمليات التصنيع"
+    "Manufacturing Operations": "عمليات التصنيع",
+    "Add at least one product line before confirming the order.": "أضف بنداً واحداً على الأقل قبل تأكيد الطلب.",
+    "You cannot cancel a stock move that has been set to 'Done'. Create a return in order to reverse the moves which took place.": "لا يمكن إلغاء حركة مخزون تم إنجازها. أنشئ إرجاعاً لعكس الحركات التي تمت.",
+    "You cannot return more than what was received (:qty) for :product.": "لا يمكنك إرجاع أكثر من الكمية المستلمة (:qty) للمنتج :product."
 }
