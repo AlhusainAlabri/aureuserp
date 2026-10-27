@@ -4,7 +4,9 @@ namespace Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource
 
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Webkul\Account\Models\Move;
 use Webkul\Purchase\Enums\OrderState;
 use Webkul\Purchase\Facades\PurchaseOrder;
 use Webkul\Purchase\Models\Order;
@@ -50,9 +52,10 @@ class CreateBillAction extends Action
                     ->success()
                     ->send();
             })
+            // Creating a bill is an accounting action: a buyer without bill permission must not get it from the order page.
             ->visible(fn () => in_array($this->getRecord()->state, [
                 OrderState::PURCHASE,
                 OrderState::DONE,
-            ]));
+            ]) && (bool) Auth::user()?->can('create', Move::class));
     }
 }

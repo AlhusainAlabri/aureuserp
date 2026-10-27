@@ -430,7 +430,7 @@ class BillResource extends Resource
                         }
 
                         if ($record->invoice_date_due->isToday()) {
-                            return 'Today';
+                            return __('Today');
                         }
 
                         return $record->invoice_date_due->diffForHumans();

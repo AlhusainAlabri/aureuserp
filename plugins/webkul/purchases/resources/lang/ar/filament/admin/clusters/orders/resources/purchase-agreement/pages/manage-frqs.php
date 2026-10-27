@@ -2,6 +2,6 @@
 
 return [
     'navigation' => [
-        'title' => 'RFQ\\\'s',
+        'title' => 'طلبات عروض الأسعار',
     ],
 ];
