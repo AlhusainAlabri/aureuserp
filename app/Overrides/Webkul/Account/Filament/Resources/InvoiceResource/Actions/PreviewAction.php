@@ -3,6 +3,7 @@
 namespace Webkul\Account\Filament\Resources\InvoiceResource\Actions;
 
 use App\Support\Invoices\InvoicePdf;
+use App\Support\Pdf\DocumentPreview;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
@@ -46,7 +47,7 @@ class PreviewAction extends Action
             ->modalHeading(__('accounts::filament/resources/invoice/actions/preview.modal.title'))
             ->modalSubmitAction(false)
             ->modalCancelActionLabel(__('accounts::filament/resources/invoice/actions/preview.modal.action.close.title'))
-            ->modalContent(fn (Move $record) => view($this->getTemplate(), ['record' => $record]))
+            ->modalContent(fn (Move $record) => DocumentPreview::make(view($this->getTemplate(), ['record' => $record])))
             ->modalFooterActions(function (Action $action): array {
                 return [
                     $action->getModalCancelAction(),

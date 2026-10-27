@@ -75,6 +75,7 @@ use Webkul\Sale\Models\Product;
 use Webkul\Sale\Models\Quotation as Order;
 use Webkul\Sale\Settings\PriceSettings;
 use Webkul\Sale\Settings\QuotationAndOrderSettings;
+use Webkul\Security\Models\User;
 use Webkul\Security\Traits\HasResourcePermissionQuery;
 use Webkul\Support\Filament\Forms\Components\Repeater;
 use Webkul\Support\Filament\Forms\Components\Repeater\TableColumn;
@@ -162,7 +163,12 @@ class QuotationResource extends Resource
                                             ->relationship(
                                                 'partner',
                                                 'name',
-                                                modifyQueryUsing: fn (Builder $query) => $query->orderBy('id')->withTrashed()
+                                                modifyQueryUsing: fn (Builder $query) => $query
+                                                    // Your own companies and user accounts are never customers.
+                                                    ->whereNotIn('id', Company::query()->whereNotNull('partner_id')->select('partner_id'))
+                                                    ->whereNotIn('id', User::query()->whereNotNull('partner_id')->select('partner_id'))
+                                                    ->orderBy('id')
+                                                    ->withTrashed()
                                             )
                                             ->searchable()
                                             ->preload()
@@ -186,7 +192,7 @@ class QuotationResource extends Resource
                                     ->native(false)
                                     ->default(fn (QuotationAndOrderSettings $settings) => now()->addDays($settings->default_quotation_validity))
                                     ->required()
-                                    ->hidden(fn ($record) => $record)
+                                    ->hidden(fn ($record) => $record?->state === OrderState::SALE)
                                     ->disabled(fn ($record): bool => $record?->locked || in_array($record?->state, [OrderState::CANCEL])),
                                 DatePicker::make('date_order')
                                     ->label(function ($record) {

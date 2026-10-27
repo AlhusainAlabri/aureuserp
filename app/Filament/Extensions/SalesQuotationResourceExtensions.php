@@ -48,6 +48,14 @@ class SalesQuotationResourceExtensions
                 return;
             }
 
+            if ($column->hasSummary()) {
+                foreach ($column->getSummarizers() as $summarizer) {
+                    $summarizer->label($summarizerLabel);
+                }
+
+                return;
+            }
+
             $column->summarize(Sum::make()->label($summarizerLabel));
         });
 

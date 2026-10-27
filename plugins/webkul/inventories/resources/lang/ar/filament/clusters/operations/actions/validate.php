@@ -23,8 +23,13 @@ return [
             ],
 
             'no-quantities-reserved' => [
-                'title' => 'No quantities are reserved',
-                'body'  => 'No quantities are reserved for the transfer.',
+                'title' => 'لا توجد كميات محجوزة',
+                'body'  => 'لا توجد كميات محجوزة لهذا التحويل. تحقق من توفر المخزون أولاً.',
+            ],
+
+            'insufficient-stock' => [
+                'title' => 'المخزون غير كافٍ',
+                'body'  => 'لا يمكن تأكيد التحويل: الكمية المتاحة من «:product» في «:location» هي :available بينما المطلوب :required.',
             ],
 
             'lot-missing' => [

@@ -320,11 +320,11 @@ class SaleManager
             return $line->invoice_status == InvoiceStatus::TO_INVOICE;
         })) {
             $order->invoice_status = InvoiceStatus::TO_INVOICE;
-        } elseif ($order->lines->contains(function ($line) {
+        } elseif ($order->lines->isNotEmpty() && $order->lines->every(function ($line) {
             return $line->invoice_status == InvoiceStatus::INVOICED;
         })) {
             $order->invoice_status = InvoiceStatus::INVOICED;
-        } elseif ($order->lines->contains(function ($line) {
+        } elseif ($order->lines->isNotEmpty() && $order->lines->every(function ($line) {
             return in_array($line->invoice_status, [InvoiceStatus::INVOICED, InvoiceStatus::UP_SELLING]);
         })) {
             $order->invoice_status = InvoiceStatus::UP_SELLING;
@@ -568,6 +568,10 @@ class SaleManager
             ? $orderLine->product_uom_qty
             : $orderLine->qty_to_invoice;
 
+        if (float_compare((float) $quantity, 0.0, precisionDigits: 4) <= 0) {
+            return;
+        }
+
         $accountMoveLine = $accountMove->lines()->create([
             'name'         => $orderLine->name,
             'date'         => $accountMove->date,
@@ -581,7 +585,7 @@ class SaleManager
             'uom_id'       => $orderLine->product_uom_id,
         ]);
 
-        $orderLine->accountMoveLines()->sync($accountMoveLine->id);
+        $orderLine->accountMoveLines()->syncWithoutDetaching([$accountMoveLine->id]);
 
         $accountMoveLine->taxes()->sync($orderLine->taxes->pluck('id'));
     }
@@ -693,12 +697,12 @@ class SaleManager
                     ! $move->origin_returned_move_id
                     || (
                         $move->origin_returned_move_id
-                        && $move->to_refund
+                        && $move->is_refund
                     )
                 ) {
                     $outgoingMoveIds[] = $move->id;
                 }
-            } elseif ($move->sourceLocation == InventoryEnums\LocationType::CUSTOMER && $move->is_refund) {
+            } elseif ($move->sourceLocation?->type == InventoryEnums\LocationType::CUSTOMER && $move->is_refund) {
                 $incomingMoveIds[] = $move->id;
             }
         }

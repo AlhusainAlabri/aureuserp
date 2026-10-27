@@ -2,6 +2,7 @@
 
 namespace Webkul\Sale\Filament\Clusters\Orders\Resources\QuotationResource\Actions;
 
+use App\Support\Pdf\DocumentPreview;
 use Filament\Actions\Action;
 
 class PreviewAction extends Action
@@ -18,7 +19,7 @@ class PreviewAction extends Action
         $this
             ->label(__('sales::filament/clusters/orders/resources/quotation/actions/preview.title'))
             ->modalFooterActions(fn ($record) => [])
-            ->modalContent(fn ($record) => view('sales::sales.quotation', ['record' => $record]))
+            ->modalContent(fn ($record) => DocumentPreview::make(view('sales::sales.quotation', ['record' => $record])))
             ->color('gray');
     }
 }

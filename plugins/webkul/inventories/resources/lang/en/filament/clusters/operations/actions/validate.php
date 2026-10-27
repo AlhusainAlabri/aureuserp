@@ -27,6 +27,11 @@ return [
                 'body'  => 'No quantities are reserved for the transfer.',
             ],
 
+            'insufficient-stock' => [
+                'title' => 'Not enough stock',
+                'body'  => 'The transfer cannot be validated: ":product" has :available available in ":location" but :required is needed.',
+            ],
+
             'lot-missing' => [
                 'title' => 'Supply Lot/Serial Number',
                 'body'  => 'You need to supply a Lot/Serial Number for products :products.',

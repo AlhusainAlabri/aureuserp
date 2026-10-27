@@ -88,6 +88,8 @@ class InventoryManager
     {
         $this->checkForErrors($record);
 
+        $this->checkAvailableStock($record);
+
         $todoMoves = $record->moves->filter(fn ($move) => in_array($move->state, [
             MoveState::DRAFT,
             MoveState::WAITING,
@@ -1268,6 +1270,49 @@ class InventoryManager
         $this->confirmMoves($backOrderMoves, merge: false);
 
         return $backOrderMoves;
+    }
+
+    /**
+     * Refuse to validate a delivery or internal transfer that would take more of a
+     * stored product out of a location than the location holds.
+     */
+    public function checkAvailableStock(Operation $operation): void
+    {
+        if (! in_array($operation->operationType?->type, [OperationType::OUTGOING, OperationType::INTERNAL], true)) {
+            return;
+        }
+
+        $required = [];
+
+        foreach ($operation->moveLines as $line) {
+            if (
+                in_array($line->move?->state, [MoveState::DONE, MoveState::CANCELED], true)
+                || float_compare($line->qty, 0, precisionRounding: $line->uom->rounding) <= 0
+                || ! $line->product->is_storable
+                || $line->sourceLocation->shouldBypassReservation()
+            ) {
+                continue;
+            }
+
+            $key = $line->product_id.'_'.$line->source_location_id.'_'.$line->lot_id;
+
+            $required[$key] ??= ['line' => $line, 'qty' => 0.0];
+
+            $required[$key]['qty'] += $line->uom->computeQuantity($line->qty, $line->product->uom, roundingMethod: 'HALF-UP');
+        }
+
+        foreach ($required as ['line' => $line, 'qty' => $qty]) {
+            $onHand = (float) ProductQuantity::gather($line->product, $line->sourceLocation, $line->lot, strict: false)->sum('quantity');
+
+            if (float_compare($qty, $onHand, precisionRounding: $line->product->uom->rounding) > 0) {
+                throw new \Exception(__('inventories::filament/clusters/operations/actions/validate.notification.warning.insufficient-stock.body', [
+                    'product'   => $line->product->name,
+                    'location'  => $line->sourceLocation->full_name,
+                    'available' => float_round(max($onHand, 0), precisionRounding: $line->product->uom->rounding),
+                    'required'  => float_round($qty, precisionRounding: $line->product->uom->rounding),
+                ]));
+            }
+        }
     }
 
     public function checkForErrors($operation): void

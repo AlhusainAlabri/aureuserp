@@ -90,10 +90,15 @@ class ReturnAction extends Action
                         TextEntry::make('uom_name')->hiddenLabel(),
                     ]),
                 Toggle::make('to_refund')
-                    ->label(__('inventories::filament/clusters/operations/actions/return.modal.form.to-refund'))
-                    ->helperText(__('inventories::filament/clusters/operations/actions/return.modal.form.to-refund-help'))
+                    ->label(fn (): string => $this->getRecord()->sale_order_id
+                        ? __('inventories::filament/clusters/operations/actions/return.modal.form.to-refund-sale')
+                        : __('inventories::filament/clusters/operations/actions/return.modal.form.to-refund'))
+                    ->helperText(fn (): string => $this->getRecord()->sale_order_id
+                        ? __('inventories::filament/clusters/operations/actions/return.modal.form.to-refund-sale-help')
+                        : __('inventories::filament/clusters/operations/actions/return.modal.form.to-refund-help'))
                     ->default(true)
-                    ->visible(fn (): bool => Package::isPluginInstalled('purchases') && $this->getRecord()->purchaseOrders()->exists()),
+                    ->visible(fn (): bool => $this->getRecord()->sale_order_id
+                        || (Package::isPluginInstalled('purchases') && $this->getRecord()->purchaseOrders()->exists())),
             ])
             ->action(function (Operation $record, array $data, Component $livewire): void {
                 $moveQuantities = collect($data['return_moves'] ?? [])
