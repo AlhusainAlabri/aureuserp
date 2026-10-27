@@ -5,7 +5,7 @@ return [
     'model-label' => 'الدفع',
 
     'navigation' => [
-        'title' => 'المدفوعات',
+        'title' => 'مدفوعات الموردين',
     ],
 
     'record-sub-navigation' => [

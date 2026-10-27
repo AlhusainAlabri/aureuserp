@@ -2,6 +2,7 @@
 
 use App\Settings\BrandingSettings;
 use App\Support\Branding;
+use App\Support\SchemaMemo;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -78,6 +79,8 @@ it('returns branding without cache table during fresh install', function (): voi
         'branding.fallback' => 'Install Fallback',
     ]);
 
+    SchemaMemo::resetForTesting();
+
     Schema::partialMock()
         ->shouldReceive('hasTable')
         ->with('cache')
@@ -87,6 +90,8 @@ it('returns branding without cache table during fresh install', function (): voi
         ->andReturn(false);
 
     expect(Branding::displayName())->toBe('Install Fallback');
+
+    SchemaMemo::resetForTesting();
 });
 
 it('shows the bundled Nodhum logos when no full logo is uploaded', function (): void {

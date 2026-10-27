@@ -1209,7 +1209,8 @@ class InvoiceResource extends Resource
                     ->visible(fn (ProductSettings $settings) => $settings->enable_uom),
                 TextInput::make('price_unit')
                     ->label(__('accounts::filament/resources/invoice.form.tabs.invoice-lines.repeater.products.fields.unit-price'))
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->default(0)
                     ->minValue(0)
                     ->maxValue(99999999999)
@@ -1300,7 +1301,7 @@ class InvoiceResource extends Resource
             );
         }
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         $set('taxes', $product->productTaxes->pluck('id')->toArray());
 
@@ -1338,7 +1339,7 @@ class InvoiceResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get('uom_id'), $product);
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         self::calculateLineTotals($set, $get);
     }
@@ -1380,7 +1381,7 @@ class InvoiceResource extends Resource
     private static function calculateLineTotals(Set $set, Get $get): void
     {
         if (! $get('product_id')) {
-            $set('price_unit', 0);
+            $set('price_unit', money_input(0));
             $set('discount', 0);
             $set('price_tax', 0);
             $set('price_subtotal', 0);

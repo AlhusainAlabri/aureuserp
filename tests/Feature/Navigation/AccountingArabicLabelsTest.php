@@ -31,8 +31,8 @@ it('uses arabic plural labels for accounting bills and invoices', function (): v
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     ServingFilament::dispatch();
 
-    expect(BillResource::getPluralModelLabel())->toBe('الفواتير')
-        ->and(InvoiceResource::getPluralModelLabel())->toBe('الفواتير');
+    expect(BillResource::getPluralModelLabel())->toBe('فواتير الموردين')
+        ->and(InvoiceResource::getPluralModelLabel())->toBe('فواتير العملاء');
 });
 
 it('uses arabic plural labels for accounting credit notes', function (): void {

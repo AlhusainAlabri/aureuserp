@@ -3,10 +3,10 @@
 namespace App\Filament\Assets\Widgets;
 
 use App\Filament\Assets\Concerns\InteractsWithAssetStats;
+use App\Support\SchemaMemo;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class AssetOverviewStatsWidget extends BaseWidget
 {
@@ -31,7 +31,7 @@ class AssetOverviewStatsWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        if (! Schema::hasTable('assets')) {
+        if (! SchemaMemo::hasTable('assets')) {
             return [
                 Stat::make(__('assets::assets.widgets.stats.unavailable'), '—')
                     ->description(__('assets::assets.widgets.stats.plugin_not_installed'))

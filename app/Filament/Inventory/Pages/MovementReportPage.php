@@ -4,6 +4,7 @@ namespace App\Filament\Inventory\Pages;
 
 use App\Services\Inventory\InventoryMovementReportService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
@@ -21,7 +22,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Livewire\Attributes\Computed;
 use Webkul\Inventory\Enums\MoveState;
 use Webkul\Inventory\Models\Location;
@@ -64,7 +64,7 @@ class MovementReportPage extends Page implements HasForms, HasTable
 
     public static function canAccess(array $parameters = []): bool
     {
-        return DbSchema::hasTable('inventories_moves')
+        return SchemaMemo::hasTable('inventories_moves')
             && parent::canAccess($parameters);
     }
 

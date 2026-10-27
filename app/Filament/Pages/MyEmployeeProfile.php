@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Support\SchemaMemo;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Employee\Models\Employee;
 
 class MyEmployeeProfile extends Page
@@ -42,11 +42,11 @@ class MyEmployeeProfile extends Page
 
     public function hasDepartmentsPivot(): bool
     {
-        return DbSchema::hasTable('department_employee');
+        return SchemaMemo::hasTable('department_employee');
     }
 
     public function hasResponsibilitiesField(): bool
     {
-        return DbSchema::hasColumn('employees_employees', 'primary_job_responsibilities');
+        return SchemaMemo::hasColumn('employees_employees', 'primary_job_responsibilities');
     }
 }

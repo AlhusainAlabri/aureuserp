@@ -4,12 +4,12 @@ namespace App\Filament\Assets\Widgets;
 
 use App\Filament\Assets\Concerns\ConfiguresAssetBorrowingTable;
 use App\Filament\Assets\Concerns\InteractsWithAssetStats;
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Assets\Enums\BorrowingStatus;
 use Webkul\Assets\Models\AssetBorrowing;
 
@@ -32,7 +32,7 @@ class DueSoonBorrowingsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('asset_borrowings')) {
+        if (! SchemaMemo::hasTable('asset_borrowings')) {
             return $table
                 ->query(AssetBorrowing::query()->whereRaw('1 = 0'))
                 ->columns([]);

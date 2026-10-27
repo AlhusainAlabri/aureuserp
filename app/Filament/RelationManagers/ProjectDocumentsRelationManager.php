@@ -2,6 +2,7 @@
 
 namespace App\Filament\RelationManagers;
 
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
@@ -9,7 +10,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Illuminate\Support\Facades\Storage;
 use Webkul\DocumentArchive\Filament\Concerns\ManagesDocumentRecords;
 use Webkul\DocumentArchive\Filament\Resources\DocFileResource;
@@ -30,8 +30,8 @@ class ProjectDocumentsRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return DbSchema::hasTable('doc_files')
-            && DbSchema::hasColumn('doc_files', 'project_id');
+        return SchemaMemo::hasTable('doc_files')
+            && SchemaMemo::hasColumn('doc_files', 'project_id');
     }
 
     public function isReadOnly(): bool

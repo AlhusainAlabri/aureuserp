@@ -6,7 +6,7 @@ use App\Enums\NavigationAppearance;
 use App\Enums\NavigationMenuType;
 use App\Enums\SidebarDefaultState;
 use App\Settings\NavigationSettings;
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 
 class NavigationMode
 {
@@ -19,7 +19,7 @@ class NavigationMode
     public static function resolve(): self
     {
         try {
-            if (! Schema::hasTable('settings')) {
+            if (! SchemaMemo::hasTable('settings')) {
                 return self::defaults();
             }
 

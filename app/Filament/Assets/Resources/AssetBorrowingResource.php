@@ -9,6 +9,7 @@ use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Infolists\ApprovalStatusSection;
 use App\Services\Assets\AssetSignatureStorageService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -18,7 +19,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Assets\Models\AssetBorrowing;
 use Wezlo\FilamentApproval\RelationManagers\ApprovalsRelationManager;
 
@@ -59,7 +59,7 @@ class AssetBorrowingResource extends Resource
 
     public static function canAccess(): bool
     {
-        return DbSchema::hasTable('asset_borrowings');
+        return SchemaMemo::hasTable('asset_borrowings');
     }
 
     /**

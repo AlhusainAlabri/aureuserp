@@ -2,12 +2,12 @@
 
 namespace App\Filament\Assets\Resources\AssetBorrowingResource\RelationManagers;
 
+use App\Support\SchemaMemo;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 
 class EventsRelationManager extends RelationManager
 {
@@ -29,7 +29,7 @@ class EventsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(function (Builder $query): Builder {
-                if (! Schema::hasTable('asset_borrowing_events')) {
+                if (! SchemaMemo::hasTable('asset_borrowing_events')) {
                     return $query->whereRaw('1 = 0');
                 }
 

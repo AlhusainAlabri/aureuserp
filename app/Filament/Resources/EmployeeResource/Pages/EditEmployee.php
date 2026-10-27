@@ -4,9 +4,9 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\FiltersEmployeeFormDataForDatabaseSchema;
 use App\Services\Hr\EmployeeDepartmentService;
+use App\Support\SchemaMemo;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\EditEmployee as BaseEditEmployee;
@@ -54,7 +54,7 @@ class EditEmployee extends BaseEditEmployee
     {
         $data = parent::mutateFormDataBeforeFill($data);
 
-        if (Schema::hasTable('department_employee')) {
+        if (SchemaMemo::hasTable('department_employee')) {
             $data['departments'] = $this->record->departments->pluck('id')->all();
         }
 
@@ -69,7 +69,7 @@ class EditEmployee extends BaseEditEmployee
 
     protected function syncProfileExtensionFields(): void
     {
-        if (! Schema::hasColumn('employees_employees', 'primary_job_responsibilities')) {
+        if (! SchemaMemo::hasColumn('employees_employees', 'primary_job_responsibilities')) {
             return;
         }
 
@@ -84,7 +84,7 @@ class EditEmployee extends BaseEditEmployee
 
     protected function syncDepartmentsFromForm(): void
     {
-        if (! Schema::hasTable('department_employee')) {
+        if (! SchemaMemo::hasTable('department_employee')) {
             return;
         }
 

@@ -2,17 +2,17 @@
 
 namespace App\Filament\Extensions;
 
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 
 class AccountResourceExtensions
 {
     public static function isAvailable(): bool
     {
-        return Schema::hasTable('projects_projects')
-            && Schema::hasTable('accounts_account_moves')
-            && Schema::hasColumn('accounts_account_moves', 'project_id');
+        return SchemaMemo::hasTable('projects_projects')
+            && SchemaMemo::hasTable('accounts_account_moves')
+            && SchemaMemo::hasColumn('accounts_account_moves', 'project_id');
     }
 
     /** @return array<int, mixed> */

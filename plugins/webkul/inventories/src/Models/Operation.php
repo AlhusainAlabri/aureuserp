@@ -226,7 +226,9 @@ class Operation extends Model
         });
 
         static::updated(function ($operation) {
-            if ($operation->wasChanged('operation_type_id')) {
+            // Inside the created hook every attribute counts as changed, which renamed the moves of the
+            // receipt a backorder was split from to the backorder's number.
+            if (! $operation->wasRecentlyCreated && $operation->wasChanged('operation_type_id')) {
                 $operation->updateChildrenNames();
             }
         });

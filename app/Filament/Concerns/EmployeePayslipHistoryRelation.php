@@ -3,16 +3,16 @@
 namespace App\Filament\Concerns;
 
 use App\Support\OmrFormatter;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Payroll\Models\Payslip;
 
 trait EmployeePayslipHistoryRelation
 {
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('payroll_payslips')) {
+        if (! SchemaMemo::hasTable('payroll_payslips')) {
             return $table
                 ->emptyStateHeading(__('hr-extensions::payslip_history.plugin_not_installed'))
                 ->columns([]);

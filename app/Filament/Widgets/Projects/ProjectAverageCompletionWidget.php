@@ -4,10 +4,10 @@ namespace App\Filament\Widgets\Projects;
 
 use App\Services\Projects\ProjectCompletionService;
 use App\Services\Projects\ProjectStageHelper;
+use App\Support\SchemaMemo;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Project\Models\Project;
 
 class ProjectAverageCompletionWidget extends BaseWidget
@@ -20,7 +20,7 @@ class ProjectAverageCompletionWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        if (! Schema::hasTable('projects_projects')) {
+        if (! SchemaMemo::hasTable('projects_projects')) {
             return [
                 Stat::make(__('projects-extensions::widgets.average_completion'), '—')
                     ->description(__('dashboard.plugin_not_installed'))

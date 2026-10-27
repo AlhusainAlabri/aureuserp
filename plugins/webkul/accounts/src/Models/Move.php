@@ -432,9 +432,11 @@ class Move extends Model implements Sortable
         });
 
         static::created(function ($move) {
-            $move->computeName();
+            if ($move->shouldBeNumbered()) {
+                $move->computeName();
 
-            $move->saveQuietly();
+                $move->saveQuietly();
+            }
         });
 
         static::saving(function ($move) {
@@ -458,8 +460,10 @@ class Move extends Model implements Sortable
 
             $move->computePaymentState();
 
-            if ($move->exists && blank($move->name)) {
+            if ($move->exists && blank($move->getAttributes()['name'] ?? null) && $move->shouldBeNumbered()) {
                 $move->computeName();
+
+                $move->labelPaymentTermLines();
             }
         });
     }
@@ -480,6 +484,42 @@ class Move extends Model implements Sortable
         }
 
         $this->company_id ??= Auth::user()->default_company_id;
+    }
+
+    /**
+     * A draft has no number: it is issued when the document is posted, so deleting a draft never leaves a gap.
+     * A payment's journal entry is numbered at once because it carries the payment's own number.
+     */
+    public function shouldBeNumbered(): bool
+    {
+        return $this->origin_payment_id !== null || ($this->state ?? MoveState::DRAFT) !== MoveState::DRAFT;
+    }
+
+    /**
+     * Shows "Draft" until the number is issued.
+     */
+    public function getNameAttribute(?string $value): ?string
+    {
+        if (blank($value) && ! $this->shouldBeNumbered()) {
+            return __('Draft document');
+        }
+
+        return $value;
+    }
+
+    /**
+     * Payment term lines are labelled with the document number; relabel those written before it was issued.
+     */
+    protected function labelPaymentTermLines(): void
+    {
+        if (! $this->exists || blank($this->name)) {
+            return;
+        }
+
+        $this->lines()
+            ->where('display_type', DisplayType::PAYMENT_TERM)
+            ->where(fn ($query) => $query->whereNull('name')->orWhereIn('name', [__('Draft document'), 'Payment Term']))
+            ->update(['name' => $this->name]);
     }
 
     public function computeName()
@@ -662,7 +702,7 @@ class Move extends Model implements Sortable
             ->groupBy('source_line.id', 'source_line.move_id', 'account.account_type')
             ->get();
 
-        $allResults = $debitResults->merge($creditResults);
+        $allResults = $debitResults->toBase()->merge($creditResults->toBase());
 
         $paymentData = [];
 
@@ -855,7 +895,7 @@ class Move extends Model implements Sortable
     public function getReconcilablePayments()
     {
         $paymentVals = [
-            'title'       => $this->isInbound() ? 'Outstanding credits' : 'Outstanding debits',
+            'title'       => $this->isInbound() ? __('Outstanding credits') : __('Outstanding debits'),
             'move_id'     => $this->id,
             'outstanding' => false,
             'lines'       => [],

@@ -167,6 +167,23 @@ class PeriodLockGuard
     }
 
     /**
+     * Refuse unlinking a payment from (or resetting the payment of) a posted entry that sits in a locked period.
+     * Unlinking only deletes the reconciliation rows, which no model event guards, so it is checked explicitly.
+     *
+     * @throws PeriodLockedException
+     */
+    public static function assertMayUnlink(Move $move): void
+    {
+        if (! PeriodLock::blocks($move->company_id, $move->date, $move->state, $move->date, $move->state)) {
+            return;
+        }
+
+        if (! PeriodLock::userMayOverride(static::signedInUser())) {
+            throw PeriodLockedException::forLockDate(PeriodLock::lockDateFor($move->company_id));
+        }
+    }
+
+    /**
      * Attributes whose new value really differs from the stored one. Models recompute fields on every save, so a
      * dirty attribute may hold the same value in another form (1 for "1.0000", false for 0, an enum for its value).
      *

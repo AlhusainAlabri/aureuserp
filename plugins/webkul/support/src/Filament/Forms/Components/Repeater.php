@@ -2,6 +2,7 @@
 
 namespace Webkul\Support\Filament\Forms\Components;
 
+use App\Support\DefaultCurrency;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater as BaseRepeater;
@@ -268,7 +269,9 @@ class Repeater extends BaseRepeater
         }
 
         if ($summarizer->isNumeric() && is_numeric($value)) {
-            $value = number_format($value, 2);
+            $isMoney = preg_match('/amount|total|residual|balance|debit|credit/', $columnName) === 1;
+
+            $value = number_format($value, $isMoney && class_exists(DefaultCurrency::class) ? DefaultCurrency::decimals() : 2);
         }
 
         $label = $summarizer->getLabel();

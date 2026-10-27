@@ -4,8 +4,8 @@ namespace App\Filament\Widgets\Employee;
 
 use App\Models\Hr\EmployeeSalaryRaise;
 use App\Support\OmrFormatter;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\Schema;
 
 class EmployeeSalaryHistoryChartWidget extends ChartWidget
 {
@@ -31,7 +31,7 @@ class EmployeeSalaryHistoryChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! $this->employeeId || ! Schema::hasTable('employee_salary_raises')) {
+        if (! $this->employeeId || ! SchemaMemo::hasTable('employee_salary_raises')) {
             return ['datasets' => [], 'labels' => []];
         }
 

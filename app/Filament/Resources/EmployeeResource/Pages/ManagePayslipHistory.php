@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\EmployeePayslipHistoryRelation;
+use App\Support\SchemaMemo;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
 
@@ -31,6 +31,6 @@ class ManagePayslipHistory extends ManageRelatedRecords
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('payroll_payslips');
+        return SchemaMemo::hasTable('payroll_payslips');
     }
 }

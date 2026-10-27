@@ -2,6 +2,7 @@
 
 namespace App\Filament\Concerns;
 
+use App\Support\SchemaMemo;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -12,7 +13,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Payroll\Enums\CalculationType;
 use Webkul\Payroll\Filament\Resources\SalaryComponentResource;
 use Webkul\Payroll\Models\SalaryComponent;
@@ -21,7 +21,7 @@ trait EmployeeCompensationRelation
 {
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('payroll_employee_components')) {
+        if (! SchemaMemo::hasTable('payroll_employee_components')) {
             return $table
                 ->emptyStateHeading(__('hr-extensions::compensation.plugin_not_installed'))
                 ->columns([]);

@@ -4,12 +4,12 @@ namespace App\Filament\Inventory\Widgets;
 
 use App\Filament\Inventory\Pages\MovementReportPage;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Inventory\Enums\MoveState;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\OperationResource;
 use Webkul\Inventory\Models\Move;
@@ -29,7 +29,7 @@ class RecentMovementsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('inventories_moves')) {
+        if (! SchemaMemo::hasTable('inventories_moves')) {
             return $table
                 ->query(Move::query()->whereRaw('1 = 0'))
                 ->columns([]);

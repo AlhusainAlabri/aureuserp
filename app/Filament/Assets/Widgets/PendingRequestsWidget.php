@@ -3,10 +3,10 @@
 namespace App\Filament\Assets\Widgets;
 
 use App\Filament\Assets\Concerns\InteractsWithAssetStats;
+use App\Support\SchemaMemo;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class PendingRequestsWidget extends BaseWidget
 {
@@ -22,7 +22,7 @@ class PendingRequestsWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        if (! Schema::hasTable('asset_borrowings')) {
+        if (! SchemaMemo::hasTable('asset_borrowings')) {
             return [];
         }
 

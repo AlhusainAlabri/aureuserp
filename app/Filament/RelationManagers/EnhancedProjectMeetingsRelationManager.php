@@ -2,6 +2,7 @@
 
 namespace App\Filament\RelationManagers;
 
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\ViewAction;
@@ -16,7 +17,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Models\Meeting;
@@ -32,7 +32,7 @@ class EnhancedProjectMeetingsRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return DbSchema::hasTable('meetings');
+        return SchemaMemo::hasTable('meetings');
     }
 
     public function isReadOnly(): bool

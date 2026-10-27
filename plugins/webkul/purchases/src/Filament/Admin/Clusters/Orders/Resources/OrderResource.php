@@ -1192,7 +1192,8 @@ class OrderResource extends Resource
 
                 TextInput::make('price_unit')
                     ->label(__('purchases::filament/admin/clusters/orders/resources/order.form.tabs.products.repeater.products.fields.unit-price'))
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->default(0)
                     ->minValue(0)
                     ->maxValue(99999999999)
@@ -1307,7 +1308,7 @@ class OrderResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         $set('taxes', $product->supplierTaxes->pluck('id')->toArray());
 
@@ -1341,7 +1342,7 @@ class OrderResource extends Resource
         if (! $get('from_requisition')) {
             $priceUnit = static::calculateUnitPrice($get);
 
-            $set('price_unit', money_round($priceUnit));
+            $set('price_unit', money_input($priceUnit));
         }
 
         self::calculateLineTotals($set, $get);
@@ -1369,7 +1370,7 @@ class OrderResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         self::calculateLineTotals($set, $get);
     }

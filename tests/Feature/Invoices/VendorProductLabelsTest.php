@@ -37,7 +37,7 @@ it('uses arabic plural label for invoice customer products resource', function (
 it('uses arabic labels for accounting vendors and products resources', function (): void {
     app()->setLocale('ar');
 
-    expect(AccountingProductResource::getNavigationLabel())->toBe('المنتجات')
+    expect(AccountingProductResource::getNavigationLabel())->toBe('منتجات الموردين')
         ->and(AccountingProductResource::getPluralModelLabel())->toBe('المنتجات')
         ->and(AccountingVendorResource::getNavigationLabel())->toBe('الموردين')
         ->and(AccountingVendorResource::getPluralModelLabel())->toBe('الموردين');

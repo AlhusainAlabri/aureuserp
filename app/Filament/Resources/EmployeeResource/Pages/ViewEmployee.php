@@ -4,9 +4,9 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Actions\Hr\CloseEmployeeFileAction;
 use App\Filament\Actions\Hr\ReopenEmployeeFileAction;
+use App\Support\SchemaMemo;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Chatter\Filament\Actions\ChatterAction;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\ViewEmployee as BaseViewEmployee;
 use Webkul\Payroll\Filament\Actions\CreateEndOfServiceSettlementAction;
@@ -21,7 +21,7 @@ class ViewEmployee extends BaseViewEmployee
      */
     protected function settlementActions(): array
     {
-        if (! class_exists(CreateEndOfServiceSettlementAction::class) || ! Schema::hasTable('payroll_end_of_service_settlements')) {
+        if (! class_exists(CreateEndOfServiceSettlementAction::class) || ! SchemaMemo::hasTable('payroll_end_of_service_settlements')) {
             return [];
         }
 

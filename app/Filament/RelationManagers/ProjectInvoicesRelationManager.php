@@ -3,11 +3,11 @@
 namespace App\Filament\RelationManagers;
 
 use App\Services\Projects\ProjectFinancialSummaryService;
+use App\Support\SchemaMemo;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Account\Filament\Resources\BillResource;
 use Webkul\Account\Filament\Resources\InvoiceResource;
 use Webkul\Account\Models\Move;
@@ -23,8 +23,8 @@ class ProjectInvoicesRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return Schema::hasTable('accounts_account_moves')
-            && Schema::hasColumn('accounts_account_moves', 'project_id');
+        return SchemaMemo::hasTable('accounts_account_moves')
+            && SchemaMemo::hasColumn('accounts_account_moves', 'project_id');
     }
 
     public function table(Table $table): Table

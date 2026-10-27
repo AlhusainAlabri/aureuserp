@@ -7,11 +7,11 @@ use App\Filament\Projects\Widgets\TaskOverviewStatsWidget;
 use App\Filament\Projects\Widgets\TasksByStatusChartWidget;
 use App\Filament\Projects\Widgets\TaskWorkloadWidget;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Project\Filament\Clusters\Configurations\Resources\TaskStageResource;
 use Webkul\Project\Filament\Resources\TaskResource;
 
@@ -47,7 +47,7 @@ class TaskOperationsHub extends BaseDashboard
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('projects_tasks')
+        return SchemaMemo::hasTable('projects_tasks')
             && parent::canAccess($parameters);
     }
 

@@ -5,12 +5,12 @@ namespace App\Filament\Purchases\Pages;
 use App\Filament\Actions\Purchases\ApprovePurchaseWithVoucherAction;
 use App\Filament\Traits\HasApprovalActions;
 use App\Services\Purchases\PurchasePaymentService;
+use App\Support\SchemaMemo;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource\Pages\ViewOrder;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\PurchaseOrderResource;
 use Wezlo\FilamentApproval\Actions\CommentAction;
@@ -47,7 +47,7 @@ class ViewPurchaseOrder extends ViewOrder
                 ->label(__('purchases-extensions::request.payment.record_payment'))
                 ->icon('heroicon-o-banknotes')
                 ->color('primary')
-                ->visible(fn (): bool => Schema::hasColumn('purchases_orders', 'amount_paid')
+                ->visible(fn (): bool => SchemaMemo::hasColumn('purchases_orders', 'amount_paid')
                     && (float) ($this->getRecord()->amount_remaining ?? 0) > 0)
                 ->schema([
                     TextInput::make('amount')

@@ -3,10 +3,10 @@
 namespace App\Filament\Projects\Widgets;
 
 use App\Filament\Projects\Widgets\Concerns\HasTaskHubWidgetLayout;
+use App\Support\SchemaMemo;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Security\Models\User;
 
 class TaskWorkloadWidget extends BaseWidget
@@ -24,7 +24,7 @@ class TaskWorkloadWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        if (! Schema::hasTable('projects_tasks') || ! Schema::hasTable('projects_task_users')) {
+        if (! SchemaMemo::hasTable('projects_tasks') || ! SchemaMemo::hasTable('projects_task_users')) {
             return $table
                 ->query(fn () => User::query()->whereRaw('1 = 0'))
                 ->columns([

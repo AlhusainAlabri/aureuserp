@@ -55,11 +55,9 @@ use Webkul\Account\Facades\Account as AccountFacade;
 use Webkul\Account\Facades\Tax as TaxFacade;
 use Webkul\Account\Filament\Resources\JournalResource;
 use Webkul\Account\Models\Account;
-use Webkul\Account\Models\Journal;
 use Webkul\Account\Models\Move as AccountMove;
 use Webkul\Account\Models\MoveLine;
 use Webkul\Account\Models\Tax;
-use Webkul\Account\Settings\DefaultAccountSettings;
 use Webkul\Accounting\Filament\Clusters\Accounting;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResource\Pages\CreateJournalEntry;
 use Webkul\Accounting\Filament\Clusters\Accounting\Resources\JournalEntryResource\Pages\EditJournalEntry;
@@ -651,7 +649,8 @@ class JournalEntryResource extends Resource
                 Select::make('account_id')
                     ->label(__('accounting::filament/clusters/accounting/resources/journal-entry.form.tabs.lines.repeater.fields.account'))
                     ->relationship('account', 'name')
-                    ->searchable()
+                    ->getOptionLabelFromRecordUsing(fn ($record): string => trim("{$record->code} - {$record->name}", ' -'))
+                    ->searchable(['code', 'name'])
                     ->required()
                     ->preload()
                     ->live()
@@ -808,9 +807,6 @@ class JournalEntryResource extends Resource
             return;
         }
 
-        $journal = $journalId ? Journal::find($journalId) : null;
-        $suspenseAccountId = $journal?->suspense_account_id ?? (new DefaultAccountSettings)->account_journal_suspense_account_id;
-
         $lines = collect($lines)
             ->reject(function ($line) {
                 $name = $line['name'] ?? '';
@@ -922,12 +918,6 @@ class JournalEntryResource extends Resource
             $totalCredit += $taxLine['credit'];
         }
 
-        $balancingLine = self::calculateBalancingLine($totalDebit, $totalCredit, $company, $suspenseAccountId);
-
-        if ($balancingLine) {
-            $lines[] = $balancingLine;
-        }
-
         $set('../../lines', $lines);
     }
 
@@ -959,75 +949,6 @@ class JournalEntryResource extends Resource
         }
 
         return $mockLine;
-    }
-
-    private static function recalculateBalancingLineOnly(Get $get, Set $set): void
-    {
-        $lines = $get('../../lines') ?? [];
-
-        if (empty($lines)) {
-            return;
-        }
-
-        $companyId = $get('../../company_id');
-        $journalId = $get('../../journal_id');
-
-        if (! $companyId) {
-            return;
-        }
-
-        $company = Company::find($companyId);
-
-        if (! $company) {
-            return;
-        }
-
-        $journal = $journalId ? Journal::find($journalId) : null;
-
-        $suspenseAccountId = $journal?->suspense_account_id ?? (new DefaultAccountSettings)->account_journal_suspense_account_id;
-
-        $linesWithoutBalancing = collect($lines)
-            ->reject(fn ($line) => ($line['is_auto_generated'] ?? false) && ($line['auto_type'] ?? null) === 'balancing')
-            ->values()
-            ->all();
-
-        $totalDebit = collect($linesWithoutBalancing)->sum(fn ($lineData) => data_get($lineData, 'debit', 0));
-        $totalCredit = collect($linesWithoutBalancing)->sum(fn ($lineData) => data_get($lineData, 'credit', 0));
-
-        $balancingLine = self::calculateBalancingLine($totalDebit, $totalCredit, $company, $suspenseAccountId);
-
-        if ($balancingLine) {
-            $linesWithoutBalancing[] = $balancingLine;
-        }
-
-        $set('../../lines', $linesWithoutBalancing);
-    }
-
-    private static function calculateBalancingLine(float $totalDebit, float $totalCredit, Company $company, ?int $accountId = null): ?array
-    {
-        $difference = money_round($totalDebit - $totalCredit);
-
-        if (abs($difference) < 0.01) {
-            return null;
-        }
-
-        if (! $accountId) {
-            return null;
-        }
-
-        return [
-            'account_id'               => $accountId,
-            'partner_id'               => null,
-            'name'                     => 'Automatic Balancing',
-            'amount_currency'          => -$difference,
-            'currency_id'              => $company->currency_id,
-            'taxes'                    => [],
-            'debit'                    => $difference < 0 ? abs($difference) : 0,
-            'credit'                   => $difference > 0 ? $difference : 0,
-            'discount_amount_currency' => 0,
-            'is_auto_generated'        => true,
-            'auto_type'                => 'balancing',
-        ];
     }
 
     public static function getRecordSubNavigation(Page $page): array

@@ -2,6 +2,7 @@
 
 namespace Webkul\Account;
 
+use App\Support\Accounting\PeriodLockGuard;
 use Exception;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Arr;
@@ -57,7 +58,23 @@ class AccountManager
     {
         $this->isConfirmAllowedForMove($record);
 
-        if ($record->reversedEntry?->state == MoveState::POSTED) {
+        $reconcileReversedEntry = $record->reversedEntry?->state == MoveState::POSTED;
+
+        $record->state = MoveState::POSTED;
+
+        $record->posted_before = true;
+
+        $record->save();
+
+        $record = $this->computeAccountMove($record);
+
+        $record->refresh();
+
+        foreach ($record->lines as $line) {
+            $line->update(['parent_state' => MoveState::POSTED]);
+        }
+
+        if ($reconcileReversedEntry) {
             $this->reconcileReversedMoves(collect([$record->reversedEntry]), [$record]);
 
             $tempNumbers = $record->lines
@@ -89,20 +106,6 @@ class AccountManager
                     $this->reconcile($groupLines);
                 }
             }
-        }
-
-        $record->state = MoveState::POSTED;
-
-        $record->posted_before = true;
-
-        $record->save();
-
-        $record = $this->computeAccountMove($record);
-
-        $record->refresh();
-
-        foreach ($record->lines as $line) {
-            $line->update(['parent_state' => MoveState::POSTED]);
         }
 
         if ($record->isSaleDocument()) {
@@ -791,7 +794,7 @@ class AccountManager
                 $key = [
                     'move_id'                  => $move->id,
                     'date_maturity'            => $move->invoice_date_due?->toDateString(),
-                    'discount_date'            => false,
+                    'discount_date'            => null,
                     'discount_balance'         => 0.0,
                     'discount_amount_currency' => 0.0,
                 ];
@@ -1180,6 +1183,9 @@ class AccountManager
 
         $debitLine = $partialReconcile->debitMove;
         $creditLine = $partialReconcile->creditMove;
+
+        PeriodLockGuard::assertMayUnlink($debitLine->move);
+        PeriodLockGuard::assertMayUnlink($creditLine->move);
 
         $allReconciledLines = [
             $debitLine->id,
@@ -1940,7 +1946,7 @@ class AccountManager
     public function reverseMoves($moves, $defaultValues = [], $cancel = false)
     {
         if (empty($defaultValues)) {
-            $defaultValues = $moves->flatMap(fn ($move) => []);
+            $defaultValues = [];
         }
 
         if ($cancel) {
@@ -1958,22 +1964,27 @@ class AccountManager
         $reverseMoves = collect();
 
         foreach ($moves as $index => $move) {
-            $defaultValues = $defaultValues[$index] ?? [];
+            $moveValues = array_is_list($defaultValues) ? ($defaultValues[$index] ?? []) : $defaultValues;
 
-            $defaultValues = array_merge($defaultValues, [
+            $moveValues = array_merge($moveValues, [
                 'move_type'          => $move->typeReverseMapping[$move->move_type->value],
                 'reversed_entry_id'  => $move->id,
                 'partner_id'         => $move->partner_id,
+                'state'              => MoveState::DRAFT,
+                'payment_state'      => PaymentState::NOT_PAID,
+                'name'               => null,
             ]);
 
             $reverseMove = $move->replicate();
-            $reverseMove->fill($defaultValues);
+            $reverseMove->fill($moveValues);
             $reverseMove->save();
 
             foreach ($move->lines as $line) {
                 $newLine = $line->replicate();
                 $newLine->move_id = $reverseMove->id;
                 $newLine->save();
+
+                $newLine->taxes()->sync($line->taxes->pluck('id')->all());
             }
 
             $reverseMove = $this->computeAccountMove($reverseMove);
@@ -2003,6 +2014,14 @@ class AccountManager
         }
 
         return $reverseMoves;
+    }
+
+    protected function isEntryBalanced(AccountMove $record): bool
+    {
+        $debit = $record->lines->sum(fn ($line) => (float) $line->debit);
+        $credit = $record->lines->sum(fn ($line) => (float) $line->credit);
+
+        return float_compare($debit, $credit, precisionRounding: $record->currency?->rounding ?: 0.001) === 0;
     }
 
     public function isConfirmAllowedForMove(AccountMove &$record)
@@ -2037,6 +2056,10 @@ class AccountManager
 
         if ($record->lines->isEmpty()) {
             throw new Exception(__('accounts::account-manager.post-action-validate.lines-required'));
+        }
+
+        if ($record->move_type === MoveType::ENTRY && ! $this->isEntryBalanced($record)) {
+            throw new Exception(__('accounts::account-manager.post-action-validate.unbalanced'));
         }
 
         if ($record->lines->some(fn ($line) => $line->account->deprecated)) {

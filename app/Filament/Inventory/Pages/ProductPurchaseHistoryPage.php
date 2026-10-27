@@ -5,13 +5,13 @@ namespace App\Filament\Inventory\Pages;
 use App\Filament\Inventory\Concerns\InteractsWithProductPurchaseHistoryTab;
 use App\Services\Inventory\ProductPurchaseHistoryService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Livewire\Attributes\Computed;
 use Webkul\Inventory\Filament\Clusters\Products\Resources\ProductResource;
 use Webkul\Product\Models\Product;
@@ -52,7 +52,7 @@ class ProductPurchaseHistoryPage extends Page
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('products_products')
+        return SchemaMemo::hasTable('products_products')
             && parent::canAccess($parameters);
     }
 

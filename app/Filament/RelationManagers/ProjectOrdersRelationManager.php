@@ -3,11 +3,11 @@
 namespace App\Filament\RelationManagers;
 
 use App\Services\Projects\ProjectFinancialSummaryService;
+use App\Support\SchemaMemo;
 use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Purchase\Filament\Admin\Clusters\Orders\Resources\OrderResource;
 
 class ProjectOrdersRelationManager extends RelationManager
@@ -21,8 +21,8 @@ class ProjectOrdersRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return Schema::hasTable('purchases_orders')
-            && Schema::hasColumn('purchases_orders', 'project_id');
+        return SchemaMemo::hasTable('purchases_orders')
+            && SchemaMemo::hasColumn('purchases_orders', 'project_id');
     }
 
     public function table(Table $table): Table

@@ -9,6 +9,7 @@ use App\Services\Projects\TaskNotificationService;
 use App\Services\Projects\TaskStageHelper;
 use App\Services\Projects\TaskStatePresenter;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
@@ -16,7 +17,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Panel;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Filament\Resources\TaskResource;
 use Webkul\Project\Models\Project;
@@ -57,8 +57,8 @@ class TaskKanban extends Page
 
     public static function canAccess(array $parameters = []): bool
     {
-        return DbSchema::hasTable('projects_tasks')
-            && DbSchema::hasTable('projects_task_stages')
+        return SchemaMemo::hasTable('projects_tasks')
+            && SchemaMemo::hasTable('projects_task_stages')
             && parent::canAccess($parameters);
     }
 

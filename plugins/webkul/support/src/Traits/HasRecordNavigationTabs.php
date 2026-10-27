@@ -51,11 +51,14 @@ trait HasRecordNavigationTabs
 
     public function getSubNavigation(): array
     {
-        if (filled($cluster = static::getCluster())) {
-            return $this->generateNavigationItems($cluster::getClusteredComponents());
+        if (blank($cluster = static::getCluster())) {
+            return [];
         }
 
-        return [];
+        $items = $this->generateNavigationItems($cluster::getClusteredComponents());
+
+        // A sidebar with a single link only steals width from the record page (the order lines table scrolls sideways).
+        return count($items) > 1 ? $items : [];
     }
 
     public static function getSubNavigationPosition(): SubNavigationPosition

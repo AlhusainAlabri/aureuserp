@@ -3,6 +3,7 @@
 namespace App\Filament\Assets\Pages;
 
 use App\Filament\Assets\Concerns\ConfiguresAssetBorrowingTable;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
@@ -10,7 +11,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 
 abstract class BaseBorrowingRequestsPage extends Page implements HasTable
 {
@@ -28,7 +28,7 @@ abstract class BaseBorrowingRequestsPage extends Page implements HasTable
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('asset_borrowings')
+        return SchemaMemo::hasTable('asset_borrowings')
             && parent::canAccess($parameters);
     }
 

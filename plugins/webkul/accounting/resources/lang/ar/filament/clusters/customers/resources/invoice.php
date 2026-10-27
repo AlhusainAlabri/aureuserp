@@ -4,7 +4,7 @@ return [
     'title' => 'الفاتورة',
 
     'navigation' => [
-        'title' => 'الفواتير',
+        'title' => 'فواتير العملاء',
     ],
 
     'global-search' => [

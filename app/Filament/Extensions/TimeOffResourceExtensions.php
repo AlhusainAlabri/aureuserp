@@ -2,12 +2,12 @@
 
 namespace App\Filament\Extensions;
 
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Employee;
 use Webkul\TimeOff\Models\Leave;
 
@@ -27,7 +27,7 @@ class TimeOffResourceExtensions
     {
         $tableName = self::resolveLeaveTableName();
 
-        if ($tableName === null || ! Schema::hasColumn($tableName, 'substitute_employee_id')) {
+        if ($tableName === null || ! SchemaMemo::hasColumn($tableName, 'substitute_employee_id')) {
             return [];
         }
 
@@ -64,7 +64,7 @@ class TimeOffResourceExtensions
     {
         $tableName = self::resolveLeaveTableName();
 
-        if ($tableName === null || ! Schema::hasColumn($tableName, 'substitute_employee_id')) {
+        if ($tableName === null || ! SchemaMemo::hasColumn($tableName, 'substitute_employee_id')) {
             return [];
         }
 
@@ -128,7 +128,7 @@ class TimeOffResourceExtensions
     protected static function resolveLeaveTableName(): ?string
     {
         foreach (['time_off_leaves', 'hr_leaves', 'leaves'] as $tableName) {
-            if (Schema::hasTable($tableName)) {
+            if (SchemaMemo::hasTable($tableName)) {
                 return $tableName;
             }
         }

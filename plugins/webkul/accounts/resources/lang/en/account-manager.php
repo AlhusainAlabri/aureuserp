@@ -6,6 +6,7 @@ return [
         'vendor-required'      => 'Please provide a valid Vendor to proceed with the Vendor Bill validation.',
         'bank-archived'        => 'The selected Partner Bank attached to this invoice is archived.',
         'negative-amount'      => 'Invoice can not be confirmed with a negative total amount.',
+        'unbalanced'           => 'Journal entry is not balanced: total debit must equal total credit before it can be posted.',
         'date-required'        => 'Please provide a valid Bill/Refund Date to proceed with the Bill/Refund validation.',
         'currency-archived'    => 'You cannot confirm an invoice with an archived currency.',
         'account-deprecated'   => 'One or more lines in this invoice are using deprecated accounts.',

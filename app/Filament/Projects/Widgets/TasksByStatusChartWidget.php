@@ -5,8 +5,8 @@ namespace App\Filament\Projects\Widgets;
 use App\Filament\Projects\Widgets\Concerns\HasTaskHubWidgetLayout;
 use App\Services\Projects\TaskStatePresenter;
 use App\Services\Projects\UnifiedTaskQueryService;
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Project\Enums\TaskState;
 use Webkul\Project\Models\Task;
 
@@ -27,7 +27,7 @@ class TasksByStatusChartWidget extends ChartWidget
 
     public function getDescription(): ?string
     {
-        if (! Schema::hasTable('projects_tasks')) {
+        if (! SchemaMemo::hasTable('projects_tasks')) {
             return null;
         }
 
@@ -60,7 +60,7 @@ class TasksByStatusChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('projects_tasks')) {
+        if (! SchemaMemo::hasTable('projects_tasks')) {
             return [
                 'datasets' => [[
                     'data'            => [1],

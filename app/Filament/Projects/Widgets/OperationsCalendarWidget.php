@@ -6,10 +6,10 @@ use App\Enums\Projects\TaskPriorityLevel;
 use App\Filament\Projects\Concerns\InteractsWithTaskFilters;
 use App\Services\Projects\TaskStatePresenter;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Toggle;
-use Illuminate\Support\Facades\Schema;
 use Webkul\FullCalendar\Filament\Widgets\FullCalendarWidget;
 use Webkul\Meetings\Filament\Resources\MeetingResource;
 use Webkul\Meetings\Filament\Widgets\Concerns\HasMeetingVisibility;
@@ -131,7 +131,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function projectTaskEvents(array $fetchInfo): array
     {
-        if (! Schema::hasTable('projects_tasks')) {
+        if (! SchemaMemo::hasTable('projects_tasks')) {
             return [];
         }
 
@@ -175,7 +175,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function meetingEvents(array $fetchInfo): array
     {
-        if (! class_exists(Meeting::class) || ! Schema::hasTable('meetings')) {
+        if (! class_exists(Meeting::class) || ! SchemaMemo::hasTable('meetings')) {
             return [];
         }
 
@@ -211,7 +211,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function meetingTaskEvents(array $fetchInfo): array
     {
-        if (! class_exists(MeetingTask::class) || ! Schema::hasTable('meeting_tasks')) {
+        if (! class_exists(MeetingTask::class) || ! SchemaMemo::hasTable('meeting_tasks')) {
             return [];
         }
 
@@ -235,7 +235,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function leaveEvents(array $fetchInfo): array
     {
-        if (! class_exists(Leave::class) || ! Schema::hasTable('time_off_leaves')) {
+        if (! class_exists(Leave::class) || ! SchemaMemo::hasTable('time_off_leaves')) {
             return [];
         }
 
@@ -261,7 +261,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function milestoneEvents(array $fetchInfo): array
     {
-        if (! class_exists(Milestone::class) || ! Schema::hasTable('projects_milestones')) {
+        if (! class_exists(Milestone::class) || ! SchemaMemo::hasTable('projects_milestones')) {
             return [];
         }
 
@@ -285,7 +285,7 @@ class OperationsCalendarWidget extends FullCalendarWidget
 
     protected function holidayEvents(array $fetchInfo): array
     {
-        if (! class_exists(CalendarLeave::class) || ! Schema::hasTable('calendar_leaves')) {
+        if (! class_exists(CalendarLeave::class) || ! SchemaMemo::hasTable('calendar_leaves')) {
             return [];
         }
 

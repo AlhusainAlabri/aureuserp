@@ -4,6 +4,7 @@ namespace App\Filament\Inventory\Pages;
 
 use App\Services\Inventory\ConsumptionTransferService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
@@ -16,7 +17,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Webkul\Employee\Models\Department;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\InternalResource;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\OperationResource;
@@ -58,7 +58,7 @@ class RecordConsumption extends Page implements HasForms
 
     public static function canAccess(array $parameters = []): bool
     {
-        if (! DbSchema::hasTable('inventory_consumption_logs')) {
+        if (! SchemaMemo::hasTable('inventory_consumption_logs')) {
             return false;
         }
 
@@ -124,7 +124,7 @@ class RecordConsumption extends Page implements HasForms
                                 ? Project::query()->limit(100)->pluck('name', 'id')->all()
                                 : [])
                             ->searchable()
-                            ->visible(fn (): bool => class_exists(Project::class) && DbSchema::hasTable('projects_projects'))
+                            ->visible(fn (): bool => class_exists(Project::class) && SchemaMemo::hasTable('projects_projects'))
                             ->native(false),
                         Select::make('source_location_id')
                             ->label(__('inventory-extensions::consumption.fields.source_location'))

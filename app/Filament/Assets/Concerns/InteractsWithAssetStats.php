@@ -4,7 +4,7 @@ namespace App\Filament\Assets\Concerns;
 
 use App\Filament\Assets\Pages\PendingBorrowingRequests;
 use App\Support\FilamentUrl;
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 use Webkul\Assets\Enums\AssetStatus;
 use Webkul\Assets\Enums\BorrowingStatus;
 use Webkul\Assets\Filament\Resources\AssetResource;
@@ -15,7 +15,7 @@ trait InteractsWithAssetStats
 {
     protected function countAvailableAssets(): int
     {
-        if (! Schema::hasTable('assets')) {
+        if (! SchemaMemo::hasTable('assets')) {
             return 0;
         }
 
@@ -24,7 +24,7 @@ trait InteractsWithAssetStats
 
     protected function countBorrowedAssets(): int
     {
-        if (! Schema::hasTable('assets')) {
+        if (! SchemaMemo::hasTable('assets')) {
             return 0;
         }
 
@@ -33,7 +33,7 @@ trait InteractsWithAssetStats
 
     protected function countOverdueBorrowings(): int
     {
-        if (! Schema::hasTable('asset_borrowings')) {
+        if (! SchemaMemo::hasTable('asset_borrowings')) {
             return 0;
         }
 
@@ -42,7 +42,7 @@ trait InteractsWithAssetStats
 
     protected function countPendingRequests(): int
     {
-        if (! Schema::hasTable('asset_borrowings')) {
+        if (! SchemaMemo::hasTable('asset_borrowings')) {
             return 0;
         }
 

@@ -4,7 +4,7 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\FiltersEmployeeFormDataForDatabaseSchema;
 use App\Services\Hr\EmployeeDepartmentService;
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\CreateEmployee as BaseCreateEmployee;
 
 class CreateEmployee extends BaseCreateEmployee
@@ -36,7 +36,7 @@ class CreateEmployee extends BaseCreateEmployee
 
     protected function syncProfileExtensionFields(): void
     {
-        if (! Schema::hasColumn('employees_employees', 'primary_job_responsibilities')) {
+        if (! SchemaMemo::hasColumn('employees_employees', 'primary_job_responsibilities')) {
             return;
         }
 
@@ -51,7 +51,7 @@ class CreateEmployee extends BaseCreateEmployee
 
     protected function syncDepartmentsFromForm(): void
     {
-        if (! Schema::hasTable('department_employee')) {
+        if (! SchemaMemo::hasTable('department_employee')) {
             return;
         }
 

@@ -3,7 +3,7 @@
 namespace App\Filament\Inventory\Concerns;
 
 use App\Support\FilamentUrl;
-use Illuminate\Support\Facades\Schema;
+use App\Support\SchemaMemo;
 use Webkul\Inventory\Enums\OperationState;
 use Webkul\Inventory\Filament\Clusters\Operations\Resources\ReceiptResource;
 use Webkul\Purchase\Enums\OrderState;
@@ -13,7 +13,7 @@ trait InteractsWithPendingReceiptCount
 {
     protected function countPendingReceipts(): int
     {
-        if (! Schema::hasTable('purchases_orders') || ! Schema::hasTable('purchases_order_operations')) {
+        if (! SchemaMemo::hasTable('purchases_orders') || ! SchemaMemo::hasTable('purchases_order_operations')) {
             return 0;
         }
 

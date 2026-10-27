@@ -5,6 +5,7 @@ namespace App\Filament\Inventory\Pages;
 use App\Models\Inventory\InventoryReportArchive;
 use App\Services\Inventory\InventoryMovementReportService;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
@@ -15,7 +16,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Schema as DbSchema;
 
 class MovementReportArchivesPage extends Page implements HasTable
 {
@@ -37,7 +37,7 @@ class MovementReportArchivesPage extends Page implements HasTable
 
     public static function canAccess(array $parameters = []): bool
     {
-        return DbSchema::hasTable('inventory_report_archives')
+        return SchemaMemo::hasTable('inventory_report_archives')
             && parent::canAccess($parameters);
     }
 

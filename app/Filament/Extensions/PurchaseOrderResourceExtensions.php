@@ -370,7 +370,8 @@ class PurchaseOrderResourceExtensions
                 TextInput::make('price_unit')
                     ->label(__('purchases-extensions::request.lines.unit_price'))
                     ->required()
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->minValue(0)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, Get $get) => self::recalculateInternalLineTotals($set, $get)),

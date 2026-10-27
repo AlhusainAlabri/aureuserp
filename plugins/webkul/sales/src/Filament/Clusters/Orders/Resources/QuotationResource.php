@@ -1134,7 +1134,7 @@ class QuotationResource extends Resource
                         $product = Product::withTrashed()->find($get('product_id'));
 
                         $set('name', $product->name);
-                        $set('price_unit', $product->price);
+                        $set('price_unit', money_input($product->price));
                         $set('product_uom_id', $product->uom_id);
                     })
                     ->required(),
@@ -1166,7 +1166,8 @@ class QuotationResource extends Resource
                     ->visible(fn (ProductSettings $settings) => $settings->enable_uom),
                 TextInput::make('price_unit')
                     ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.order-line.repeater.product-optional.fields.unit-price'))
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->default(0)
                     ->minValue(0)
                     ->maxValue(99999999999)
@@ -1558,7 +1559,8 @@ class QuotationResource extends Resource
                     ->disableOptionWhen(fn ($value): bool => $record?->locked || in_array($record?->state, [OrderState::CANCEL])),
                 TextInput::make('price_unit')
                     ->label(__('sales::filament/clusters/orders/resources/quotation.form.tabs.order-line.repeater.products.fields.unit-price'))
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->default(0)
                     ->minValue(0)
                     ->maxValue(99999999999)
@@ -1675,7 +1677,7 @@ class QuotationResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         $set('taxes', $product->productTaxes->pluck('id')->toArray());
 
@@ -1731,7 +1733,7 @@ class QuotationResource extends Resource
 
         $priceUnit = static::calculateUnitPrice($get);
 
-        $set('price_unit', money_round($priceUnit));
+        $set('price_unit', money_input($priceUnit));
 
         $purchasePrice = static::calculatePurchasePrice($product, $get('product_uom_id'));
 

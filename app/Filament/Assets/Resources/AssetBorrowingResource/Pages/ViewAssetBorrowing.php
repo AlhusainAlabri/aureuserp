@@ -5,11 +5,11 @@ namespace App\Filament\Assets\Resources\AssetBorrowingResource\Pages;
 use App\Filament\Assets\Resources\AssetBorrowingResource;
 use App\Filament\Traits\HasApprovalActions;
 use App\Models\Assets\AssetBorrowingEvent;
+use App\Support\SchemaMemo;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Schema;
 
 class ViewAssetBorrowing extends ViewRecord
 {
@@ -32,7 +32,7 @@ class ViewAssetBorrowing extends ViewRecord
                 ->label(__('assets-extensions::audit.export_pdf'))
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('gray')
-                ->visible(fn (): bool => Schema::hasTable('asset_borrowing_events'))
+                ->visible(fn (): bool => SchemaMemo::hasTable('asset_borrowing_events'))
                 ->action(function (): mixed {
                     $borrowing = $this->getRecord();
                     $events = AssetBorrowingEvent::query()

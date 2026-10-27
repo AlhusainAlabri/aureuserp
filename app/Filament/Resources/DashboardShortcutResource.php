@@ -8,6 +8,7 @@ use App\Filament\Resources\DashboardShortcutResource\Pages\EditDashboardShortcut
 use App\Filament\Resources\DashboardShortcutResource\Pages\ListDashboardShortcuts;
 use App\Models\DashboardShortcut;
 use App\Support\ModuleLauncher\ModuleLauncherItems;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -25,7 +26,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Schema as DbSchema;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\ComponentAttributeBag;
 
@@ -63,7 +63,7 @@ class DashboardShortcutResource extends Resource
 
     public static function canAccess(): bool
     {
-        if (! DbSchema::hasTable('dashboard_shortcuts')) {
+        if (! SchemaMemo::hasTable('dashboard_shortcuts')) {
             return false;
         }
 

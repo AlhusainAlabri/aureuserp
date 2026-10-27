@@ -7,12 +7,12 @@ use App\Jobs\Operations\RunHealthCheckJob;
 use App\Mail\Operations\SystemTestMail;
 use App\Models\Operations\SystemHealthSnapshot;
 use App\Services\Operations\HealthCheckService;
+use App\Support\SchemaMemo;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Schema;
 
 class SystemHealthDashboard extends Page
 {
@@ -119,7 +119,7 @@ class SystemHealthDashboard extends Page
      */
     public function history(): array
     {
-        if (! Schema::hasTable('system_health_snapshots')) {
+        if (! SchemaMemo::hasTable('system_health_snapshots')) {
             return [];
         }
 

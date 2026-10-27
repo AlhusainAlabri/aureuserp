@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Concerns\EmployeeCompensationRelation;
+use App\Support\SchemaMemo;
 use Filament\Resources\Pages\ManageRelatedRecords;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Filament\Resources\EmployeeResource;
 use Webkul\Employee\Filament\Resources\EmployeeResource\Pages\Concerns\HasEmployeeRecordNavigationTabs;
 use Webkul\Payroll\Filament\Resources\EmployeeComponentResource;
@@ -34,6 +34,6 @@ class ManageCompensation extends ManageRelatedRecords
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('payroll_employee_components');
+        return SchemaMemo::hasTable('payroll_employee_components');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Assets\Widgets;
 
+use App\Support\SchemaMemo;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Assets\Enums\AssetCategory;
 use Webkul\Assets\Models\Asset;
 
@@ -26,7 +26,7 @@ class AssetsByCategoryChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        if (! Schema::hasTable('assets')) {
+        if (! SchemaMemo::hasTable('assets')) {
             return [
                 'datasets' => [[
                     'data'            => [1],

@@ -19,6 +19,7 @@ use App\Support\Console\DestructiveCommandGuard;
 use App\Support\DefaultCurrency;
 use App\Support\ExtensionSchema;
 use App\Support\Livewire\KeepUnsavedChangesAlertAccurate;
+use App\Support\OmrFormatter;
 use App\Support\Pdf\ArabicAwarePdf;
 use App\Support\Rtl\LtrValueFormatter;
 use App\Support\Translation\SafeTranslator;
@@ -29,6 +30,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Entry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -37,6 +39,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\Support\View\ViewManager;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\View\PanelsRenderHook;
@@ -167,6 +170,29 @@ class AppServiceProvider extends ServiceProvider
             if (LtrValueFormatter::appliesTo($column->getName())) {
                 $column->formatStateUsing(fn (mixed $state): mixed => LtrValueFormatter::format($state));
             }
+        });
+
+        // Unit prices on order, quote, invoice and bill lines show the currency's decimals (215.000, not 215). Their
+        // fields use the numeric rule without ->numeric(): that adds a number input and a cast that drops the zeros.
+        TextInput::configureUsing(function (TextInput $input): void {
+            if ($input->getName() === 'price_unit') {
+                $input->formatStateUsing(fn (mixed $state): mixed => is_numeric($state) ? money_input($state) : $state);
+            }
+        });
+
+        // Money totals under a list use the currency's decimals and symbol like the rows above them (28.500 ر.ع.).
+        Sum::configureUsing(function (Sum $sum): void {
+            $sum->formatStateUsing(function (mixed $state, Sum $summarizer): mixed {
+                $name = (string) $summarizer->getColumn()?->getName();
+
+                if (! is_numeric($state) || preg_match('/amount|total|residual|balance|debit|credit/', $name) !== 1) {
+                    return $state;
+                }
+
+                $code = DefaultCurrency::code();
+
+                return number_format((float) $state, DefaultCurrency::decimals()).' '.($code === 'OMR' ? OmrFormatter::symbol() : $code);
+            });
         });
 
         ImageColumn::configureUsing(function (ImageColumn $column): void {

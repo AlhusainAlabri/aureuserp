@@ -41,7 +41,8 @@ trait OptimizesRepeaterSelects
                 }
 
                 if (! $insideRepeater && in_array($name, static::$headerSelectFieldsToOptimize, true)) {
-                    $component->preload(false);
+                    // One capped query so the list is not empty on open; the rest is found by searching.
+                    $component->preload()->optionsLimit(50);
                 }
             },
         );

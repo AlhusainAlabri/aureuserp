@@ -4,8 +4,8 @@ namespace App\Filament\Projects\Concerns;
 
 use App\Enums\Projects\TaskPriorityLevel;
 use App\Models\Projects\TaskCategory;
+use App\Support\SchemaMemo;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Employee\Models\Department;
 use Webkul\Project\Models\Project;
 use Webkul\Security\Models\User;
@@ -28,15 +28,15 @@ trait InteractsWithTaskFilters
             $query->where('project_id', $this->filterProjectId);
         }
 
-        if ($this->filterCategoryId && Schema::hasColumn('projects_tasks', 'category_id')) {
+        if ($this->filterCategoryId && SchemaMemo::hasColumn('projects_tasks', 'category_id')) {
             $query->where('category_id', $this->filterCategoryId);
         }
 
-        if ($this->filterPriority && Schema::hasColumn('projects_tasks', 'priority_level')) {
+        if ($this->filterPriority && SchemaMemo::hasColumn('projects_tasks', 'priority_level')) {
             $query->where('priority_level', $this->filterPriority);
         }
 
-        if ($this->filterDepartmentId && Schema::hasColumn('projects_tasks', 'department_id')) {
+        if ($this->filterDepartmentId && SchemaMemo::hasColumn('projects_tasks', 'department_id')) {
             $query->where('department_id', $this->filterDepartmentId);
         }
 
@@ -45,7 +45,7 @@ trait InteractsWithTaskFilters
                 $innerQuery
                     ->whereHas('users', fn ($assigneeQuery) => $assigneeQuery->where('user_id', $this->filterEmployeeId))
                     ->when(
-                        Schema::hasColumn('projects_tasks', 'owner_id'),
+                        SchemaMemo::hasColumn('projects_tasks', 'owner_id'),
                         fn ($ownerQuery) => $ownerQuery->orWhere('owner_id', $this->filterEmployeeId),
                     );
             });
@@ -71,7 +71,7 @@ trait InteractsWithTaskFilters
             Select::make('filterDepartmentId')
                 ->label(__('tasks.filters.department'))
                 ->searchable()
-                ->getSearchResultsUsing(fn (string $search): array => Schema::hasTable('employees_departments')
+                ->getSearchResultsUsing(fn (string $search): array => SchemaMemo::hasTable('employees_departments')
                     ? Department::query()
                         ->where('name', 'like', "%{$search}%")
                         ->limit(50)
@@ -79,7 +79,7 @@ trait InteractsWithTaskFilters
                         ->all()
                     : [])
                 ->getOptionLabelUsing(fn ($value): ?string => Department::query()->find($value)?->name)
-                ->visible(fn (): bool => Schema::hasTable('employees_departments'))
+                ->visible(fn (): bool => SchemaMemo::hasTable('employees_departments'))
                 ->live(),
             Select::make('filterProjectId')
                 ->label(__('tasks.filters.project'))
@@ -94,7 +94,7 @@ trait InteractsWithTaskFilters
             Select::make('filterCategoryId')
                 ->label(__('tasks.filters.category'))
                 ->searchable()
-                ->getSearchResultsUsing(fn (string $search): array => Schema::hasTable('projects_task_categories')
+                ->getSearchResultsUsing(fn (string $search): array => SchemaMemo::hasTable('projects_task_categories')
                     ? TaskCategory::query()
                         ->where('is_active', true)
                         ->where('name', 'like', "%{$search}%")
@@ -103,14 +103,14 @@ trait InteractsWithTaskFilters
                         ->all()
                     : [])
                 ->getOptionLabelUsing(fn ($value): ?string => TaskCategory::query()->find($value)?->name)
-                ->visible(fn (): bool => Schema::hasTable('projects_task_categories'))
+                ->visible(fn (): bool => SchemaMemo::hasTable('projects_task_categories'))
                 ->live(),
             Select::make('filterPriority')
                 ->label(__('tasks.filters.priority'))
                 ->options(collect(TaskPriorityLevel::cases())->mapWithKeys(
                     fn (TaskPriorityLevel $priority): array => [$priority->value => $priority->getLabel()],
                 )->all())
-                ->visible(fn (): bool => Schema::hasColumn('projects_tasks', 'priority_level'))
+                ->visible(fn (): bool => SchemaMemo::hasColumn('projects_tasks', 'priority_level'))
                 ->live(),
         ];
     }

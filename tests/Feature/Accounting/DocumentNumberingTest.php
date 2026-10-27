@@ -2,6 +2,7 @@
 
 use App\Support\Accounting\DocumentSequence;
 use Illuminate\Support\Facades\DB;
+use Webkul\Account\Enums\MoveState;
 use Webkul\Account\Enums\MoveType;
 use Webkul\Account\Models\Journal;
 use Webkul\Account\Models\Move;
@@ -37,8 +38,8 @@ it('ignores the record being numbered', function (): void {
 it('names new moves sequentially within their journal and year', function (): void {
     $this->actingAs(User::factory()->create());
 
-    $first = Move::factory()->create();
-    $second = Move::factory()->create(['journal_id' => $first->journal_id, 'move_type' => $first->move_type, 'date' => $first->date]);
+    $first = Move::factory()->create(['state' => MoveState::POSTED]);
+    $second = Move::factory()->create(['state' => MoveState::POSTED, 'journal_id' => $first->journal_id, 'move_type' => $first->move_type, 'date' => $first->date]);
 
     $firstNumber = (int) last(explode('/', $first->fresh()->name));
     $secondNumber = (int) last(explode('/', $second->fresh()->name));
@@ -76,8 +77,50 @@ it('numbers a document that only gets its journal while being saved', function (
 
     $journal = Journal::factory()->create(['type' => 'purchase', 'code' => 'ZB'.random_int(10, 99)]);
 
-    $move = Move::factory()->create(['journal_id' => null, 'move_type' => MoveType::IN_INVOICE, 'company_id' => $journal->company_id]);
+    $move = Move::factory()->create(['state' => MoveState::POSTED, 'journal_id' => null, 'move_type' => MoveType::IN_INVOICE, 'company_id' => $journal->company_id]);
 
     expect($move->fresh()->name)->not->toBeEmpty()
         ->and($move->fresh()->sequence_prefix)->not->toBeEmpty();
+});
+
+it('leaves a draft without a number and issues it when the document is posted', function (): void {
+    $this->actingAs(User::factory()->create());
+
+    $first = Move::factory()->create(['state' => MoveState::POSTED]);
+    $draft = Move::factory()->create(['name' => null, 'state' => MoveState::DRAFT, 'journal_id' => $first->journal_id, 'move_type' => $first->move_type, 'date' => $first->date]);
+
+    expect($draft->getRawOriginal('name'))->toBeNull()
+        ->and($draft->fresh()->name)->toBe(__('Draft document'));
+
+    $firstNumber = (int) last(explode('/', $first->fresh()->name));
+
+    $draft->delete();
+
+    $next = Move::factory()->create(['name' => null, 'state' => MoveState::DRAFT, 'journal_id' => $first->journal_id, 'move_type' => $first->move_type, 'date' => $first->date]);
+    $next->update(['state' => MoveState::POSTED]);
+
+    expect((int) last(explode('/', $next->fresh()->name)))->toBe($firstNumber + 1);
+});
+
+it('pads old-style document numbers only when asked and keeps numbers that would collide', function (): void {
+    $this->actingAs(User::factory()->create());
+
+    $old = moveNamed('PD/2026/1');
+    $other = moveNamed('PD/2026/12');
+    $taken = moveNamed('PE/2026/3');
+    $takenPadded = moveNamed('PE/2026/00003');
+
+    Move::query()->whereKey($other->id)->update(['payment_reference' => 'see PD/2026/1 and PD/2026/12']);
+
+    $this->artisan('accounting:pad-document-numbers')->assertSuccessful();
+
+    expect($old->fresh()->name)->toBe('PD/2026/1');
+
+    $this->artisan('accounting:pad-document-numbers', ['--force' => true])->assertSuccessful();
+
+    expect($old->fresh()->name)->toBe('PD/2026/00001')
+        ->and($other->fresh()->name)->toBe('PD/2026/00012')
+        ->and($other->fresh()->payment_reference)->toBe('see PD/2026/00001 and PD/2026/00012')
+        ->and($taken->fresh()->name)->toBe('PE/2026/3')
+        ->and($takenPadded->fresh()->name)->toBe('PE/2026/00003');
 });

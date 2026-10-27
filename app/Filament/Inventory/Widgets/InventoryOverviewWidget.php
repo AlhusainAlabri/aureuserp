@@ -4,9 +4,9 @@ namespace App\Filament\Inventory\Widgets;
 
 use App\Filament\Inventory\Concerns\InteractsWithInventoryStockCounts;
 use App\Filament\Inventory\Concerns\InteractsWithPendingReceiptCount;
+use App\Support\SchemaMemo;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Facades\Schema;
 
 class InventoryOverviewWidget extends BaseWidget
 {
@@ -23,7 +23,7 @@ class InventoryOverviewWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        if (! Schema::hasTable('inventories_order_points')) {
+        if (! SchemaMemo::hasTable('inventories_order_points')) {
             return [
                 Stat::make(__('inventory-extensions::dashboard.low_stock'), __('inventory-extensions::dashboard.plugin_missing'))
                     ->color('gray'),
@@ -32,7 +32,7 @@ class InventoryOverviewWidget extends BaseWidget
 
         $belowMinimum = $this->countBelowMinimum();
         $outOfStock = $this->countOutOfStock();
-        $pendingReceipts = Schema::hasTable('purchases_orders') && Schema::hasTable('purchases_order_operations')
+        $pendingReceipts = SchemaMemo::hasTable('purchases_orders') && SchemaMemo::hasTable('purchases_order_operations')
             ? $this->countPendingReceipts()
             : 0;
 

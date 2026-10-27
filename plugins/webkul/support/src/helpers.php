@@ -16,6 +16,18 @@ if (! function_exists('money_round')) {
     }
 }
 
+if (! function_exists('money_input')) {
+    /**
+     * A money amount as the text an input shows: the default currency's decimals, no thousands separator (215.000).
+     */
+    function money_input(float|int|string|null $amount, ?int $decimals = null): string
+    {
+        $decimals ??= class_exists(DefaultCurrency::class) ? DefaultCurrency::decimals() : 2;
+
+        return number_format((float) $amount, $decimals, '.', '');
+    }
+}
+
 if (! function_exists('money')) {
     function money(float|Closure $amount, string|Closure|null $currency = null, int $divideBy = 0, string|Closure|null $locale = null): string
     {

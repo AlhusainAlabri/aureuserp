@@ -4,11 +4,11 @@ namespace App\Filament\Projects\Pages;
 
 use App\Filament\Projects\Widgets\OperationsCalendarWidget;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
-use Illuminate\Support\Facades\Schema;
 
 class OperationsCalendar extends BaseDashboard
 {
@@ -31,7 +31,7 @@ class OperationsCalendar extends BaseDashboard
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('projects_tasks')
+        return SchemaMemo::hasTable('projects_tasks')
             && parent::canAccess($parameters);
     }
 

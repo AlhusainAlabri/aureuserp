@@ -363,7 +363,8 @@ class PurchaseAgreementResource extends Resource
                     ->disabled(fn ($record): bool => in_array($record?->requisition->state, [RequisitionState::CLOSED, RequisitionState::CANCELED])),
                 TextInput::make('price_unit')
                     ->label(__('purchases::filament/admin/clusters/orders/resources/purchase-agreement.form.tabs.products.fields.unit-price'))
-                    ->numeric()
+                    ->inputMode('decimal')
+                    ->rule('numeric')
                     ->minValue(0)
                     ->maxValue(99999999999)
                     ->default(0)

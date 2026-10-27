@@ -6,7 +6,6 @@ use App\Settings\BrandingSettings;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Throwable;
@@ -315,7 +314,7 @@ class Branding
 
     protected static function hasCompaniesTable(): bool
     {
-        return Schema::hasTable('companies');
+        return SchemaMemo::hasTable('companies');
     }
 
     protected static function canUseCache(): bool
@@ -324,7 +323,7 @@ class Branding
             return true;
         }
 
-        return Schema::hasTable('cache');
+        return SchemaMemo::hasTable('cache');
     }
 
     protected static function cacheStoreUsesDatabase(): bool
@@ -351,7 +350,7 @@ class Branding
     protected static function settings(): ?BrandingSettings
     {
         try {
-            if (! Schema::hasTable('settings')) {
+            if (! SchemaMemo::hasTable('settings')) {
                 return null;
             }
         } catch (Throwable) {

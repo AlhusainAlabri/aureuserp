@@ -9,11 +9,11 @@ use App\Filament\Assets\Widgets\OverdueBorrowingsWidget;
 use App\Filament\Assets\Widgets\RecentBorrowingsWidget;
 use App\Filament\Concerns\InteractsWithAdvancedDashboard;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
-use Illuminate\Support\Facades\Schema;
 use Webkul\Assets\Filament\Resources\AssetResource;
 
 class AssetsDashboard extends BaseDashboard
@@ -48,7 +48,7 @@ class AssetsDashboard extends BaseDashboard
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('assets')
+        return SchemaMemo::hasTable('assets')
             && parent::canAccess($parameters);
     }
 

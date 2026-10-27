@@ -2,6 +2,7 @@
 
 namespace Webkul\Account\Filament\Resources\InvoiceResource\Actions;
 
+use App\Support\DefaultCurrency;
 use Closure;
 use Exception;
 use Filament\Actions\Action;
@@ -221,6 +222,9 @@ class PayAction extends Action
                                         ->label(__('accounts::filament/resources/invoice/actions/pay-action.form.fields.amount'))
                                         ->prefix(fn ($record) => $record->currency->symbol ?? '')
                                         ->default($paymentRegister->amount)
+                                        ->formatStateUsing(fn ($state) => is_numeric($state)
+                                            ? number_format((float) $state, DefaultCurrency::decimals(), '.', '')
+                                            : $state)
                                         ->required()
                                         ->live(onBlur: true)
                                         ->afterStateUpdated(function (Set $set, $state) use ($paymentRegister) {
@@ -315,6 +319,8 @@ class PayAction extends Action
                     $paymentRegister->save();
 
                     AccountFacade::createPayments($paymentRegister);
+
+                    $record->refresh();
 
                     $livewire->refreshFormData(['state', 'payment_state']);
                 } catch (Throwable $e) {

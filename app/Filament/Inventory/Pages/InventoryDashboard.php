@@ -6,11 +6,11 @@ use App\Filament\Concerns\InteractsWithAdvancedDashboard;
 use App\Filament\Inventory\Widgets\InventoryOverviewWidget;
 use App\Filament\Inventory\Widgets\RecentMovementsWidget;
 use App\Support\FilamentUrl;
+use App\Support\SchemaMemo;
 use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Pages\Dashboard as BaseDashboard;
-use Illuminate\Support\Facades\Schema;
 
 class InventoryDashboard extends BaseDashboard
 {
@@ -44,7 +44,7 @@ class InventoryDashboard extends BaseDashboard
 
     public static function canAccess(array $parameters = []): bool
     {
-        return Schema::hasTable('inventories_order_points')
+        return SchemaMemo::hasTable('inventories_order_points')
             && parent::canAccess($parameters);
     }
 
