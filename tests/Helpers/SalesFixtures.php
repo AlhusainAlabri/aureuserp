@@ -2,6 +2,9 @@
 
 namespace Tests\Helpers;
 
+use Webkul\Account\Models\Move;
+use Webkul\Account\Models\Tax;
+use Webkul\Inventory\Facades\Inventory;
 use Webkul\Inventory\Models\ProductQuantity;
 use Webkul\Inventory\Models\Warehouse;
 use Webkul\Product\Enums\ProductType;
@@ -77,5 +80,24 @@ class SalesFixtures
         $order = SaleOrder::confirmSaleOrder($order->fresh());
 
         return [$order, $product, $stockLocationId];
+    }
+
+    /**
+     * Confirm, deliver and invoice a 20 x 10.000 order with 5% VAT; return the order and its draft invoice.
+     *
+     * @return array{0: Order, 1: Move}
+     */
+    public static function deliveredAndInvoicedOrder(): array
+    {
+        [$order] = static::confirmedSaleWithStock(onHand: 30, ordered: 20);
+
+        $order->lines()->firstOrFail()->update(['price_unit' => 10]);
+        $order->lines->first()->taxes()->sync([Tax::query()->where('type_tax_use', 'sale')->value('id')]);
+
+        Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
+
+        SaleOrder::createInvoice(SaleOrder::computeSaleOrder($order->fresh()), ['advance_payment_method' => 'delivered']);
+
+        return [$order->fresh(), $order->fresh()->accountMoves()->firstOrFail()];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Webkul\Inventory\Filament\Clusters\Operations\Resources\ReceiptResource\Pages;
 
+use App\Filament\Actions\Sales\CreateCreditNoteFromReturnAction;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
@@ -31,6 +32,7 @@ class ViewReceipt extends ViewRecord
             OperationActions\ValidateAction::make(),
             OperationActions\CancelAction::make(),
             OperationActions\ReturnAction::make(),
+            CreateCreditNoteFromReturnAction::make(),
             ActionGroup::make([
                 OperationActions\Print\PickingOperationAction::make(),
                 OperationActions\Print\DeliverySlipAction::make(),

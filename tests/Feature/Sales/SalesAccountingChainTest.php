@@ -7,11 +7,6 @@ use Tests\Helpers\FeatureTestBootstrap;
 use Tests\Helpers\SalesFixtures;
 use Webkul\Account\Enums\MoveState;
 use Webkul\Account\Facades\Account as AccountFacade;
-use Webkul\Account\Models\Move;
-use Webkul\Account\Models\Tax;
-use Webkul\Inventory\Facades\Inventory;
-use Webkul\Sale\Facades\SaleOrder;
-use Webkul\Sale\Models\Order;
 use Webkul\Security\Models\User;
 
 beforeEach(function (): void {
@@ -31,27 +26,8 @@ afterEach(function (): void {
     PeriodLock::forget();
 });
 
-/**
- * Confirm, deliver and invoice a 20 x 10.000 order with 5% VAT; return the order and its draft invoice.
- *
- * @return array{0: Order, 1: Move}
- */
-function deliveredAndInvoicedOrder(): array
-{
-    [$order] = SalesFixtures::confirmedSaleWithStock(onHand: 30, ordered: 20);
-
-    $order->lines()->firstOrFail()->update(['price_unit' => 10]);
-    $order->lines->first()->taxes()->sync([Tax::query()->where('type_tax_use', 'sale')->value('id')]);
-
-    Inventory::doneTransfer($order->operations()->firstOrFail()->fresh(), cancelBackOrder: true);
-
-    SaleOrder::createInvoice(SaleOrder::computeSaleOrder($order->fresh()), ['advance_payment_method' => 'delivered']);
-
-    return [$order->fresh(), $order->fresh()->accountMoves()->firstOrFail()];
-}
-
 it('posts a balanced entry for a delivered order: receivable, sales and VAT', function (): void {
-    [, $invoice] = deliveredAndInvoicedOrder();
+    [, $invoice] = SalesFixtures::deliveredAndInvoicedOrder();
 
     $invoice = AccountFacade::confirmMove($invoice)->refresh();
 
@@ -66,7 +42,7 @@ it('posts a balanced entry for a delivered order: receivable, sales and VAT', fu
 });
 
 it('numbers the posted invoice and links it to the order', function (): void {
-    [$order, $invoice] = deliveredAndInvoicedOrder();
+    [$order, $invoice] = SalesFixtures::deliveredAndInvoicedOrder();
 
     $invoice = AccountFacade::confirmMove($invoice)->refresh();
 
@@ -76,7 +52,7 @@ it('numbers the posted invoice and links it to the order', function (): void {
 });
 
 it('refuses to post the invoice of a delivered order into a locked period but still lets the delivery stand', function (): void {
-    [$order, $invoice] = deliveredAndInvoicedOrder();
+    [$order, $invoice] = SalesFixtures::deliveredAndInvoicedOrder();
 
     PeriodLock::setLockDate($order->company_id, CarbonImmutable::today(), $this->user);
     PeriodLock::forget();
