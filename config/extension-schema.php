@@ -46,6 +46,7 @@ return [
     'data_only_migrations' => [
         '2026_06_29_202909_localize_department_names_to_arabic',
         '2026_06_30_100000_normalize_asset_category_values',
+        '2026_10_29_100000_shift_default_calendar_weekend_to_friday_saturday',
     ],
 
 ];
